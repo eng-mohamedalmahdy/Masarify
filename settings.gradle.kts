@@ -1,4 +1,4 @@
-rootProject.name = "My application"
+rootProject.name = "Masarify"
 
 include(":androidApp")
 include(":shared")

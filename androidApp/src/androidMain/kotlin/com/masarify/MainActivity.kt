@@ -1,4 +1,4 @@
-package com.myapplication
+package com.masarify
 
 import MainView
 import android.os.Bundle
