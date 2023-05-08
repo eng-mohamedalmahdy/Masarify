@@ -3,6 +3,8 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("com.squareup.sqldelight")
+
 }
 
 kotlin {
@@ -24,12 +26,16 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+        extraSpecAttributes["resources"] =
+            "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
     sourceSets {
+        val sqlDelightVersion = "1.5.5"
+
         val commonMain by getting {
             dependencies {
+                implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
                 implementation(project(":core"))
                 implementation(compose.runtime)
                 implementation(compose.foundation)
@@ -43,12 +49,17 @@ kotlin {
                 api("androidx.activity:activity-compose:1.6.1")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.9.0")
+                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
+
             }
         }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
+            dependencies {
+                implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
+            }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
