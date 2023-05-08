@@ -11,7 +11,6 @@ import androidx.compose.runtime.setValue
 internal fun App() {
     MaterialTheme {
         var text by remember { mutableStateOf("Hello, World!") }
-
         Button(onClick = {
             text = "Hello, ${getPlatformName()}"
         }) {
@@ -19,5 +18,4 @@ internal fun App() {
         }
     }
 }
-
 expect fun getPlatformName(): String
