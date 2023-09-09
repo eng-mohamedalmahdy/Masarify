@@ -8,7 +8,7 @@ plugins {
 kotlin {
     jvm()
     sourceSets {
-        val jvmMain by getting  {
+        val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(project(":shared"))
@@ -27,4 +27,8 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+task("testClasses").doLast {
+    println("This is a dummy testClasses task")
 }

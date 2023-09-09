@@ -1,4 +1,3 @@
-import dev.icerock.gradle.MRVisibility
 
 plugins {
     kotlin("multiplatform")
@@ -6,7 +5,10 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     id("com.squareup.sqldelight")
-    id("dev.icerock.mobile.multiplatform-resources")
+    id("kotlin-parcelize") // Apply the plugin for Android
+    id("com.arkivanov.parcelize.darwin")
+
+//    id("dev.icerock.mobile.multiplatform-resources")
 
 }
 
@@ -30,6 +32,7 @@ kotlin {
 //            export("dev.icerock.moko:graphics:0.9.0")
 //        }
 //    }
+
     cocoapods {
         version = "1.0.0"
         summary = "Some description for the Shared Module"
@@ -53,14 +56,16 @@ kotlin {
                 implementation("io.github.xxfast:decompose-router:0.4.0")
                 implementation("com.arkivanov.decompose:decompose:${decomposeVersion}")
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:${decomposeVersion}")
-                implementation("com.arkivanov.essenty:parcelable:1.1.0")
 
-                api("dev.icerock.moko:resources:0.23.0")
-                api("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
+                implementation("com.arkivanov.essenty:parcelable:1.1.0")
+                implementation("com.arkivanov.essenty:lifecycle:1.1.0")
+                //         api("dev.icerock.moko:resources:0.23.0")
+                //       api("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
                 implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
@@ -81,7 +86,7 @@ kotlin {
         val iosMain by creating {
             dependencies {
                 implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
-                implementation ("com.arkivanov.parcelize.darwin:runtime:0.2.1")
+                implementation("com.arkivanov.parcelize.darwin:runtime:0.2.1")
             }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
@@ -117,11 +122,20 @@ android {
     }
 }
 dependencies {
+//    commonMainApi("dev.icerock.moko:resources:0.23.0")
+//    commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
+//    commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")
+
     implementation("androidx.compose.ui:ui-tooling-preview-android:1.5.1")
     implementation(project(mapOf("path" to ":core")))
+
 }
 
-multiplatformResources {
-    multiplatformResourcesPackage = "com.lightfeather.masarify.res" // required
-    multiplatformResourcesClassName = "SharedRes" // optional, default MR
+
+//multiplatformResources {
+//    multiplatformResourcesPackage = "com.lightfeather.masarify.res" // required
+//}
+
+task("testClasses").doLast {
+    println("This is a dummy testClasses task")
 }

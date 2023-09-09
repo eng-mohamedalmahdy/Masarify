@@ -7,6 +7,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.delay
 
@@ -20,13 +21,13 @@ fun SplashPage(onAnimationDone: () -> Unit) {
 private fun SplashPageViews(onAnimationDone: () -> Unit) {
 
     LaunchedEffect(Unit) {
-        delay(1000L)
+        delay(500L)
         onAnimationDone()
     }
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary)) {
 
-        CircularProgressIndicator()
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colors.onPrimary)
     }
 }
 
