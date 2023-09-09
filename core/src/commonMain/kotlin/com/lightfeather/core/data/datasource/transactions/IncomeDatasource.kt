@@ -1,5 +1,6 @@
-package data.datasource.transactions
+package com.lightfeather.core.data.datasource.transactions
 
-import domain.transaction.Transaction
+import com.lightfeather.core.data.datasource.transactions.TransactionDatasource
+import com.lightfeather.core.domain.transaction.Transaction
 
 interface IncomeDatasource : TransactionDatasource<Transaction.Income>

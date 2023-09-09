@@ -10,7 +10,8 @@ import androidx.compose.runtime.setValue
 @Composable
 internal fun App() {
 
-    MaterialTheme {
+    MaterialTheme(colors = lightModeColors, typography = typography) {
+
         var text by remember { mutableStateOf("Hello, World!") }
         Button(onClick = {
             text = "Hello, ${getPlatformName()}"

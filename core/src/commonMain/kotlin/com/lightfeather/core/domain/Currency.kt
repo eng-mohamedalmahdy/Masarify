@@ -1,4 +1,4 @@
-package domain
+package com.lightfeather.core.domain
 
 import kotlin.native.concurrent.ThreadLocal
 

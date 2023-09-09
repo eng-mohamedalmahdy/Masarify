@@ -1,6 +1,6 @@
-package data.repository
+package com.lightfeather.core.data.repository
 
-import data.datasource.transactions.ExpensesDatasource
-import domain.transaction.Transaction
+import com.lightfeather.core.data.datasource.transactions.ExpensesDatasource
+import com.lightfeather.core.domain.transaction.Transaction
 
 class ExpensesRepository(datasource: ExpensesDatasource) : TransactionRepository<Transaction.Expense>(datasource)

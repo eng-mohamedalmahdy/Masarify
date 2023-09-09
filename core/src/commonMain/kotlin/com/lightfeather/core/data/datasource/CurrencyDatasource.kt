@@ -1,12 +1,12 @@
-package data.datasource
+package com.lightfeather.core.data.datasource
 
-import domain.Currency
+import com.lightfeather.core.domain.Currency
 
 interface CurrencyDatasource {
-    fun createCurrency(currency: Currency): Int
-    fun updateCurrency(currency: Currency)
-    fun deleteCurrency(currency: Currency): Boolean
-    fun getAllCurrencies(): List<Currency>
-    fun getCurrencyById(id: Int): Currency
+  suspend  fun createCurrency(currency: Currency): Int
+  suspend  fun updateCurrency(currency: Currency)
+  suspend  fun deleteCurrency(currency: Currency): Boolean
+  suspend  fun getAllCurrencies(): List<Currency>
+  suspend  fun getCurrencyById(id: Int): Currency
 
 }

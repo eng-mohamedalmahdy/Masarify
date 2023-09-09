@@ -1,17 +1,17 @@
-package data.datasource
+package com.lightfeather.core.data.datasource
 
-import domain.Category
+import com.lightfeather.core.domain.Category
 
 interface CategoryDatasource {
 
-    fun createCategory(category: Category): Int
+    suspend  fun createCategory(category: Category): Int
 
-    fun updateCategory(category: Category)
+    suspend  fun updateCategory(category: Category)
 
-    fun deleteCategory(category: Category): Boolean
+    suspend  fun deleteCategory(category: Category): Boolean
 
-    fun getAllCategories(): List<Category>
+    suspend  fun getAllCategories(): List<Category>
 
-    fun getCategoryById(id: Int): Category
+    suspend  fun getCategoryById(id: Int): Category
 
 }

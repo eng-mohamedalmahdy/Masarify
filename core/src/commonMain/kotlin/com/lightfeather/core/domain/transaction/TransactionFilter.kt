@@ -1,7 +1,7 @@
-package domain.transaction
+package com.lightfeather.core.domain.transaction
 
-import domain.Account
-import domain.Category
+import com.lightfeather.core.domain.Account
+import com.lightfeather.core.domain.Category
 
 class TransactionFilter private constructor(
     private val filterAll: FilterAll, private val filterAny: FilterAny, private var id: Int? = null,

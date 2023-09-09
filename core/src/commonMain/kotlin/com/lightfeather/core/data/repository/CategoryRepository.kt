@@ -1,18 +1,18 @@
-package data.repository
+package com.lightfeather.core.data.repository
 
-import data.datasource.CategoryDatasource
-import domain.Category
+import com.lightfeather.core.data.datasource.CategoryDatasource
+import com.lightfeather.core.domain.Category
 
 class CategoryRepository (private val datasource: CategoryDatasource){
 
-    fun createCategory(category: Category): Int = datasource.createCategory(category)
+    suspend  fun createCategory(category: Category): Int = datasource.createCategory(category)
 
-    fun updateCategory(category: Category) = datasource.updateCategory(category)
+    suspend  fun updateCategory(category: Category) = datasource.updateCategory(category)
 
-    fun deleteCategory(category: Category): Boolean = datasource.deleteCategory(category)
+    suspend  fun deleteCategory(category: Category): Boolean = datasource.deleteCategory(category)
 
-    fun getAllCategories(): List<Category> = datasource.getAllCategories()
+    suspend  fun getAllCategories(): List<Category> = datasource.getAllCategories()
 
-    fun getCategoryById(id: Int): Category = datasource.getCategoryById(id)
+    suspend  fun getCategoryById(id: Int): Category = datasource.getCategoryById(id)
 
 }

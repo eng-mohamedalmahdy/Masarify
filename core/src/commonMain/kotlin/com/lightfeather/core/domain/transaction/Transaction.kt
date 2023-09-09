@@ -1,7 +1,7 @@
-package domain.transaction
+package com.lightfeather.core.domain.transaction
 
-import domain.Account
-import domain.Category
+import com.lightfeather.core.domain.Account
+import com.lightfeather.core.domain.Category
 
 sealed class Transaction(
     val id: Int, val name: String, val description: String?, val categories: List<Category>,

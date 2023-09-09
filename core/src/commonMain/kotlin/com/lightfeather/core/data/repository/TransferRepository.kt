@@ -1,8 +1,8 @@
-package data.repository
+package com.lightfeather.core.data.repository
 
-import data.datasource.transactions.TransferDatasource
-import domain.Account
-import domain.transaction.Transaction
+import com.lightfeather.core.data.datasource.transactions.TransferDatasource
+import com.lightfeather.core.domain.Account
+import com.lightfeather.core.domain.transaction.Transaction
 
 class TransferRepository(private val datasource: TransferDatasource) :
     TransactionRepository<Transaction.Transfer>(datasource) {

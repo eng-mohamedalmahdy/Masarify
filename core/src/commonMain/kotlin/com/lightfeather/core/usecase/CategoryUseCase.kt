@@ -1,25 +1,25 @@
-package usecase
+package com.lightfeather.core.usecase
 
-import data.repository.CategoryRepository
-import domain.Category
+import com.lightfeather.core.data.repository.CategoryRepository
+import com.lightfeather.core.domain.Category
 
 class CreateCategory(private val categoryRepository: CategoryRepository) {
-    operator fun invoke(category: Category) = categoryRepository.createCategory(category)
+     suspend operator fun invoke(category: Category) = categoryRepository.createCategory(category)
 }
 
 class UpdateCategory(private val categoryRepository: CategoryRepository) {
-    operator fun invoke(category: Category) = categoryRepository.updateCategory(category)
+     suspend operator fun invoke(category: Category) = categoryRepository.updateCategory(category)
 }
 
 class DeleteCategory(private val categoryRepository: CategoryRepository) {
-    operator fun invoke(category: Category) = categoryRepository.deleteCategory(category)
+     suspend operator fun invoke(category: Category) = categoryRepository.deleteCategory(category)
 }
 
 class GetCategoryById(private val categoryRepository: CategoryRepository) {
-    operator fun invoke(id: Int) = categoryRepository.getCategoryById(id)
+     suspend operator fun invoke(id: Int) = categoryRepository.getCategoryById(id)
 }
 
 class GetAllCategories(private val categoryRepository: CategoryRepository) {
-    operator fun invoke() = categoryRepository.getAllCategories()
+     suspend operator fun invoke() = categoryRepository.getAllCategories()
 }
 

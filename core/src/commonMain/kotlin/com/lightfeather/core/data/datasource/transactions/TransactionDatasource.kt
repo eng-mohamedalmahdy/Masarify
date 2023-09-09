@@ -1,25 +1,25 @@
-package data.datasource.transactions
+package com.lightfeather.core.data.datasource.transactions
 
-import domain.transaction.Transaction
-import domain.transaction.TransactionFilter
+import com.lightfeather.core.domain.transaction.Transaction
+import com.lightfeather.core.domain.transaction.TransactionFilter
 
 sealed interface TransactionDatasource<T : Transaction> {
 
-    fun createTransaction(transaction: T)
+    suspend fun createTransaction(transaction: T)
 
-    fun updateTransaction(transaction: T)
-    abstract fun deleteTransaction(transaction: T): Boolean
+    suspend fun updateTransaction(transaction: T)
+    suspend fun deleteTransaction(transaction: T): Boolean
 
-    fun getAllTransactions(): List<T>
+    suspend fun getAllTransactions(): List<T>
 
-    fun getTransactionById(id: Int): T
+    suspend fun getTransactionById(id: Int): T
 
-    fun getMinTransaction(): T
+    suspend fun getMinTransaction(): T
 
-    fun getMaxTransaction(): T
+    suspend fun getMaxTransaction(): T
 
-    fun getAverageTransactionValue(): Double
+    suspend fun getAverageTransactionValue(): Double
 
-    fun getFilteredTransactions(transactions: List<T>, filter: TransactionFilter): List<T>
+    suspend fun getFilteredTransactions(transactions: List<T>, filter: TransactionFilter): List<T>
 
 }

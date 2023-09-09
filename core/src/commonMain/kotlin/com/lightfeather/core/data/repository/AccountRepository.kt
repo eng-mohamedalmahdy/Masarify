@@ -1,7 +1,7 @@
-package data.repository
+package com.lightfeather.core.data.repository
 
-import data.datasource.AccountDatasource
-import domain.Account
+import com.lightfeather.core.data.datasource.AccountDatasource
+import com.lightfeather.core.domain.Account
 
 class AccountRepository (private val datasource: AccountDatasource){
     fun createAccount(account: Account): Int = datasource.createAccount(account)

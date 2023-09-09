@@ -1,16 +1,16 @@
-package data.datasource
+package com.lightfeather.core.data.datasource
 
-import domain.Currency
-import domain.CurrencyExchangeRate
+import com.lightfeather.core.domain.Currency
+import com.lightfeather.core.domain.CurrencyExchangeRate
 
 
 interface CurrencyExchangeRateDatasource {
 
-    fun createCurrencyExchangeRate(rate: CurrencyExchangeRate): Int
-    fun updateCurrencyExchangeRate(rate: CurrencyExchangeRate)
-    fun deleteCurrencyExchangeRate(rate: CurrencyExchangeRate): Boolean
-    fun getAllCurrenciesExchangeRates(): List<List<CurrencyExchangeRate>>
-    fun getCurrencyExchangeRateById(id: Int): CurrencyExchangeRate
-    fun getExchangeRatesOfCurrency(currency: Currency): List<CurrencyExchangeRate>
+    suspend fun createCurrencyExchangeRate(rate: CurrencyExchangeRate): Int
+    suspend fun updateCurrencyExchangeRate(rate: CurrencyExchangeRate)
+    suspend fun deleteCurrencyExchangeRate(rate: CurrencyExchangeRate): Boolean
+    suspend fun getAllCurrenciesExchangeRates(): List<List<CurrencyExchangeRate>>
+    suspend fun getCurrencyExchangeRateById(id: Int): CurrencyExchangeRate
+    suspend fun getExchangeRatesOfCurrency(currency: Currency): List<CurrencyExchangeRate>
 
 }

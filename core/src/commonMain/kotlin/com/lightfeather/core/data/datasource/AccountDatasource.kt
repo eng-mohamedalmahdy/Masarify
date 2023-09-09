@@ -1,7 +1,7 @@
-package data.datasource
+package com.lightfeather.core.data.datasource
 
-import domain.Account
-import domain.Accounts
+import com.lightfeather.core.domain.Account
+import com.lightfeather.core.domain.Accounts
 
 interface AccountDatasource {
 
