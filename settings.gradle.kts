@@ -3,11 +3,13 @@ rootProject.name = "Masarify"
 include(":androidApp")
 include(":shared")
 include(":desktopApp")
+include(":core")
 
 pluginManagement {
     repositories {
         gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         google()
     }
 
@@ -22,8 +24,10 @@ pluginManagement {
 
         id("com.android.application").version(agpVersion)
         id("com.android.library").version(agpVersion)
-
         id("org.jetbrains.compose").version(composeVersion)
+
+        id("kotlin-parcelize") // Apply the plugin for Android
+        id("parcelize-darwin") // Optional, only if you need support for Darwin targets
     }
 }
 
@@ -34,4 +38,3 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
-include(":core")

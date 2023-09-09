@@ -1,23 +1,22 @@
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import com.arkivanov.decompose.router.stack.push
+import io.github.xxfast.decompose.router.content.RoutedContent
+import io.github.xxfast.decompose.router.rememberRouter
+import pages.Page
+import pages.apppage.AppHostPage
+import pages.splash.SplashPage
+import style.lightModeColors
+import style.typography
 
 @Composable
 internal fun App() {
+    val router = rememberRouter(Page::class, stack = listOf())
 
     MaterialTheme(colors = lightModeColors, typography = typography) {
-
-        var text by remember { mutableStateOf("Hello, World!") }
-        Button(onClick = {
-            text = "Hello, ${getPlatformName()}"
-        }) {
-            Text(text)
+        SplashPage(onAnimationDone = { router.push(Page.AppHostPage) })
+        RoutedContent(router) {
+            AppHostPage()
         }
     }
 }
-expect fun getPlatformName(): String
