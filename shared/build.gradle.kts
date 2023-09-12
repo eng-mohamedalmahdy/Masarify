@@ -1,4 +1,3 @@
-
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
@@ -7,8 +6,7 @@ plugins {
     id("com.squareup.sqldelight")
     id("kotlin-parcelize") // Apply the plugin for Android
     id("com.arkivanov.parcelize.darwin")
-
-//    id("dev.icerock.mobile.multiplatform-resources")
+    id("dev.icerock.mobile.multiplatform-resources")
 
 }
 
@@ -72,13 +70,14 @@ kotlin {
             }
         }
         val androidMain by getting {
+
             dependencies {
                 api("androidx.activity:activity-compose:1.6.1")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.9.0")
                 implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
-
             }
+            dependsOn(commonMain)
         }
         val iosX64Main by getting
         val iosArm64Main by getting
@@ -97,6 +96,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.common)
             }
+            dependsOn(commonMain)
         }
     }
 }
@@ -120,11 +120,12 @@ android {
     kotlin {
         jvmToolchain(11)
     }
+
 }
 dependencies {
-//    commonMainApi("dev.icerock.moko:resources:0.23.0")
-//    commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
-//    commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")
+    commonMainApi("dev.icerock.moko:resources:0.23.0")
+    commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
+    commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")
 
     implementation("androidx.compose.ui:ui-tooling-preview-android:1.5.1")
     implementation(project(mapOf("path" to ":core")))
@@ -132,9 +133,9 @@ dependencies {
 }
 
 
-//multiplatformResources {
-//    multiplatformResourcesPackage = "com.lightfeather.masarify.res" // required
-//}
+multiplatformResources {
+    multiplatformResourcesPackage = "com.lightfeather.masarify" // required
+}
 
 task("testClasses").doLast {
     println("This is a dummy testClasses task")

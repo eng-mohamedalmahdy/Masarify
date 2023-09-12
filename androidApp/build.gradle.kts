@@ -35,4 +35,9 @@ android {
     kotlin {
         jvmToolchain(11)
     }
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
 }

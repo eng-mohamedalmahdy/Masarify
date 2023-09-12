@@ -7,6 +7,8 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.lightfeather.masarify.MR
+import dev.icerock.moko.resources.compose.painterResource
 import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.decompose.router.Router
 import io.github.xxfast.decompose.router.content.RoutedContent
@@ -22,7 +24,7 @@ internal fun App() {
     val lifecycle = LifecycleRegistry()
     val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
 
-//    painterResource(MR.images.app_logo)
+
     CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
 
         MaterialTheme(colors = lightModeColors, typography = typography) {

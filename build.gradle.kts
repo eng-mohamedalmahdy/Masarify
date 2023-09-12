@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         google()
@@ -9,11 +8,10 @@ buildscript {
         gradlePluginPortal()
 
 
-
     }
     dependencies {
-        classpath ("com.squareup.sqldelight:gradle-plugin:1.5.1")
-//        classpath ("dev.icerock.moko:resources-generator:0.23.0")
+        classpath("com.squareup.sqldelight:gradle-plugin:1.5.1")
+        classpath("dev.icerock.moko:resources-generator:0.23.0")
         classpath("com.arkivanov.parcelize.darwin:gradle-plugin:0.2.1")
 
     }
@@ -25,4 +23,11 @@ plugins {
     id("com.android.application").apply(false)
     id("com.android.library").apply(false)
     id("org.jetbrains.compose").apply(false)
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
 }

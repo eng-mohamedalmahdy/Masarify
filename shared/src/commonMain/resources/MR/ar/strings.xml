@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="track_income_and_expenses">تتبع الدخل والمصاريف</string>
+    <string name="no_income_or_expenses_were_added">لم تتم إضافة أي دخل أو مصاريف</string>
+    <string name="expenses">المصاريف</string>
+    <string name="amount">المبلغ</string>
+    <string name="description">الوصف</string>
+    <string name="category_or_tag">الفئة &amp; الوسم</string>
+    <string name="date">التاريخ</string>
+    <string name="time">الوقت</string>
+    <string name="accept">موافق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="search">بحث</string>
+    <string name="add_new_category_or_tag">إضافة فئة &amp; وسم جديد</string>
+    <string name="save">حفظ</string>
+    <string name="you_have_no_bank_accounts">ليس لديك حسابات بنكية</string>
+    <string name="add_account">إضافة حساب</string>
+    <string name="account_name">اسم الحساب</string>
+    <string name="amount_in_account">المبلغ في الحساب</string>
+    <string name="currency">العملة</string>
+    <string name="color">اللون</string>
+    <string name="currency_converter">محول العملات</string>
+    <string name="from">من</string>
+    <string name="to">إلى</string>
+    <string name="convert">تحويل</string>
+    <string name="acc_new_currency">إضافة عملة جديدة</string>
+    <string name="currency_name">اسم العملة</string>
+    <string name="settings">الإعدادات</string>
+</resources>

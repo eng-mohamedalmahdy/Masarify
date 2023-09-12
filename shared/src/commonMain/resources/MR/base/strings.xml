@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="track_income_and_expenses">Track income and expenses</string>
+    <string name="no_income_or_expenses_were_added">No income or expenses were added</string>
+    <string name="expenses">Expenses</string>
+    <string name="amount">Amount</string>
+    <string name="description">Description</string>
+    <string name="category_or_tag">Category &amp; Tag</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
+    <string name="add_new_category_or_tag">Add new Category &amp; Tag</string>
+    <string name="save">Save</string>
+    <string name="you_have_no_bank_accounts">You Have no bank accounts</string>
+    <string name="add_account">Add account</string>
+    <string name="account_name">Add name</string>
+    <string name="amount_in_account">Amount in account</string>
+    <string name="currency">Currency</string>
+    <string name="color">Color</string>
+    <string name="currency_converter">Currency Converter</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="convert">Convert</string>
+    <string name="acc_new_currency">Add new currency</string>
+    <string name="currency_name">Currency name</string>
+    <string name="settings">Settings</string>
+</resources>
