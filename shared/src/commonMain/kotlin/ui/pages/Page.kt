@@ -1,4 +1,4 @@
-package pages
+package ui.pages
 
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize

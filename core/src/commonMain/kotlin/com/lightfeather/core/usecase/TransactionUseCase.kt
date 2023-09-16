@@ -1,6 +1,9 @@
 package com.lightfeather.core.usecase
 
+import com.lightfeather.core.data.repository.ExpensesRepository
+import com.lightfeather.core.data.repository.IncomeRepository
 import com.lightfeather.core.data.repository.TransactionRepository
+import com.lightfeather.core.data.repository.TransferRepository
 import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.core.domain.transaction.TransactionFilter
 
@@ -27,13 +30,24 @@ class GetMinTransaction<T : Transaction>(private val transactionRepository: Tran
 class GetAverageTransactionValue<T : Transaction>(private val transactionRepository: TransactionRepository<T>) {
     suspend operator fun invoke() = transactionRepository.getAverageTransactionValue()
 }
+
 class GetFilteredTransactions<T : Transaction>(private val transactionRepository: TransactionRepository<T>) {
     suspend operator fun invoke(transactions: List<T>, filter: TransactionFilter) =
         transactionRepository.getFilteredTransactions(transactions, filter)
 }
 
-class GetAllTransactions<T : Transaction>(private val transactionRepository: TransactionRepository<T>) {
-    suspend operator fun invoke() = transactionRepository.getAllTransactions()
+class GetAllTransactions(
+    private val incomeRepository: IncomeRepository,
+    private val expensesRepository: ExpensesRepository,
+    private val transferRepository: TransferRepository
+) {
+    suspend operator fun invoke(): List<Transaction> = buildList {
+        addAll(incomeRepository.getAllTransactions())
+        addAll(expensesRepository.getAllTransactions())
+        addAll(transferRepository.getAllTransactions())
+
+    }.sortedBy { it.timestamp }
+
 }
 
 class GetTransactionById<T : Transaction>(private val transactionRepository: TransactionRepository<T>) {

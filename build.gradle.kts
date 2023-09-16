@@ -6,7 +6,7 @@ buildscript {
         maven { url = uri("https://jetbrains.bintray.com/intellij-third-party-dependencies") }
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         gradlePluginPortal()
-
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 
     }
     dependencies {
@@ -24,6 +24,7 @@ plugins {
     id("com.android.library").apply(false)
     id("org.jetbrains.compose").apply(false)
 }
+
 
 allprojects {
     repositories {

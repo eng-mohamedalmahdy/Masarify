@@ -13,15 +13,25 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.asFont
 import dev.icerock.moko.resources.compose.fontFamilyResource
+import di.dataSourceModule
+import di.repositoryModule
+import di.useCaseModule
+import di.viewModelModule
+import ext.navigateSingleTop
 import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.decompose.router.Router
 import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
-import pages.Page
-import pages.apppage.AppHostPage
-import pages.splash.SplashPage
-import style.AppTypography
-import style.lightModeColors
+import org.koin.compose.KoinApplication
+import org.koin.compose.KoinContext
+import org.koin.core.KoinApplication
+import org.koin.core.context.KoinContext
+import org.koin.dsl.koinApplication
+import ui.pages.Page
+import ui.pages.apppage.AppHostPage
+import ui.pages.splash.SplashPage
+import ui.style.AppTypography
+import ui.style.lightModeColors
 
 @Composable
 internal fun App() {
@@ -29,23 +39,25 @@ internal fun App() {
     val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
 
 
+    KoinApplication(application = {
+        modules(viewModelModule, useCaseModule, repositoryModule, dataSourceModule)
+    }) {
+        CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
 
+            MaterialTheme(colors = lightModeColors, typography = AppTypography()) {
 
-    CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
+                val router: Router<Page> = rememberRouter(type = Page::class, stack = listOf(Page.SplashPage))
 
-        MaterialTheme(colors = lightModeColors, typography = AppTypography()) {
-
-            val router: Router<Page> = rememberRouter(type = Page::class, stack = listOf(Page.SplashPage))
-
-            RoutedContent(router, modifier = Modifier.fillMaxSize()) {
-                when (it) {
-                    Page.AppHostPage -> AppHostPage()
-                    Page.SplashPage -> SplashPage(onAnimationDone = {
-                        router.pop()
-                        router.push(Page.AppHostPage)
-                    })
+                RoutedContent(router, modifier = Modifier.fillMaxSize()) {
+                    when (it) {
+                        Page.AppHostPage -> AppHostPage()
+                        Page.SplashPage -> SplashPage(onAnimationDone = {
+                            router.navigateSingleTop { Page.AppHostPage }
+                        })
+                    }
                 }
             }
         }
     }
+
 }

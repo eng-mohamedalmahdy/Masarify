@@ -10,6 +10,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(project(":shared"))
+                implementation("io.github.aakira:napier:2.6.1")
+
             }
         }
     }

@@ -4,5 +4,5 @@ import com.lightfeather.core.domain.Account
 import com.lightfeather.core.domain.transaction.Transaction
 
 interface TransferDatasource : TransactionDatasource<Transaction.Transfer> {
-    fun transfer(from: Account, to: Account, amount: Double, fee: Double = 0.0)
+  suspend  fun transfer(from: Account, to: Account, amount: Double, fee: Double = 0.0)
 }

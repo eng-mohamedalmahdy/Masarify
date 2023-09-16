@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
+    <string name="app_name">مصاريفي</string>
     <string name="track_income_and_expenses">تتبع الدخل والمصاريف</string>
     <string name="no_income_or_expenses_were_added">لم تتم إضافة أي دخل أو مصاريف</string>
     <string name="expenses">المصاريف</string>
@@ -26,4 +27,8 @@
     <string name="acc_new_currency">إضافة عملة جديدة</string>
     <string name="currency_name">اسم العملة</string>
     <string name="settings">الإعدادات</string>
+    <string name="more">المزيد</string>
+    <string name="statistics">الإحصائيات</string>
+    <string name="home">الرئيسية</string>
+    <string name="bank_accounts">حسابات البنوك</string>
 </resources>

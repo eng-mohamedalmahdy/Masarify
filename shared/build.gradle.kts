@@ -48,8 +48,18 @@ kotlin {
     sourceSets {
         val sqlDelightVersion = "1.5.5"
         val decomposeVersion = "2.0.2"
+        val koinVersion = "3.2.0"
+        val napierVersion = "2.6.1"
         val commonMain by getting {
             dependencies {
+                implementation(project(":core"))
+
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation("io.insert-koin:koin-core:${koinVersion}")
+                implementation("io.insert-koin:koin-compose:1.1.0")
+                implementation("io.insert-koin:koin-test:${koinVersion}")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
+                implementation("io.github.aakira:napier:$napierVersion")
 
                 implementation("io.github.xxfast:decompose-router:0.4.0")
                 implementation("com.arkivanov.decompose:decompose:${decomposeVersion}")
@@ -75,7 +85,10 @@ kotlin {
                 api("androidx.activity:activity-compose:1.6.1")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.9.0")
+
                 implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
+                implementation("io.insert-koin:koin-android:${koinVersion}")
+
             }
             dependsOn(commonMain)
         }
@@ -123,14 +136,25 @@ android {
 
 }
 dependencies {
+
+
+
     commonMainApi("dev.icerock.moko:resources:0.23.0")
     commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
     commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")
 
+    //MVVM
+    commonMainApi("dev.icerock.moko:mvvm-core:0.16.1") // only ViewModel, EventsDispatcher, Dispatchers.UI
+    commonMainApi("dev.icerock.moko:mvvm-flow:0.16.1") // api mvvm-core, CFlow for native and binding extensions
+
+    // compose multiplatform
+    commonMainApi("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatfrom
+    commonMainApi("dev.icerock.moko:mvvm-flow-compose:0.16.1") // api mvvm-flow, binding extensions for Compose Multiplatfrom
+
     implementation("androidx.compose.ui:ui-tooling-preview-android:1.5.1")
-    implementation(project(mapOf("path" to ":core")))
 
 }
+
 
 
 multiplatformResources {
