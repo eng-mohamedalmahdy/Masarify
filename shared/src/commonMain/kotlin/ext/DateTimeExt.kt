@@ -9,3 +9,9 @@ fun Long.formatTimeStampToTime(): String {
     val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
     return localDateTime.time.toString().substringBeforeLast(":")
 }
+
+fun Long.formatTimeStampToDate(): String {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return localDateTime.date.toString()
+}

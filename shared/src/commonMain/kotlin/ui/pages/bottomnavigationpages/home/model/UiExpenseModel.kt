@@ -1,9 +1,13 @@
 package ui.pages.bottomnavigationpages.home.model
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.lightfeather.core.domain.transaction.Transaction
+import com.lightfeather.masarify.MR
+import dev.icerock.moko.resources.compose.stringResource
 import ext.formatTimeStampToTime
 import ui.entity.UiExpenseCategory
 import ui.entity.toUiCategoryModel
@@ -34,6 +38,13 @@ fun Transaction.getTypeFromDomainTransaction() = when (this) {
     is Transaction.Expense -> UiExpenseType.EXPENSE
     is Transaction.Income -> UiExpenseType.INCOME
     is Transaction.Transfer -> UiExpenseType.TRANSFER
+}
+
+@Composable
+fun UiExpenseType.getLocalisedString(): String = when (this) {
+    UiExpenseType.EXPENSE -> stringResource(MR.strings.expense)
+    UiExpenseType.INCOME -> stringResource(MR.strings.income)
+    UiExpenseType.TRANSFER -> stringResource(MR.strings.transfer)
 }
 
 fun Transaction.toUiExpenseModel() = UiExpenseModel(

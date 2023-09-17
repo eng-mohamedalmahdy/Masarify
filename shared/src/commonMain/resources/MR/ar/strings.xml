@@ -31,4 +31,7 @@
     <string name="statistics">الإحصائيات</string>
     <string name="home">الرئيسية</string>
     <string name="bank_accounts">حسابات البنوك</string>
+    <string name="expense">مصروفات</string>
+    <string name="income">دخل</string>
+    <string name="transfer">تحويل</string>
 </resources>

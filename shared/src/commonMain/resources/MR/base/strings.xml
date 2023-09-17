@@ -31,4 +31,8 @@
     <string name="statistics">Statistics</string>
     <string name="home">Home</string>
     <string name="bank_accounts">Accounts</string>
+    <string name="expense">Expense</string>
+    <string name="income">Income</string>
+    <string name="transfer">Transfer</string>
+
 </resources>

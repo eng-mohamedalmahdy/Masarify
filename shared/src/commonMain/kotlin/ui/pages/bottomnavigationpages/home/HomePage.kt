@@ -1,5 +1,6 @@
 package ui.pages.bottomnavigationpages.home
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lightfeather.masarify.MR
+import com.lightfeather.masarify.MR.strings.date
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.resources.compose.painterResource
@@ -49,47 +52,61 @@ import ui.style.getIconByName
 @Composable
 fun HomePage() {
     val homePageViewModel = HomePageViewModel(koinInject()).let { getViewModel(Unit, viewModelFactory { it }) }
-    val expensesList by homePageViewModel.expensesListFlow.collectAsState()
+    val viewModelState = remember { homePageViewModel }
+    val expensesListWithDates by viewModelState.expensesWithDateListFlow.collectAsState()
 
-    Napier.d(expensesList.toString(), tag = "ExpensesList")
-    HomePageViews(expensesList)
+    Napier.d(expensesListWithDates.toString(), tag = "ExpensesList")
+    HomePageViews(expensesListWithDates)
 }
 
 @Composable
-private fun HomePageViews(expensesList: List<UiExpenseModel>) {
+private fun HomePageViews(expensesList: Map<String, List<UiExpenseModel>>) {
 
     Napier.d(expensesList.toString(), tag = "ExpensesList")
 
-    Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-        Spacer(Modifier.height(30.dp))
-        Text(
-            stringResource(MR.strings.track_income_and_expenses),
-            style = MaterialTheme.typography.h4
-        )
-        if (expensesList.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(Modifier.weight(1f))
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(
-                        painterResource(MR.images.no_transacions_placeholder),
-                        contentDescription = stringResource(MR.strings.no_income_or_expenses_were_added),
-                    )
-                    Text(
-                        stringResource(MR.strings.no_income_or_expenses_were_added),
-                        style = MaterialTheme.typography.h5,
-                        color = MaterialTheme.colors.onPrimary
-                    )
-                }
-                Spacer(Modifier.weight(1f))
+    AnimatedContent(expensesList) {
+        Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
 
-            }
-        } else {
-            LazyColumn(Modifier.fillMaxSize()) {
-                items(expensesList) {
-                    ExpenseCardItem(it)
+            Spacer(Modifier.height(30.dp))
+            Text(
+                stringResource(MR.strings.track_income_and_expenses),
+                style = MaterialTheme.typography.h4
+            )
+            if (it.isEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            painterResource(MR.images.no_transacions_placeholder),
+                            contentDescription = stringResource(MR.strings.no_income_or_expenses_were_added),
+                        )
+                        Text(
+                            stringResource(MR.strings.no_income_or_expenses_were_added),
+                            style = MaterialTheme.typography.h5,
+                            color = MaterialTheme.colors.onPrimary
+                        )
+                    }
+                    Spacer(Modifier.weight(1f))
+
+                }
+            } else {
+                LazyColumn(Modifier.fillMaxSize()) {
+                    it.forEach { (date, expenses) ->
+                        item {
+                            DateItem(date)
+                        }
+                        items(expenses) {
+                            ExpenseCardItem(it)
+                        }
+
+                    }
+
+                    item {
+                        Spacer(Modifier.height(100.dp))
+                    }
                 }
             }
         }
@@ -157,6 +174,11 @@ private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
 }
 
 @Composable
+private fun DateItem(date: String) {
+    Text(date, modifier = Modifier.fillMaxWidth(), style = MaterialTheme.typography.h4)
+}
+
+@Composable
 private fun HomePagePreview() {
-    HomePageViews(listOf())
+    HomePageViews(mapOf())
 }

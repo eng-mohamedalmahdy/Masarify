@@ -17,4 +17,6 @@ sealed class BottomNavigationPageModel : Parcelable {
     data object CurrencyConverterPageModel : BottomNavigationPageModel()
 
     data object BankAccountsPageModel : BottomNavigationPageModel()
+
+    data object CreateTransactionPageModel : BottomNavigationPageModel()
 }

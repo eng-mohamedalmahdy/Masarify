@@ -54,7 +54,6 @@ kotlin {
             dependencies {
                 implementation(project(":core"))
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 implementation("io.insert-koin:koin-core:${koinVersion}")
                 implementation("io.insert-koin:koin-compose:1.1.0")
                 implementation("io.insert-koin:koin-test:${koinVersion}")

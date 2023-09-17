@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.router.stack.push
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -37,6 +38,7 @@ import ui.pages.bottomnavigationpages.currencyconverter.CurrencyConverterPage
 import ui.pages.bottomnavigationpages.home.HomePage
 import ui.pages.bottomnavigationpages.more.MorePage
 import ui.pages.bottomnavigationpages.statistics.StatisticsPage
+import ui.pages.createtransactionpage.CreateTransactionPage
 
 
 @Composable
@@ -65,12 +67,20 @@ private fun AppHostPageViews() {
 
 
                 BottomNavigation(elevation = 0.dp) {
+
                     BottomNavigationItem(
+                        unselectedContentColor = MaterialTheme.colors.onPrimary,
+                        selectedContentColor = MaterialTheme.colors.secondary,
+                        alwaysShowLabel = false,
                         icon = {
                             AppBottomNavigationItem(
                                 painterResource(MR.images.menu),
                                 stringResource(MR.strings.more)
                             )
+                        },
+                        label = {
+                            Text(stringResource(MR.strings.more), color = MaterialTheme.colors.secondary)
+
                         },
                         selected = activeTab == BottomNavigationPageModel.MorePageModel,
                         onClick = { bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.MorePageModel } },
@@ -78,11 +88,17 @@ private fun AppHostPageViews() {
                     )
 
                     BottomNavigationItem(
+                        unselectedContentColor = MaterialTheme.colors.onPrimary,
+                        selectedContentColor = MaterialTheme.colors.secondary,
+                        alwaysShowLabel = false,
                         icon = {
                             AppBottomNavigationItem(
                                 painterResource(MR.images.bar_chart),
                                 stringResource(MR.strings.statistics)
                             )
+                        },
+                        label = {
+                            Text(stringResource(MR.strings.statistics), color = MaterialTheme.colors.secondary)
                         },
                         selected = activeTab == BottomNavigationPageModel.StatisticsPageModel,
                         onClick = { bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.StatisticsPageModel } },
@@ -91,11 +107,18 @@ private fun AppHostPageViews() {
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     BottomNavigationItem(
+                        unselectedContentColor = MaterialTheme.colors.onPrimary,
+                        selectedContentColor = MaterialTheme.colors.secondary,
+                        alwaysShowLabel = false,
+
                         icon = {
                             AppBottomNavigationItem(
                                 painterResource(MR.images.currency_converter),
                                 stringResource(MR.strings.currency_converter)
                             )
+                        },
+                        label = {
+                            Text(stringResource(MR.strings.currency_converter), color = MaterialTheme.colors.secondary)
                         },
                         selected = activeTab == BottomNavigationPageModel.CurrencyConverterPageModel,
                         onClick = { bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.CurrencyConverterPageModel } },
@@ -103,11 +126,18 @@ private fun AppHostPageViews() {
 
                     )
                     BottomNavigationItem(
+                        unselectedContentColor = MaterialTheme.colors.onPrimary,
+                        selectedContentColor = MaterialTheme.colors.secondary,
+                        alwaysShowLabel = false,
+
                         icon = {
                             AppBottomNavigationItem(
                                 painterResource(MR.images.bank_account),
                                 stringResource(MR.strings.bank_accounts)
                             )
+                        },
+                        label = {
+                            Text(stringResource(MR.strings.bank_accounts), color = MaterialTheme.colors.secondary)
                         },
                         selected = activeTab == BottomNavigationPageModel.BankAccountsPageModel,
                         onClick = { bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.BankAccountsPageModel } },
@@ -123,8 +153,11 @@ private fun AppHostPageViews() {
             FloatingActionButton(
                 shape = CircleShape,
                 onClick = {
-                    bottomNavRouter.navigateSingleTop {
-                        BottomNavigationPageModel.HomePageModel
+
+                    if (bottomNavRouter.stack.value.active.configuration == BottomNavigationPageModel.HomePageModel) {
+                        bottomNavRouter.push(BottomNavigationPageModel.CreateTransactionPageModel)
+                    } else {
+                        bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.HomePageModel }
                     }
                 },
             ) {
@@ -140,6 +173,7 @@ private fun AppHostPageViews() {
                     is BottomNavigationPageModel.BankAccountsPageModel -> BankAccountsPage(it)
                     is BottomNavigationPageModel.CurrencyConverterPageModel -> CurrencyConverterPage(it)
                     is BottomNavigationPageModel.StatisticsPageModel -> StatisticsPage(it)
+                    is BottomNavigationPageModel.CreateTransactionPageModel -> CreateTransactionPage(it)
                 }
             }
         }
@@ -152,8 +186,7 @@ private fun AppHostPageViews() {
 @Composable
 private fun AppBottomNavigationItem(icon: Painter, label: String) {
     Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(icon, contentDescription = label, tint = MaterialTheme.colors.secondary)
-        Text(label, color = MaterialTheme.colors.onPrimary)
+        Icon(icon, contentDescription = label)
     }
 }
 
