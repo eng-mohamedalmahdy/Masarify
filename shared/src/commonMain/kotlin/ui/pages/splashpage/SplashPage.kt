@@ -34,7 +34,7 @@ fun SplashPage(onAnimationDone: () -> Unit) {
 private fun SplashPageViews(onAnimationDone: () -> Unit) {
 
     LaunchedEffect(Unit) {
-        delay(3000L)
+        delay(500L)
         onAnimationDone()
     }
 

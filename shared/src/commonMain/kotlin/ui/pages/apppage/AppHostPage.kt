@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.router.stack.push
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -38,7 +37,7 @@ import ui.pages.bottomnavigationpages.currencyconverter.CurrencyConverterPage
 import ui.pages.bottomnavigationpages.home.HomePage
 import ui.pages.bottomnavigationpages.more.MorePage
 import ui.pages.bottomnavigationpages.statistics.StatisticsPage
-import ui.pages.createtransactionpage.CreateTransactionPage
+import ui.pages.createtransactionpage.view.CreateTransactionPage
 
 
 @Composable
@@ -155,7 +154,7 @@ private fun AppHostPageViews() {
                 onClick = {
 
                     if (bottomNavRouter.stack.value.active.configuration == BottomNavigationPageModel.HomePageModel) {
-                        bottomNavRouter.push(BottomNavigationPageModel.CreateTransactionPageModel)
+                        bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.CreateTransactionPageModel }
                     } else {
                         bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.HomePageModel }
                     }

@@ -8,12 +8,14 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import di.dataSourceModule
 import di.repositoryModule
 import di.useCaseModule
-import di.viewModelModule
 import ext.navigateSingleTop
 import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.decompose.router.Router
 import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
+import io.kamel.core.config.KamelConfig
+import io.kamel.core.config.takeFrom
+import io.kamel.image.config.Default
 import org.koin.compose.KoinApplication
 import ui.pages.Page
 import ui.pages.apppage.AppHostPage
@@ -28,9 +30,12 @@ internal fun App() {
 
 
     KoinApplication(application = {
-        modules(viewModelModule, useCaseModule, repositoryModule, dataSourceModule)
+        modules(useCaseModule, repositoryModule, dataSourceModule)
     }) {
-        CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
+        CompositionLocalProvider(
+            LocalComponentContext provides rootComponentContext,
+        ) {
+
 
             MaterialTheme(colors = lightModeColors, typography = AppTypography()) {
 

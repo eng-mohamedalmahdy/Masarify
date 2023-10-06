@@ -34,4 +34,9 @@
     <string name="expense">مصروفات</string>
     <string name="income">دخل</string>
     <string name="transfer">تحويل</string>
+    <string name="am">صباحاً</string>
+    <string name="pm">مسائاً</string>
+    <string name="bank_account">الحساب البنكي</string>
+    <string name="expense_title">العنوان</string>
+
 </resources>

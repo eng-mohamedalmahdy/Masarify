@@ -16,7 +16,7 @@ object DummyDomainModelsProviders {
         logo = "quaeque"
     )
 
-    val category = Category(id = 8823, name = "Mack Everett", description = "null", color = "#FF0000", icon = "mei")
+    val category = Category(id = 8823, name = "Mack Everett", description = "null", color = "#000000", icon = "https://img.icons8.com/small/512/jake.png")
 
     val currency = Currency(id = 3008, name = "Nina Nieves", sign = "signiferumque")
 
@@ -53,7 +53,6 @@ object DummyDomainModelsProviders {
         id = 4232,
         name = "Grace Valencia",
         description = "asdsada",
-        category = listOf(category),
         amount = 44.45,
         timestamp = 2447,
         account = Account(

@@ -33,6 +33,9 @@
     <string name="bank_accounts">Accounts</string>
     <string name="expense">Expense</string>
     <string name="income">Income</string>
+    <string name="am">AM</string>
+    <string name="pm">PM</string>
     <string name="transfer">Transfer</string>
-
+    <string name="bank_account">Bank Account</string>
+    <string name="expense_title">title</string>
 </resources>

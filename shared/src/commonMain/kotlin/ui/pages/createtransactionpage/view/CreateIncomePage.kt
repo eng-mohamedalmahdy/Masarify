@@ -1,15 +1,15 @@
-package ui.pages.createtransactionpage
+package ui.pages.createtransactionpage.view
 
 import androidx.compose.runtime.Composable
 
 
 @Composable
-fun CreateTransferPage() {
+fun CreateIncomePage() {
     // TODO: Implement call the views function here using actual params
 }
 
 @Composable
-private fun CreateTransferPageViews() {
+private fun CreateIncomePageViews() {
     // Your compose code here
 }
 

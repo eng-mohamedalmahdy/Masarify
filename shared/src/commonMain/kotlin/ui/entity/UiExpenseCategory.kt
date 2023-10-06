@@ -14,3 +14,7 @@ data class UiExpenseCategory(
 
 fun Category.toUiCategoryModel() =
     UiExpenseCategory(id = id, name = name, icon = icon, color = color)
+
+fun UiExpenseCategory.toDomainCategory() = Category(
+    id,name,"",color, icon
+)

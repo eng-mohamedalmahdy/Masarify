@@ -1,4 +1,4 @@
-package ui.pages.createtransactionpage
+package ui.pages.createtransactionpage.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
