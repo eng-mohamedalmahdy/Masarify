@@ -2,8 +2,10 @@ package ui.composeables
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -11,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import ui.style.cardColor
 
@@ -30,18 +33,18 @@ fun LineOnlyTextField(
         backgroundColor = cardColor
     )
 
-
-    TextField(
-        shape = RoundedCornerShape(size = 9.dp),
-        onValueChange = onValueChange,
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
-        textStyle = MaterialTheme.typography.body1,
-        singleLine = true,
-        modifier = modifier.padding(4.dp),
-        colors = colors,
-        label = { label() },
+    BasicTextField(
         value = text,
-        readOnly = readonlyAndDisabled,
-        enabled = !readonlyAndDisabled
+        onValueChange = onValueChange,
+//        shape = RoundedCornerShape(size = 9.dp),
+//        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
+//        textStyle = MaterialTheme.typography.body1,
+//        singleLine = true,
+        modifier = modifier.padding(4.dp),
+//        colors = colors,
+//        label = { label() },
+//        readOnly = readonlyAndDisabled,
+//        enabled = !readonlyAndDisabled
     )
+
 }

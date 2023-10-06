@@ -14,12 +14,12 @@ sealed class Transaction(
 
     class Income(
         id: Int, name: String, description: String?,
-        amount: Double, timestamp: Long, account: Account, val source: String
+        amount: Double, timestamp: Long, account: Account, val source: Category
     ) : Transaction(id, name, description, amount, timestamp, account)
 
 
     class Expense(
-        id: Int, name: String, description: String?, categories: List<Category>,
+        id: Int, name: String, description: String?, val categories: List<Category>,
         amount: Double, timestamp: Long, account: Account
     ) : Transaction(id, name, description, amount, timestamp, account)
 

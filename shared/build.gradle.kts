@@ -1,3 +1,12 @@
+import org.jetbrains.compose.desktop.application.tasks.AbstractNativeMacApplicationPackageAppDirTask
+import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractExecutable
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBinary
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
+import org.jetbrains.kotlin.library.impl.KotlinLibraryLayoutImpl
+import java.io.FileFilter
+import org.jetbrains.kotlin.konan.file.File as KonanFile
+
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
@@ -10,25 +19,18 @@ plugins {
 }
 
 kotlin {
-    android()
+    androidTarget()
 
     jvm("desktop")
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
 
-//    listOf(
-//        iosX64(),
-//        iosArm64(),
-//        iosSimulatorArm64()
-//    ).forEach {
-//        it.binaries.framework {
-//            baseName = "shared"
-//            export("dev.icerock.moko:resources:0.22.3")
-//            export("dev.icerock.moko:graphics:0.9.0")
-//        }
-//    }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    )
+
 
     cocoapods {
         version = "1.0.0"
@@ -36,12 +38,16 @@ kotlin {
         homepage = "Link to the Shared Module homepage"
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
+        extraSpecAttributes["resources"] =
+            "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+
         framework {
             baseName = "shared"
             isStatic = true
+            export("dev.icerock.moko:resources:0.23.0")
+            export("dev.icerock.moko:graphics:0.9.0") // toUIColor here
         }
-        extraSpecAttributes["resources"] =
-            "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+
     }
 
     sourceSets {
@@ -94,7 +100,6 @@ kotlin {
                 implementation("io.insert-koin:koin-android:${koinVersion}")
 
 
-
             }
             dependsOn(commonMain)
         }
@@ -102,6 +107,7 @@ kotlin {
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
+
             dependencies {
                 implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
                 implementation("com.arkivanov.parcelize.darwin:runtime:0.2.1")
@@ -121,7 +127,11 @@ kotlin {
             }
             dependsOn(commonMain)
         }
+
+
     }
+
+
 }
 
 android {
@@ -168,8 +178,70 @@ dependencies {
 
 multiplatformResources {
     multiplatformResourcesPackage = "com.lightfeather.masarify" // required
+    disableStaticFrameworkWarning = true
+
 }
 
 task("testClasses").doLast {
     println("This is a dummy testClasses task")
+}
+tasks.withType<KotlinNativeLink>()
+    .matching { linkTask -> linkTask.binary is AbstractExecutable }
+    .configureEach {
+        val task: KotlinNativeLink = this
+
+        doLast {
+            val binary: NativeBinary = task.binary
+            val outputDir: File = task.outputFile.get().parentFile
+            task.libraries
+                .filter { library -> library.extension == "klib" }
+                .filter(File::exists)
+                .forEach { inputFile ->
+                    val klibKonan = KonanFile(inputFile.path)
+                    val klib = KotlinLibraryLayoutImpl(
+                        klib = klibKonan,
+                        component = "default"
+                    )
+                    val layout = klib.extractingToTemp
+
+                    // extracting bundles
+                    layout
+                        .resourcesDir
+                        .absolutePath
+                        .let(::File)
+                        .listFiles(FileFilter { it.extension == "bundle" })
+                        // copying bundles to app
+                        ?.forEach { bundleFile ->
+                            logger.info("${bundleFile.absolutePath} copying to $outputDir")
+                            bundleFile.copyRecursively(
+                                target = File(outputDir, bundleFile.name),
+                                overwrite = true
+                            )
+                        }
+                }
+        }
+    }
+
+tasks.withType<AbstractNativeMacApplicationPackageAppDirTask> {
+    val task: AbstractNativeMacApplicationPackageAppDirTask = this
+
+    doLast {
+        val execFile: File = task.executable.get().asFile
+        val execDir: File = execFile.parentFile
+        val destDir: File = task.destinationDir.asFile.get()
+        val bundleID: String = task.bundleID.get()
+
+        val outputDir = File(destDir, "$bundleID.app/Contents/Resources")
+        outputDir.mkdirs()
+
+        execDir.listFiles().orEmpty()
+            .filter { it.extension == "bundle" }
+            .forEach { bundleFile ->
+                logger.info("${bundleFile.absolutePath} copying to $outputDir")
+                bundleFile.copyRecursively(
+                    target = File(outputDir, bundleFile.name),
+                    overwrite = true
+                )
+            }
+    }
 }

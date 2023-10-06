@@ -16,15 +16,20 @@ object DummyDomainModelsProviders {
         logo = "quaeque"
     )
 
-    val category = Category(id = 8823, name = "Mack Everett", description = "null", color = "#000000", icon = "https://img.icons8.com/small/512/jake.png")
-
+    val category = Category(
+        id = 8823,
+        name = "Mack Everett",
+        description = "null",
+        color = "#000000",
+        icon = "https://img.icons8.com/small/512/jake.png"
+    )
     val currency = Currency(id = 3008, name = "Nina Nieves", sign = "signiferumque")
 
     val expense = Transaction.Expense(
         id = 7518,
         name = "Angelique Hartman",
         description = "asdadas",
-        category = listOf(category),
+        categories = listOf(category),
         amount = 24.25,
         timestamp = 4107,
         account = bankAccount
@@ -34,7 +39,6 @@ object DummyDomainModelsProviders {
         id = 4670,
         name = "Johnnie McKinney",
         description = "asdasdadsad",
-        category = listOf(category),
         amount = 32.33,
         timestamp = 1838,
         account = Account(
@@ -46,7 +50,7 @@ object DummyDomainModelsProviders {
             color = "senserit",
             logo = "lorem"
         ),
-        source = "definitiones"
+        source = category
     )
 
     val transfer = Transaction.Transfer(

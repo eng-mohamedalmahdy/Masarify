@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.lightfeather.core.domain.Account
+import com.lightfeather.core.domain.Category
 import com.lightfeather.core.domain.Currency
 import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.masarify.MR
@@ -56,24 +57,32 @@ fun UiExpenseType.getLocalisedString(): String = when (this) {
     UiExpenseType.TRANSFER -> stringResource(MR.strings.transfer)
 }
 
-fun Transaction.toUiExpenseModel() = UiExpenseModel(
-    title = name,
-    description = description ?: "",
-    type = getTypeFromDomainTransaction(),
-    amount = 0.0,
-    date = timestamp.formatTimeStampToDate(),
-    time = timestamp.formatTimeStampToTime(),
-    categories = categories.map { it.toUiCategoryModel() },
-    currencySign = account.currency.sign,
-    account = account.toUiBankAccount()
-)
+fun Transaction.toUiExpenseModel(): UiExpenseModel {
+    val categories: List<UiExpenseCategory> = when (this) {
+        is Transaction.Expense -> categories
+        is Transaction.Income -> listOf(source)
+        is Transaction.Transfer -> listOf(Category.Transfer)
+    }.map { it.toUiCategoryModel() }
+    return UiExpenseModel(
+        title = name,
+        description = description ?: "",
+        type = getTypeFromDomainTransaction(),
+        amount = 0.0,
+        date = timestamp.formatTimeStampToDate(),
+        time = timestamp.formatTimeStampToTime(),
+        categories = categories,
+        currencySign = account.currency.sign,
+        account = account.toUiBankAccount()
+    )
+}
+
 
 fun UiExpenseModel.toDomainTransaction(): Transaction.Expense =
     Transaction.Expense(
         name = title,
         id = 0,
         description = description,
-        category = categories.map { it.toDomainCategory() },
+        categories = categories.map { it.toDomainCategory() },
         amount = amount,
         timestamp = 0,
         account = account.toDomainBankAccount(),
