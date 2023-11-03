@@ -15,12 +15,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,7 +50,7 @@ import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import ui.pages.bottomnavigationpages.home.model.UiExpenseModel
-import ui.style.cardColor
+import ui.style.AppTheme.cardColor
 
 
 @Composable
@@ -72,7 +73,7 @@ private fun HomePageViews(expensesList: Map<String, List<UiExpenseModel>>) {
             Spacer(Modifier.height(30.dp))
             Text(
                 stringResource(MR.strings.track_income_and_expenses),
-                style = MaterialTheme.typography.h4
+                style = MaterialTheme.typography.headlineMedium
             )
             if (it.isEmpty()) {
                 Column(
@@ -87,8 +88,8 @@ private fun HomePageViews(expensesList: Map<String, List<UiExpenseModel>>) {
                         )
                         Text(
                             stringResource(MR.strings.no_income_or_expenses_were_added),
-                            style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.colors.onPrimary
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                     Spacer(Modifier.weight(1f))
@@ -122,7 +123,7 @@ private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     Card(
         modifier = Modifier.height(100.dp).padding(8.dp),
-        backgroundColor = cardColor,
+        colors = CardDefaults.cardColors(containerColor = cardColor),
         shape = RoundedCornerShape(20.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -160,9 +161,9 @@ private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
             Column(
                 modifier = Modifier.fillMaxHeight().padding(vertical = 16.dp),
             ) {
-                Text(expenseModel.title, style = MaterialTheme.typography.h6)
+                Text(expenseModel.title, style = MaterialTheme.typography.headlineSmall)
                 Spacer(Modifier.weight(1f))
-                Text(expenseModel.description, style = MaterialTheme.typography.caption)
+                Text(expenseModel.description, style = MaterialTheme.typography.labelMedium)
             }
 
             Spacer(Modifier.weight(1f))
@@ -180,7 +181,7 @@ private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
                 Spacer(Modifier.weight(1f))
                 Text(
                     text = expenseModel.time,
-                    style = MaterialTheme.typography.caption.copy(
+                    style = MaterialTheme.typography.labelMedium.copy(
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold
                     ),
@@ -192,7 +193,7 @@ private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
 
 @Composable
 private fun DateItem(date: String) {
-    Text(date, modifier = Modifier.fillMaxWidth(), style = MaterialTheme.typography.h4)
+    Text(date, modifier = Modifier.fillMaxWidth(), style = MaterialTheme.typography.headlineMedium)
 }
 
 @Composable

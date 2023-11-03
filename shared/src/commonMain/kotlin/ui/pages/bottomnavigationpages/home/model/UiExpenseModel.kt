@@ -19,9 +19,9 @@ import ui.entity.toDomainBankAccount
 import ui.entity.toDomainCategory
 import ui.entity.toUiBankAccount
 import ui.entity.toUiCategoryModel
-import ui.style.expenseColor
-import ui.style.incomeColor
-import ui.style.transferColor
+import ui.style.AppTheme.expenseColor
+import ui.style.AppTheme.incomeColor
+import ui.style.AppTheme.transferColor
 
 @Parcelize
 data class UiExpenseModel(
@@ -40,7 +40,6 @@ enum class UiExpenseType(val color: Color, val prefixChar: String) {
     EXPENSE(expenseColor, "-"),
     INCOME(incomeColor, "+"),
     TRANSFER(transferColor, "►");
-
 
 }
 

@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +28,7 @@ import com.lightfeather.masarify.MR.strings.time
 import dev.icerock.moko.resources.compose.stringResource
 import rememberPickerState
 import ui.composeables.TimePicker
-import ui.style.grayColor
+import ui.style.AppTheme.grayColor
 
 @Composable
 fun TimePickerDialog(onConfirmClick: (String) -> Unit, onCancelClick: () -> Unit, onDismissDialog: () -> Unit) {
@@ -38,7 +38,7 @@ fun TimePickerDialog(onConfirmClick: (String) -> Unit, onCancelClick: () -> Unit
 
     Dialog(onDismissRequest = { onDismissDialog() }) {
         Card(
-            Modifier.size(280.dp, 200.dp)
+            Modifier.size(280.dp, 260.dp)
                 .border(20.dp, color = Color(0xFF97BEAF), shape = RoundedCornerShape(size = 20.dp))
                 .background(Color.White, shape = RoundedCornerShape(20.dp)),
             shape = RoundedCornerShape(size = 20.dp)

@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -39,7 +39,7 @@ private fun SplashPageViews(onAnimationDone: () -> Unit) {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
 
@@ -47,7 +47,7 @@ private fun SplashPageViews(onAnimationDone: () -> Unit) {
             Image(painterResource(MR.images.app_logo), "")
             Text(
                 stringResource(MR.strings.app_name),
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colorScheme.onPrimary,
                 style = TextStyle(
                     fontSize = 48.sp,
                     fontStyle = FontStyle.Italic,
@@ -55,7 +55,7 @@ private fun SplashPageViews(onAnimationDone: () -> Unit) {
                 ),
             )
             Spacer(Modifier.height(50.dp))
-            CircularProgressIndicator(color = MaterialTheme.colors.onPrimary)
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
         }
 
     }

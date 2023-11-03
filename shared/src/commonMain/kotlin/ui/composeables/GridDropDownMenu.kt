@@ -16,10 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material.Divider
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
@@ -85,21 +85,22 @@ fun <T> GridDropDownMenu(
                 ) {
                     itemsIndexed(options) { idx, value ->
                         DropdownMenuItem(
+                            text = {
+                                Row(
+                                    Modifier.fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    dropDownItem(value)
+                                }
+                            },
                             onClick = {
                                 onValueChange(value)
                                 selectedOptionIndex = idx
                                 expanded = false
                             },
                             contentPadding = PaddingValues(4.dp)
-                        ) {
-                            Row(
-                                Modifier.fillMaxSize(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                dropDownItem(value)
-                            }
-                        }
+                        )
                     }
                 }
             }

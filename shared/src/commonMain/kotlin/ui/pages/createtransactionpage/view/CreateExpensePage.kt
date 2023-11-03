@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -116,76 +117,76 @@ private fun CreateExpensePageViews(
                 label = { Text(stringResource(MR.strings.expense_title)) },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             )
-//            LineOnlyTextField(
-//                text = description,
-//                onValueChange = { description = it },
-//                label = { Text(stringResource(MR.strings.description)) },
-//                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-//            )
-//            LineOnlyTextField(
-//                text = amount,
-//                onValueChange = { amount = it },
-//                label = { Text(stringResource(MR.strings.amount)) },
-//                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-//                keyboardType = KeyboardType.Number
-//            )
-//            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-//                LineOnlyTextField(
-//                    date.toString(),
-//                    onValueChange = {},
-//                    label = { Text(stringResource(MR.strings.date)) },
-//                    modifier = Modifier.clickable { isShowingDatePickerState = true }.weight(1f),
-//                    readonlyAndDisabled = true
-//                )
-//                Spacer(Modifier.width(8.dp))
-//                LineOnlyTextField(
-//                    time,
-//                    onValueChange = { },
-//                    label = { Text(stringResource(MR.strings.time)) },
-//                    modifier = Modifier.clickable { isShowingTimePickerState = true }.weight(1f),
-//                    readonlyAndDisabled = true
-//                )
-//
-//            }
-//            DropDownTextField(
-//                bankAccounts.map { it.name },
-//                label = { Text(stringResource(MR.strings.bank_account)) },
-//                onValueChange = { idx: Int, _: String -> account = bankAccounts[idx] },
-//                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-//            )
-//            Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
-//                CategoriesPicker(categories, onCategorySelect = { category = it })
-//            }
-//            Spacer(Modifier.weight(1f))
-//            Button(
-//                onClick = {
-//                    if (account != null && category != null)
-//                        account?.let { account ->
-//                            category?.let { category ->
-//                                onSaveClick(
-//                                    UiExpenseModel(
-//                                        title,
-//                                        description,
-//                                        UiExpenseType.EXPENSE,
-//                                        amount.toDoubleOrNull() ?: 0.0,
-//                                        date.toString(),
-//                                        time,
-//                                        listOf(category),
-//                                        account.currency.sign,
-//                                        account
-//                                    )
-//                                )
-//                            }
-//                        }
-//                },
-//                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-//            ) {
-//                Text(stringResource(MR.strings.save))
-//                Spacer(Modifier.width(8.dp))
-//                Icon(Icons.Default.Save, stringResource(MR.strings.save))
-//            }
-//            Spacer(Modifier.height(100.dp))
-//
+            LineOnlyTextField(
+                text = description,
+                onValueChange = { description = it },
+                label = { Text(stringResource(MR.strings.description)) },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            )
+            LineOnlyTextField(
+                text = amount,
+                onValueChange = { amount = it },
+                label = { Text(stringResource(MR.strings.amount)) },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                keyboardType = KeyboardType.Number
+            )
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                LineOnlyTextField(
+                    date.toString(),
+                    onValueChange = {},
+                    label = { Text(stringResource(MR.strings.date)) },
+                    modifier = Modifier.clickable { isShowingDatePickerState = true }.weight(1f),
+                    readonlyAndDisabled = true
+                )
+                Spacer(Modifier.width(8.dp))
+                LineOnlyTextField(
+                    time,
+                    onValueChange = { },
+                    label = { Text(stringResource(MR.strings.time)) },
+                    modifier = Modifier.clickable { isShowingTimePickerState = true }.weight(1f),
+                    readonlyAndDisabled = true
+                )
+
+            }
+            DropDownTextField(
+                bankAccounts.map { it.name },
+                label = { Text(stringResource(MR.strings.bank_account)) },
+                onValueChange = { idx: Int, _: String -> account = bankAccounts[idx] },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            )
+            Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
+                CategoriesPicker(categories, onCategorySelect = { category = it })
+            }
+            Spacer(Modifier.weight(1f))
+            Button(
+                onClick = {
+                    if (account != null && category != null)
+                        account?.let { account ->
+                            category?.let { category ->
+                                onSaveClick(
+                                    UiExpenseModel(
+                                        title,
+                                        description,
+                                        UiExpenseType.EXPENSE,
+                                        amount.toDoubleOrNull() ?: 0.0,
+                                        date.toString(),
+                                        time,
+                                        listOf(category),
+                                        account.currency.sign,
+                                        account
+                                    )
+                                )
+                            }
+                        }
+                },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            ) {
+                Text(stringResource(MR.strings.save))
+                Spacer(Modifier.width(8.dp))
+                Icon(Icons.Default.Save, stringResource(MR.strings.save))
+            }
+            Spacer(Modifier.height(100.dp))
+
         }
 
     }

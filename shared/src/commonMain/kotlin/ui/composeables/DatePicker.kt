@@ -14,15 +14,16 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
@@ -56,8 +57,8 @@ fun DatePicker(
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
 
-    daysColor: Color = MaterialTheme.colors.onPrimary,
-    selectedDayTextColor: Color = MaterialTheme.colors.primary,
+    daysColor: Color = MaterialTheme.colorScheme.onPrimary,
+    selectedDayTextColor: Color = MaterialTheme.colorScheme.primary,
 ) {
 
     var currentDate by remember { mutableStateOf(Clock.System.now()) }
@@ -68,7 +69,8 @@ fun DatePicker(
 
     @ReadOnlyComposable
     @Composable
-    fun selectedDayColor(isSelected: Boolean) = if (isSelected) MaterialTheme.colors.onPrimary else Color.Transparent
+    fun selectedDayColor(isSelected: Boolean) =
+        if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Transparent
 
     Column(modifier = Modifier.padding(16.dp)) {
         Card(
@@ -76,10 +78,12 @@ fun DatePicker(
                 .fillMaxWidth()
                 .padding(8.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .border(1.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp))
+                .border(1.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp))
                 .padding(8.dp),
-            elevation = 4.dp,
-            backgroundColor = MaterialTheme.colors.primary,
+            elevation = CardDefaults.cardElevation(4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            ),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(
@@ -114,14 +118,14 @@ fun DatePicker(
                             Icon(
                                 Icons.Default.KeyboardArrowLeft,
                                 contentDescription = "Previous Month",
-                                tint = MaterialTheme.colors.onPrimary
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
 
                         Text(
                             text = Month(selectedMonth).name.lowercase().replaceFirstChar { it.uppercase() },
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
-                            color = MaterialTheme.colors.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
 
                         IconButton(
@@ -135,7 +139,7 @@ fun DatePicker(
                             Icon(
                                 Icons.Default.KeyboardArrowRight,
                                 contentDescription = "Next Month",
-                                tint = MaterialTheme.colors.onPrimary
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -153,7 +157,7 @@ fun DatePicker(
                     for (day in daysOfWeek) {
                         Text(
                             text = day,
-                            style = MaterialTheme.typography.body1,
+                            style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(8.dp),
                             color = daysColor
                         )
@@ -200,7 +204,7 @@ fun DatePicker(
                                 Text(
                                     text = day,
                                     textAlign = TextAlign.Center,
-                                    color = if (isSelected) selectedDayTextColor else MaterialTheme.colors.onPrimary,
+                                    color = if (isSelected) selectedDayTextColor else MaterialTheme.colorScheme.onPrimary,
                                     modifier = Modifier
                                         .align(Alignment.Center)
                                         .background(selectedDayColor(isSelected), shape = CircleShape)
@@ -240,16 +244,16 @@ private fun YearPicker(
             Icon(
                 Icons.Default.KeyboardArrowLeft,
                 contentDescription = "Increase Month",
-                tint = MaterialTheme.colors.onPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = modifier.weight(.15f)
             )
         }
 
         Text(
             text = years[currentIndex],
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(vertical = 8.dp),
-            color = MaterialTheme.colors.onPrimary
+            color = MaterialTheme.colorScheme.onPrimary
         )
 
         IconButton(
@@ -261,7 +265,7 @@ private fun YearPicker(
             Icon(
                 Icons.Default.KeyboardArrowRight,
                 contentDescription = "Decrease Month",
-                tint = MaterialTheme.colors.onPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = modifier.weight(.15f)
             )
         }
