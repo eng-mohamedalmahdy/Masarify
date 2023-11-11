@@ -38,4 +38,15 @@
     <string name="transfer">Transfer</string>
     <string name="bank_account">Bank Account</string>
     <string name="expense_title">title</string>
+    <string name="sender_account">Sender Account</string>
+    <string name="receiver_account">Receiver Account</string>
+    <string name="record_money_transfer">Record Money Transfer</string>
+    <string name="transfer_fees">Transfer fees</string>
+    <string name="do_you_want_to_add_new_account">Do You want to add new Account?</string>
+    <string name="category_name">Category name</string>
+    <string name="account_data">Account data</string>
+    <string name="account_balance">Account Balance</string>
+
+
+
 </resources>

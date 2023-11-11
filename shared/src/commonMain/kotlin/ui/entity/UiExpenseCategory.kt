@@ -6,15 +6,16 @@ import com.lightfeather.core.domain.Category
 
 @Parcelize
 data class UiExpenseCategory(
-    val id: Int,
     val name: String,
     val icon: String,
-    val color: String
-) : Parcelable
+    val color: String,
+    val id: Int = 0,
+
+    ) : Parcelable
 
 fun Category.toUiCategoryModel() =
-    UiExpenseCategory(id = id, name = name, icon = icon, color = color)
+    UiExpenseCategory(name = name, icon = icon, color = color, id = id)
 
 fun UiExpenseCategory.toDomainCategory() = Category(
-    id,name,"",color, icon
+    id, name, "", color, icon
 )

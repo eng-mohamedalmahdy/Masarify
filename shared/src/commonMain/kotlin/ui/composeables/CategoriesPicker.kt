@@ -12,13 +12,17 @@ import ui.pages.createtransactionpage.view.CategoryItem
 fun CategoriesPicker(
     categories: List<UiExpenseCategory>,
     modifier: Modifier = Modifier,
-    onCategorySelect: (UiExpenseCategory) -> Unit
+    onCategorySelect: (UiExpenseCategory) -> Unit,
+    onAddCategoryClick: () -> Unit
 ) {
-    GridDropDownMenu(
+
+    SearchableGridDropDownMenu(
         categories,
         onValueChange = onCategorySelect,
         label = { Text(stringResource(MR.strings.category_or_tag)) },
         dropDownItem = { CategoryItem(it) },
-        modifier = modifier
+        modifier = modifier,
+        onAddClick = onAddCategoryClick,
+        searchFilterFunction = { searchText, item -> item.name.contains(searchText, true) }
     )
 }

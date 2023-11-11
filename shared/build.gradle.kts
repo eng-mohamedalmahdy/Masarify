@@ -83,6 +83,7 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.material3)
                 api(compose.materialIconsExtended)
+                implementation(compose.ui)
 
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
@@ -123,6 +124,8 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
+                implementation(compose.desktop.currentOs)
+                implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.5.10")
                 implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
 
             }
@@ -159,6 +162,7 @@ android {
 dependencies {
 
 
+    implementation("androidx.compose.ui:ui-tooling-preview-desktop:1.6.0-alpha08")
     commonMainApi("dev.icerock.moko:resources:0.23.0")
     commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
     commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")

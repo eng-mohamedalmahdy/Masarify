@@ -23,3 +23,6 @@ class GetAllCategories(private val categoryRepository: CategoryRepository) {
      suspend operator fun invoke() = categoryRepository.getAllCategories()
 }
 
+class GetAllCategoryIcons(private val repository : CategoryRepository){
+   suspend operator fun invoke() = repository.getAllCategoryIcons()
+}

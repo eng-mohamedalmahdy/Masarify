@@ -38,5 +38,13 @@
     <string name="pm">مسائاً</string>
     <string name="bank_account">الحساب البنكي</string>
     <string name="expense_title">العنوان</string>
+    <string name="sender_account">الحساب المرسل</string>
+    <string name="receiver_account">الحساب المستقبل</string>
+    <string name="record_money_transfer">تسجيل تحويل بنكي</string>
+    <string name="transfer_fees">رسوم التحويل</string>
+    <string name="do_you_want_to_add_new_account">هل تريد إضافة حصاب جديد؟</string>
+    <string name="category_name">اسم التصنيف</string>
+    <string name="account_data">بيانات الحساب</string>
+    <string name="account_balance">رصيد الحساب</string>
 
 </resources>

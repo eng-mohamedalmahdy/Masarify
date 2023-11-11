@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.composeables.TransactionTabBar
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
-import ui.pages.bottomnavigationpages.home.model.UiExpenseType
+import ui.pages.bottomnavigationpages.home.model.UiTransactionType
 
 
 @Composable
@@ -23,15 +23,14 @@ fun CreateTransactionPage(params: BottomNavigationPageModel.CreateTransactionPag
 
 @Composable
 private fun CreateTransactionPageViews() {
-    var selectedTab by remember { mutableStateOf(UiExpenseType.INCOME) }
+    var selectedTab by remember { mutableStateOf(UiTransactionType.INCOME) }
 
     Column(Modifier.fillMaxSize()) {
         Spacer(Modifier.height(16.dp))
-        TransactionTabBar(UiExpenseType.entries, selectedTab) { selectedTab = it }
+        TransactionTabBar(UiTransactionType.entries, selectedTab) { selectedTab = it }
         when (selectedTab) {
-            UiExpenseType.EXPENSE -> CreateExpensePage()
-            UiExpenseType.INCOME -> CreateIncomePage()
-            UiExpenseType.TRANSFER -> CreateTransferPage()
+            UiTransactionType.TRANSFER -> CreateTransferPage()
+            else -> CreateTransactionPage(selectedTab)
         }
     }
 

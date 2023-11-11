@@ -32,11 +32,12 @@ import ext.navigateSingleTop
 import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
-import ui.pages.bottomnavigationpages.bankaccounts.BankAccountsPage
+import ui.pages.bottomnavigationpages.bankaccounts.view.BankAccountsPage
 import ui.pages.bottomnavigationpages.currencyconverter.CurrencyConverterPage
 import ui.pages.bottomnavigationpages.home.HomePage
 import ui.pages.bottomnavigationpages.more.MorePage
 import ui.pages.bottomnavigationpages.statistics.StatisticsPage
+import ui.pages.createbankaccount.CreateBankAccountPage
 import ui.pages.createtransactionpage.view.CreateTransactionPage
 
 
@@ -181,15 +182,13 @@ private fun AppHostPageViews() {
                 when (it) {
                     is BottomNavigationPageModel.HomePageModel -> HomePage()
                     is BottomNavigationPageModel.MorePageModel -> MorePage(it)
-                    is BottomNavigationPageModel.BankAccountsPageModel -> BankAccountsPage(it)
+                    is BottomNavigationPageModel.BankAccountsPageModel -> BankAccountsPage()
                     is BottomNavigationPageModel.CurrencyConverterPageModel -> CurrencyConverterPage(it)
                     is BottomNavigationPageModel.StatisticsPageModel -> StatisticsPage(it)
                     is BottomNavigationPageModel.CreateTransactionPageModel -> CreateTransactionPage(it)
                 }
             }
         }
-
-
     }
 
 }

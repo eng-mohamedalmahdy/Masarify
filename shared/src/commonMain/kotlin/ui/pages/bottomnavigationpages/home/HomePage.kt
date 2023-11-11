@@ -1,6 +1,6 @@
 package ui.pages.bottomnavigationpages.home
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,8 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,13 +48,13 @@ import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import ext.OnUiStateChange
-import ext.colorFromHex
-import io.github.aakira.napier.Napier
+import ext.toComposeColor
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import ui.pages.bottomnavigationpages.home.model.UiExpenseModel
+import ui.composeables.SearchTextField
+import ui.pages.bottomnavigationpages.home.model.UiTransactionModel
 import ui.style.AppTheme.cardColor
 
 
@@ -58,58 +63,80 @@ fun HomePage() {
     val homePageViewModel = HomePageViewModel(koinInject()).let { getViewModel(Unit, viewModelFactory { it }) }
     val viewModelState = remember { homePageViewModel }
     val expensesListWithDates by viewModelState.expensesWithDateListFlow.collectAsState()
-
-    expensesListWithDates.OnUiStateChange { HomePageViews(it) }
+    OnUiStateChange(expensesListWithDates) {
+        HomePageViews(
+            it,
+            onSearchTransactions = { homePageViewModel.filterTransactions(it) })
+    }
 }
 
 @Composable
-private fun HomePageViews(expensesList: Map<String, List<UiExpenseModel>>) {
+private fun HomePageViews(expensesList: Map<String, List<UiTransactionModel>>, onSearchTransactions: (String) -> Unit) {
 
-    Napier.d(expensesList.toString(), tag = "ExpensesList")
 
-    AnimatedContent(expensesList) {
-        Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-
-            Spacer(Modifier.height(30.dp))
-            Text(
-                stringResource(MR.strings.track_income_and_expenses),
-                style = MaterialTheme.typography.headlineMedium
+    Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        var searchValue by remember { mutableStateOf("") }
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            SearchTextField(
+                searchValue,
+                { searchValue = it; onSearchTransactions(it) },
+                modifier = Modifier.fillMaxWidth(.9f)
             )
-            if (it.isEmpty()) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+            IconButton(
+                {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(cardColor, RoundedCornerShape(9.dp))
+                    .clip(RoundedCornerShape(4.dp)),
+
                 ) {
-                    Spacer(Modifier.weight(1f))
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painterResource(MR.images.no_transacions_placeholder),
-                            contentDescription = stringResource(MR.strings.no_income_or_expenses_were_added),
-                        )
-                        Text(
-                            stringResource(MR.strings.no_income_or_expenses_were_added),
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+                Image(
+                    Icons.Default.Tune, stringResource(MR.strings.add_new_category_or_tag),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                )
+            }
+        }
+        Spacer(Modifier.height(30.dp))
+        Text(
+            stringResource(MR.strings.track_income_and_expenses),
+            style = MaterialTheme.typography.headlineMedium
+        )
+        if (expensesList.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.weight(1f))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        painterResource(MR.images.no_transacions_placeholder),
+                        contentDescription = stringResource(MR.strings.no_income_or_expenses_were_added),
+                    )
+                    Text(
+                        stringResource(MR.strings.no_income_or_expenses_were_added),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+
+            }
+        } else {
+            LazyColumn(Modifier.fillMaxSize()) {
+                expensesList.forEach { (date, expenses) ->
+                    item {
+                        DateItem(date)
                     }
-                    Spacer(Modifier.weight(1f))
+                    items(expenses) {
+                        ExpenseCardItem(it)
+                    }
 
                 }
-            } else {
-                LazyColumn(Modifier.fillMaxSize()) {
-                    it.forEach { (date, expenses) ->
-                        item {
-                            DateItem(date)
-                        }
-                        items(expenses) {
-                            ExpenseCardItem(it)
-                        }
 
-                    }
-
-                    item {
-                        Spacer(Modifier.height(120.dp))
-                    }
+                item {
+                    Spacer(Modifier.height(120.dp))
                 }
             }
         }
@@ -117,7 +144,7 @@ private fun HomePageViews(expensesList: Map<String, List<UiExpenseModel>>) {
 }
 
 @Composable
-private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
+private fun ExpenseCardItem(expenseModel: UiTransactionModel) {
     val mainCategory = expenseModel.categories.first()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -132,7 +159,7 @@ private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
                     .clipToBounds()
                     .clip(RoundedCornerShape(16.dp))
                     .background(
-                        color = mainCategory.color.colorFromHex().copy(alpha = .25f),
+                        color = mainCategory.color.toComposeColor().copy(alpha = .25f),
                         shape = RoundedCornerShape(16.dp)
                     )
             ) {
@@ -140,12 +167,12 @@ private fun ExpenseCardItem(expenseModel: UiExpenseModel) {
                     resource = asyncPainterResource(mainCategory.icon),
                     mainCategory.name,
                     colorFilter = ColorFilter.tint(
-                        mainCategory.color.colorFromHex(),
+                        mainCategory.color.toComposeColor(),
                         blendMode = BlendMode.SrcIn
                     ),
                     modifier = Modifier
                         .size(60.dp)
-                        .background(color = mainCategory.color.colorFromHex().copy(alpha = .25f)),
+                        .background(color = mainCategory.color.toComposeColor().copy(alpha = .25f)),
                     onLoading = { progress -> CircularProgressIndicator(progress) },
                     onFailure = { exception ->
                         coroutineScope.launch {
@@ -196,7 +223,8 @@ private fun DateItem(date: String) {
     Text(date, modifier = Modifier.fillMaxWidth(), style = MaterialTheme.typography.headlineMedium)
 }
 
+@Preview
 @Composable
 private fun HomePagePreview() {
-    HomePageViews(mapOf())
+    HomePageViews(mapOf(), onSearchTransactions = {})
 }

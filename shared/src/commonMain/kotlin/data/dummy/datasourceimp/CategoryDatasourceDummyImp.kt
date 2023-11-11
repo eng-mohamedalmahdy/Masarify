@@ -22,6 +22,31 @@ object CategoryDatasourceDummyImp : CategoryDatasource {
     }
 
     override suspend fun getCategoryById(id: Int): Category {
-        return  DummyDomainModelsProviders.category
+        return DummyDomainModelsProviders.category
+    }
+
+    override suspend fun getAllCategoryIcons(): List<String> {
+        return listOf(
+            "https://img.icons8.com/ios/50/cute-pumpkin.png",
+            "https://img.icons8.com/ios/50/cat--v1.png",
+            "https://img.icons8.com/small/512/jake.png",
+            "https://img.icons8.com/ios/50/cute-pumpkin.png",
+            "https://img.icons8.com/ios/50/cat--v1.png",
+            "https://img.icons8.com/small/512/jake.png",
+
+            "https://img.icons8.com/ios/50/cute-pumpkin.png",
+            "https://img.icons8.com/ios/50/cat--v1.png",
+            "https://img.icons8.com/small/512/jake.png",
+            "https://img.icons8.com/ios/50/cute-pumpkin.png",
+            "https://img.icons8.com/ios/50/cat--v1.png",
+            "https://img.icons8.com/small/512/jake.png",
+
+            "https://img.icons8.com/ios/50/cute-pumpkin.png",
+            "https://img.icons8.com/ios/50/cat--v1.png",
+            "https://img.icons8.com/small/512/jake.png",
+            "https://img.icons8.com/ios/50/cute-pumpkin.png",
+            "https://img.icons8.com/ios/50/cat--v1.png",
+            "https://img.icons8.com/small/512/jake.png",
+        )
     }
 }

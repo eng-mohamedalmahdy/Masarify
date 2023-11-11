@@ -4,14 +4,16 @@ import com.lightfeather.core.domain.Category
 
 interface CategoryDatasource {
 
-    suspend  fun createCategory(category: Category): Int
+    suspend fun createCategory(category: Category): Int
 
-    suspend  fun updateCategory(category: Category)
+    suspend fun updateCategory(category: Category)
 
-    suspend  fun deleteCategory(category: Category): Boolean
+    suspend fun deleteCategory(category: Category): Boolean
 
-    suspend  fun getAllCategories(): List<Category>
+    suspend fun getAllCategories(): List<Category>
 
-    suspend  fun getCategoryById(id: Int): Category
+    suspend fun getCategoryById(id: Int): Category
+
+    suspend fun getAllCategoryIcons(): List<String>
 
 }

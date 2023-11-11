@@ -4,15 +4,18 @@ import com.lightfeather.core.domain.Account
 import com.lightfeather.core.domain.Category
 import com.lightfeather.core.domain.Currency
 import com.lightfeather.core.domain.transaction.Transaction
+import com.lightfeather.masarify.MR.strings.currency
 
 object DummyDomainModelsProviders {
+    val currency = Currency(id = 3008, name = "Nina Nieves", sign = "EGP")
+
     val bankAccount = Account(
         id = 3311,
         name = "Romeo Higgins",
-        currency = Currency(id = 5278, name = "Phil Browning", sign = "elementum"),
+        currency = currency,
         description = "Desc",
         balance = 18.19,
-        color = "integer",
+        color = "#FD3C4A",
         logo = "quaeque"
     )
 
@@ -23,7 +26,6 @@ object DummyDomainModelsProviders {
         color = "#000000",
         icon = "https://img.icons8.com/small/512/jake.png"
     )
-    val currency = Currency(id = 3008, name = "Nina Nieves", sign = "signiferumque")
 
     val expense = Transaction.Expense(
         id = 7518,

@@ -7,7 +7,7 @@ import data.dummy.model.DummyDomainModelsProviders
 
 object AccountDatasourceDummyImp : AccountDatasource {
     override fun createAccount(account: Account): Int {
-        TODO("Not yet implemented")
+      return 100
     }
 
     override fun updateAccountName(account: Account) {
@@ -23,6 +23,6 @@ object AccountDatasourceDummyImp : AccountDatasource {
     }
 
     override fun getAccountById(id: Int): Account {
-        TODO("Not yet implemented")
+       return DummyDomainModelsProviders.bankAccount
     }
 }

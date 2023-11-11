@@ -2,6 +2,7 @@ package di
 
 import com.lightfeather.core.data.repository.AccountRepository
 import com.lightfeather.core.data.repository.CategoryRepository
+import com.lightfeather.core.data.repository.CurrencyRepository
 import com.lightfeather.core.data.repository.ExpensesRepository
 import com.lightfeather.core.data.repository.IncomeRepository
 import com.lightfeather.core.data.repository.TransactionRepository
@@ -15,5 +16,5 @@ val repositoryModule = module {
     single { IncomeRepository(get()) }
     single { CategoryRepository(get()) }
     single { AccountRepository(get()) }
-
+    single { CurrencyRepository(get()) }
 }

@@ -2,6 +2,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -21,6 +22,7 @@ import io.kamel.image.config.Default
 import org.koin.compose.KoinApplication
 import ui.pages.Page
 import ui.pages.apppage.AppHostPage
+import ui.pages.createbankaccount.CreateBankAccountPage
 import ui.pages.splashpage.SplashPage
 import ui.style.AppTheme.AppTypography
 import ui.style.AppTheme.lightModeColors
@@ -40,23 +42,29 @@ internal fun App() {
 
 
             MaterialTheme(colorScheme = lightModeColors, typography = AppTypography) {
-
                 val router: Router<Page> = rememberRouter(type = Page::class, stack = listOf(Page.SplashPage))
+                CompositionLocalProvider(LocalMainNavController provides router) {
+                    RoutedContent(router, modifier = Modifier.fillMaxSize()) {
+                        Napier.d("$it")
+                        when (it) {
+                            Page.AppHostPage -> AppHostPage()
+                            Page.SplashPage -> SplashPage(onAnimationDone = {
+                                router.navigateSingleTop { Page.AppHostPage }
+                            })
 
-                RoutedContent(router, modifier = Modifier.fillMaxSize()) {
-                    when (it) {
-                        Page.AppHostPage -> AppHostPage()
-                        Page.SplashPage -> SplashPage(onAnimationDone = {
-                            router.navigateSingleTop { Page.AppHostPage }
-                        })
+                            Page.CreateBankAccountPageModel -> CreateBankAccountPage()
+                        }
                     }
                 }
+//                TestPage()
             }
         }
     }
 
 }
 
-fun debugBuild() {
-    Napier.base(DebugAntilog())
+val LocalMainNavController = compositionLocalOf<Router<Page>> {
+    error("No NavController provided")
 }
+
+

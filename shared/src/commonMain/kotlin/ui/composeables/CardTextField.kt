@@ -2,33 +2,34 @@ package ui.composeables
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import ui.style.AppTheme.cardColor
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key.Companion.I
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
-fun LineOnlyTextField(
+fun CardTextField(
     text: String,
     onValueChange: (String) -> Unit,
     label: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    trailingIcon: ImageVector? = null,
     readonlyAndDisabled: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
-) {
-    val colors = TextFieldDefaults.colors(
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        disabledTextColor = MaterialTheme.colorScheme.onBackground,
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
@@ -36,6 +37,7 @@ fun LineOnlyTextField(
         unfocusedContainerColor = cardColor,
         disabledContainerColor = cardColor,
     )
+) {
 
 
     TextField(
@@ -46,8 +48,9 @@ fun LineOnlyTextField(
         modifier = modifier.padding(4.dp),
         label = label,
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
-         singleLine = true,
-         readOnly = readonlyAndDisabled,
-         enabled = !readonlyAndDisabled
+        singleLine = true,
+        readOnly = readonlyAndDisabled,
+        enabled = !readonlyAndDisabled,
+        trailingIcon = { trailingIcon?.let { Icon(it, null, tint = MaterialTheme.colorScheme.onBackground) } }
     )
 }
