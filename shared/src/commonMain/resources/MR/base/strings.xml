@@ -20,7 +20,6 @@
     <string name="amount_in_account">Amount in account</string>
     <string name="currency">Currency</string>
     <string name="color">Color</string>
-    <string name="currency_converter">Converter</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="convert">Convert</string>
@@ -30,7 +29,6 @@
     <string name="more">More</string>
     <string name="statistics">Statistics</string>
     <string name="home">Home</string>
-    <string name="bank_accounts">Accounts</string>
     <string name="expense">Expense</string>
     <string name="income">Income</string>
     <string name="am">AM</string>
@@ -46,7 +44,9 @@
     <string name="category_name">Category name</string>
     <string name="account_data">Account data</string>
     <string name="account_balance">Account Balance</string>
-
-
-
+    <string name="accounts">Accounts</string>
+    <string name="currencies">Currency</string>
+    <string name="edit_currencies">Edit Currency</string>
+    <string name="currency_symbol">Currency Symbol</string>
+    <string name="add_currency">Add Currency</string>
 </resources>

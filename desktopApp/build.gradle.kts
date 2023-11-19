@@ -12,6 +12,9 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(project(":shared"))
+                implementation("com.arkivanov.decompose:decompose:2.1.0-compose-experimental")
+                implementation("io.github.xxfast:decompose-router:0.5.1")
+                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.1.0-compose-experimental")
             }
         }
     }

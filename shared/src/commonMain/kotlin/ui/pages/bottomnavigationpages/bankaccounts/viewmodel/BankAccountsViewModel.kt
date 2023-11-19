@@ -19,10 +19,8 @@ class BankAccountsViewModel(getAllAccounts: GetAllAccounts) : ViewModel() {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            _bankAccountsFlow.emit(UiState.LOADING())
-            _bankAccountsFlow.update {
-                UiState.SUCCESS(getAllAccounts().map { it.toUiBankAccount() })
-            }
+//            _bankAccountsFlow.emit(UiState.LOADING())
+            _bankAccountsFlow.emit(UiState.SUCCESS(getAllAccounts().map { it.toUiBankAccount() }))
         }
     }
 }

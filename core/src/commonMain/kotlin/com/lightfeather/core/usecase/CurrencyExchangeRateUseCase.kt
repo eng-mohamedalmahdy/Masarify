@@ -6,32 +6,32 @@ import com.lightfeather.core.domain.CurrencyExchangeRate
 
 
 class CreateCurrencyExchangeRate(private val repository: CurrencyExchangeRateRepository) {
-   suspend operator  fun invoke(currencyExchangeRate: CurrencyExchangeRate) =
+    suspend operator fun invoke(currencyExchangeRate: CurrencyExchangeRate) =
         repository.createCurrencyExchangeRate(currencyExchangeRate)
 }
 
-class UpdateCurrencyExchangeRate(private val repository: CurrencyExchangeRateRepository) {
-   suspend operator  fun invoke(currencyExchangeRate: CurrencyExchangeRate) =
-        repository.updateCurrencyExchangeRate(currencyExchangeRate)
+class UpdateCurrencyExchangeRates(private val repository: CurrencyExchangeRateRepository) {
+    suspend operator fun invoke(currencyExchangeRates: List<List<CurrencyExchangeRate>>) =
+        repository.updateCurrencyExchangeRates(currencyExchangeRates)
 }
 
 class DeleteCurrencyExchangeRate(private val repository: CurrencyExchangeRateRepository) {
-   suspend operator  fun invoke(currencyExchangeRate: CurrencyExchangeRate) =
+    suspend operator fun invoke(currencyExchangeRate: CurrencyExchangeRate) =
         repository.deleteCurrencyExchangeRate(currencyExchangeRate)
 }
 
 class GetAllCurrenciesExchangeRates(private val repository: CurrencyExchangeRateRepository) {
-   suspend operator  fun invoke() =
+    suspend operator fun invoke() =
         repository.getAllCurrenciesExchangeRates()
 }
 
 class GetCurrencyExchangeRateById(private val repository: CurrencyExchangeRateRepository) {
-   suspend operator  fun invoke(id: Int) =
+    suspend operator fun invoke(id: Int) =
         repository.getCurrencyExchangeRateById(id)
 }
 
 class GetExchangeRatesOfCurrency(private val repository: CurrencyExchangeRateRepository) {
-   suspend operator  fun invoke(currency: Currency) =
+    suspend operator fun invoke(currency: Currency) =
         repository.getExchangeRatesOfCurrency(currency)
 }
 

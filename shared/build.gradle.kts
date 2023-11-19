@@ -12,14 +12,14 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("org.jetbrains.compose")
-    id("com.squareup.sqldelight")
+    id("app.cash.sqldelight") version "2.0.0"
     id("kotlin-parcelize") // Apply the plugin for Android
     id("com.arkivanov.parcelize.darwin")
     id("dev.icerock.mobile.multiplatform-resources")
 }
 
 kotlin {
-    androidTarget()
+    android()
 
     jvm("desktop")
 
@@ -53,9 +53,9 @@ kotlin {
     sourceSets {
 
         val ktorVersion = "2.3.4"
-        val sqlDelightVersion = "1.5.5"
-        val decomposeVersion = "2.0.2"
-        val koinVersion = "3.2.0"
+        val sqlDelightVersion = "2.0.0"
+        val decomposeVersion = "2.1.0-compose-experimental"
+        val koinVersion = "3.5.0"
         val napierVersion = "2.6.1"
         val commonMain by getting {
             dependencies {
@@ -69,15 +69,19 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
                 implementation("io.github.aakira:napier:$napierVersion")
 
-                implementation("io.github.xxfast:decompose-router:0.4.0")
+                implementation("io.github.xxfast:decompose-router:0.5.1")
+                // You will need to also bring in decompose and essenty
+
                 implementation("com.arkivanov.decompose:decompose:${decomposeVersion}")
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:${decomposeVersion}")
+                implementation("com.arkivanov.essenty:parcelable:1.2.0")
+                implementation("com.arkivanov.essenty:lifecycle:1.2.0")
 
-                implementation("com.arkivanov.essenty:parcelable:1.1.0")
-                implementation("com.arkivanov.essenty:lifecycle:1.1.0")
 
+//                implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
+                implementation("app.cash.sqldelight:coroutines-extensions:$sqlDelightVersion")
+                runtimeOnly("app.cash.sqldelight:runtime:$sqlDelightVersion")
 
-                implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
@@ -97,9 +101,9 @@ kotlin {
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.9.0")
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-
-                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
+                implementation("app.cash.sqldelight:android-driver:$sqlDelightVersion")
                 implementation("io.insert-koin:koin-android:${koinVersion}")
+                implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
 
 
             }
@@ -111,7 +115,7 @@ kotlin {
         val iosMain by creating {
 
             dependencies {
-                implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
+                implementation("app.cash.sqldelight:native-driver:$sqlDelightVersion")
                 implementation("com.arkivanov.parcelize.darwin:runtime:0.2.1")
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
 
@@ -127,7 +131,7 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.5.10")
                 implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
-
+                implementation("app.cash.sqldelight:sqlite-driver:$sqlDelightVersion")
             }
             dependsOn(commonMain)
         }
@@ -248,5 +252,12 @@ tasks.withType<AbstractNativeMacApplicationPackageAppDirTask> {
                     overwrite = true
                 )
             }
+    }
+}
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.lightfeather.masarify.database")
+        }
     }
 }

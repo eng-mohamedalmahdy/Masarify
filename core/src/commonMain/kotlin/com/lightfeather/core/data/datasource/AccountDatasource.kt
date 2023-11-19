@@ -9,7 +9,5 @@ interface AccountDatasource {
     fun updateAccountName(account: Account)
     fun deleteAccount(account: Account): Boolean
     fun getAccounts(): Accounts
-    fun getAccountById(id: Int): Account
-
-
+    fun getAccountById(id: Int): Account?
 }

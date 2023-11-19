@@ -9,7 +9,8 @@ class CurrencyExchangeRateRepository(private val datasource: CurrencyExchangeRat
     suspend fun createCurrencyExchangeRate(rate: CurrencyExchangeRate): Int =
         datasource.createCurrencyExchangeRate(rate)
 
-    suspend fun updateCurrencyExchangeRate(rate: CurrencyExchangeRate) = datasource.updateCurrencyExchangeRate(rate)
+    suspend fun updateCurrencyExchangeRates(rates: List<List<CurrencyExchangeRate>>) =
+        datasource.updateCurrencyExchangeRates(rates)
 
     suspend fun deleteCurrencyExchangeRate(rate: CurrencyExchangeRate): Boolean =
         datasource.deleteCurrencyExchangeRate(rate)

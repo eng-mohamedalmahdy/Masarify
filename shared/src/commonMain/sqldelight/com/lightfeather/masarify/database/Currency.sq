@@ -1,0 +1,24 @@
+CREATE TABLE currency(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name  TEXT NOT NULL,
+  sign TEXT NOT NULL
+);
+
+
+insertCurrency:
+INSERT INTO currency (name, sign) VALUES (?, ?);
+
+selectAllCurrencies:
+SELECT * FROM currency;
+
+updateCurrency:
+UPDATE currency SET name = ?,sign = ?  WHERE id = ?;
+
+deleteCurrency:
+DELETE FROM currency WHERE id = ?;
+
+selectCurrencyById:
+SELECT * FROM currency WHERE id = ?;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();

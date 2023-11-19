@@ -18,7 +18,7 @@ object CurrencyDatasourceDummyImp : CurrencyDatasource {
     }
 
     override suspend fun getAllCurrencies(): List<Currency> {
-        return List(10) { DummyDomainModelsProviders.currency.copy(id = it) }
+        return List(5) { DummyDomainModelsProviders.currency.copy(id = it, name = DummyDomainModelsProviders.currency.name + "$it") }
     }
 
     override suspend fun getCurrencyById(id: Int): Currency {

@@ -10,7 +10,6 @@ buildscript {
 
     }
     dependencies {
-        classpath("com.squareup.sqldelight:gradle-plugin:1.5.1")
         classpath("dev.icerock.moko:resources-generator:0.23.0")
         classpath("com.arkivanov.parcelize.darwin:gradle-plugin:0.2.1")
 

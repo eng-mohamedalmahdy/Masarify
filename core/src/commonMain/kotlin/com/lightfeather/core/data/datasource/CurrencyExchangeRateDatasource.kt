@@ -7,7 +7,7 @@ import com.lightfeather.core.domain.CurrencyExchangeRate
 interface CurrencyExchangeRateDatasource {
 
     suspend fun createCurrencyExchangeRate(rate: CurrencyExchangeRate): Int
-    suspend fun updateCurrencyExchangeRate(rate: CurrencyExchangeRate)
+    suspend fun updateCurrencyExchangeRates(rates: List<List<CurrencyExchangeRate>>)
     suspend fun deleteCurrencyExchangeRate(rate: CurrencyExchangeRate): Boolean
     suspend fun getAllCurrenciesExchangeRates(): List<List<CurrencyExchangeRate>>
     suspend fun getCurrencyExchangeRateById(id: Int): CurrencyExchangeRate

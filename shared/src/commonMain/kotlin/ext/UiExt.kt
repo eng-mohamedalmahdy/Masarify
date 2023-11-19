@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import ui.entity.UiState
 
 fun String.toComposeColor() = Color(removePrefix("#").toLong(16) or 0x00000000FF000000)
@@ -39,3 +41,10 @@ fun <T> OnUiStateChange(
         is UiState.ERROR -> onError(uiState.throwable)
     }
 }
+
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
+
+
+@Composable
+fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }

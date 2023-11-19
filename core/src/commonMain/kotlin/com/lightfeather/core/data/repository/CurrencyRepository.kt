@@ -12,5 +12,5 @@ class CurrencyRepository (private val datasource: CurrencyDatasource){
 
   suspend  fun getAllCurrencies(): List<Currency> = datasource.getAllCurrencies()
 
-  suspend  fun getCurrencyById(id: Int): Currency = datasource.getCurrencyById(id)
+  suspend  fun getCurrencyById(id: Int): Currency?= datasource.getCurrencyById(id)
 }

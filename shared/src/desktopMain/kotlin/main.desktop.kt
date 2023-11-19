@@ -1,11 +1,21 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
-import ui.pages.bottomnavigationpages.BottomNavigationPageModel
-import ui.pages.bottomnavigationpages.home.HomePage
+import di.getBaseModules
+import org.koin.compose.KoinApplication
 
 
 @Composable
-fun MainView() = App()
+fun MainView() {
+    KoinApplication(application = {
+
+        modules(
+            getBaseModules()
+        )
+    })
+    {
+        App()
+    }
+}
 
 @Preview
 @Composable

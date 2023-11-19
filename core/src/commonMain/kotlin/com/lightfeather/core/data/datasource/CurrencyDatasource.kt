@@ -7,6 +7,6 @@ interface CurrencyDatasource {
   suspend  fun updateCurrency(currency: Currency)
   suspend  fun deleteCurrency(currency: Currency): Boolean
   suspend  fun getAllCurrencies(): List<Currency>
-  suspend  fun getCurrencyById(id: Int): Currency
+  suspend  fun getCurrencyById(id: Int): Currency?
 
 }

@@ -1,0 +1,52 @@
+CREATE TABLE bankAccount (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  currency INTEGER NOT NULL,
+  name TEXT NOT NULL ,
+  desceription TEXT,
+  balance REAL NOT NULL DEFAULT  0.0,
+  color TEXT NOT NULL,
+  logo TEXT
+);
+
+insertBankAccount:
+INSERT INTO bankAccount (currency,name,desceription,balance,color,logo) VALUES (?,?,?,?,?,?);
+
+updateAccount:
+UPDATE bankAccount SET balance=?, name = ?,color = ?,logo = ?  WHERE id = ?;
+
+deleteAccount:
+DELETE FROM bankAccount WHERE id = ?;
+
+getAllAccounts:
+SELECT DISTINCT
+bankAccount.id,
+bankAccount.name,
+bankAccount.desceription,
+bankAccount.balance,
+bankAccount.currency,
+bankAccount.color,
+bankAccount.logo,
+currency.id AS currencyId,
+currency.name AS currencyMame,
+currency.sign
+FROM bankAccount,currency
+WHERE bankAccount.currency = currency.id;
+
+
+getAccountById:
+SELECT bankAccount.id,
+      bankAccount.name,
+      bankAccount.desceription,
+      bankAccount.balance,
+      bankAccount.currency,
+      bankAccount.color,
+      bankAccount.logo,
+      currency.id AS currencyId,
+      currency.name AS currencyName,
+      currency.sign
+FROM bankAccount,currency
+WHERE bankAccount.id =? AND bankAccount.currency = currency.id;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();
+

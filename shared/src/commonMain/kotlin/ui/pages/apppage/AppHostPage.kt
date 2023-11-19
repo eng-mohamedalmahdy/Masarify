@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -33,11 +34,10 @@ import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
 import ui.pages.bottomnavigationpages.bankaccounts.view.BankAccountsPage
-import ui.pages.bottomnavigationpages.currencyconverter.CurrencyConverterPage
+import ui.pages.bottomnavigationpages.currencies.CurrenciesPage
 import ui.pages.bottomnavigationpages.home.HomePage
 import ui.pages.bottomnavigationpages.more.MorePage
 import ui.pages.bottomnavigationpages.statistics.StatisticsPage
-import ui.pages.createbankaccount.CreateBankAccountPage
 import ui.pages.createtransactionpage.view.CreateTransactionPage
 
 
@@ -51,9 +51,10 @@ private fun AppHostPageViews() {
 
     val bottomNavRouter = rememberRouter(
         BottomNavigationPageModel::class,
-        stack = listOf(BottomNavigationPageModel.HomePageModel),
+        initialStack = { listOf(BottomNavigationPageModel.HomePageModel) },
     )
 
+    val labelFontSize = 12.sp
 
     Scaffold(modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -83,7 +84,10 @@ private fun AppHostPageViews() {
                             )
                         },
                         label = {
-                            Text(stringResource(MR.strings.more), color = MaterialTheme.colorScheme.secondary)
+                            Text(
+                                stringResource(MR.strings.more), color = MaterialTheme.colorScheme.secondary,
+                                fontSize = labelFontSize
+                            )
 
                         },
                         selected = activeTab == BottomNavigationPageModel.MorePageModel,
@@ -102,7 +106,10 @@ private fun AppHostPageViews() {
                             )
                         },
                         label = {
-                            Text(stringResource(MR.strings.statistics), color = MaterialTheme.colorScheme.secondary)
+                            Text(
+                                stringResource(MR.strings.statistics), color = MaterialTheme.colorScheme.secondary,
+                                fontSize = labelFontSize
+                            )
                         },
                         selected = activeTab == BottomNavigationPageModel.StatisticsPageModel,
                         onClick = { bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.StatisticsPageModel } },
@@ -118,13 +125,14 @@ private fun AppHostPageViews() {
                         icon = {
                             AppBottomNavigationItem(
                                 painterResource(MR.images.currency_converter),
-                                stringResource(MR.strings.currency_converter)
+                                stringResource(MR.strings.currencies)
                             )
                         },
                         label = {
                             Text(
-                                stringResource(MR.strings.currency_converter),
-                                color = MaterialTheme.colorScheme.secondary
+                                stringResource(MR.strings.currencies),
+                                color = MaterialTheme.colorScheme.secondary,
+                                fontSize = labelFontSize
                             )
                         },
                         selected = activeTab == BottomNavigationPageModel.CurrencyConverterPageModel,
@@ -140,11 +148,14 @@ private fun AppHostPageViews() {
                         icon = {
                             AppBottomNavigationItem(
                                 painterResource(MR.images.bank_account),
-                                stringResource(MR.strings.bank_accounts)
+                                stringResource(MR.strings.accounts)
                             )
                         },
                         label = {
-                            Text(stringResource(MR.strings.bank_accounts), color = MaterialTheme.colorScheme.secondary)
+                            Text(
+                                stringResource(MR.strings.accounts), color = MaterialTheme.colorScheme.secondary,
+                                fontSize = labelFontSize
+                            )
                         },
                         selected = activeTab == BottomNavigationPageModel.BankAccountsPageModel,
                         onClick = { bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.BankAccountsPageModel } },
@@ -183,7 +194,7 @@ private fun AppHostPageViews() {
                     is BottomNavigationPageModel.HomePageModel -> HomePage()
                     is BottomNavigationPageModel.MorePageModel -> MorePage(it)
                     is BottomNavigationPageModel.BankAccountsPageModel -> BankAccountsPage()
-                    is BottomNavigationPageModel.CurrencyConverterPageModel -> CurrencyConverterPage(it)
+                    is BottomNavigationPageModel.CurrencyConverterPageModel -> CurrenciesPage()
                     is BottomNavigationPageModel.StatisticsPageModel -> StatisticsPage(it)
                     is BottomNavigationPageModel.CreateTransactionPageModel -> CreateTransactionPage(it)
                 }
@@ -199,10 +210,3 @@ private fun AppBottomNavigationItem(icon: Painter, label: String) {
         Icon(icon, contentDescription = label, tint = MaterialTheme.colorScheme.secondary)
     }
 }
-
-@Composable
-private fun AppHostPagePreview() {
-// TODO: Implement call the views function here using dummy params
-
-}
-

@@ -20,7 +20,6 @@
     <string name="amount_in_account">المبلغ في الحساب</string>
     <string name="currency">العملة</string>
     <string name="color">اللون</string>
-    <string name="currency_converter">محول العملات</string>
     <string name="from">من</string>
     <string name="to">إلى</string>
     <string name="convert">تحويل</string>
@@ -30,7 +29,6 @@
     <string name="more">المزيد</string>
     <string name="statistics">الإحصائيات</string>
     <string name="home">الرئيسية</string>
-    <string name="bank_accounts">حسابات البنوك</string>
     <string name="expense">مصروفات</string>
     <string name="income">دخل</string>
     <string name="transfer">تحويل</string>
@@ -46,5 +44,12 @@
     <string name="category_name">اسم التصنيف</string>
     <string name="account_data">بيانات الحساب</string>
     <string name="account_balance">رصيد الحساب</string>
+
+    <string name="accounts">حساباتي</string>
+    <string name="currencies">العملات</string>
+    <string name="edit_currencies">تعديل العملات</string>
+    <string name="currency_symbol">رمز العملة</string>
+    <string name="add_currency">إضافة العملة</string>
+
 
 </resources>

@@ -12,5 +12,5 @@ class AccountRepository (private val datasource: AccountDatasource){
 
     fun getAccounts() = datasource.getAccounts()
 
-    fun getAccountById(id: Int): Account = datasource.getAccountById(id)
+    fun getAccountById(id: Int): Account? = datasource.getAccountById(id)
 }
