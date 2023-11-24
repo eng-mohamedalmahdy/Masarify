@@ -46,6 +46,8 @@ kotlin {
             isStatic = true
             export("dev.icerock.moko:resources:0.23.0")
             export("dev.icerock.moko:graphics:0.9.0") // toUIColor here
+            export("io.github.xxfast:decompose-router:0.5.1")
+
         }
 
     }
@@ -69,7 +71,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
                 implementation("io.github.aakira:napier:$napierVersion")
 
-                implementation("io.github.xxfast:decompose-router:0.5.1")
+                api("io.github.xxfast:decompose-router:0.5.1")
                 // You will need to also bring in decompose and essenty
 
                 implementation("com.arkivanov.decompose:decompose:${decomposeVersion}")
