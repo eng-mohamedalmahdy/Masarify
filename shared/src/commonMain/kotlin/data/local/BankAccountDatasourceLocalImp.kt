@@ -4,10 +4,9 @@ import com.lightfeather.core.data.datasource.AccountDatasource
 import com.lightfeather.core.domain.Account
 import com.lightfeather.core.domain.Accounts
 import com.lightfeather.core.domain.Currency
-import com.lightfeather.masarify.database.BankAccount
-import com.lightfeather.masarify.database.BankAccountQueries
+import com.lightfeather.masarify.database.BankAccountsQueries
 
-class BankAccountDatasourceLocalImp(private val queries: BankAccountQueries) : AccountDatasource {
+class BankAccountDatasourceLocalImp(private val queries: BankAccountsQueries) : AccountDatasource {
     override fun createAccount(account: Account): Int {
         queries.insertBankAccount(
             account.currency.id.toLong(),

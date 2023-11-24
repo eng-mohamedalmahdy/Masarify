@@ -64,6 +64,8 @@ kotlin {
                 implementation(project(":core"))
                 implementation("media.kamel:kamel-image:0.7.3")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
                 implementation("io.insert-koin:koin-core:${koinVersion}")
                 implementation("io.insert-koin:koin-compose:1.1.0")

@@ -7,10 +7,7 @@ import org.koin.compose.KoinApplication
 @Composable
 fun MainView() {
     KoinApplication(application = {
-
-        modules(
-            getBaseModules()
-        )
+        modules(getBaseModules())
     })
     {
         App()

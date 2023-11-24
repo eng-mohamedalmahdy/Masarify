@@ -1,0 +1,26 @@
+CREATE TABLE  categories(
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    desceription TEXT NOT NULL,
+    color TEXT NOT NULL,
+    icon TEXT NOT NULL
+);
+
+insertCategory:
+INSERT INTO categories (id, name, desceription, color, icon) VALUES (?, ?, ?, ?, ?);
+
+
+updateById:
+UPDATE categories SET name = ?,desceription=?,color=?, icon=? WHERE id = ?;
+
+deleteById:
+DELETE FROM categories WHERE id = ?;
+
+selectAllCategories:
+SELECT * FROM categories;
+
+selectCategoryById:
+SELECT * FROM categories WHERE id = ?;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();
