@@ -7,9 +7,6 @@ import com.lightfeather.core.domain.transaction.TransactionFilter
 import data.dummy.model.DummyDomainModelsProviders
 
 data object TransferDatasourceDummyImp : TransferDatasource {
-    override suspend fun transfer(from: Account, to: Account, amount: Double, fee: Double) {
-
-    }
 
     override suspend fun createTransaction(transaction: Transaction.Transfer) {
 
@@ -24,7 +21,7 @@ data object TransferDatasourceDummyImp : TransferDatasource {
     }
 
     override suspend fun getAllTransactions(): List<Transaction.Transfer> {
-        return List(10) { DummyDomainModelsProviders.transfer }
+        return List(0) { DummyDomainModelsProviders.transfer }
     }
 
     override suspend fun getTransactionById(id: Int): Transaction.Transfer {

@@ -1,5 +1,6 @@
 package di
 
+import com.lightfeather.core.data.datasource.transactions.ExpensesDatasource
 import com.lightfeather.core.data.repository.AccountRepository
 import com.lightfeather.core.data.repository.CategoryRepository
 import com.lightfeather.core.data.repository.CurrencyExchangeRateRepository
@@ -12,7 +13,7 @@ import com.lightfeather.core.domain.transaction.Transaction
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { ExpensesRepository(get()) }
+    single { ExpensesRepository(get<ExpensesDatasource>()) }
     single { TransferRepository(get()) }
     single { IncomeRepository(get()) }
     single { CategoryRepository(get()) }

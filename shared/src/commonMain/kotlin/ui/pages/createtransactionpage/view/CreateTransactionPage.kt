@@ -23,7 +23,7 @@ fun CreateTransactionPage(params: BottomNavigationPageModel.CreateTransactionPag
 
 @Composable
 private fun CreateTransactionPageViews() {
-    var selectedTab by remember { mutableStateOf(UiTransactionType.INCOME) }
+    var selectedTab by remember { mutableStateOf(UiTransactionType.Expense) }
 
     Column(Modifier.fillMaxSize()) {
         Spacer(Modifier.height(16.dp))

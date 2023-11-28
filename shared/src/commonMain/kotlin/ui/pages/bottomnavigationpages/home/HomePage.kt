@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -145,7 +146,7 @@ private fun HomePageViews(expensesList: Map<String, List<UiTransactionModel>>, o
 
 @Composable
 private fun ExpenseCardItem(expenseModel: UiTransactionModel) {
-    val mainCategory = expenseModel.categories.first()
+    val mainCategory = expenseModel.categories.firstOrNull()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     Card(
@@ -159,20 +160,20 @@ private fun ExpenseCardItem(expenseModel: UiTransactionModel) {
                     .clipToBounds()
                     .clip(RoundedCornerShape(16.dp))
                     .background(
-                        color = mainCategory.color.toComposeColor().copy(alpha = .25f),
+                        color = mainCategory?.color?.toComposeColor()?.copy(alpha = .25f)?: Color.Black,
                         shape = RoundedCornerShape(16.dp)
                     )
             ) {
                 KamelImage(
-                    resource = asyncPainterResource(mainCategory.icon),
-                    mainCategory.name,
+                    resource = asyncPainterResource(mainCategory?.icon?:""),
+                    mainCategory?.name,
                     colorFilter = ColorFilter.tint(
-                        mainCategory.color.toComposeColor(),
+                        mainCategory?.color?.toComposeColor()?: Color.Black,
                         blendMode = BlendMode.SrcIn
                     ),
                     modifier = Modifier
                         .size(60.dp)
-                        .background(color = mainCategory.color.toComposeColor().copy(alpha = .25f)),
+                        .background(color = mainCategory?.color?.toComposeColor()?.copy(alpha = .25f)?: Color.Black),
                     onLoading = { progress -> CircularProgressIndicator(progress) },
                     onFailure = { exception ->
                         coroutineScope.launch {

@@ -7,6 +7,7 @@ import com.lightfeather.core.usecase.GetAllAccounts
 import com.lightfeather.core.usecase.GetAllCategories
 import com.lightfeather.core.usecase.GetAllCategoryIcons
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -22,11 +23,14 @@ import ui.pages.bottomnavigationpages.home.model.UiTransactionModel
 import ui.pages.bottomnavigationpages.home.model.toDomainTransaction
 
 class CreateTransactionViewModel(
+    private val createExpenseUseCase: CreateTransaction<Transaction.Expense>,
+    private val createIncomeUseCase: CreateTransaction<Transaction.Income>,
+    private val createTransferUseCase: CreateTransaction<Transaction.Transfer>,
     private val getAllCategories: GetAllCategories,
     private val getAllBankAccounts: GetAllAccounts,
-    private val createTransactionUseCase: CreateTransaction<Transaction>,
     private val createCategoryUseCase: CreateCategory,
-    private val getAllCategoryIconsUseCase: GetAllCategoryIcons
+    private val getAllCategoryIconsUseCase: GetAllCategoryIcons,
+
 ) : ViewModel() {
 
 
@@ -57,14 +61,24 @@ class CreateTransactionViewModel(
     }
 
     fun createTransaction(expenseModel: UiTransactionModel) {
+        Napier.d(expenseModel.toDomainTransaction()::class.toString())
         CoroutineScope(Dispatchers.IO).launch {
-            createTransactionUseCase((expenseModel.toDomainTransaction()))
+            when(val transaction = expenseModel.toDomainTransaction()){
+                is Transaction.Expense -> createExpenseUseCase(transaction)
+                is Transaction.Income -> createIncomeUseCase(transaction)
+                is Transaction.Transfer -> createTransferUseCase(transaction)
+            }
         }
     }
 
     fun createTransfer(expenseModel: UiTransactionModel, receiverAccount: UiBankAccount, transferFee: Double) {
         CoroutineScope(Dispatchers.IO).launch {
-            createTransactionUseCase((expenseModel.toDomainTransaction(receiverAccount, transferFee)))
+            createTransferUseCase(
+                expenseModel.toDomainTransaction(
+                    receiverAccount,
+                    transferFee
+                ) as Transaction.Transfer
+            )
         }
     }
 

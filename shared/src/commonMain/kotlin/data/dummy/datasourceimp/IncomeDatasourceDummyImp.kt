@@ -19,7 +19,7 @@ data object IncomeDatasourceDummyImp : IncomeDatasource {
     }
 
     override suspend fun getAllTransactions(): List<Transaction.Income> {
-        return List(10) { DummyDomainModelsProviders.income }
+        return List(0) { DummyDomainModelsProviders.income }
     }
 
     override suspend fun getTransactionById(id: Int): Transaction.Income {

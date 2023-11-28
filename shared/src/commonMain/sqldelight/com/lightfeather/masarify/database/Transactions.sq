@@ -1,0 +1,111 @@
+CREATE TABLE IF NOT EXISTS transactions (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    description TEXT,
+    amount REAL,
+    timestamp INTEGER,
+    account_id INTEGER,
+    type TEXT CHECK(type IN ("INCOME", "EXPENSE", "TRANSFER")), -- 1: Income, 2: Expense, 3: Transfer
+
+    receiver_account_id INTEGER, -- For Income transactions
+    fee REAL -- For Transfer transactions
+);
+
+insertTransaction:
+INSERT INTO transactions (type, name, description, amount, timestamp, account_id)
+VALUES (?, ?, ?, ?, ?, ?);
+
+
+insertTransfer:
+INSERT INTO transactions (type, name, description, amount, timestamp, account_id, receiver_account_id, fee)
+VALUES ("TRANSFER", ?, ?, ?, ?, ?, ?, ?);
+
+insertTransactionCategory:
+INSERT INTO transaction_categories(transaction_id,category_id)
+VALUES (?,?);
+
+
+-- Update Queries
+updateTransaction:
+UPDATE transactions
+SET name = ?, description = ?, amount = ?, timestamp = ?, account_id = ?
+WHERE id = ?;
+
+-- Delete Queries
+deleteTransaction:
+DELETE FROM transactions WHERE id = ?;
+
+deleteTransactionCategory:
+DELETE FROM transaction_categories WHERE transaction_id = ? AND category_id = ?;
+
+
+getAllTransactionsOfType:
+SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
+                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
+                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
+                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
+                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
+
+
+ FROM transactions,bank_accounts,currencies
+WHERE type = ?
+    AND transactions.account_id = bank_accounts.id
+    AND bank_accounts.currency = currencies.id
+ORDER BY transactions.timestamp DESC;
+
+
+getCategoriesForTransactionByTransactionId:
+SELECT categories.id, categories.name ,categories.desceription,categories.color,categories.icon FROM categories
+JOIN transaction_categories ON categories.id = transaction_categories.category_id
+WHERE transaction_categories.transaction_id = ?;
+
+getTransactionOfTypeById:
+SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
+                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
+                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
+                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
+                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
+
+ FROM transactions,bank_accounts,currencies
+WHERE type = ?
+    AND transactions.account_id = bank_accounts.id
+    AND bank_accounts.currency = currencies.id
+    AND transactions.id = ?;
+
+
+getMinExpenseOfTransactionType:
+SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
+                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
+                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
+                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
+                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
+
+
+ FROM transactions,bank_accounts,currencies
+WHERE type = ?
+    AND transactions.account_id = bank_accounts.id
+    AND bank_accounts.currency = currencies.id
+    AND transactions.amount = MIN(amount);
+
+getMaxExpenseOfTransactionType:
+SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
+                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
+                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
+                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
+                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
+
+
+FROM transactions,bank_accounts,currencies
+WHERE type = ?
+    AND transactions.account_id = bank_accounts.id
+    AND bank_accounts.currency = currencies.id
+    AND transactions.amount = MAX(amount);
+
+
+getAvgExpenseOfTransactionType:
+SELECT AVG(transactions.amount) AS averageAmount
+FROM transactions
+WHERE transactions.type = ?;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();

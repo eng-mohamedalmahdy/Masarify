@@ -8,6 +8,7 @@ sealed interface TransactionDatasource<T : Transaction> {
     suspend fun createTransaction(transaction: T)
 
     suspend fun updateTransaction(transaction: T)
+
     suspend fun deleteTransaction(transaction: T): Boolean
 
     suspend fun getAllTransactions(): List<T>

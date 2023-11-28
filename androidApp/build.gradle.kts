@@ -44,14 +44,14 @@ android {
     }
 }
 dependencies {
-    val koinVersion = "3.5.0"
+    val koinVersion = "3.5.2-RC1"
 
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
     implementation("com.arkivanov.decompose:decompose:2.1.0-compose-experimental")
     implementation("io.github.xxfast:decompose-router:0.5.1")
 
-    implementation("io.insert-koin:koin-compose:1.1.0")
+    runtimeOnly("io.insert-koin:koin-androidx-compose:${koinVersion}")
     implementation("io.insert-koin:koin-core:${koinVersion}")
     implementation("io.insert-koin:koin-test:${koinVersion}")
     implementation("io.insert-koin:koin-android:${koinVersion}")

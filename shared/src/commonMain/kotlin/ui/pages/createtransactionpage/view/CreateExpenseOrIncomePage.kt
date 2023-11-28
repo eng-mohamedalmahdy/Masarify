@@ -34,6 +34,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
 import ui.composeables.CategoriesPicker
 import ui.composeables.DatePicker
 import ui.composeables.DropDownTextField
@@ -50,7 +51,10 @@ import ui.pages.createtransactionpage.viewmodel.CreateTransactionViewModel
 fun CreateTransactionPage(transactionType: UiTransactionType) {
 
     val viewModel =
-        CreateTransactionViewModel(koinInject(), koinInject(), koinInject(), koinInject(), koinInject()).let {
+        CreateTransactionViewModel(
+            koinInject(named("expense")), koinInject(named("income")), koinInject(named("transfer")), koinInject(), koinInject(), koinInject(),
+            koinInject()
+        ).let {
             getViewModel(Unit, viewModelFactory { it })
         }
     val viewModelState = remember { viewModel }

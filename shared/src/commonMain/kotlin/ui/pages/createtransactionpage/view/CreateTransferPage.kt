@@ -24,6 +24,7 @@ import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.resources.compose.stringResource
 import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
 import ui.composeables.DropDownTextField
 import ui.composeables.CardTextField
 import ui.composeables.SaveButton
@@ -35,7 +36,10 @@ import ui.pages.createtransactionpage.viewmodel.CreateTransactionViewModel
 @Composable
 fun CreateTransferPage() {
     val viewModel =
-        CreateTransactionViewModel(koinInject(), koinInject(), koinInject(), koinInject(), koinInject()).let {
+        CreateTransactionViewModel(
+            koinInject(named("expense")), koinInject(named("income")), koinInject(named("transfer")), koinInject(), koinInject(), koinInject(),
+            koinInject()
+        ).let {
             getViewModel(Unit, viewModelFactory { it })
         }
     val bankAccounts by viewModel.storedBankAccounts.collectAsState()

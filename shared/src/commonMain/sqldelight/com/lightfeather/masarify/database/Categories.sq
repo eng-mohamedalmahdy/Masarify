@@ -1,5 +1,5 @@
 CREATE TABLE  categories(
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     desceription TEXT NOT NULL,
     color TEXT NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE  categories(
 );
 
 insertCategory:
-INSERT INTO categories (id, name, desceription, color, icon) VALUES (?, ?, ?, ?, ?);
+INSERT INTO categories ( name, desceription, color, icon) VALUES ( ?, ?, ?, ?);
 
 
 updateById:

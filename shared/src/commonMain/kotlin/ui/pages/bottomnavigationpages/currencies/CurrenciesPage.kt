@@ -212,7 +212,7 @@ private fun CurrencyTable(
                             if (exchangeRate.fromCurrency == exchangeRate.toCurrency) "-" else "${exchangeRatesState[x][y].rate}"
                         CurrencyCell(
                             text = rate,
-                            isEditing = inEditMode,
+                            isEditing = inEditMode && exchangeRate.fromCurrency != exchangeRate.toCurrency,
                             onTextChange = {
                                 exchangeRatesState[x][y] = exchangeRate.copy(rate = it.toDoubleOrNull() ?: 0.0)
                             }

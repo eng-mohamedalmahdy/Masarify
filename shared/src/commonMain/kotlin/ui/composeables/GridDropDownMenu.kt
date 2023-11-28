@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -56,7 +57,8 @@ fun <T> SearchableGridDropDownMenu(
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionIndex by remember { mutableStateOf(-1) }
     var searchText by remember { mutableStateOf("") }
-    val filteredList by remember { derivedStateOf { options.filter { searchFilterFunction(searchText, it) } } }
+
+    val filteredList = derivedStateOf { options.filter { searchFilterFunction(searchText, it) } }
 
     Column(
         modifier
@@ -79,7 +81,7 @@ fun <T> SearchableGridDropDownMenu(
                     .fillMaxWidth(),
             ) {
                 label()
-                if (selectedOptionIndex >= 0) dropDownItem(filteredList[selectedOptionIndex])
+                if (selectedOptionIndex >= 0) dropDownItem(filteredList.value[selectedOptionIndex])
 
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -99,7 +101,7 @@ fun <T> SearchableGridDropDownMenu(
                     GridCells.Fixed(6), modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(0.dp)
                 ) {
-                    itemsIndexed(filteredList) { idx, value ->
+                    itemsIndexed(filteredList.value) { idx, value ->
                         DropdownMenuItem(
                             text = {
                                 Row(
@@ -119,7 +121,9 @@ fun <T> SearchableGridDropDownMenu(
                         )
                     }
                     item {
-                        AddButton(onAddClick)
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                            AddButton(onAddClick)
+                        }
                     }
                 }
             }
@@ -135,10 +139,9 @@ private fun AddButton(onClick: () -> Unit) {
     IconButton(
         onClick,
         modifier = Modifier
-            .padding(2.dp)
+            .padding(top = 16.dp)
             .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(9.dp))
             .clip(RoundedCornerShape(4.dp)),
-
         ) {
         Image(
             Icons.Default.Add, stringResource(MR.strings.add_new_category_or_tag),

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS transaction_categories (
+    transaction_id INTEGER,
+    category_id INTEGER,
+    PRIMARY KEY (transaction_id, category_id),
+    FOREIGN KEY (transaction_id) REFERENCES transactions(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+);

@@ -72,8 +72,8 @@ fun CreateCategoryDialog(
                         onSaveCategoryClick(
                             UiExpenseCategory(
                                 categoryName,
-                                categoryColor.value.toHexString(),
-                                images[selectedImageIndex]
+                                images[selectedImageIndex],
+                                categoryColor.value.toHexString()
                             )
                         )
                     }

@@ -16,6 +16,8 @@ plugins {
     id("kotlin-parcelize") // Apply the plugin for Android
     id("com.arkivanov.parcelize.darwin")
     id("dev.icerock.mobile.multiplatform-resources")
+    kotlin("plugin.serialization") version "1.9.10"
+
 }
 
 kotlin {
@@ -66,6 +68,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
                 implementation("io.insert-koin:koin-core:${koinVersion}")
                 implementation("io.insert-koin:koin-compose:1.1.0")

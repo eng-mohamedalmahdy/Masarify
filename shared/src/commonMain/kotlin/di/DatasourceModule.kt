@@ -6,12 +6,15 @@ import com.lightfeather.core.data.datasource.CurrencyDatasource
 import com.lightfeather.core.data.datasource.CurrencyExchangeRateDatasource
 import com.lightfeather.core.data.datasource.transactions.ExpensesDatasource
 import com.lightfeather.core.data.datasource.transactions.IncomeDatasource
+import com.lightfeather.core.data.datasource.transactions.TransactionDatasource
 import com.lightfeather.core.data.datasource.transactions.TransferDatasource
+import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.masarify.database.BankAccountsQueries
 import com.lightfeather.masarify.database.CategoriesQueries
 import com.lightfeather.masarify.database.CurrenciesQueries
 import com.lightfeather.masarify.database.CurrencyExchangeRateQueries
 import com.lightfeather.masarify.database.Database
+import com.lightfeather.masarify.database.TransactionsQueries
 import data.dummy.datasourceimp.CategoryDatasourceDummyImp
 import data.dummy.datasourceimp.ExpensesDatasourceDummyImp
 import data.dummy.datasourceimp.IncomeDatasourceDummyImp
@@ -20,6 +23,9 @@ import data.local.BankAccountDatasourceLocalImp
 import data.local.CategoryDatasourceReleaseImp
 import data.local.CurrencyDatasourceLocalImp
 import data.local.CurrencyExchangeRateDatasourceLocalImp
+import data.local.ExpensesDatasourceLocalImp
+import data.local.IncomeDatasourceLocalImp
+import data.local.TransferDatasourceLocalImp
 import data.local.createDatabase
 import data.remote.httpClient
 import io.ktor.client.HttpClient
@@ -28,9 +34,9 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val dummyDataSourceModule = module {
-    single<ExpensesDatasource> { ExpensesDatasourceDummyImp }
-    single<IncomeDatasource> { IncomeDatasourceDummyImp }
-    single<TransferDatasource> { TransferDatasourceDummyImp }
+//    single<ExpensesDatasource> { ExpensesDatasourceDummyImp }
+//    single<IncomeDatasource> { IncomeDatasourceDummyImp }
+//    single<TransferDatasource> { TransferDatasourceDummyImp }
 
 //    single<CategoryDatasource> { CategoryDatasourceDummyImp }
 
@@ -45,10 +51,11 @@ val databaseQueriesModule = module {
     single<BankAccountsQueries> { get<Database>().bankAccountsQueries }
     single<CurrencyExchangeRateQueries> { get<Database>().currencyExchangeRateQueries }
     single<CategoriesQueries> { get<Database>().categoriesQueries }
+    single<TransactionsQueries> { get<Database>().transactionsQueries }
 }
 
 val httpClientModule = module {
-    single<HttpClient> { httpClient  }
+    single<HttpClient> { httpClient }
 }
 val localDatasourceModule = module {
 
@@ -56,11 +63,10 @@ val localDatasourceModule = module {
     single<AccountDatasource> { BankAccountDatasourceLocalImp(get()) }
     single<CurrencyExchangeRateDatasource> { CurrencyExchangeRateDatasourceLocalImp(get()) }
 
-    single<CategoryDatasource> { CategoryDatasourceReleaseImp(get(),get()) }
-
-//    single<TransferDatasource> { TransferDatasource(get()) }
-//    single<ExpensesDatasource> { ExpensesDatasource(get()) }
-//    single<IncomeDatasource> { IncomeDatasource(get()) }
+    single<CategoryDatasource> { CategoryDatasourceReleaseImp(get(), get()) }
+    single<ExpensesDatasource> { ExpensesDatasourceLocalImp(get()) }
+    single<IncomeDatasource> { IncomeDatasourceLocalImp(get()) }
+    single<TransferDatasource> { TransferDatasourceLocalImp(get(), get()) }
 }
 
 expect fun databaseDriverFactoryModule(): Module
@@ -74,9 +80,9 @@ fun initKoinAndroid(additionalModules: List<Module>) {
 
 internal fun getBaseModules(): List<Module> = listOf(
     useCaseModule,
-    repositoryModule,
-    dummyDataSourceModule,
     databaseQueriesModule,
     localDatasourceModule,
-    httpClientModule
+    httpClientModule,
+    repositoryModule,
+    dummyDataSourceModule
 ) + databaseDriverFactoryModule()

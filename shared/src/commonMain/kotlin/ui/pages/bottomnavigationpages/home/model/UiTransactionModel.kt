@@ -63,7 +63,7 @@ fun Transaction.toUiExpenseModel(): UiTransactionModel {
         title = name,
         description = description ?: "",
         type = getTypeFromDomainTransaction(),
-        amount = 0.0,
+        amount = amount,
         categories = categories,
         currencySign = account.currency.sign,
         account = account.toUiBankAccount(),

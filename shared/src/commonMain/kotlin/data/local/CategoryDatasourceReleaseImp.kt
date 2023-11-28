@@ -12,7 +12,7 @@ class CategoryDatasourceReleaseImp(
 ) : CategoryDatasource {
     override suspend fun createCategory(category: Category): Int {
         with(category) {
-            queries.insertCategory(id.toLong(), name, description ?: "", color, icon)
+            queries.insertCategory(name, description ?: "", color, icon)
         }
         return queries.selectLastInsertedRowId().executeAsOne().toInt()
     }
@@ -29,6 +29,7 @@ class CategoryDatasourceReleaseImp(
     }
 
     override suspend fun getAllCategories(): List<Category> {
+
         return queries.selectAllCategories { id, name, desceription, color, icon ->
             Category(
                 id.toInt(), name, desceription,
