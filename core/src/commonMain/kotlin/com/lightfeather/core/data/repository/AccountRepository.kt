@@ -6,7 +6,7 @@ import com.lightfeather.core.domain.Account
 class AccountRepository (private val datasource: AccountDatasource){
     fun createAccount(account: Account): Int = datasource.createAccount(account)
 
-    fun updateAccountName(account: Account) = datasource.updateAccountName(account)
+    fun updateAccount(account: Account) = datasource.updateAccount(account)
 
     fun deleteAccount(account: Account): Boolean = datasource.deleteAccount(account)
 

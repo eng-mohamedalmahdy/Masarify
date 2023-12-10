@@ -11,7 +11,7 @@ class CategoryRepository(private val datasource: CategoryDatasource) {
 
     suspend fun deleteCategory(category: Category): Boolean = datasource.deleteCategory(category)
 
-    suspend fun getAllCategories(): List<Category> = datasource.getAllCategories()
+    suspend fun getAllCategories() = datasource.getAllCategories()
 
     suspend fun getCategoryById(id: Int): Category = datasource.getCategoryById(id)
     suspend fun getAllCategoryIcons() = datasource.getAllCategoryIcons()

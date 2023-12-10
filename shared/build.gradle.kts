@@ -63,6 +63,9 @@ kotlin {
         val napierVersion = "2.6.1"
         val commonMain by getting {
             dependencies {
+                implementation("com.russhwolf:multiplatform-settings:1.1.1")
+                implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
+
                 implementation(project(":core"))
                 implementation("media.kamel:kamel-image:0.7.3")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")

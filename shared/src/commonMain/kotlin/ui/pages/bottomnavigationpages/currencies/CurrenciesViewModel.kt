@@ -10,7 +10,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ui.entity.UiCurrency
 import ui.entity.toDomainCurrency
@@ -36,14 +36,15 @@ class CurrenciesViewModel(
     private val _currenciesFlow = MutableStateFlow<List<UiCurrency>>(listOf())
     val currenciesFlow = _currenciesFlow.asStateFlow()
 
-    fun loadCurrenciesAndExchangeRates() = viewModelScope.launch(ioDispatchers) {
-        val exchangeRates = getAllExchangeRate()
-        val currencies = getAllCurrencies()
+    fun loadCurrenciesAndExchangeRates() {
+        viewModelScope.launch(ioDispatchers) {
+            getAllExchangeRate().map { exchangeRates -> exchangeRates.map { it.map { it.toUiExchangeRate() } } }
+                .collect(_currenciesExchangeRateFlow)
 
-        _currenciesFlow.update { currencies.map { it.toUiCurrency() } }
+        }
 
-        _currenciesExchangeRateFlow.update {
-            exchangeRates.map { it.map { it.toUiExchangeRate() } }
+        viewModelScope.launch(ioDispatchers) {
+            getAllCurrencies().map { it.map { it.toUiCurrency() } }.collect(_currenciesFlow)
         }
     }
 

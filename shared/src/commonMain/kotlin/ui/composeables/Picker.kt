@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.map
 @Composable
 fun Picker(
     items: List<String>,
-    state: PickerState = rememberPickerState(),
+    state: PickerState,
     modifier: Modifier = Modifier,
     startIndex: Int = 0,
     visibleItemsCount: Int = 3,
@@ -128,8 +128,8 @@ private fun Modifier.fadingEdge(brush: Brush) = this
 private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }
 
 @Composable
-fun rememberPickerState() = remember { PickerState() }
+fun rememberPickerState(initialValue: String) = remember { PickerState(initialValue) }
 
-class PickerState {
-    var selectedItem by mutableStateOf("")
+class PickerState(private val initialValue: String) {
+    var selectedItem by mutableStateOf(initialValue)
 }

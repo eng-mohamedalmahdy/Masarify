@@ -1,8 +1,7 @@
 package ui.pages.bottomnavigationpages.bankaccounts.view
 
 
-import LocalMainNavController
-import androidx.compose.desktop.ui.tooling.preview.Preview
+import ui.util.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +13,7 @@ import io.github.aakira.napier.Napier
 import org.koin.compose.koinInject
 import ui.entity.UiBankAccount
 import ui.entity.UiCurrency
+import ui.main.LocalMainNavController
 import ui.pages.Page
 import ui.pages.bottomnavigationpages.bankaccounts.viewmodel.BankAccountsViewModel
 
@@ -48,7 +48,7 @@ private fun BankAccountsPagePreview() {
             color = "finibus",
             balance = 4.5,
             currency = UiCurrency(id = 8965, name = "Jana McKenzie", sign = "persequeris"),
-            id = 3330
+            id = 3330, logo = "scelerisque",
         )
     }) {}
 }

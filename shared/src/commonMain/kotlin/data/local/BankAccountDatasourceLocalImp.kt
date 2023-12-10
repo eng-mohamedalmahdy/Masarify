@@ -1,10 +1,16 @@
 package data.local
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.lightfeather.core.data.datasource.AccountDatasource
 import com.lightfeather.core.domain.Account
 import com.lightfeather.core.domain.Accounts
 import com.lightfeather.core.domain.Currency
 import com.lightfeather.masarify.database.BankAccountsQueries
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class BankAccountDatasourceLocalImp(private val queries: BankAccountsQueries) : AccountDatasource {
     override fun createAccount(account: Account): Int {
@@ -19,7 +25,7 @@ class BankAccountDatasourceLocalImp(private val queries: BankAccountsQueries) : 
         return queries.selectLastInsertedRowId().executeAsOne().toInt()
     }
 
-    override fun updateAccountName(account: Account) {
+    override fun updateAccount(account: Account) {
         with(account) {
             queries.updateAccount(
                 balance = balance,
@@ -27,7 +33,6 @@ class BankAccountDatasourceLocalImp(private val queries: BankAccountsQueries) : 
                 color = color,
                 logo = logo,
                 id = id.toLong()
-
             )
         }
     }
@@ -37,22 +42,24 @@ class BankAccountDatasourceLocalImp(private val queries: BankAccountsQueries) : 
         return true
     }
 
-    override fun getAccounts(): Accounts {
-        return queries.getAllAccounts().executeAsList().map {
-            with(it) {
-                Account(
-                    id = id.toInt(),
-                    name = name,
-                    currency = Currency(
-                        id = currencyId.toInt(),
-                        name = currencyMame,
-                        sign = sign
-                    ),
-                    description = desceription,
-                    balance = balance,
-                    color = color,
-                    logo = logo.toString()
-                )
+    override fun getAccounts(): Flow<Accounts> {
+        return queries.getAllAccounts().asFlow().mapToList(Dispatchers.IO).map {
+            it.map {
+                with(it) {
+                    Account(
+                        id = id.toInt(),
+                        name = name,
+                        currency = Currency(
+                            id = currencyId.toInt(),
+                            name = currencyMame,
+                            sign = sign
+                        ),
+                        description = desceription,
+                        balance = balance,
+                        color = color,
+                        logo = logo.toString()
+                    )
+                }
             }
         }
     }

@@ -44,12 +44,31 @@
     <string name="category_name">اسم التصنيف</string>
     <string name="account_data">بيانات الحساب</string>
     <string name="account_balance">رصيد الحساب</string>
-
     <string name="accounts">حساباتي</string>
     <string name="currencies">العملات</string>
     <string name="edit_currencies">تعديل العملات</string>
     <string name="currency_symbol">رمز العملة</string>
     <string name="add_currency">إضافة العملة</string>
-
+    <string name="your_transactions_history">تاريخ تحويلاتك</string>
+    <string name="add_exchange_rate">أضف معدلات صرف جديدة</string>
+    <string name="delete">حذف</string>
+    <string name="edit">تعديل</string>
+    <string name="my_bank_accounts">حساباتي البنكية</string>
+    <string name="are_you_sure_you_want_to_delete">هل أنت متأكد من حذف المعاملة؟</string>
+    <string name="delete_transaction">حذف المعاملة</string>
+    <string name="saved_successfully">تم الحفظ</string>
+    <string name="no_currency_selected">لم يتم اختيار العملة</string>
+    <string name="bank_name_cant_be_empty">لا يمكن أن يكون اسم البنك فارغ</string>
+    <string name="balance_must_be_positive_number">يجب أن يكون الرصيد عددا موجباً</string>
+    <string name="please_select_an_account">الرجاء اختيار الحساب</string>
+    <string name="please_select_receiver_account">الرجاء اختيار الحساب المستقبل</string>
+    <string name="please_select_a_category">الرجاء اختيار فئة</string>
+    <string name="title_cant_be_empty">لا يمكن ترك العنوان فارغًا</string>
+    <string name="amount_must_be_positive">يجب أن يكون المبلغ عددًا موجبًا</string>
+    <string name="please_select_date">الرجاء اختيار التاريخ</string>
+    <string name="please_select_time">الرجاء اختيار الوقت</string>
+    <string name="currency_name_cannot_be_empty">ادخل اسم العملة</string>
+    <string name="currency_symbol_is_required">أدخل رمز العملة</string>
+    <string name="transaction_accounts_must_have_the_same_currency">يجب أن تكون الحسابات من نفس العملة</string>
 
 </resources>

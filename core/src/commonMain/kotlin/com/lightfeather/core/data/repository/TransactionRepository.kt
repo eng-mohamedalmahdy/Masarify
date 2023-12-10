@@ -6,23 +6,24 @@ import com.lightfeather.core.domain.transaction.TransactionFilter
 
 abstract class TransactionRepository<T : Transaction>(private val datasource: TransactionDatasource<T>) {
 
-   suspend  fun createTransaction(transaction: T) = datasource.createTransaction(transaction)
+    suspend fun createTransaction(transaction: T) = datasource.createTransaction(transaction)
 
-   suspend  fun updateTransaction(transaction: T) = datasource.updateTransaction(transaction)
 
-   suspend  fun deleteTransaction(transaction: T) = datasource.deleteTransaction(transaction)
+    suspend fun deleteTransaction(transaction: Transaction) = datasource.deleteTransaction(transaction)
 
-   suspend  fun getAllTransactions(): List<T> = datasource.getAllTransactions()
+    suspend fun getAllTransactions() = datasource.getAllTransactions()
 
-   suspend  fun getTransactionById(id: Int): T = datasource.getTransactionById(id)
+    suspend fun getTransactionById(id: Int) = datasource.getTransactionById(id)
 
-   suspend  fun getMinTransaction(): T = datasource.getMinTransaction()
+    suspend fun getMinTransaction() = datasource.getMinTransaction()
 
-   suspend  fun getMaxTransaction(): T = datasource.getMaxTransaction()
+    suspend fun getMaxTransaction() = datasource.getMaxTransaction()
 
-   suspend  fun getAverageTransactionValue(): Double = datasource.getAverageTransactionValue()
+    suspend fun getAverageTransactionValue() = datasource.getAverageTransactionValue()
 
-   suspend  fun getFilteredTransactions(transactions: List<T>, filter: TransactionFilter): List<T> =
+    suspend fun getFilteredTransactions(transactions: List<T>, filter: TransactionFilter) =
         datasource.getFilteredTransactions(transactions, filter)
+
+   suspend fun updateTransaction(newTransaction: T)  = datasource.updateTransaction(newTransaction)
 
 }

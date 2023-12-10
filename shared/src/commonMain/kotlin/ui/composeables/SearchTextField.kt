@@ -9,12 +9,16 @@ import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun SearchTextField(text: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
+fun SearchTextField(
+    text: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     CardTextField(
         text,
         onValueChange,
         label = { Text(stringResource(MR.strings.search)) },
         modifier,
-        Icons.Outlined.Search
+        Icons.Outlined.Search,
     )
 }

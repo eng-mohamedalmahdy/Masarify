@@ -1,6 +1,7 @@
 package com.lightfeather.core.data.datasource
 
 import com.lightfeather.core.domain.Category
+import kotlinx.coroutines.flow.Flow
 
 interface CategoryDatasource {
 
@@ -10,7 +11,7 @@ interface CategoryDatasource {
 
     suspend fun deleteCategory(category: Category): Boolean
 
-    suspend fun getAllCategories(): List<Category>
+    suspend fun getAllCategories(): Flow<List<Category>>
 
     suspend fun getCategoryById(id: Int): Category
 

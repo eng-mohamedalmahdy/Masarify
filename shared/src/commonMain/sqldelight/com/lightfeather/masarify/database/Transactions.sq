@@ -21,7 +21,7 @@ INSERT INTO transactions (type, name, description, amount, timestamp, account_id
 VALUES ("TRANSFER", ?, ?, ?, ?, ?, ?, ?);
 
 insertTransactionCategory:
-INSERT INTO transaction_categories(transaction_id,category_id)
+INSERT OR IGNORE INTO transaction_categories(transaction_id,category_id)
 VALUES (?,?);
 
 
@@ -36,7 +36,7 @@ deleteTransaction:
 DELETE FROM transactions WHERE id = ?;
 
 deleteTransactionCategory:
-DELETE FROM transaction_categories WHERE transaction_id = ? AND category_id = ?;
+DELETE FROM transaction_categories WHERE transaction_id = ?;
 
 
 getAllTransactionsOfType:
@@ -106,6 +106,18 @@ getAvgExpenseOfTransactionType:
 SELECT AVG(transactions.amount) AS averageAmount
 FROM transactions
 WHERE transactions.type = ?;
+
+-- UpdateTransaction.sq
+
+UPDATE transactions
+SET
+    name = :name,
+    description = :description,
+    amount = :amount,
+    timestamp = :timestamp,
+    account_id = :account_id
+WHERE
+    id = :id;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();

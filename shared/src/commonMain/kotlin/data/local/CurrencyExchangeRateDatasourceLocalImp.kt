@@ -1,9 +1,16 @@
 package data.local
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.lightfeather.core.data.datasource.CurrencyExchangeRateDatasource
 import com.lightfeather.core.domain.Currency
 import com.lightfeather.core.domain.CurrencyExchangeRate
 import com.lightfeather.masarify.database.CurrencyExchangeRateQueries
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class CurrencyExchangeRateDatasourceLocalImp(private val exchangeRateQueries: CurrencyExchangeRateQueries) :
     CurrencyExchangeRateDatasource {
@@ -15,7 +22,7 @@ class CurrencyExchangeRateDatasourceLocalImp(private val exchangeRateQueries: Cu
     override suspend fun updateCurrencyExchangeRates(rates: List<List<CurrencyExchangeRate>>) {
         rates.forEach { rateList ->
             rateList.forEach { rate ->
-                exchangeRateQueries.insertExchangeRate(rate.from.id.toLong(), rate.to.id.toLong(), rate.rate)
+                exchangeRateQueries.updateByFrom(rate.rate, rate.from.id.toLong(), rate.to.id.toLong())
             }
         }
     }
@@ -25,8 +32,7 @@ class CurrencyExchangeRateDatasourceLocalImp(private val exchangeRateQueries: Cu
         return true
     }
 
-    override suspend fun getAllCurrenciesExchangeRates(): List<List<CurrencyExchangeRate>> {
-        val resRates = mutableListOf<MutableList<CurrencyExchangeRate>>()
+    override suspend fun getAllCurrenciesExchangeRates(): Flow<List<List<CurrencyExchangeRate>>> = flow {
         val mappedValues = exchangeRateQueries.getAllExchangeRates().executeAsList().map {
             CurrencyExchangeRate(
                 Currency(
@@ -40,14 +46,18 @@ class CurrencyExchangeRateDatasourceLocalImp(private val exchangeRateQueries: Cu
                 ), it.rate ?: 1.0
             )
         }
-        mappedValues.forEachIndexed { idx, i ->
-            resRates[idx] += mappedValues.filter { j -> i.from.id == j.from.id }
+
+        val groupedRates = mappedValues.groupBy { it.from }
+
+        val result = groupedRates.values.map { ratesForCurrency ->
+            ratesForCurrency.sortedBy { it.to.id }
         }
-        return resRates
+        Napier.d(mappedValues.toString(), tag = "DATA")
+        emit(result)
     }
 
-    override suspend fun getCurrencyExchangeRateById(id: Int): CurrencyExchangeRate {
-        return exchangeRateQueries.selectExchangeRateById(id.toLong()).executeAsOne().let {
+    override suspend fun getCurrencyExchangeRateById(fromId: Int, toId: Int): CurrencyExchangeRate {
+        return exchangeRateQueries.selectExchangeRateById(fromId.toLong(),toId.toLong()).executeAsOne().let {
             CurrencyExchangeRate(
                 Currency(
                     id = it.fromCurrencyId.toInt(),
@@ -62,19 +72,19 @@ class CurrencyExchangeRateDatasourceLocalImp(private val exchangeRateQueries: Cu
         }
     }
 
-    override suspend fun getExchangeRatesOfCurrency(currency: Currency): List<CurrencyExchangeRate> {
-        return exchangeRateQueries.getExchangeRatesOfCurrency(currency.id.toLong()).executeAsList().map {
+    override suspend fun getExchangeRatesOfCurrency(currency: Currency): Flow<List<CurrencyExchangeRate>> {
+        return exchangeRateQueries.getExchangeRatesOfCurrency(currency.id.toLong()) { fromCurrencyId: Long, fromCurrencyName: String, fromCurrencySign: String, toCurrencyId: Long, toCurrencyName: String, toCurrencySign: String, rate: Double? ->
             CurrencyExchangeRate(
                 Currency(
-                    id = it.fromCurrencyId.toInt(),
-                    name = it.fromCurrencyName,
-                    sign = it.fromCurrencySign
+                    id = fromCurrencyId.toInt(),
+                    name = fromCurrencyName,
+                    sign = fromCurrencySign
                 ), Currency(
-                    id = it.toCurrencyId.toInt(),
-                    name = it.toCurrencyName,
-                    sign = it.toCurrencySign
-                ), it.rate ?: 1.0
+                    id = toCurrencyId.toInt(),
+                    name = toCurrencyName,
+                    sign = toCurrencySign
+                ), rate ?: 1.0
             )
-        }
+        }.asFlow().mapToList(Dispatchers.IO)
     }
 }

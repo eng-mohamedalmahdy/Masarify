@@ -9,6 +9,7 @@ data class UiBankAccount(
     val name: String,
     val description: String,
     val color: String,
+    val logo: String,
     val balance: Double,
     val currency: UiCurrency,
     val id: Int = -1,
@@ -18,6 +19,7 @@ fun Account.toUiBankAccount() = UiBankAccount(
     name,
     description ?: "",
     color,
+    logo,
     balance,
     currency.toUiCurrency(),
     id
@@ -30,6 +32,6 @@ fun UiBankAccount.toDomainBankAccount() = Account(
     description = description,
     balance = balance,
     color = color,
-    logo = ""
+    logo = logo
 
 )

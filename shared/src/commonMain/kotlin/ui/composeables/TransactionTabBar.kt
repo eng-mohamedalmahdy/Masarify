@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,12 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.painterResource
+import ui.main.LocalAppTheme
 import ui.pages.bottomnavigationpages.home.model.UiTransactionType
 import ui.pages.bottomnavigationpages.home.model.getLocalisedString
-import ui.style.AppTheme
 
 
 @Composable
@@ -42,10 +44,10 @@ fun TransactionTabBar(
 
     TabRow(
         selectedTabIndex = tabItems.indexOf(selectedTab),
-        containerColor = AppTheme.cardColor,
+        containerColor = LocalAppTheme.current.cardColor,
         modifier = Modifier.fillMaxWidth()
             .padding(16.dp)
-            .background(AppTheme.cardColor, RoundedCornerShape(16.dp))
+            .background(LocalAppTheme.current.cardColor, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp)),
         indicator = {},
         divider = {}
@@ -56,8 +58,9 @@ fun TransactionTabBar(
 private fun TabItem(expenseType: UiTransactionType, isSelected: Boolean, onTabSelected: (UiTransactionType) -> Unit) {
     val iconTint = expenseType.color
     val borderColor = if (isSelected) expenseType.color else Color.Transparent
-    val backgroundColor = if (isSelected) Color.White else expenseType.color.copy(alpha = .25f)
-    val textColor = if (isSelected) expenseType.color else Color.Black
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.background else expenseType.color.copy(alpha = .25f)
+    val textColor = if (isSelected) expenseType.color else MaterialTheme.colorScheme.onBackground
+    val fontWeight = if (isSelected) FontWeight.Black else FontWeight.Normal
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -79,6 +82,6 @@ private fun TabItem(expenseType: UiTransactionType, isSelected: Boolean, onTabSe
             colorFilter = ColorFilter.tint(iconTint)
         )
         Spacer(Modifier.height(16.dp))
-        Text(expenseType.getLocalisedString(), color = textColor)
+        Text(expenseType.getLocalisedString(), color = textColor, fontWeight = fontWeight)
     }
 }

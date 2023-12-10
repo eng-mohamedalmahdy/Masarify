@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,7 +49,8 @@ private fun SplashPageViews(onAnimationDone: () -> Unit) {
             Image(painterResource(MR.images.app_logo), "", colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.background))
             Text(
                 stringResource(MR.strings.app_name),
-                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.padding(8.dp),
+                color = MaterialTheme.colorScheme.background,
                 style = TextStyle(
                     fontSize = 48.sp,
                     fontStyle = FontStyle.Italic,

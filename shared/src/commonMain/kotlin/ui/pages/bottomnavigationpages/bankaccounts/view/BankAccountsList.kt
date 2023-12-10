@@ -37,7 +37,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lightfeather.masarify.MR
+import dev.icerock.moko.resources.compose.stringResource
 import ext.toComposeColor
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import ui.entity.UiBankAccount
 
 @Composable
@@ -71,9 +75,18 @@ fun BankAccountsList(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(8.dp)
                 .padding(it),
             contentPadding = PaddingValues(bottom = heightInDp + 16.dp)
         ) {
+            item {
+                Text(
+                    stringResource(MR.strings.my_bank_accounts),
+                    modifier = Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
             items(accounts) {
                 BankAccountCard(it, onAccountClick)
             }
@@ -92,15 +105,21 @@ private fun BankAccountCard(bankAccount: UiBankAccount, onAccountClick: (UiBankA
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Row(Modifier.padding(vertical = 20.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.AccountBalance,
-                bankAccount.name,
-                tint = MaterialTheme.colorScheme.background
+            KamelImage(
+                resource = asyncPainterResource(bankAccount.logo),
+                contentDescription = bankAccount.color,
+                onFailure = {
+                    Icon(
+                        imageVector = Icons.Default.AccountBalance,
+                        bankAccount.name,
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             )
             Spacer(Modifier.width(4.dp))
             Text(
                 text = bankAccount.name,
-                color = MaterialTheme.colorScheme.background,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = TextStyle(
                     fontSize = 20.sp,
                     lineHeight = 29.sp,
@@ -109,10 +128,21 @@ private fun BankAccountCard(bankAccount: UiBankAccount, onAccountClick: (UiBankA
                 )
             )
             Spacer(Modifier.weight(1f))
+            Text(
+                "${bankAccount.balance} ${bankAccount.currency.sign}",
+                modifier = Modifier.padding(horizontal = 4.dp),
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    lineHeight = 29.sp,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = 0.5.sp,
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Icon(
                 imageVector = Icons.Default.Menu,
                 bankAccount.name,
-                tint = MaterialTheme.colorScheme.background
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }

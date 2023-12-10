@@ -10,6 +10,7 @@ import ui.pages.createtransactionpage.view.CategoryItem
 
 @Composable
 fun CategoriesPicker(
+    selectedCategory: UiExpenseCategory?,
     categories: List<UiExpenseCategory>,
     modifier: Modifier = Modifier,
     onCategorySelect: (UiExpenseCategory) -> Unit,
@@ -17,12 +18,12 @@ fun CategoriesPicker(
 ) {
 
     SearchableGridDropDownMenu(
+        selectedCategory,
         categories,
         onValueChange = onCategorySelect,
         label = { Text(stringResource(MR.strings.category_or_tag)) },
         dropDownItem = { CategoryItem(it) },
         modifier = modifier,
-        onAddClick = onAddCategoryClick,
-        searchFilterFunction = { searchText, item -> item.name.contains(searchText, true) }
-    )
+        onAddClick = onAddCategoryClick
+    ) { searchText, item -> item.name.contains(searchText, true) }
 }

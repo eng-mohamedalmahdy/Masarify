@@ -6,19 +6,13 @@ import com.lightfeather.core.data.datasource.CurrencyDatasource
 import com.lightfeather.core.data.datasource.CurrencyExchangeRateDatasource
 import com.lightfeather.core.data.datasource.transactions.ExpensesDatasource
 import com.lightfeather.core.data.datasource.transactions.IncomeDatasource
-import com.lightfeather.core.data.datasource.transactions.TransactionDatasource
 import com.lightfeather.core.data.datasource.transactions.TransferDatasource
-import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.masarify.database.BankAccountsQueries
 import com.lightfeather.masarify.database.CategoriesQueries
 import com.lightfeather.masarify.database.CurrenciesQueries
 import com.lightfeather.masarify.database.CurrencyExchangeRateQueries
 import com.lightfeather.masarify.database.Database
 import com.lightfeather.masarify.database.TransactionsQueries
-import data.dummy.datasourceimp.CategoryDatasourceDummyImp
-import data.dummy.datasourceimp.ExpensesDatasourceDummyImp
-import data.dummy.datasourceimp.IncomeDatasourceDummyImp
-import data.dummy.datasourceimp.TransferDatasourceDummyImp
 import data.local.BankAccountDatasourceLocalImp
 import data.local.CategoryDatasourceReleaseImp
 import data.local.CurrencyDatasourceLocalImp
@@ -37,9 +31,7 @@ val dummyDataSourceModule = module {
 //    single<ExpensesDatasource> { ExpensesDatasourceDummyImp }
 //    single<IncomeDatasource> { IncomeDatasourceDummyImp }
 //    single<TransferDatasource> { TransferDatasourceDummyImp }
-
 //    single<CategoryDatasource> { CategoryDatasourceDummyImp }
-
 //    single<AccountDatasource> { AccountDatasourceDummyImp }
 //    single<CurrencyDatasource> { CurrencyDatasourceDummyImp }
 //    single<CurrencyExchangeRateDatasource> { CurrencyExchangeRateDatasourceDummyImp }

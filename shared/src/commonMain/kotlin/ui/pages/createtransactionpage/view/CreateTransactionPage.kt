@@ -13,28 +13,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.composeables.TransactionTabBar
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
+import ui.pages.bottomnavigationpages.home.model.UiTransactionModel
 import ui.pages.bottomnavigationpages.home.model.UiTransactionType
 
 
 @Composable
 fun CreateTransactionPage(params: BottomNavigationPageModel.CreateTransactionPageModel) {
-    CreateTransactionPageViews()
+    CreateTransactionPageViews(params.transaction)
+
 }
 
 @Composable
-private fun CreateTransactionPageViews() {
-    var selectedTab by remember { mutableStateOf(UiTransactionType.Expense) }
+private fun CreateTransactionPageViews(transaction: UiTransactionModel?) {
+    var selectedTab by remember { mutableStateOf(transaction?.type ?: UiTransactionType.Expense) }
 
     Column(Modifier.fillMaxSize()) {
         Spacer(Modifier.height(16.dp))
-        TransactionTabBar(UiTransactionType.entries, selectedTab) { selectedTab = it }
+        TransactionTabBar(UiTransactionType.entries, selectedTab) { if (transaction == null) selectedTab = it }
         when (selectedTab) {
-            UiTransactionType.TRANSFER -> CreateTransferPage()
-            else -> CreateTransactionPage(selectedTab)
+            UiTransactionType.TRANSFER -> CreateTransferPage(transaction)
+            else -> CreateTransactionPage(selectedTab, transaction)
         }
     }
-
-
 }
 
 @Composable

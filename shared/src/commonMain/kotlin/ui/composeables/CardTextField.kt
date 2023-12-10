@@ -3,21 +3,19 @@ package ui.composeables
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import ui.style.AppTheme.cardColor
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.Key.Companion.I
+import ui.main.LocalAppTheme
 
 @Composable
 fun CardTextField(
@@ -33,24 +31,29 @@ fun CardTextField(
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
-        focusedContainerColor = cardColor,
-        unfocusedContainerColor = cardColor,
-        disabledContainerColor = cardColor,
+        focusedContainerColor = LocalAppTheme.current.cardColor,
+        unfocusedContainerColor = LocalAppTheme.current.cardColor,
+        disabledContainerColor = LocalAppTheme.current.cardColor,
+        unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+        focusedTextColor = MaterialTheme.colorScheme.onBackground,
+
     )
 ) {
 
+    runCatching {
 
-    TextField(
-        value = text,
-        onValueChange = onValueChange,
-        shape = RoundedCornerShape(size = 9.dp),
-        colors = colors,
-        modifier = modifier.padding(4.dp),
-        label = label,
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
-        singleLine = true,
-        readOnly = readonlyAndDisabled,
-        enabled = !readonlyAndDisabled,
-        trailingIcon = { trailingIcon?.let { Icon(it, null, tint = MaterialTheme.colorScheme.onBackground) } }
-    )
+        TextField(
+            value = text,
+            onValueChange = onValueChange,
+            shape = RoundedCornerShape(size = 9.dp),
+            colors = colors,
+            modifier = modifier.padding(4.dp),
+            label = label,
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType, imeAction = ImeAction.Done),
+            singleLine = true,
+            readOnly = readonlyAndDisabled,
+            enabled = !readonlyAndDisabled,
+            trailingIcon = { trailingIcon?.let { Icon(it, null, tint = MaterialTheme.colorScheme.onBackground) } }
+        )
+    }
 }

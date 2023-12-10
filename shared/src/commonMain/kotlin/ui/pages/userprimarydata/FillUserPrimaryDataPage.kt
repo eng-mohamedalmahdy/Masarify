@@ -1,9 +1,11 @@
-package ui.pages.createbankaccount
+package ui.pages.userprimarydata
 
 import ColorWheel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,8 +20,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,102 +32,102 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.arkivanov.decompose.router.stack.pop
 import com.lightfeather.masarify.MR
+import data.local.setIsFirstTime
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.resources.compose.stringResource
+import ext.navigateSingleTop
 import ext.toHexString
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import ui.composeables.CardTextField
-import ui.composeables.DropDownTextField
 import ui.composeables.SaveButton
 import ui.entity.UiBankAccount
 import ui.entity.UiCurrency
 import ui.main.LocalAppTheme
 import ui.main.LocalMainNavController
+import ui.main.LocalSettings
 import ui.main.LocalSnackBarHostState
+import ui.pages.Page
+import ui.pages.createbankaccount.CreateBankAccountViewModel
 import ui.util.SnackBarAction
 
 @Composable
-fun CreateBankAccountPage() {
-    val viewModel =
-        CreateBankAccountViewModel(
-            koinInject(),
-            koinInject(),
-            koinInject()
-        ).let { viewModelFactory { it }.createViewModel() }
+fun FillUserPrimaryDataPage() {
+    val viewModel = CreateBankAccountViewModel(
+        koinInject(),
+        koinInject(),
+        koinInject()
+    ).let { viewModelFactory { it }.createViewModel() }
+
+    val saveMessage = stringResource(MR.strings.saved_successfully)
+    val hostState = LocalSnackBarHostState.current
+    val coroutineScope = rememberCoroutineScope()
+
     val navController = LocalMainNavController.current
-    val viewModelState by remember { mutableStateOf(viewModel) }
-    val currencies by viewModelState.currenciesFlow.collectAsState()
-    val currenciesNames = currencies.map { it.name }
+    val settings = LocalSettings.current
     val primaryColor = MaterialTheme.colorScheme.primary
+
     var accountName by remember { mutableStateOf("") }
     var accountDescription by remember { mutableStateOf("") }
     var bankBalance by remember { mutableStateOf("") }
     val bankColor = remember { mutableStateOf(primaryColor) }
-    var selectedCurrencyIdx by remember { mutableStateOf(-1) }
-    val selectedCurrency by remember { derivedStateOf { currencies.getOrNull(selectedCurrencyIdx) } }
     var isShowingColorPicker by remember { mutableStateOf(false) }
 
-    val snackbarHostState = LocalSnackBarHostState.current
-    val coroutineScope = rememberCoroutineScope()
+    var currencyName by remember { mutableStateOf("") }
+    var currencySign by remember { mutableStateOf("") }
 
-    val noCurrencySelected = stringResource(MR.strings.no_currency_selected)
-    val bankAccountNameCantBeEmpty = stringResource(MR.strings.bank_name_cant_be_empty)
-    val balanceMustPositive = stringResource(MR.strings.balance_must_be_positive_number)
-    val successMessage = stringResource(MR.strings.saved_successfully)
+    val accountTitleMessage = stringResource(MR.strings.title_cant_be_empty)
+    val balanceMessage = stringResource(MR.strings.balance_must_be_positive_number)
+    val currencyNameMessage = stringResource(MR.strings.currency_name_cannot_be_empty)
+    val currencySymbolMessage = stringResource(MR.strings.currency_symbol_is_required)
+
     fun getValidationErrorMessage(
-        selectedCurrency: UiCurrency?,
         accountName: String,
-        bankBalance: String
-    ): String? =
-        if (selectedCurrency == null) noCurrencySelected
-        else if (accountName.isEmpty()) bankAccountNameCantBeEmpty
-        else if ((bankBalance.toDoubleOrNull() ?: -1.0) < 0.0) balanceMustPositive
+        balance: String,
+        currencyName: String,
+        currencySymbol: String
+    ): String? {
+        return if (accountName.isEmpty()) accountTitleMessage
+        else if ((balance.toDoubleOrNull() ?: 0.0) < -1) balanceMessage
+        else if (currencyName.isEmpty()) currencyNameMessage
+        else if (currencySymbol.isEmpty()) currencySymbolMessage
         else null
-
-    if (isShowingColorPicker) {
-        Dialog(onDismissRequest = { isShowingColorPicker = false }) {
-            Card(
-                Modifier.width(250.dp),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                ColorWheel(
-                    bankColor,
-                    modifier = Modifier.size(200.dp)
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally)
-                        .background(LocalAppTheme.current.cardColor, RoundedCornerShape(10.dp))
-                        .clip(RoundedCornerShape(10.dp))
-                )
-                SaveButton { isShowingColorPicker = false }
-            }
-        }
     }
-
     Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             stringResource(MR.strings.account_data),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         CardTextField(
             text = accountName,
             onValueChange = { accountName = it },
             label = { Text(stringResource(MR.strings.account_name)) },
             modifier = Modifier.fillMaxWidth(),
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         CardTextField(
             text = accountDescription,
             onValueChange = { accountDescription = it },
             label = { Text(stringResource(MR.strings.description)) },
             modifier = Modifier.fillMaxWidth(),
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         CardTextField(
             text = bankBalance,
             onValueChange = { bankBalance = it },
@@ -136,18 +136,38 @@ fun CreateBankAccountPage() {
             keyboardType = KeyboardType.Decimal
         )
 
-        DropDownTextField(
-            "",
-            currenciesNames, { Text(stringResource(MR.strings.currency)) }, { idx, item ->
-                selectedCurrencyIdx = idx
-            }, modifier = Modifier.fillMaxWidth()
-        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            CardTextField(
+                text = currencyName,
+                onValueChange = { currencyName = it },
+                label = { Text(stringResource(MR.strings.currency_name)) },
+                modifier = Modifier.weight(1f),
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            CardTextField(
+                text = currencySign,
+                onValueChange = { currencySign = it },
+                label = { Text(stringResource(MR.strings.currency_symbol)) },
+                modifier = Modifier.weight(1f),
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         CardTextField(
             text = bankColor.value.toHexString(),
             onValueChange = {},
             label = { Text(stringResource(MR.strings.color), color = Color.Black) },
-            modifier = Modifier.fillMaxWidth().clickable { isShowingColorPicker = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isShowingColorPicker = true },
             readonlyAndDisabled = true,
             colors = TextFieldDefaults.colors(
                 disabledTextColor = MaterialTheme.colorScheme.onBackground,
@@ -160,39 +180,59 @@ fun CreateBankAccountPage() {
             )
         )
 
-        SaveButton {
+        Spacer(modifier = Modifier.height(16.dp))
 
-            val validationErrorMessage = getValidationErrorMessage(selectedCurrency, accountName, bankBalance)
-
-            if (validationErrorMessage == null) selectedCurrency?.let {
-                viewModel.createBankAccount(
+        SaveButton(onClick = {
+            val errorMessage = getValidationErrorMessage(accountName, bankBalance, currencyName, currencySign)
+            if (errorMessage == null) {
+                viewModel.createBankAccountAndCurrency(
                     UiBankAccount(
                         name = accountName,
                         description = accountDescription,
-                        balance = bankBalance.toDoubleOrNull() ?: -1.0,
-                        currency = it,
-                        color = bankColor.value.toHexString(), logo = "", id = 5657,
+                        balance = bankBalance.toDouble(),
+                        currency = UiCurrency(0, currencyName, currencySign),
+                        color = bankColor.value.toHexString(),
+                        logo = "",
+                        id = 0,
                     )
                 )
+                settings.setIsFirstTime(false)
+                navController.navigateSingleTop { Page.AppHostPage }
+            } else {
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(
-                        successMessage,
-                        SnackBarAction.Success(),
+                    hostState.showSnackbar(
+                        errorMessage,
+                        SnackBarAction.Error(),
                         duration = SnackbarDuration.Short
                     )
                 }
-                navController.pop()
             }
-            else {
+        })
+    }
+
+    if (isShowingColorPicker) {
+        Dialog(onDismissRequest = { isShowingColorPicker = false }) {
+            Card(
+                Modifier.width(250.dp),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                ColorWheel(
+                    bankColor,
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .background(LocalAppTheme.current.cardColor, RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(10.dp))
+                )
+                SaveButton { isShowingColorPicker = false }
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(
-                        validationErrorMessage,
-                        SnackBarAction.Error(),
-                        duration = SnackbarDuration.Short
+                    hostState.showSnackbar(
+                        saveMessage,
+                        duration = SnackbarDuration.Long
                     )
                 }
             }
         }
     }
 }
-

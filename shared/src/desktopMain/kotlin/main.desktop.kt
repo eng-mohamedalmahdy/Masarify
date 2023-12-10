@@ -1,7 +1,8 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
+import ui.util.Preview
 import androidx.compose.runtime.Composable
 import di.getBaseModules
 import org.koin.compose.KoinApplication
+import ui.main.App
 
 
 @Composable

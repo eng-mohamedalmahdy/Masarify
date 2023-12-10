@@ -7,7 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import ui.entity.UiState
@@ -22,6 +22,16 @@ fun Color.toHexString(): String {
 
     // Combine them to form the hex string
     return "#$alpha$red$green$blue"
+}
+
+fun Color.generateBackgroundColor(darkeningFactor: Float): Color {
+    val luminance = luminance() * darkeningFactor
+
+    val red = (red * luminance).coerceIn(0f, 1f)
+    val green = (green * luminance).coerceIn(0f, 1f)
+    val blue = (blue * luminance).coerceIn(0f, 1f)
+
+    return Color(red, green, blue)
 }
 
 

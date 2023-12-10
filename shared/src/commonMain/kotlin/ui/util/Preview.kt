@@ -1,4 +1,4 @@
-package androidx.compose.desktop.ui.tooling.preview
+package ui.util
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)

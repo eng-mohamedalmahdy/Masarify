@@ -11,7 +11,7 @@ kotlin {
             dependencies {
                 implementation(project(":shared"))
                 implementation("io.github.aakira:napier:2.6.1")
-
+                implementation ("androidx.preference:preference-ktx:1.2.1")
             }
         }
     }
@@ -41,6 +41,12 @@ android {
         language {
             enableSplit = false
         }
+    }
+//    buildFeatures {
+//        compose = true
+//    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 }
 dependencies {

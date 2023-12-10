@@ -26,8 +26,8 @@ class GetAllCurrenciesExchangeRates(private val repository: CurrencyExchangeRate
 }
 
 class GetCurrencyExchangeRateById(private val repository: CurrencyExchangeRateRepository) {
-    suspend operator fun invoke(id: Int) =
-        repository.getCurrencyExchangeRateById(id)
+    suspend operator fun invoke(fromId: Int, toId: Int) =
+        repository.getCurrencyExchangeRateById(fromId,toId)
 }
 
 class GetExchangeRatesOfCurrency(private val repository: CurrencyExchangeRateRepository) {

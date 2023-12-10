@@ -8,6 +8,8 @@ import com.lightfeather.core.domain.Category
 import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
+import ext.convertTo24HourFormat
+import ext.dateToTimestamp
 import ext.formatTimeStampToDate
 import ext.formatTimeStampToTime
 import ui.entity.UiBankAccount
@@ -16,9 +18,9 @@ import ui.entity.toDomainBankAccount
 import ui.entity.toDomainCategory
 import ui.entity.toUiBankAccount
 import ui.entity.toUiCategoryModel
-import ui.style.AppTheme.expenseColor
-import ui.style.AppTheme.incomeColor
-import ui.style.AppTheme.transferColor
+import ui.style.AppLightTheme.expenseColor
+import ui.style.AppLightTheme.incomeColor
+import ui.style.AppLightTheme.transferColor
 
 @Parcelize
 data class UiTransactionModel(
@@ -29,8 +31,11 @@ data class UiTransactionModel(
     val categories: List<UiExpenseCategory>,
     val currencySign: String,
     val account: UiBankAccount,
+    val receiverAccount: UiBankAccount?,
+    val fee: Double?,
     val time: String = "",
     val date: String = "",
+    val id: Int,
 ) : Parcelable
 
 enum class UiTransactionType(val color: Color, val prefixChar: String) {
@@ -59,6 +64,8 @@ fun Transaction.toUiExpenseModel(): UiTransactionModel {
         is Transaction.Income -> listOf(source)
         is Transaction.Transfer -> listOf(Category.Transfer)
     }.map { it.toUiCategoryModel() }
+    val fee = if (this is Transaction.Transfer) fee else null
+    val receiverAccount = if (this is Transaction.Transfer) receiverAccount else null
     return UiTransactionModel(
         title = name,
         description = description ?: "",
@@ -68,45 +75,45 @@ fun Transaction.toUiExpenseModel(): UiTransactionModel {
         currencySign = account.currency.sign,
         account = account.toUiBankAccount(),
         time = timestamp.formatTimeStampToTime(),
-        date = timestamp.formatTimeStampToDate()
+        date = timestamp.formatTimeStampToDate(),
+        fee = fee,
+        receiverAccount = receiverAccount?.toUiBankAccount(),
+        id = id
     )
 }
 
 
-fun UiTransactionModel.toDomainTransaction(
-    receiverAccount: UiBankAccount? = null,
-    transferFee: Double = 0.0
-): Transaction =
+fun UiTransactionModel.toDomainTransaction(): Transaction =
     when (type) {
         UiTransactionType.Expense -> Transaction.Expense(
             name = title,
-            id = 0,
+            id = id,
             description = description,
             categories = categories.map { it.toDomainCategory() },
             amount = amount,
-            timestamp = 0,
+            timestamp = "${date}T${time.convertTo24HourFormat()}Z".dateToTimestamp(),
             account = account.toDomainBankAccount(),
         )
 
         UiTransactionType.INCOME -> Transaction.Income(
             name = title,
-            id = 0,
+            id = id,
             description = description,
             source = categories.map { it.toDomainCategory() }.first(),
             amount = amount,
-            timestamp = 0,
+            timestamp = "${date}T${time.convertTo24HourFormat()}Z".dateToTimestamp(),
             account = account.toDomainBankAccount(),
         )
 
         UiTransactionType.TRANSFER -> Transaction.Transfer(
-            id = 0,
+            id = id,
             name = title,
             description = description,
             amount = amount,
-            timestamp = 0,
+            timestamp = "${date}T${time.convertTo24HourFormat()}Z".dateToTimestamp(),
             account = account.toDomainBankAccount(),
             receiverAccount = receiverAccount!!.toDomainBankAccount(),
-            fee = transferFee
+            fee = fee!!
         )
     }
 

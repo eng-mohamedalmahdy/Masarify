@@ -1,5 +1,7 @@
 package ui.pages.apppage
 
+import ui.main.LocalBottomNavigationNavController
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,13 +14,13 @@ import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.FabPosition
+import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +33,6 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import ext.navigateSingleTop
 import io.github.xxfast.decompose.router.content.RoutedContent
-import io.github.xxfast.decompose.router.rememberRouter
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
 import ui.pages.bottomnavigationpages.bankaccounts.view.BankAccountsPage
 import ui.pages.bottomnavigationpages.currencies.CurrenciesPage
@@ -49,14 +50,11 @@ fun AppHostPage() {
 @Composable
 private fun AppHostPageViews() {
 
-    val bottomNavRouter = rememberRouter(
-        BottomNavigationPageModel::class,
-        initialStack = { listOf(BottomNavigationPageModel.HomePageModel) },
-    )
+    val bottomNavRouter = LocalBottomNavigationNavController.current
 
     val labelFontSize = 12.sp
 
-    Scaffold(modifier = Modifier.fillMaxSize(),
+    Scaffold(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.fillMaxWidth()
@@ -172,13 +170,13 @@ private fun AppHostPageViews() {
                 containerColor =
                 if (
                     bottomNavRouter.stack.value.active.configuration == BottomNavigationPageModel.HomePageModel ||
-                    bottomNavRouter.stack.value.active.configuration == BottomNavigationPageModel.CreateTransactionPageModel
+                    bottomNavRouter.stack.value.active.configuration is BottomNavigationPageModel.CreateTransactionPageModel
                 ) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
                 onClick = {
 
                     if (bottomNavRouter.stack.value.active.configuration == BottomNavigationPageModel.HomePageModel) {
-                        bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.CreateTransactionPageModel }
+                        bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.CreateTransactionPageModel(null) }
                     } else {
                         bottomNavRouter.navigateSingleTop { BottomNavigationPageModel.HomePageModel }
                     }
@@ -188,8 +186,14 @@ private fun AppHostPageViews() {
             }
         }
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            RoutedContent(bottomNavRouter, modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            RoutedContent(
+                bottomNavRouter,
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+            ) {
                 when (it) {
                     is BottomNavigationPageModel.HomePageModel -> HomePage()
                     is BottomNavigationPageModel.MorePageModel -> MorePage(it)

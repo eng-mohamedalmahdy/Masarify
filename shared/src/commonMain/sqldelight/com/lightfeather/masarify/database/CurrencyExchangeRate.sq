@@ -8,6 +8,9 @@ PRIMARY KEY(from_currency_id,to_currency_id)
 insertExchangeRate:
 INSERT OR REPLACE INTO exchange_rates (from_currency_id, to_currency_id, rate) VALUES (?, ?, ?);
 
+updateByFrom:
+UPDATE exchange_rates SET rate  = ? WHERE exchange_rates.from_currency_id = ? AND exchange_rates.to_currency_id = ?;
+
 getAllExchangeRates:
 SELECT DISTINCT
  from_currency.id fromCurrencyId ,from_currency.name fromCurrencyName,from_currency.sign fromCurrencySign ,
@@ -15,8 +18,7 @@ SELECT DISTINCT
        rate
 FROM exchange_rates,currencies from_currency,currencies to_currency
 WHERE exchange_rates.from_currency_id = from_currency.id
-      AND exchange_rates.to_currency_id = to_currency.id;
-
+      AND exchange_rates.to_currency_id = to_currency.id  ;
 
 deleteExchangeRateById:
 DELETE FROM exchange_rates WHERE from_currency_id = ? AND to_currency_id = ?;
@@ -27,7 +29,9 @@ SELECT DISTINCT from_currency.id fromCurrencyId ,from_currency.name fromCurrency
               rate
        FROM exchange_rates,currencies from_currency,currencies to_currency
        WHERE exchange_rates.from_currency_id = from_currency.id
-             AND exchange_rates.to_currency_id = to_currency.id AND from_currency_id = ?;
+             AND exchange_rates.to_currency_id = to_currency.id
+             AND from_currency_id = ?
+             AND to_currency_id = ?;
 
 
 getExchangeRatesOfCurrency:
@@ -36,7 +40,8 @@ SELECT DISTINCT from_currency.id fromCurrencyId ,from_currency.name fromCurrency
               rate
        FROM exchange_rates,currencies from_currency,currencies to_currency
        WHERE exchange_rates.from_currency_id = from_currency.id
-             AND exchange_rates.to_currency_id = to_currency.id AND from_currency_id = ?;
+             AND exchange_rates.to_currency_id = to_currency.id
+             AND from_currency_id = ?;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();

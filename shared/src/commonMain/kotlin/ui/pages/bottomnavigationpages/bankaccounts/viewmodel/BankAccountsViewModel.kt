@@ -1,12 +1,14 @@
 package ui.pages.bottomnavigationpages.bankaccounts.viewmodel
 
 import com.lightfeather.core.usecase.GetAllAccounts
+import com.lightfeather.masarify.MR.strings.accounts
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ui.entity.UiBankAccount
@@ -19,8 +21,8 @@ class BankAccountsViewModel(getAllAccounts: GetAllAccounts) : ViewModel() {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-//            _bankAccountsFlow.emit(UiState.LOADING())
-            _bankAccountsFlow.emit(UiState.SUCCESS(getAllAccounts().map { it.toUiBankAccount() }))
+            getAllAccounts().map { accountsList -> UiState.SUCCESS(accountsList.map { it.toUiBankAccount() }) }
+                .collect(_bankAccountsFlow)
         }
     }
 }

@@ -19,14 +19,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -41,11 +40,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
-import ui.style.AppTheme
+import ui.main.LocalAppTheme
 
 
 @Composable
 fun <T> SearchableGridDropDownMenu(
+    selectedItem: T?,
     options: List<T>,
     onValueChange: (T) -> Unit,
     label: @Composable () -> Unit,
@@ -55,14 +55,14 @@ fun <T> SearchableGridDropDownMenu(
     searchFilterFunction: (String, T) -> Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionIndex by remember { mutableStateOf(-1) }
     var searchText by remember { mutableStateOf("") }
 
     val filteredList = derivedStateOf { options.filter { searchFilterFunction(searchText, it) } }
 
+
     Column(
         modifier
-            .background(AppTheme.cardColor, RoundedCornerShape(9.dp))
+            .background(LocalAppTheme.current.cardColor, RoundedCornerShape(9.dp))
             .fillMaxWidth()
             .clickable(onClick = { expanded = !expanded })
             .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -81,7 +81,7 @@ fun <T> SearchableGridDropDownMenu(
                     .fillMaxWidth(),
             ) {
                 label()
-                if (selectedOptionIndex >= 0) dropDownItem(filteredList.value[selectedOptionIndex])
+                selectedItem?.let { dropDownItem(it) }
 
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -93,7 +93,7 @@ fun <T> SearchableGridDropDownMenu(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             Column(modifier = Modifier.width(300.dp).height(320.dp)) {
                 SearchTextField(searchText, { searchText = it })
@@ -114,14 +114,13 @@ fun <T> SearchableGridDropDownMenu(
                             },
                             onClick = {
                                 onValueChange(value)
-                                selectedOptionIndex = idx
                                 expanded = false
                             },
                             contentPadding = PaddingValues(4.dp)
                         )
                     }
                     item {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             AddButton(onAddClick)
                         }
                     }
@@ -142,7 +141,7 @@ private fun AddButton(onClick: () -> Unit) {
             .padding(top = 16.dp)
             .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(9.dp))
             .clip(RoundedCornerShape(4.dp)),
-        ) {
+    ) {
         Image(
             Icons.Default.Add, stringResource(MR.strings.add_new_category_or_tag),
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.background)

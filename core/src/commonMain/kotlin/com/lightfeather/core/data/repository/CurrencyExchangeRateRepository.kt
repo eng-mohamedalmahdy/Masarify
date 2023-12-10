@@ -15,11 +15,11 @@ class CurrencyExchangeRateRepository(private val datasource: CurrencyExchangeRat
     suspend fun deleteCurrencyExchangeRate(rate: CurrencyExchangeRate): Boolean =
         datasource.deleteCurrencyExchangeRate(rate)
 
-    suspend fun getAllCurrenciesExchangeRates(): List<List<CurrencyExchangeRate>> =
+    suspend fun getAllCurrenciesExchangeRates() =
         datasource.getAllCurrenciesExchangeRates()
 
-    suspend fun getCurrencyExchangeRateById(id: Int): CurrencyExchangeRate = datasource.getCurrencyExchangeRateById(id)
+    suspend fun getCurrencyExchangeRateById(id: Int, toId: Int): CurrencyExchangeRate = datasource.getCurrencyExchangeRateById(id,toId)
 
-    suspend fun getExchangeRatesOfCurrency(currency: Currency): List<CurrencyExchangeRate> =
+    suspend fun getExchangeRatesOfCurrency(currency: Currency) =
         datasource.getExchangeRatesOfCurrency(currency)
 }

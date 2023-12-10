@@ -6,12 +6,11 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOut
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -24,8 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,6 +40,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -51,31 +50,35 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.Napier
 import org.koin.compose.koinInject
 import ui.composeables.CardTextField
 import ui.entity.UiCurrency
+import ui.main.LocalAppTheme
 import ui.pages.bottomnavigationpages.currencies.model.UiExchangeRate
-import ui.style.AppTheme
 
 
 @Composable
 fun CurrenciesPage() {
-    val viewModel = CurrenciesViewModel(koinInject(), koinInject(),koinInject(),koinInject()).let { getViewModel(Unit, viewModelFactory { it }) }
+    val viewModel = CurrenciesViewModel(koinInject(), koinInject(), koinInject(), koinInject()).let {
+        getViewModel(
+            Unit,
+            viewModelFactory { it })
+    }
     val viewModelState = remember { viewModel }
 
     val currencies by viewModelState.currenciesFlow.collectAsState()
@@ -83,6 +86,7 @@ fun CurrenciesPage() {
     var isShowingAddCurrencyDialog by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.loadCurrenciesAndExchangeRates()
+        Napier.d(exchangeRates.toString())
     }
     Box {
         if (isShowingAddCurrencyDialog) {
@@ -96,12 +100,7 @@ fun CurrenciesPage() {
         AnimatedContent(
             currencies,
             transitionSpec = {
-                slideIn(tween(500)) {
-                    IntOffset(
-                        it.width,
-                        it.height
-                    )
-                } togetherWith slideOut(tween(500)) { IntOffset(it.width, it.height) }
+                fadeIn(tween(500)) togetherWith fadeOut(tween(500))
             }
         ) {
             CurrenciesPageViews(it, exchangeRates, onSaveClick = {
@@ -171,69 +170,103 @@ private fun CurrencyTable(
     var inEditMode by remember { mutableStateOf(false) }
     val exchangeRatesState by remember { mutableStateOf(exchangeRates.map { it.toMutableList() }) }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Column {
 
+//        Text(stringResource(MR.strings.))
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 100.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Card(
+            Modifier.padding(24.dp).padding(bottom = 100.dp).fillMaxSize(),
+            colors = CardDefaults.cardColors(containerColor = LocalAppTheme.current.cardColor),
+            shape = RoundedCornerShape(10.dp)
         ) {
-            // Header Row
-            Row(
+            BoxWithConstraints(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(scrollState)
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(10.dp))
+                    .padding(8.dp)
+                    .align(Alignment.CenterHorizontally),
+                contentAlignment = Alignment.TopCenter
             ) {
-                CurrencyCell(text = stringResource(MR.strings.currency), isHeader = true)
-                currencies.forEach { currency ->
-                    CurrencyCell(text = currency.name, isHeader = true)
-                }
-            }
 
-            // Data Rows
-            currencies.forEachIndexed { x, currency ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(scrollState)
-                ) {
-                    // Currency Name
-                    CurrencyCell(text = currency.name, isHeader = true)
-
-                    // Exchange Rate Cells
-                    exchangeRatesState.getOrNull(x)?.forEachIndexed { y, exchangeRate ->
-                        val rate =
-                            if (exchangeRate.fromCurrency == exchangeRate.toCurrency) "-" else "${exchangeRatesState[x][y].rate}"
-                        CurrencyCell(
-                            text = rate,
-                            isEditing = inEditMode && exchangeRate.fromCurrency != exchangeRate.toCurrency,
-                            onTextChange = {
-                                exchangeRatesState[x][y] = exchangeRate.copy(rate = it.toDoubleOrNull() ?: 0.0)
+                if (currencies.size > 1) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(bottom = 100.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        // Header Row
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(scrollState)
+                        ) {
+                            CurrencyCell(text = stringResource(MR.strings.currency), isHeader = true)
+                            currencies.forEach { currency ->
+                                CurrencyCell(text = currency.name, isHeader = true)
                             }
+                        }
+
+                        // Data Rows
+                        currencies.forEachIndexed { x, currency ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(scrollState)
+                            ) {
+                                // Currency Name
+                                CurrencyCell(text = currency.name, isHeader = true)
+
+                                // Exchange Rate Cells
+                                exchangeRatesState.getOrNull(x)?.forEachIndexed { y, exchangeRate ->
+                                    val rate =
+                                        if (exchangeRate.fromCurrency == exchangeRate.toCurrency) "-" else "${exchangeRatesState[x][y].rate}"
+                                    CurrencyCell(
+                                        text = rate,
+                                        isEditing = inEditMode && exchangeRate.fromCurrency != exchangeRate.toCurrency,
+                                        onTextChange = {
+                                            exchangeRatesState[x][y] =
+                                                exchangeRate.copy(rate = it.toDoubleOrNull() ?: 0.0)
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Column(
+                        Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(MR.images.coin_exchange_rate_placeholder),
+                            null,
+                            modifier = Modifier.size(200.dp)
+                        )
+                        Text(
+                            stringResource(MR.strings.add_exchange_rate),
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
+
                 }
+
+                CustomFloatingActionButton(
+                    true,
+                    fabIcon = if (inEditMode) Icons.Default.Save else Icons.Default.Update,
+                    isSaving = inEditMode,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    onSaveClick = { inEditMode = false; onSaveClick(exchangeRatesState) },
+                    onAddClick = onAddClick,
+                    onEditClick = { inEditMode = true }
+                )
             }
         }
-
-        CustomFloatingActionButton(
-            true,
-            fabIcon = if (inEditMode) Icons.Default.Save else Icons.Default.Update,
-            isSaving = inEditMode,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .padding(bottom = 100.dp),
-            onSaveClick = { inEditMode = false; onSaveClick(exchangeRatesState) },
-            onAddClick = onAddClick,
-            onEditClick = { inEditMode = true }
-        )
     }
 }
 
@@ -336,25 +369,36 @@ private fun CurrencyCell(
     val cellModifier = if (isHeader) {
         Modifier
             .background(MaterialTheme.colorScheme.primary)
-            .border(1.dp, Color.Black, shape = RectangleShape)
+            .border(1.dp, MaterialTheme.colorScheme.onBackground, shape = RectangleShape)
     } else {
         Modifier
-            .background(Color.White)
-            .border(1.dp, Color.Black, shape = RectangleShape)
+            .background(MaterialTheme.colorScheme.background)
+            .border(1.dp, MaterialTheme.colorScheme.onBackground, shape = RectangleShape)
     }
 
     Box(
-        modifier = cellModifier.padding(8.dp).size(60.dp),
+        modifier = cellModifier.padding(4.dp).size(60.dp),
         contentAlignment = Alignment.Center
     ) {
         if (isEditing) TextField(
             value = text,
             onValueChange = { onTextChange(it);text = it },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
+            colors = TextFieldDefaults.colors(
+                disabledTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                focusedContainerColor = LocalAppTheme.current.cardColor,
+                unfocusedContainerColor = LocalAppTheme.current.cardColor,
+                disabledContainerColor = LocalAppTheme.current.cardColor,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+            ),
+            shape = RoundedCornerShape(size = 9.dp),
         )
         else Text(
             text,
-            color = if (isHeader) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             style = TextStyle(fontWeight = if (isHeader) FontWeight.Bold else FontWeight.Normal)
         )

@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -48,9 +48,9 @@ fun CategoryItem(category: UiExpenseCategory) {
             style = TextStyle(
                 fontSize = 10.sp,
                 fontWeight = FontWeight(400),
-                color = Color.Black,
                 textAlign = TextAlign.Center,
-            )
+            ),
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }

@@ -1,14 +1,13 @@
 package ui.pages.createtransactionpage.view
 
 import ColorWheel
-import androidx.compose.desktop.ui.tooling.preview.Preview
+import ui.util.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -29,7 +28,7 @@ import ext.toHexString
 import ui.composeables.CardTextField
 import ui.composeables.ImagesList
 import ui.entity.UiExpenseCategory
-import ui.style.AppTheme
+import ui.main.LocalAppTheme
 
 @Composable
 fun CreateCategoryDialog(
@@ -42,7 +41,9 @@ fun CreateCategoryDialog(
     var selectedImageIndex by remember { mutableIntStateOf(0) }
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
-        Card {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = LocalAppTheme.current.cardColor)
+        ) {
             Column(modifier = Modifier.padding(8.dp)) {
                 CardTextField(
                     categoryName,
@@ -54,11 +55,12 @@ fun CreateCategoryDialog(
             Row() {
                 Card(
                     modifier = Modifier.padding(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = AppTheme.cardColor)
+                    colors = CardDefaults.cardColors(containerColor = LocalAppTheme.current.cardColor),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) { ColorWheel(categoryColor, Modifier.size(150.dp).padding(4.dp)) }
                 Card(
                     modifier = Modifier.padding(8.dp).height(150.dp),
-                    colors = CardDefaults.cardColors(containerColor = AppTheme.cardColor)
+                    colors = CardDefaults.cardColors(containerColor = LocalAppTheme.current.cardColor)
                 ) {
                     ImagesList(images, selectedImageIndex, categoryColor.value) { selectedImageIndex = it }
                 }

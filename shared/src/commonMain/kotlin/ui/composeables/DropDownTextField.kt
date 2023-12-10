@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,13 +20,14 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun DropDownTextField(
+    initialValue:String="",
     items: List<String>,
     label: @Composable () -> Unit,
     onValueChange: (idx: Int, item: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isDropdownMenuVisible by remember { mutableStateOf(false) }
-    var selectedValue by remember { mutableStateOf("") }
+    var selectedValue by remember { mutableStateOf(initialValue) }
 
     Box(
         modifier = modifier
@@ -43,11 +45,11 @@ fun DropDownTextField(
         DropdownMenu(
             expanded = isDropdownMenuVisible,
             onDismissRequest = { isDropdownMenuVisible = false },
-            modifier = Modifier.background(Color.White).fillMaxWidth()
+            modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxWidth()
         ) {
             items.forEachIndexed { idx, item ->
                 DropdownMenuItem(
-                    text = { Text(text = item) },
+                    text = { Text(text = item, color = MaterialTheme.colorScheme.onBackground) },
                     onClick = {
                         selectedValue = item
                         onValueChange(idx, item)

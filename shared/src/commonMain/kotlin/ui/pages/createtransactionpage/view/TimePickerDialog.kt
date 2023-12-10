@@ -1,5 +1,6 @@
 package ui.pages.createtransactionpage.view
 
+import ui.main.LocalAppTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,26 +16,25 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.lightfeather.masarify.MR
-import com.lightfeather.masarify.MR.strings.time
 import dev.icerock.moko.resources.compose.stringResource
 import rememberPickerState
 import ui.composeables.TimePicker
-import ui.style.AppTheme.grayColor
 
 @Composable
-fun TimePickerDialog(onConfirmClick: (String) -> Unit, onCancelClick: () -> Unit, onDismissDialog: () -> Unit) {
-    var hours = rememberPickerState()
-    var mins = rememberPickerState()
-    var ampm = rememberPickerState()
+fun TimePickerDialog(
+    initialValue: Triple<String, String, String>,
+    onConfirmClick: (Triple<String, String, String>) -> Unit,
+    onCancelClick: () -> Unit,
+    onDismissDialog: () -> Unit
+) {
+    val hours = rememberPickerState(initialValue.first)
+    val mins = rememberPickerState(initialValue.second)
+    val ampm = rememberPickerState(initialValue.third)
 
     Dialog(onDismissRequest = { onDismissDialog() }) {
         Card(
@@ -53,23 +53,30 @@ fun TimePickerDialog(onConfirmClick: (String) -> Unit, onCancelClick: () -> Unit
                         onClick = { onCancelClick() },
                         modifier = Modifier.weight(1f).border(
                             width = 1.dp,
-                            color = grayColor,
+                            color = LocalAppTheme.current.grayColor,
                             shape = RoundedCornerShape(size = 0.dp)
                         )
                     ) {
                         Text(
                             stringResource(MR.strings.cancel),
-                            color = grayColor
+                            color = LocalAppTheme.current.grayColor
                         )
                     }
                     TextButton(
                         onClick = {
 
-                            onConfirmClick("${hours.selectedItem}:${mins.selectedItem} ${ampm.selectedItem}")
+                            onConfirmClick(
+                                Triple(
+                                    hours.selectedItem.padStart(2, '0'),
+                                    mins.selectedItem.padStart(2, '0') + ":00",
+                                    " ${ampm.selectedItem}"
+                                )
+
+                            )
                         },
                         modifier = Modifier.weight(1f).border(
                             width = 1.dp,
-                            color = grayColor,
+                            color = LocalAppTheme.current.grayColor,
                             shape = RoundedCornerShape(size = 0.dp)
                         )
                     ) {
