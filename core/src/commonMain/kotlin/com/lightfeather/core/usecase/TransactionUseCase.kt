@@ -6,6 +6,7 @@ import com.lightfeather.core.data.repository.ExpensesRepository
 import com.lightfeather.core.data.repository.IncomeRepository
 import com.lightfeather.core.data.repository.TransactionRepository
 import com.lightfeather.core.data.repository.TransferRepository
+import com.lightfeather.core.domain.Currency
 import com.lightfeather.core.domain.CurrencyExchangeRate
 import com.lightfeather.core.domain.DomainResult
 import com.lightfeather.core.domain.transaction.InvalidTransaction
@@ -139,6 +140,19 @@ class GetFilteredTransactions<T : Transaction>(private val transactionRepository
     suspend operator fun invoke(transactions: List<T>, filter: TransactionFilter) =
         transactionRepository.getFilteredTransactions(transactions, filter)
 }
+
+class GetTotalTransactionsByCategories<T : Transaction>(private val repository: TransactionRepository<T>) {
+    suspend operator fun invoke() = repository.getTotalTransactionsOfCategories()
+}
+
+class GetTotalExpenseOfCurrency(private val repository: ExpensesRepository) {
+    suspend operator fun invoke(currency: Currency) = repository.getTotalTransactionsOfCurrency(currency)
+}
+
+class GetTotalIncomeOfCurrency(private val repository: IncomeRepository) {
+    suspend operator fun invoke(currency: Currency) = repository.getTotalTransactionsOfCurrency(currency)
+}
+
 
 class GetAllTransactions(
     private val incomeRepository: IncomeRepository,

@@ -58,7 +58,7 @@ private fun SplashPageViews(onAnimationDone: () -> Unit) {
                 ),
             )
             Spacer(Modifier.height(50.dp))
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
         }
 
     }

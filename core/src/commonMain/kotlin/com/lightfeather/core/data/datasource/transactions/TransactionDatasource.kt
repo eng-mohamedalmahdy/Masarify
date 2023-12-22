@@ -1,5 +1,7 @@
 package com.lightfeather.core.data.datasource.transactions
 
+import com.lightfeather.core.domain.Category
+import com.lightfeather.core.domain.Currency
 import com.lightfeather.core.domain.DomainResult
 import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.core.domain.transaction.TransactionFilter
@@ -25,5 +27,9 @@ sealed interface TransactionDatasource<T : Transaction> {
     suspend fun getFilteredTransactions(transactions: List<T>, filter: TransactionFilter): Flow<List<T>>
 
     suspend fun updateTransaction(transaction: T)
+
+    suspend fun getTotalTransactionsOfCurrency(currency: Currency): Flow<Double>
+
+    suspend fun getTotalTransactionsOfCategories(): Flow<List<Pair<Category, Double>>>
 
 }

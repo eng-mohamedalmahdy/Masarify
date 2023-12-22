@@ -1,6 +1,5 @@
 package ui.pages.bottomnavigationpages.home
 
-import ui.util.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,12 +18,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -55,7 +52,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lightfeather.masarify.MR
-import data.local.isDarkModeEnabled
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.resources.compose.painterResource
@@ -73,11 +69,10 @@ import ui.composeables.SearchTextField
 import ui.entity.UiBankAccount
 import ui.main.LocalAppTheme
 import ui.main.LocalBottomNavigationNavController
-import ui.main.LocalMainViewModel
-import ui.main.LocalSettings
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
 import ui.pages.bottomnavigationpages.home.model.UiTransactionModel
 import ui.pages.createtransactionpage.view.DeleteConfirmationDialog
+import ui.util.Preview
 
 
 @Composable
@@ -116,9 +111,7 @@ private fun HomePageViews(
     var toBeEdited by remember { mutableStateOf<UiTransactionModel?>(null) }
     var isShowingDeleteDialog by remember { mutableStateOf(false) }
 
-    val viewModel = LocalMainViewModel.current
-    val settings = LocalSettings.current
-
+//
     val router = LocalBottomNavigationNavController.current
     Box(Modifier.fillMaxSize()) {
 
@@ -141,20 +134,20 @@ private fun HomePageViews(
                     { searchValue = it; onSearchTransactions(it) },
                     modifier = Modifier.fillMaxWidth(.9f)
                 )
-                IconButton(
-                    {},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .background(LocalAppTheme.current.cardColor, RoundedCornerShape(9.dp))
-                        .clip(RoundedCornerShape(4.dp)),
-
-                    ) {
-                    Image(
-                        Icons.Default.Tune, stringResource(MR.strings.add_new_category_or_tag),
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
-                    )
-                }
+//                IconButton(
+//                    {},
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(56.dp)
+//                        .background(LocalAppTheme.current.cardColor, RoundedCornerShape(9.dp))
+//                        .clip(RoundedCornerShape(4.dp)),
+//
+//                    ) {
+//                    Image(
+//                        Icons.Default.Tune, stringResource(MR.strings.add_new_category_or_tag),
+//                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+//                    )
+//                }
             }
             Spacer(Modifier.height(16.dp))
 
@@ -166,9 +159,7 @@ private fun HomePageViews(
             )
             LazyRow {
                 items(bankAccounts) {
-                    BankAccountCard(it, onAccountClick = {
-                        viewModel.setDarkMode(settings.isDarkModeEnabled().not())
-                    })
+                    BankAccountCard(it, onAccountClick = {})
                 }
             }
             Spacer(Modifier.height(16.dp))

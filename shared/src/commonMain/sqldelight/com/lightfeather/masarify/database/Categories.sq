@@ -24,3 +24,5 @@ SELECT * FROM categories WHERE id = ?;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
+
+

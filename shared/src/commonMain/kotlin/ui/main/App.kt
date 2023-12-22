@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import com.russhwolf.settings.Settings
 import data.local.isFirstTime
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import dev.icerock.moko.resources.desc.StringDesc
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.xxfast.decompose.router.Router
@@ -33,6 +35,7 @@ import ui.pages.bottomnavigationpages.BottomNavigationPageModel
 import ui.pages.createbankaccount.CreateBankAccountPage
 import ui.pages.splashpage.SplashPage
 import ui.pages.userprimarydata.FillUserPrimaryDataPage
+import ui.pages.webviewpage.WebViewPage
 import ui.style.AppDarkTheme
 import ui.style.AppLightTheme
 import ui.style.AppTheme
@@ -47,10 +50,18 @@ internal fun App() {
     val viewModel = MainViewModel().let { getViewModel(Unit, viewModelFactory { it }) }
     val viewModelRemembered = remember { viewModel }
     val settings = Settings()
+
     val isDarkMode by viewModelRemembered.isSystemDarkMode.collectAsState()
+    val language by viewModelRemembered.currentLanguage.collectAsState()
 
     val appTheme: AppTheme = if (isDarkMode) AppDarkTheme else AppLightTheme
-    Napier.d(isDarkMode.toString())
+
+    LaunchedEffect(language) {
+
+        StringDesc.localeType = StringDesc.LocaleType.Custom(language)
+
+    }
+
     MaterialTheme(colorScheme = appTheme.colorScheme, typography = appTheme.typography) {
 
         val router: Router<Page> =
@@ -62,8 +73,8 @@ internal fun App() {
         val snackBarHostState = remember { SnackbarHostState() }
 
 
-
         CompositionLocalProvider(
+            LocalLocale provides language,
             LocalMainViewModel provides viewModelRemembered,
             LocalAppTheme provides appTheme,
             LocalMainNavController provides router,
@@ -105,6 +116,7 @@ internal fun App() {
 
                         Page.CreateBankAccountPageModel -> CreateBankAccountPage()
                         Page.FillUserPrimaryDataPageModel -> FillUserPrimaryDataPage()
+                        is Page.WebViewPage -> WebViewPage(it.url)
                     }
                 }
             }
@@ -136,4 +148,8 @@ val LocalAppTheme = compositionLocalOf<AppTheme> {
 
 val LocalMainViewModel = compositionLocalOf<MainViewModel> {
     error("No View Model Provided")
+}
+
+val LocalLocale = compositionLocalOf<String> {
+    error("No Locale Provided")
 }

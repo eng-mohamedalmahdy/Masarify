@@ -119,34 +119,62 @@ fun CreateBankAccountPage() {
         CardTextField(
             text = accountName,
             onValueChange = { accountName = it },
-            label = { Text(stringResource(MR.strings.account_name)) },
+            label = {
+                Text(
+                    stringResource(MR.strings.account_name),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
         )
         CardTextField(
             text = accountDescription,
             onValueChange = { accountDescription = it },
-            label = { Text(stringResource(MR.strings.description)) },
+            label = {
+                Text(
+                    stringResource(MR.strings.description),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
         )
         CardTextField(
             text = bankBalance,
             onValueChange = { bankBalance = it },
-            label = { Text(stringResource(MR.strings.account_balance)) },
+            label = {
+                Text(
+                    stringResource(MR.strings.account_balance),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             keyboardType = KeyboardType.Decimal
         )
 
         DropDownTextField(
             "",
-            currenciesNames, { Text(stringResource(MR.strings.currency)) }, { idx, item ->
+            currenciesNames,
+            {
+                Text(
+                    stringResource(MR.strings.currency),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
+            { idx, item ->
                 selectedCurrencyIdx = idx
-            }, modifier = Modifier.fillMaxWidth()
+            },
+            modifier = Modifier.fillMaxWidth()
         )
 
         CardTextField(
             text = bankColor.value.toHexString(),
             onValueChange = {},
-            label = { Text(stringResource(MR.strings.color), color = Color.Black) },
+            label = {
+                Text(
+                    stringResource(MR.strings.color),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier.fillMaxWidth().clickable { isShowingColorPicker = true },
             readonlyAndDisabled = true,
             colors = TextFieldDefaults.colors(

@@ -138,12 +138,22 @@ private fun AddCurrencyDialog(onDismissRequest: () -> Unit, onAddClick: (UiCurre
                 CardTextField(
                     text = currencyName,
                     onValueChange = { currencyName = it },
-                    label = { Text(stringResource(MR.strings.currency_name)) }
+                    label = {
+                        Text(
+                            stringResource(MR.strings.currency_name),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 )
                 CardTextField(
                     text = currencySymbol,
                     onValueChange = { currencySymbol = it },
-                    label = { Text(stringResource(MR.strings.currency_symbol)) }
+                    label = {
+                        Text(
+                            stringResource(MR.strings.currency_symbol),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 )
                 Button(
                     { onAddClick(UiCurrency(0, currencyName, currencySymbol)) },

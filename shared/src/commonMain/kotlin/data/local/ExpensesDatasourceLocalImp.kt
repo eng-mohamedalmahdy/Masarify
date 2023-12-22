@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class ExpensesDatasourceLocalImp(private val queries: TransactionsQueries) : ExpensesDatasource {
+
+
     override suspend fun createTransaction(transaction: Transaction.Expense): DomainResult<Int> {
         with(transaction) {
             queries.insertTransaction("EXPENSE", name, description, amount, timestamp, account.id.toLong())
@@ -146,7 +148,7 @@ class ExpensesDatasourceLocalImp(private val queries: TransactionsQueries) : Exp
     override suspend fun getFilteredTransactions(
         transactions: List<Transaction.Expense>, filter: TransactionFilter
     ): Flow<List<Transaction.Expense>> {
-        TODO("Not yet implemented")
+        TODO()
     }
 
     override suspend fun updateTransaction(transaction: Transaction.Expense) {
@@ -160,5 +162,20 @@ class ExpensesDatasourceLocalImp(private val queries: TransactionsQueries) : Exp
             account_id = transaction.account.id.toLong(), // Assuming account_id is a Long
             id = transaction.id.toLong() // Assuming id is a Long
         )
+    }
+
+    override suspend fun getTotalTransactionsOfCurrency(currency: Currency): Flow<Double> {
+        return queries.getTotalTransactionsOfTypeOfCurrency("EXPENSE", currency.id.toLong()).asFlow()
+            .mapToOne(Dispatchers.IO)
+            .map { it.total_expenses ?: 0.0 }
+    }
+
+    override suspend fun getTotalTransactionsOfCategories(): Flow<List<Pair<Category, Double>>> {
+        return queries.getTransactionsSumByCategoriesOfType("EXPENSE") { id, categoryName: String, categoryDescription: String, categoryColor: String, categoryIcon: String, totalExpenses: Double? ->
+            Pair(
+                Category(id.toInt(), categoryName, categoryDescription, categoryColor, categoryIcon),
+                totalExpenses ?: 0.0
+            )
+        }.asFlow().mapToList(Dispatchers.IO)
     }
 }

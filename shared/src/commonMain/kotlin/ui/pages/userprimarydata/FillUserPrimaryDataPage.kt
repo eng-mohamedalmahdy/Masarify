@@ -113,7 +113,12 @@ fun FillUserPrimaryDataPage() {
         CardTextField(
             text = accountName,
             onValueChange = { accountName = it },
-            label = { Text(stringResource(MR.strings.account_name)) },
+            label = {
+                Text(
+                    stringResource(MR.strings.account_name),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -122,7 +127,12 @@ fun FillUserPrimaryDataPage() {
         CardTextField(
             text = accountDescription,
             onValueChange = { accountDescription = it },
-            label = { Text(stringResource(MR.strings.description)) },
+            label = {
+                Text(
+                    stringResource(MR.strings.description),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -131,7 +141,12 @@ fun FillUserPrimaryDataPage() {
         CardTextField(
             text = bankBalance,
             onValueChange = { bankBalance = it },
-            label = { Text(stringResource(MR.strings.account_balance)) },
+            label = {
+                Text(
+                    stringResource(MR.strings.account_balance),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             keyboardType = KeyboardType.Decimal
         )
@@ -145,7 +160,12 @@ fun FillUserPrimaryDataPage() {
             CardTextField(
                 text = currencyName,
                 onValueChange = { currencyName = it },
-                label = { Text(stringResource(MR.strings.currency_name)) },
+                label = {
+                    Text(
+                        stringResource(MR.strings.currency_name),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
                 modifier = Modifier.weight(1f),
             )
 
@@ -154,7 +174,12 @@ fun FillUserPrimaryDataPage() {
             CardTextField(
                 text = currencySign,
                 onValueChange = { currencySign = it },
-                label = { Text(stringResource(MR.strings.currency_symbol)) },
+                label = {
+                    Text(
+                        stringResource(MR.strings.currency_symbol),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
                 modifier = Modifier.weight(1f),
             )
         }
@@ -164,7 +189,12 @@ fun FillUserPrimaryDataPage() {
         CardTextField(
             text = bankColor.value.toHexString(),
             onValueChange = {},
-            label = { Text(stringResource(MR.strings.color), color = Color.Black) },
+            label = {
+                Text(
+                    stringResource(MR.strings.color),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { isShowingColorPicker = true },

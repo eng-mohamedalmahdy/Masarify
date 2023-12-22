@@ -100,14 +100,14 @@ object AppLightTheme : AppTheme {
             titleLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
+                fontSize = 32.sp,
                 fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
 
             ),
             titleMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
+                fontSize = 28.sp,
                 fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
 
             ),
@@ -229,14 +229,14 @@ object AppDarkTheme : AppTheme {
             titleLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
+                fontSize = 32.sp,
                 fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
 
             ),
             titleMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
+                fontSize = 28.sp,
                 fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
 
             ),

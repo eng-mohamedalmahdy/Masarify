@@ -40,25 +40,25 @@ data class UiTransactionModel(
 
 enum class UiTransactionType(val color: Color, val prefixChar: String) {
     Expense(expenseColor, "-"),
-    INCOME(incomeColor, "+"),
-    TRANSFER(transferColor, "►");
+    Income(incomeColor, "+"),
+    Transfer(transferColor, "►");
 
 }
 
 fun Transaction.getTypeFromDomainTransaction() = when (this) {
     is Transaction.Expense -> UiTransactionType.Expense
-    is Transaction.Income -> UiTransactionType.INCOME
-    is Transaction.Transfer -> UiTransactionType.TRANSFER
+    is Transaction.Income -> UiTransactionType.Income
+    is Transaction.Transfer -> UiTransactionType.Transfer
 }
 
 @Composable
 fun UiTransactionType.getLocalisedString(): String = when (this) {
     UiTransactionType.Expense -> stringResource(MR.strings.expense)
-    UiTransactionType.INCOME -> stringResource(MR.strings.income)
-    UiTransactionType.TRANSFER -> stringResource(MR.strings.transfer)
+    UiTransactionType.Income -> stringResource(MR.strings.income)
+    UiTransactionType.Transfer -> stringResource(MR.strings.transfer)
 }
 
-fun Transaction.toUiExpenseModel(): UiTransactionModel {
+fun Transaction.toUiTransactionModel(): UiTransactionModel {
     val categories: List<UiExpenseCategory> = when (this) {
         is Transaction.Expense -> categories
         is Transaction.Income -> listOf(source)
@@ -95,7 +95,7 @@ fun UiTransactionModel.toDomainTransaction(): Transaction =
             account = account.toDomainBankAccount(),
         )
 
-        UiTransactionType.INCOME -> Transaction.Income(
+        UiTransactionType.Income -> Transaction.Income(
             name = title,
             id = id,
             description = description,
@@ -105,7 +105,7 @@ fun UiTransactionModel.toDomainTransaction(): Transaction =
             account = account.toDomainBankAccount(),
         )
 
-        UiTransactionType.TRANSFER -> Transaction.Transfer(
+        UiTransactionType.Transfer -> Transaction.Transfer(
             id = id,
             name = title,
             description = description,

@@ -15,38 +15,106 @@ import com.lightfeather.core.usecase.GetAllCategoryIcons
 import com.lightfeather.core.usecase.GetAllCurrencies
 import com.lightfeather.core.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.core.usecase.GetAllTransactions
+import com.lightfeather.core.usecase.GetTotalExpenseOfCurrency
+import com.lightfeather.core.usecase.GetTotalIncomeOfCurrency
+import com.lightfeather.core.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.core.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.core.usecase.UpdateTransaction
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    factory { GetAllTransactions(get(), get(),get()) }
+    factory { GetAllTransactions(get(), get(), get()) }
     factory { GetAllTransactions(get(), get(), get()) }
     factory { GetAllCategories(get()) }
     factory { GetAllAccounts(get()) }
 
-    factory<CreateTransaction<Transaction.Expense>> (named("expense")){ CreateTransaction(get<ExpensesRepository>(),get(),get()) }
-    factory<CreateTransaction<Transaction.Income>>(named("income")) { CreateTransaction(get<IncomeRepository>(),get(),get()) }
-    factory<CreateTransaction<Transaction.Transfer>>(named("transfer")) { CreateTransaction(get<TransferRepository>(),get(),get()) }
+    factory<CreateTransaction<Transaction.Expense>>(named("expense")) {
+        CreateTransaction(
+            get<ExpensesRepository>(),
+            get(),
+            get()
+        )
+    }
+    factory<CreateTransaction<Transaction.Income>>(named("income")) {
+        CreateTransaction(
+            get<IncomeRepository>(),
+            get(),
+            get()
+        )
+    }
+    factory<CreateTransaction<Transaction.Transfer>>(named("transfer")) {
+        CreateTransaction(
+            get<TransferRepository>(),
+            get(),
+            get()
+        )
+    }
 
 
-    factory<DeleteTransaction<Transaction.Expense>> (named("expense")){ DeleteTransaction(get<ExpensesRepository>(),get(),get()) }
-    factory<DeleteTransaction<Transaction.Income>>(named("income")) { DeleteTransaction(get<IncomeRepository>(),get(),get()) }
-    factory<DeleteTransaction<Transaction.Transfer>>(named("transfer")) { DeleteTransaction(get<TransferRepository>(),get(),get()) }
+    factory<DeleteTransaction<Transaction.Expense>>(named("expense")) {
+        DeleteTransaction(
+            get<ExpensesRepository>(),
+            get(),
+            get()
+        )
+    }
+    factory<DeleteTransaction<Transaction.Income>>(named("income")) {
+        DeleteTransaction(
+            get<IncomeRepository>(),
+            get(),
+            get()
+        )
+    }
+    factory<DeleteTransaction<Transaction.Transfer>>(named("transfer")) {
+        DeleteTransaction(
+            get<TransferRepository>(),
+            get(),
+            get()
+        )
+    }
 
-    factory<UpdateTransaction<Transaction.Expense>> (named("expense")){ UpdateTransaction(get<ExpensesRepository>(),get(),get()) }
-    factory<UpdateTransaction<Transaction.Income>>(named("income")) { UpdateTransaction(get<IncomeRepository>(),get(),get()) }
-    factory<UpdateTransaction<Transaction.Transfer>>(named("transfer")) { UpdateTransaction(get<TransferRepository>(),get(),get()) }
+    factory<UpdateTransaction<Transaction.Expense>>(named("expense")) {
+        UpdateTransaction(
+            get<ExpensesRepository>(),
+            get(),
+            get()
+        )
+    }
+    factory<UpdateTransaction<Transaction.Income>>(named("income")) {
+        UpdateTransaction(
+            get<IncomeRepository>(),
+            get(),
+            get()
+        )
+    }
+    factory<UpdateTransaction<Transaction.Transfer>>(named("transfer")) {
+        UpdateTransaction(
+            get<TransferRepository>(),
+            get(),
+            get()
+        )
+    }
 
+    factory<GetTotalTransactionsByCategories<Transaction.Expense>>(named("expense")) {
+        GetTotalTransactionsByCategories(get<ExpensesRepository>())
+    }
 
+    factory<GetTotalTransactionsByCategories<Transaction.Income>>(named("income")) {
+        GetTotalTransactionsByCategories(get<IncomeRepository>())
+    }
 
+    factory<GetTotalTransactionsByCategories<Transaction.Transfer>>(named("transfer")) {
+        GetTotalTransactionsByCategories(get<TransferRepository>())
+    }
 
     factory { GetAllCategoryIcons(get()) }
     factory { CreateCategory(get()) }
     factory { CreateAccount(get()) }
     factory { GetAllCurrencies(get()) }
     factory { GetAllCurrenciesExchangeRates(get()) }
-    factory { CreateCurrency(get(),get()) }
+    factory { CreateCurrency(get(), get()) }
     factory { UpdateCurrencyExchangeRates(get()) }
+    factory { GetTotalExpenseOfCurrency(get()) }
+    factory { GetTotalIncomeOfCurrency(get()) }
 }

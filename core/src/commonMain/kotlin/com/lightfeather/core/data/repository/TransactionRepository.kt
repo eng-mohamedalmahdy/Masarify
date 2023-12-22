@@ -1,6 +1,7 @@
 package com.lightfeather.core.data.repository
 
 import com.lightfeather.core.data.datasource.transactions.TransactionDatasource
+import com.lightfeather.core.domain.Currency
 import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.core.domain.transaction.TransactionFilter
 
@@ -24,6 +25,9 @@ abstract class TransactionRepository<T : Transaction>(private val datasource: Tr
     suspend fun getFilteredTransactions(transactions: List<T>, filter: TransactionFilter) =
         datasource.getFilteredTransactions(transactions, filter)
 
-   suspend fun updateTransaction(newTransaction: T)  = datasource.updateTransaction(newTransaction)
+    suspend fun updateTransaction(newTransaction: T) = datasource.updateTransaction(newTransaction)
 
+    suspend fun getTotalTransactionsOfCurrency(currency: Currency) = datasource.getTotalTransactionsOfCurrency(currency)
+
+    suspend fun getTotalTransactionsOfCategories() = datasource.getTotalTransactionsOfCategories()
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -201,19 +202,34 @@ private fun CreateExpensePageViews(
             CardTextField(
                 text = title,
                 onValueChange = { title = it },
-                label = { Text(stringResource(MR.strings.expense_title)) },
+                label = {
+                    Text(
+                        stringResource(MR.strings.expense_title),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             )
             CardTextField(
                 text = description,
                 onValueChange = { description = it },
-                label = { Text(stringResource(MR.strings.description)) },
+                label = {
+                    Text(
+                        stringResource(MR.strings.description),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             )
             CardTextField(
                 text = amount,
                 onValueChange = { amount = it },
-                label = { Text(stringResource(MR.strings.amount)) },
+                label = {
+                    Text(
+                        stringResource(MR.strings.amount),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 keyboardType = KeyboardType.Number
             )
@@ -221,7 +237,12 @@ private fun CreateExpensePageViews(
                 CardTextField(
                     date,
                     onValueChange = {},
-                    label = { Text(stringResource(MR.strings.date)) },
+                    label = {
+                        Text(
+                            stringResource(MR.strings.date),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    },
                     modifier = Modifier.clickable { isShowingDatePickerState = true }.weight(1f),
                     trailingIcon = Icons.Default.CalendarMonth,
                     readonlyAndDisabled = true
@@ -230,7 +251,12 @@ private fun CreateExpensePageViews(
                 CardTextField(
                     "${time.first}:${time.second} ${time.third}",
                     onValueChange = { },
-                    label = { Text(stringResource(MR.strings.time)) },
+                    label = {
+                        Text(
+                            stringResource(MR.strings.time),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    },
                     modifier = Modifier.clickable { isShowingTimePickerState = true }.weight(1f),
                     trailingIcon = Icons.Default.Schedule,
                     readonlyAndDisabled = true
@@ -240,7 +266,12 @@ private fun CreateExpensePageViews(
             DropDownTextField(
                 initialValue = account?.name ?: "",
                 bankAccounts.map { it.name },
-                label = { Text(stringResource(MR.strings.bank_account)) },
+                label = {
+                    Text(
+                        stringResource(MR.strings.bank_account),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
                 onValueChange = { idx: Int, _: String -> account = bankAccounts[idx] },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             )

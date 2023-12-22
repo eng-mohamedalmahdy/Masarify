@@ -8,8 +8,10 @@ buildscript {
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         gradlePluginPortal()
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        maven("https://jogamp.org/deployment/maven/")
 
     }
+
     dependencies {
         classpath("dev.icerock.moko:resources-generator:0.23.0")
         classpath("com.arkivanov.parcelize.darwin:gradle-plugin:0.2.1")
@@ -28,5 +30,7 @@ allprojects {
     repositories {
         mavenCentral()
         google()
+        maven("https://jogamp.org/deployment/maven/")
+
     }
 }

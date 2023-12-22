@@ -9,4 +9,5 @@ sealed class Page : Parcelable {
     data object AppHostPage : Page()
     data object CreateBankAccountPageModel : Page()
     data object FillUserPrimaryDataPageModel : Page()
+    data class WebViewPage(val url: String) : Page()
 }

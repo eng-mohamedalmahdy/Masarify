@@ -38,7 +38,7 @@ import ui.pages.bottomnavigationpages.bankaccounts.view.BankAccountsPage
 import ui.pages.bottomnavigationpages.currencies.CurrenciesPage
 import ui.pages.bottomnavigationpages.home.HomePage
 import ui.pages.bottomnavigationpages.more.MorePage
-import ui.pages.bottomnavigationpages.statistics.StatisticsPage
+import ui.pages.bottomnavigationpages.statistics.view.StatisticsPage
 import ui.pages.createtransactionpage.view.CreateTransactionPage
 
 
@@ -196,10 +196,10 @@ private fun AppHostPageViews() {
             ) {
                 when (it) {
                     is BottomNavigationPageModel.HomePageModel -> HomePage()
-                    is BottomNavigationPageModel.MorePageModel -> MorePage(it)
+                    is BottomNavigationPageModel.MorePageModel -> MorePage()
                     is BottomNavigationPageModel.BankAccountsPageModel -> BankAccountsPage()
                     is BottomNavigationPageModel.CurrencyConverterPageModel -> CurrenciesPage()
-                    is BottomNavigationPageModel.StatisticsPageModel -> StatisticsPage(it)
+                    is BottomNavigationPageModel.StatisticsPageModel -> StatisticsPage()
                     is BottomNavigationPageModel.CreateTransactionPageModel -> CreateTransactionPage(it)
                 }
             }

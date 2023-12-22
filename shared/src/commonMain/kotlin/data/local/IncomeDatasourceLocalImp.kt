@@ -19,10 +19,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class IncomeDatasourceLocalImp(private val transactionsQueries: TransactionsQueries) : IncomeDatasource {
+
+
     override suspend fun createTransaction(transaction: Transaction.Income): DomainResult<Int> {
         with(transaction) {
             transactionsQueries.insertTransaction(
-                "INCOME", name, description, amount, timestamp, account.id.toLong()
+                "Income", name, description, amount, timestamp, account.id.toLong()
             )
             val id = transactionsQueries.selectLastInsertedRowId().executeAsOne()
             transactionsQueries.insertTransactionCategory(id, source.id.toLong())
@@ -37,7 +39,7 @@ class IncomeDatasourceLocalImp(private val transactionsQueries: TransactionsQuer
     }
 
     override suspend fun getAllTransactions(): Flow<List<Transaction.Income>> {
-        return transactionsQueries.getAllTransactionsOfType("INCOME") { id, transactionName, transactionDescription, amount, timestamp, _, _, accountId, accountName, accountDescription, accountBalance, accountColor, accountLogo, currencyId, currencyName, currencySign ->
+        return transactionsQueries.getAllTransactionsOfType("Income") { id, transactionName, transactionDescription, amount, timestamp, _, _, accountId, accountName, accountDescription, accountBalance, accountColor, accountLogo, currencyId, currencyName, currencySign ->
             Transaction.Income(
                 id = id.toInt(),
                 name = transactionName ?: "",
@@ -62,7 +64,7 @@ class IncomeDatasourceLocalImp(private val transactionsQueries: TransactionsQuer
 
     override suspend fun getTransactionById(id: Int): DomainResult<Transaction.Income> {
         return transactionsQueries.getTransactionOfTypeById(
-            "INCOME",
+            "Income",
             id.toLong()
         ) { id, transactionName, transactionDescription, amount, timestamp, _, _, accountId, accountName, accountDescription, accountBalance, accountColor, accountLogo, currencyId, currencyName, currencySign ->
             Transaction.Income(
@@ -88,7 +90,7 @@ class IncomeDatasourceLocalImp(private val transactionsQueries: TransactionsQuer
     }
 
     override suspend fun getMinTransaction(): Flow<Transaction.Income> {
-        return transactionsQueries.getMinExpenseOfTransactionType("INCOME") { id, transactionName, transactionDescription, amount, timestamp, _, _, accountId, accountName, accountDesceription, accountBalance, accountColor, accountLogo, currencyId, currencyName, currencySign ->
+        return transactionsQueries.getMinExpenseOfTransactionType("Income") { id, transactionName, transactionDescription, amount, timestamp, _, _, accountId, accountName, accountDesceription, accountBalance, accountColor, accountLogo, currencyId, currencyName, currencySign ->
             Transaction.Income(
                 id = id.toInt(),
                 name = transactionName ?: "",
@@ -112,7 +114,7 @@ class IncomeDatasourceLocalImp(private val transactionsQueries: TransactionsQuer
     }
 
     override suspend fun getMaxTransaction(): Flow<Transaction.Income> {
-        return transactionsQueries.getMaxExpenseOfTransactionType("INCOME") { id, transactionName, transactionDescription, amount, timestamp, _, _, accountId, accountName, accountDesceription, accountBalance, accountColor, accountLogo, currencyId, currencyName, currencySign ->
+        return transactionsQueries.getMaxExpenseOfTransactionType("Income") { id, transactionName, transactionDescription, amount, timestamp, _, _, accountId, accountName, accountDesceription, accountBalance, accountColor, accountLogo, currencyId, currencyName, currencySign ->
             Transaction.Income(
                 id = id.toInt(),
                 name = transactionName ?: "",
@@ -136,7 +138,7 @@ class IncomeDatasourceLocalImp(private val transactionsQueries: TransactionsQuer
     }
 
     override suspend fun getAverageTransactionValue(): Flow<Double> {
-        return transactionsQueries.getAvgExpenseOfTransactionType("INCOME").asFlow().mapToOne(Dispatchers.IO)
+        return transactionsQueries.getAvgExpenseOfTransactionType("Income").asFlow().mapToOne(Dispatchers.IO)
             .map { it.averageAmount ?: 0.0 }
     }
 
@@ -158,5 +160,19 @@ class IncomeDatasourceLocalImp(private val transactionsQueries: TransactionsQuer
             account_id = transaction.account.id.toLong(), // Assuming account_id is a Long
             id = transaction.id.toLong() // Assuming id is a Long
         )
+    }
+
+    override suspend fun getTotalTransactionsOfCurrency(currency: Currency): Flow<Double> {
+        return transactionsQueries.getTotalTransactionsOfTypeOfCurrency("INCOME", currency.id.toLong()) { it ?: 0.0 }
+            .asFlow().mapToOne(Dispatchers.IO)
+    }
+
+    override suspend fun getTotalTransactionsOfCategories(): Flow<List<Pair<Category, Double>>> {
+        return transactionsQueries.getTransactionsSumByCategoriesOfType("INCOME") { id, categoryName: String, categoryDescription: String, categoryColor: String, categoryIcon: String, totalExpenses: Double? ->
+            Pair(
+                Category(id.toInt(), categoryName, categoryDescription, categoryColor, categoryIcon),
+                totalExpenses ?: 0.0
+            )
+        }.asFlow().mapToList(Dispatchers.IO)
     }
 }

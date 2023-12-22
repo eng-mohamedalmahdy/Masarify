@@ -27,33 +27,35 @@ fun CardTextField(
     readonlyAndDisabled: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     colors: TextFieldColors = TextFieldDefaults.colors(
-        disabledTextColor = MaterialTheme.colorScheme.onBackground,
+
+        disabledTextColor = MaterialTheme.colorScheme.secondary,
+        unfocusedTextColor = MaterialTheme.colorScheme.secondary,
+        focusedTextColor = MaterialTheme.colorScheme.secondary,
+
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
+
         focusedContainerColor = LocalAppTheme.current.cardColor,
         unfocusedContainerColor = LocalAppTheme.current.cardColor,
         disabledContainerColor = LocalAppTheme.current.cardColor,
-        unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-        focusedTextColor = MaterialTheme.colorScheme.onBackground,
 
-    )
-) {
-
-    runCatching {
-
-        TextField(
-            value = text,
-            onValueChange = onValueChange,
-            shape = RoundedCornerShape(size = 9.dp),
-            colors = colors,
-            modifier = modifier.padding(4.dp),
-            label = label,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType, imeAction = ImeAction.Done),
-            singleLine = true,
-            readOnly = readonlyAndDisabled,
-            enabled = !readonlyAndDisabled,
-            trailingIcon = { trailingIcon?.let { Icon(it, null, tint = MaterialTheme.colorScheme.onBackground) } }
         )
-    }
+) {
+    TextField(
+        value = text,
+        onValueChange = onValueChange,
+        shape = RoundedCornerShape(size = 9.dp),
+        colors = colors,
+        modifier = modifier.padding(4.dp),
+        label = label,
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType, imeAction = ImeAction.Done),
+        singleLine = true,
+        readOnly = readonlyAndDisabled,
+        enabled = !readonlyAndDisabled,
+        trailingIcon = { trailingIcon?.let { Icon(it, null, tint = MaterialTheme.colorScheme.onBackground) } },
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            color = MaterialTheme.colorScheme.onBackground
+        )
+    )
 }

@@ -63,6 +63,8 @@ kotlin {
         val napierVersion = "2.6.1"
         val commonMain by getting {
             dependencies {
+                api("io.github.kevinnzou:compose-webview-multiplatform:1.7.8")
+
                 implementation("com.russhwolf:multiplatform-settings:1.1.1")
                 implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
 
@@ -88,7 +90,6 @@ kotlin {
                 implementation("com.arkivanov.essenty:lifecycle:1.2.0")
 
 
-//                implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
                 implementation("app.cash.sqldelight:coroutines-extensions:$sqlDelightVersion")
                 runtimeOnly("app.cash.sqldelight:runtime:$sqlDelightVersion")
 
@@ -101,6 +102,8 @@ kotlin {
 
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
+                implementation("io.github.thechance101:chart:Beta-0.0.5")
 
             }
         }
@@ -268,6 +271,19 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("com.lightfeather.masarify.database")
+        }
+    }
+}
+
+afterEvaluate {
+    tasks.withType<JavaExec> {
+        jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+        jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED")
+
+        if (System.getProperty("os.name").contains("Mac")) {
+            jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
         }
     }
 }

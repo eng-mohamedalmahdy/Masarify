@@ -69,7 +69,16 @@
     <string name="please_select_time">Please select a time</string>
     <string name="currency_name_cannot_be_empty">Currency Name is required</string>
     <string name="currency_symbol_is_required">Currency symbol is required</string>
-    <string name="transaction_accounts_must_have_the_same_currency">Transaction Accounts must have the same currencies</string>
-
-
+    <string name="transaction_accounts_must_have_the_same_currency">
+        Transaction Accounts must have the same currencies
+    </string>
+    <string name="settings">Settings</string>
+    <string name="language">Language</string>
+    <string name="more_options">More options</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="about_us">About App</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="confirm">Confirm</string>
+    <string name="transaction_summary">Transaction summary</string>
+    <string name="daily_transactions">Daily Transactions</string>
 </resources>

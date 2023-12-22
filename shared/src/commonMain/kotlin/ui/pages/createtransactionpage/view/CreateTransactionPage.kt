@@ -31,7 +31,7 @@ private fun CreateTransactionPageViews(transaction: UiTransactionModel?) {
         Spacer(Modifier.height(16.dp))
         TransactionTabBar(UiTransactionType.entries, selectedTab) { if (transaction == null) selectedTab = it }
         when (selectedTab) {
-            UiTransactionType.TRANSFER -> CreateTransferPage(transaction)
+            UiTransactionType.Transfer -> CreateTransferPage(transaction)
             else -> CreateTransactionPage(selectedTab, transaction)
         }
     }

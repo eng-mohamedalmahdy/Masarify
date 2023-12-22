@@ -71,4 +71,14 @@
     <string name="currency_symbol_is_required">أدخل رمز العملة</string>
     <string name="transaction_accounts_must_have_the_same_currency">يجب أن تكون الحسابات من نفس العملة</string>
 
+    <string name="settings">الإعدادت</string>
+    <string name="language">اللغة</string>
+    <string name="more_options">خيارات أخرى</string>
+    <string name="privacy_policy">سياسية الخصوصية</string>
+    <string name="about_us">عن التطبيق</string>
+    <string name="contact_us">تواصل معنا</string>
+    <string name="confirm">تأكيد</string>
+    <string name="transaction_summary">ملخص المصروفات</string>
+    <string name="daily_transactions">التحويلات الومية</string>
+
 </resources>

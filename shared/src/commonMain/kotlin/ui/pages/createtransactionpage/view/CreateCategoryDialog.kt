@@ -1,7 +1,6 @@
 package ui.pages.createtransactionpage.view
 
 import ColorWheel
-import ui.util.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -29,6 +29,7 @@ import ui.composeables.CardTextField
 import ui.composeables.ImagesList
 import ui.entity.UiExpenseCategory
 import ui.main.LocalAppTheme
+import ui.util.Preview
 
 @Composable
 fun CreateCategoryDialog(
@@ -48,7 +49,12 @@ fun CreateCategoryDialog(
                 CardTextField(
                     categoryName,
                     onValueChange = { categoryName = it },
-                    label = { Text(stringResource(MR.strings.category_name)) },
+                    label = {
+                        Text(
+                            stringResource(MR.strings.category_name),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

@@ -18,7 +18,7 @@ import ui.entity.UiState
 import ui.entity.toUiBankAccount
 import ui.pages.bottomnavigationpages.home.model.UiTransactionModel
 import ui.pages.bottomnavigationpages.home.model.toDomainTransaction
-import ui.pages.bottomnavigationpages.home.model.toUiExpenseModel
+import ui.pages.bottomnavigationpages.home.model.toUiTransactionModel
 
 class HomePageViewModel(
     private val getAllTransactions: GetAllTransactions,
@@ -53,7 +53,7 @@ class HomePageViewModel(
             getAllTransactions()
                 .map {
                     it.groupBy { it.timestamp.formatTimeStampToDate() }
-                        .map { (date, list) -> date to list.map { it.toUiExpenseModel() } }
+                        .map { (date, list) -> date to list.map { it.toUiTransactionModel() } }
                         .reversed()
                         .toMap()
 
@@ -75,7 +75,7 @@ class HomePageViewModel(
                                 true
                             ) == true
                         }.groupBy { it.timestamp.formatTimeStampToDate() }
-                            .map { (date, list) -> date to list.map { it.toUiExpenseModel() } }
+                            .map { (date, list) -> date to list.map { it.toUiTransactionModel() } }
                             .toMap()
                     }.map { UiState.SUCCESS(it) }.collect(_expensesWithDateListFlow)
             }

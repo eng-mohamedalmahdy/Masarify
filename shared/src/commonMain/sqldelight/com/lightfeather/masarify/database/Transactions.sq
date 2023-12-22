@@ -121,3 +121,34 @@ WHERE
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
+
+
+getTotalTransactionsOfTypeOfCurrency:
+SELECT
+    SUM(t.amount) AS total_expenses
+FROM  transactions t
+JOIN
+    bank_accounts a ON t.account_id = a.id
+WHERE
+    t.type = :type -- Only consider expense transactions
+    AND a.currency = :currencyId; -- Replace :currencyId with the actual currency ID you want to query
+
+
+getTransactionsSumByCategoriesOfType:
+SELECT
+    c.id AS category_id,
+    c.name AS category_name,
+    c.desceription AS category_description,
+    c.color AS category_color,
+    c.icon AS category_icon,
+    SUM(t.amount) AS total_expenses
+FROM
+    transactions t
+JOIN
+    transaction_categories tc ON t.id = tc.transaction_id
+JOIN
+    categories c ON tc.category_id = c.id
+WHERE
+    t.type = :type
+GROUP BY
+    c.id;
