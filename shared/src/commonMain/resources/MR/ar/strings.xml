@@ -80,5 +80,8 @@
     <string name="confirm">تأكيد</string>
     <string name="transaction_summary">ملخص المصروفات</string>
     <string name="daily_transactions">التحويلات الومية</string>
-
+    <string name="category_name_cant_be_empty">لا يمكن ترك الأسم فارغًا</string>
+    <string name="please_select_category_image">الرجاء اختيار صورة</string>
+    <string name="currency_name_is_required">اسم العملة مطلوب</string>
+    <string name="currency_symbol_is_required">علامة العملة مطلوبة</string>
 </resources>

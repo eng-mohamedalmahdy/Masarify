@@ -81,4 +81,9 @@
     <string name="confirm">Confirm</string>
     <string name="transaction_summary">Transaction summary</string>
     <string name="daily_transactions">Daily Transactions</string>
+    <string name="category_name_cant_be_empty">Category name can\'t be empty</string>
+    <string name="please_select_category_image">Please select category image</string>
+    <string name="currency_name_is_required">Currency name is required</string>
+    <string name="currency_symbol_is_required">Currency symbol is required</string>
+
 </resources>

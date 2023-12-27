@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,11 +26,14 @@ import androidx.compose.ui.window.Dialog
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import ext.toHexString
+import kotlinx.coroutines.launch
 import ui.composeables.CardTextField
 import ui.composeables.ImagesList
 import ui.entity.UiExpenseCategory
 import ui.main.LocalAppTheme
+import ui.main.LocalSnackBarHostState
 import ui.util.Preview
+import ui.util.SnackBarAction
 
 @Composable
 fun CreateCategoryDialog(
@@ -37,10 +41,13 @@ fun CreateCategoryDialog(
     onSaveCategoryClick: (UiExpenseCategory) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
+    val snackBarHostState = LocalSnackBarHostState.current
+    val coroutineScope = rememberCoroutineScope()
     var categoryName by remember { mutableStateOf("") }
     val categoryColor = remember { mutableStateOf(Color.Transparent) }
     var selectedImageIndex by remember { mutableIntStateOf(0) }
-
+    val noNameMessage = stringResource(MR.strings.category_name_cant_be_empty)
+    val imageMessage = stringResource(MR.strings.please_select_category_image)
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             colors = CardDefaults.cardColors(containerColor = LocalAppTheme.current.cardColor)
@@ -76,16 +83,33 @@ fun CreateCategoryDialog(
                     Text(stringResource(MR.strings.cancel))
                 }
                 TextButton({
-                    if (images.isNotEmpty()) {
-                        onSaveCategoryClick(
-                            UiExpenseCategory(
-                                categoryName,
-                                images[selectedImageIndex],
-                                categoryColor.value.toHexString()
+                    if (categoryName.isEmpty()) {
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = noNameMessage,
+                                actionLabel = SnackBarAction.Error()
                             )
-                        )
+                        }
+
+                    } else if (images.isEmpty()) {
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = imageMessage,
+                                actionLabel = SnackBarAction.Error()
+                            )
+                        }
+                    } else {
+                        if (images.isNotEmpty()) {
+                            onSaveCategoryClick(
+                                UiExpenseCategory(
+                                    categoryName,
+                                    images[selectedImageIndex],
+                                    categoryColor.value.toHexString()
+                                )
+                            )
+                        }
+                        onDismissRequest()
                     }
-                    onDismissRequest()
                 }, modifier = Modifier.weight(1f)) {
                     Text(stringResource(MR.strings.save))
                 }

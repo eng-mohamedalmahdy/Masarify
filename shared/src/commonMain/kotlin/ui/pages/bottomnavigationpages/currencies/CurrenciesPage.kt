@@ -47,6 +47,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,10 +66,12 @@ import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import ui.composeables.CardTextField
 import ui.entity.UiCurrency
 import ui.main.LocalAppTheme
+import ui.main.LocalSnackBarHostState
 import ui.pages.bottomnavigationpages.currencies.model.UiExchangeRate
 
 
@@ -125,6 +128,10 @@ private fun CurrenciesPageViews(
 
 @Composable
 private fun AddCurrencyDialog(onDismissRequest: () -> Unit, onAddClick: (UiCurrency) -> Unit) {
+    val snackBarHostState = LocalSnackBarHostState.current
+    val coroutineScope = rememberCoroutineScope()
+    val currencyNameMessage = stringResource(MR.strings.currency_name_cannot_be_empty)
+    val currencySymbolMessage = stringResource(MR.strings.currency_symbol_is_required)
     var currencyName by remember { mutableStateOf("") }
     var currencySymbol by remember { mutableStateOf("") }
     Dialog(onDismissRequest = onDismissRequest) {
@@ -156,7 +163,19 @@ private fun AddCurrencyDialog(onDismissRequest: () -> Unit, onAddClick: (UiCurre
                     }
                 )
                 Button(
-                    { onAddClick(UiCurrency(0, currencyName, currencySymbol)) },
+                    {
+                        if (currencyName.isEmpty()) {
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar(currencyNameMessage)
+                            }
+                        } else if (currencySymbol.isEmpty()) {
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar(currencySymbolMessage)
+                            }
+                        } else {
+                            onAddClick(UiCurrency(0, currencyName, currencySymbol))
+                        }
+                    },
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary
