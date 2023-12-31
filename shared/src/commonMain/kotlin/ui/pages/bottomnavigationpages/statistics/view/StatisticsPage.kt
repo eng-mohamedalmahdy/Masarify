@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -219,9 +220,16 @@ private fun StatisticsPageViews(
 
             Spacer(Modifier.height(8.dp))
             TransactionSummaryByCurrency(transactionsData)
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(12.dp))
 
-            HorizontalPager(chartsInsightsPagerState, Modifier.height(400.dp)) {
+            HorizontalPager(
+                chartsInsightsPagerState, Modifier.height(450.dp),
+                key = { it },
+                flingBehavior = PagerDefaults.flingBehavior(
+                    state = chartsInsightsPagerState,
+                    snapPositionalThreshold = .1f
+                )
+            ) {
                 when (it) {
                     0 -> {
                         Card(
@@ -270,5 +278,6 @@ private fun StatisticsPageViews(
         }
     }
 }
+
 
 

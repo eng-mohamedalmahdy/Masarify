@@ -1,5 +1,6 @@
 package ui.pages.bottomnavigationpages.statistics.view
 
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,6 +48,7 @@ fun CategoriesPieChart(
         if (categories.isNotEmpty()) {
             // Display PieChart when there is data
             PieChart(
+                animation =  TweenSpec(durationMillis = 0),
                 modifier = Modifier.fillMaxSize(),
                 pieChartData = categories,
                 ratioLineColor = Color.LightGray,
@@ -62,7 +64,7 @@ fun CategoriesPieChart(
             ) {
                 Text(
                     text = stringResource(MR.strings.no_income_or_expenses_were_added),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
                 )

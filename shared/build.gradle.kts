@@ -180,6 +180,7 @@ dependencies {
 
 
     implementation("androidx.compose.ui:ui-tooling-preview-desktop:1.6.0-alpha08")
+    implementation("androidx.compose.material3:material3:1.1.2")
     commonMainApi("dev.icerock.moko:resources:0.23.0")
     commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
     commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")

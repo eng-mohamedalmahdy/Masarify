@@ -27,7 +27,7 @@
     <string name="currency_name">اسم العملة</string>
     <string name="settings">الإعدادات</string>
     <string name="more">المزيد</string>
-    <string name="statistics">الإحصائيات</string>
+    <string name="statistics">إحصائيات</string>
     <string name="home">الرئيسية</string>
     <string name="expense">مصروفات</string>
     <string name="income">دخل</string>
@@ -79,7 +79,7 @@
     <string name="contact_us">تواصل معنا</string>
     <string name="confirm">تأكيد</string>
     <string name="transaction_summary">ملخص المصروفات</string>
-    <string name="daily_transactions">التحويلات الومية</string>
+    <string name="daily_transactions">التحويلات اليومية</string>
     <string name="category_name_cant_be_empty">لا يمكن ترك الأسم فارغًا</string>
     <string name="please_select_category_image">الرجاء اختيار صورة</string>
     <string name="currency_name_is_required">اسم العملة مطلوب</string>
