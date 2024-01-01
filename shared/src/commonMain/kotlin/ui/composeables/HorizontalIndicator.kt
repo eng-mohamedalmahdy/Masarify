@@ -28,7 +28,7 @@ fun HorizontalIndicator(pagerState: PagerState) {
         horizontalArrangement = Arrangement.Center
     ) {
         repeat(pagerState.pageCount) { iteration ->
-            val color = if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+            val color = if (pagerState.currentPage != iteration) Color.DarkGray else Color.LightGray
             Box(
                 modifier = Modifier
                     .padding(4.dp)

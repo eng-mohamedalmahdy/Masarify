@@ -227,7 +227,7 @@ private fun StatisticsPageViews(
                 key = { it },
                 flingBehavior = PagerDefaults.flingBehavior(
                     state = chartsInsightsPagerState,
-                    snapPositionalThreshold = .1f
+                    snapPositionalThreshold = .01f
                 )
             ) {
                 when (it) {
