@@ -27,7 +27,7 @@ kotlin {
     cocoapods {
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
-        version = "1.0"
+        version = "1.0.1"
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 

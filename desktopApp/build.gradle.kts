@@ -36,7 +36,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "KotlinMultiplatformComposeDesktopApplication"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
         }
         buildTypes.release.proguard {
             configurationFiles.from("compose-desktop.pro")

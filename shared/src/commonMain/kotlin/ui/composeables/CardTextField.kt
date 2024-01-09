@@ -9,14 +9,18 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.imeAction
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import ui.main.LocalAppTheme
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CardTextField(
     text: String,
@@ -47,15 +51,17 @@ fun CardTextField(
         onValueChange = onValueChange,
         shape = RoundedCornerShape(size = 9.dp),
         colors = colors,
-        modifier = modifier.padding(4.dp),
+        modifier = modifier.padding(4.dp).semantics {
+            this.imeAction = ImeAction.None
+        },
         label = label,
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType, imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType, imeAction = ImeAction.None),
         singleLine = true,
         readOnly = readonlyAndDisabled,
         enabled = !readonlyAndDisabled,
         trailingIcon = { trailingIcon?.let { Icon(it, null, tint = MaterialTheme.colorScheme.onBackground) } },
         textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = MaterialTheme.colorScheme.onBackground
-        )
+        ),
     )
 }

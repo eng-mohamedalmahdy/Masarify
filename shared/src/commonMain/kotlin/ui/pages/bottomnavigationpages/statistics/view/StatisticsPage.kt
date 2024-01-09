@@ -223,12 +223,15 @@ private fun StatisticsPageViews(
             Spacer(Modifier.height(12.dp))
 
             HorizontalPager(
-                chartsInsightsPagerState, Modifier.height(450.dp),
+                chartsInsightsPagerState,
+                Modifier.height(450.dp),
                 key = { it },
                 flingBehavior = PagerDefaults.flingBehavior(
                     state = chartsInsightsPagerState,
-                    snapPositionalThreshold = .01f
-                )
+                    snapPositionalThreshold = .0f,
+                    snapVelocityThreshold = 0.dp
+                ),
+                beyondBoundsPageCount = chartsInsightsPagerState.pageCount
             ) {
                 when (it) {
                     0 -> {

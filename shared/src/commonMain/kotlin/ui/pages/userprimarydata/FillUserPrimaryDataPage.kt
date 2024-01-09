@@ -52,6 +52,7 @@ import ui.pages.Page
 import ui.pages.createbankaccount.CreateBankAccountViewModel
 import ui.util.SnackBarAction
 
+
 @Composable
 fun FillUserPrimaryDataPage() {
     val viewModel = CreateBankAccountViewModel(

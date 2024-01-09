@@ -35,7 +35,7 @@ kotlin {
 
 
     cocoapods {
-        version = "1.0.0"
+        version = "1.0.1"
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
         ios.deploymentTarget = "14.1"
