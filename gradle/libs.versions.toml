@@ -1,0 +1,76 @@
+[versions]
+chart = "Beta-0.0.5"
+compose = "1.6.1"
+compose-plugin = "1.5.12"
+androidx-activityCompose = "1.8.2"
+androidx-core-ktx = "1.12.0"
+androidx-appcompat = "1.6.1"
+androidx-material = "1.11.0"
+agp = "8.2.2"
+androidx-constraintlayout = "2.1.4"
+androidx-test-junit = "1.1.5"
+androidx-espresso-core = "3.5.1"
+composeWebviewMultiplatform = "1.7.8"
+decomposeRouter = "0.5.1"
+decomposeVersion = "2.1.0-compose-experimental"
+gradlePlugin = "0.2.1"
+koinVersion = "3.5.0"
+koinCompose = "1.1.0"
+kamelImage = "0.7.3"
+kotlin = "1.9.20"
+junit = "4.13.2"
+ktorVersion = "2.3.4"
+kotlinxDatetime = "0.5.0"
+kotlinxSerializationJson = "1.6.0"
+multiplatformSettings = "1.1.1"
+multiplatformSettingsNoArg = "1.1.1"
+napierVersion = "2.6.1"
+parcelable = "1.2.0"
+resourcesGenerator = "0.23.0"
+sqlDelightVersion = "2.0.0"
+
+[libraries]
+chart = { module = "io.github.thechance101:chart", version.ref = "chart" }
+compose-webview-multiplatform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
+coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelightVersion" }
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decomposeVersion" }
+decompose-router = { module = "io.github.xxfast:decompose-router", version.ref = "decomposeRouter" }
+ext-compose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decomposeVersion" }
+gradle-plugin = { module = "com.arkivanov.parcelize.darwin:gradle-plugin", version.ref = "gradlePlugin" }
+kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinVersion" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinVersion" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-junit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
+lifecycle = { module = "com.arkivanov.essenty:lifecycle", version.ref = "parcelable" }
+multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettingsNoArg" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+napier = { module = "io.github.aakira:napier", version.ref = "napierVersion" }
+parcelable = { module = "com.arkivanov.essenty:parcelable", version.ref = "parcelable" }
+resources-generator = { module = "dev.icerock.moko:resources-generator", version.ref = "resourcesGenerator" }
+runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelightVersion" }
+
+[plugins]
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

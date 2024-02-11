@@ -6,12 +6,12 @@ import org.jetbrains.kotlin.library.impl.KotlinLibraryLayoutImpl
 import java.io.FileFilter
 import org.jetbrains.kotlin.konan.file.File as KonanFile
 
-
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.jetbrainsCompose)
+
     kotlin("native.cocoapods")
-    id("com.android.library")
-    id("org.jetbrains.compose")
     id("app.cash.sqldelight") version "2.0.0"
     id("kotlin-parcelize") // Apply the plugin for Android
     id("com.arkivanov.parcelize.darwin")
@@ -20,8 +20,29 @@ plugins {
 
 }
 
+//plugins {
+//    kotlin("multiplatform")
+//    id("com.android.application")
+////    id("com.android.library").apply(false)
+//    id("org.jetbrains.compose")
+//    kotlin("native.cocoapods")
+//    id("app.cash.sqldelight") version "2.0.0"
+//    id("kotlin-parcelize") // Apply the plugin for Android
+//    id("com.arkivanov.parcelize.darwin")
+//    id("dev.icerock.mobile.multiplatform-resources")
+//    kotlin("plugin.serialization") version "1.9.10"
+//
+//}
+
 kotlin {
-    android()
+
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "11"
+            }
+        }
+    }
 
     jvm("desktop")
 
@@ -35,7 +56,7 @@ kotlin {
 
 
     cocoapods {
-        version = "1.0.1"
+        version = "1.0.2"
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
         ios.deploymentTarget = "14.1"
@@ -49,7 +70,6 @@ kotlin {
             export("dev.icerock.moko:resources:0.23.0")
             export("dev.icerock.moko:graphics:0.9.0") // toUIColor here
             export("io.github.xxfast:decompose-router:0.5.1")
-
         }
 
     }
@@ -63,35 +83,35 @@ kotlin {
         val napierVersion = "2.6.1"
         val commonMain by getting {
             dependencies {
-                api("io.github.kevinnzou:compose-webview-multiplatform:1.7.8")
-
-                implementation("com.russhwolf:multiplatform-settings:1.1.1")
-                implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
-
                 implementation(project(":core"))
-                implementation("media.kamel:kamel-image:0.7.3")
-                implementation("io.ktor:ktor-client-core:$ktorVersion")
-                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-                implementation("io.insert-koin:koin-core:${koinVersion}")
-                implementation("io.insert-koin:koin-compose:1.1.0")
-                implementation("io.insert-koin:koin-test:${koinVersion}")
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
-                implementation("io.github.aakira:napier:$napierVersion")
+                api(libs.compose.webview.multiplatform)
+                implementation(libs.multiplatform.settings)
+                implementation(libs.multiplatform.settings.no.arg)
 
-                api("io.github.xxfast:decompose-router:0.5.1")
+                implementation(libs.kamel.image)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+                implementation(libs.kotlinx.serialization.json)
+
+                implementation(libs.koin.core)
+                implementation(libs.koin.compose)
+                implementation(libs.koin.test)
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.napier)
+
+                api(libs.decompose.router)
                 // You will need to also bring in decompose and essenty
 
-                implementation("com.arkivanov.decompose:decompose:${decomposeVersion}")
-                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:${decomposeVersion}")
-                implementation("com.arkivanov.essenty:parcelable:1.2.0")
-                implementation("com.arkivanov.essenty:lifecycle:1.2.0")
+                implementation(libs.decompose)
+                implementation(libs.ext.compose.jetbrains)
+                implementation(libs.parcelable)
+                implementation(libs.lifecycle)
 
 
-                implementation("app.cash.sqldelight:coroutines-extensions:$sqlDelightVersion")
-                runtimeOnly("app.cash.sqldelight:runtime:$sqlDelightVersion")
+                implementation(libs.coroutines.extensions)
+                runtimeOnly(libs.runtime)
 
                 implementation(compose.runtime)
                 implementation(compose.foundation)
@@ -103,14 +123,14 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
-                implementation("io.github.thechance101:chart:Beta-0.0.5")
+                implementation(libs.chart)
 
             }
         }
         val androidMain by getting {
 
             dependencies {
-                api("androidx.activity:activity-compose:1.6.1")
+                api("androidx.activity:activity-compose:1.8.2")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.9.0")
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
@@ -179,8 +199,8 @@ android {
 dependencies {
 
 
-    implementation("androidx.compose.ui:ui-tooling-preview-desktop:1.6.0-alpha08")
-    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.ui:ui-tooling-preview-desktop:1.6.1")
+    implementation("androidx.compose.material3:material3:1.2.0")
     commonMainApi("dev.icerock.moko:resources:0.23.0")
     commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
     commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")

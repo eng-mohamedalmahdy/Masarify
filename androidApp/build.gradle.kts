@@ -27,8 +27,8 @@ android {
         applicationId = "com.lightfeather.Masarify"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 3
+        versionName = "1.0.2"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -52,8 +52,8 @@ android {
 dependencies {
     val koinVersion = "3.5.2-RC1"
 
-    implementation("androidx.compose.material3:material3:1.1.2")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
     implementation("com.arkivanov.decompose:decompose:2.1.0-compose-experimental")
     implementation("io.github.xxfast:decompose-router:0.5.1")
 

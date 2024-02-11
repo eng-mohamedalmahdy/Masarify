@@ -29,6 +29,7 @@ import io.github.aakira.napier.Napier
 import io.github.xxfast.decompose.router.Router
 import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
+import org.koin.compose.koinInject
 import ui.pages.Page
 import ui.pages.apppage.AppHostPage
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
@@ -47,12 +48,15 @@ internal fun App() {
 
     Napier.base(DebugAntilog())
 
-    val viewModel = MainViewModel().let { getViewModel(Unit, viewModelFactory { it }) }
+    val viewModel = MainViewModel(
+        koinInject()
+    ).let { getViewModel(Unit, viewModelFactory { it }) }
     val viewModelRemembered = remember { viewModel }
     val settings = Settings()
 
     val isDarkMode by viewModelRemembered.isSystemDarkMode.collectAsState()
     val language by viewModelRemembered.currentLanguage.collectAsState()
+    val accounts by viewModel.bankAccountsListFlow.collectAsState()
 
     val appTheme: AppTheme = if (isDarkMode) AppDarkTheme else AppLightTheme
 
@@ -107,7 +111,7 @@ internal fun App() {
                     when (it) {
                         Page.AppHostPage -> AppHostPage()
                         Page.SplashPage -> SplashPage(onAnimationDone = {
-                            if (settings.isFirstTime()) {
+                            if (settings.isFirstTime() && accounts.isEmpty()) {
                                 router.replaceCurrent(Page.FillUserPrimaryDataPageModel)
                             } else {
                                 router.replaceCurrent(Page.AppHostPage)
