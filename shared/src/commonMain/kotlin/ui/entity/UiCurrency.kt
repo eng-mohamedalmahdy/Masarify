@@ -9,7 +9,11 @@ data class UiCurrency(
     val id: Int,
     val name: String,
     val sign: String,
-) : Parcelable
+) : Parcelable {
+    companion object {
+        val Dummy = UiCurrency(0, "USD", "$")
+    }
+}
 
 fun Currency.toUiCurrency() = UiCurrency(id, name, sign)
 

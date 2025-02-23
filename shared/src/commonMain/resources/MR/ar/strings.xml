@@ -84,4 +84,6 @@
     <string name="please_select_category_image">الرجاء اختيار صورة</string>
     <string name="currency_name_is_required">اسم العملة مطلوب</string>
     <string name="currency_symbol_is_required">علامة العملة مطلوبة</string>
+    <string name="accounts_worth">قيمة حساباتك بكل عملة</string>
+
 </resources>

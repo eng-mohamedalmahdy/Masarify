@@ -10,7 +10,7 @@ class CurrencyRepository(private val datasource: CurrencyDatasource) {
 
     suspend fun deleteCurrency(currency: Currency): Boolean = datasource.deleteCurrency(currency)
 
-    suspend fun getAllCurrencies() = datasource.getAllCurrencies()
+     fun getAllCurrencies() = datasource.getAllCurrencies()
 
     suspend fun getCurrencyById(id: Int): Currency? = datasource.getCurrencyById(id)
 }

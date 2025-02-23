@@ -15,7 +15,7 @@ class CurrencyDatasourceLocalImp(private val currencyQueries: CurrenciesQueries)
         return (currencyQueries.selectLastInsertedRowId().executeAsOneOrNull() ?: -1L).toInt()
     }
 
-    override suspend fun getAllCurrencies(): Flow<List<Currency>> {
+    override fun getAllCurrencies(): Flow<List<Currency>> {
         return currencyQueries.selectAllCurrencies { id, name, sign ->
             Currency(id.toInt(), name, sign)
         }.asFlow().mapToList(Dispatchers.IO)

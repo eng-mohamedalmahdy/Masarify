@@ -3,6 +3,7 @@ package ui.pages.bottomnavigationpages.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,11 +68,13 @@ import io.kamel.image.asyncPainterResource
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 import ui.composeables.SearchTextField
+import ui.composeables.WealthWorthInCurrencyItem
 import ui.entity.UiBankAccount
 import ui.main.LocalAppTheme
 import ui.main.LocalBottomNavigationNavController
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
 import ui.pages.bottomnavigationpages.home.model.UiTransactionModel
+import ui.pages.bottomnavigationpages.home.model.UiWealthWorthInCurrency
 import ui.pages.createtransactionpage.view.DeleteConfirmationDialog
 import ui.util.Preview
 
@@ -84,28 +87,32 @@ fun HomePage() {
             getAllBankAccounts = koinInject(),
             deleteExpenseUseCase = koinInject(named("expense")),
             deleteIncomeUseCase = koinInject(named("income")),
-            deleteTransferUseCase = koinInject(named("transfer"))
+            deleteTransferUseCase = koinInject(named("transfer")),
+            getWealthWorthInCurrency = koinInject(),
 
         ).let { getViewModel(Unit, viewModelFactory { it }) }
     val viewModelState = remember { homePageViewModel }
     val expensesListWithDates by viewModelState.expensesWithDateListFlow.collectAsState()
     val bankAccounts by viewModelState.bankAccountsListFlow.collectAsState()
+    val worthInCurrency by viewModelState.worthInCurrency.collectAsState()
     OnUiStateChange(expensesListWithDates) {
         HomePageViews(
             bankAccounts,
             it,
+            worthInCurrency,
             onSearchTransactions = { viewModelState.filterTransactions(it) },
             onDeleteTransaction = { viewModelState.deleteTransaction(it) })
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomePageViews(
     bankAccounts: List<UiBankAccount>,
     expensesList: Map<String, List<UiTransactionModel>>,
+    wealthWorth: List<UiWealthWorthInCurrency>,
     onSearchTransactions: (String) -> Unit,
-    onDeleteTransaction: (UiTransactionModel) -> Unit
+    onDeleteTransaction: (UiTransactionModel) -> Unit,
 ) {
     var searchValue by remember { mutableStateOf("") }
     var toBeDeleted by remember { mutableStateOf<UiTransactionModel?>(null) }
@@ -164,6 +171,21 @@ private fun HomePageViews(
                 }
             }
             Spacer(Modifier.height(16.dp))
+            Text(
+                stringResource(MR.strings.accounts_worth),
+                modifier = Modifier.padding(horizontal = 12.dp),
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(wealthWorth) {
+                    WealthWorthInCurrencyItem(it)
+                }
+            }
             Text(
                 stringResource(MR.strings.your_transactions_history),
                 modifier = Modifier.padding(12.dp),
@@ -408,5 +430,5 @@ private fun DateItem(date: String) {
 @Preview
 @Composable
 private fun HomePagePreview() {
-    HomePageViews(listOf(), mapOf(), onSearchTransactions = {}, onDeleteTransaction = {})
+    HomePageViews(listOf(), mapOf(), listOf(), onSearchTransactions = {}, onDeleteTransaction = {})
 }

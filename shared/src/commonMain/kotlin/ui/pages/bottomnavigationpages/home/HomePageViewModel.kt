@@ -4,6 +4,7 @@ import com.lightfeather.core.domain.transaction.Transaction
 import com.lightfeather.core.usecase.DeleteTransaction
 import com.lightfeather.core.usecase.GetAllAccounts
 import com.lightfeather.core.usecase.GetAllTransactions
+import com.lightfeather.core.usecase.GetWealthWorthInCurrency
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import ext.formatTimeStampToDate
 import kotlinx.coroutines.CoroutineScope
@@ -12,20 +13,24 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ui.entity.UiBankAccount
 import ui.entity.UiState
 import ui.entity.toUiBankAccount
 import ui.pages.bottomnavigationpages.home.model.UiTransactionModel
+import ui.pages.bottomnavigationpages.home.model.UiWealthWorthInCurrency
 import ui.pages.bottomnavigationpages.home.model.toDomainTransaction
 import ui.pages.bottomnavigationpages.home.model.toUiTransactionModel
+import ui.pages.bottomnavigationpages.home.model.toUiWealthWorthInCurrency
 
 class HomePageViewModel(
     private val getAllTransactions: GetAllTransactions,
     private val getAllBankAccounts: GetAllAccounts,
     private val deleteExpenseUseCase: DeleteTransaction<Transaction.Expense>,
     private val deleteIncomeUseCase: DeleteTransaction<Transaction.Income>,
-    private val deleteTransferUseCase: DeleteTransaction<Transaction.Transfer>
+    private val deleteTransferUseCase: DeleteTransaction<Transaction.Transfer>,
+    private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
 ) : ViewModel() {
 
 
@@ -35,6 +40,13 @@ class HomePageViewModel(
 
     private val _bankAccountsListFlow = MutableStateFlow<List<UiBankAccount>>(listOf())
     val bankAccountsListFlow = _bankAccountsListFlow.asStateFlow()
+
+    private val _worthInCurrency = getWealthWorthInCurrency().map { it.map { it.toUiWealthWorthInCurrency() } }
+    val worthInCurrency = _worthInCurrency.stateIn(
+        viewModelScope,
+        started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(),
+        initialValue = listOf()
+    )
 
     init {
         loadBankAccounts()

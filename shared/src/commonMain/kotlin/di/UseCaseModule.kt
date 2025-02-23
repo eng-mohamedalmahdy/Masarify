@@ -18,6 +18,7 @@ import com.lightfeather.core.usecase.GetAllTransactions
 import com.lightfeather.core.usecase.GetTotalExpenseOfCurrency
 import com.lightfeather.core.usecase.GetTotalIncomeOfCurrency
 import com.lightfeather.core.usecase.GetTotalTransactionsByCategories
+import com.lightfeather.core.usecase.GetWealthWorthInCurrency
 import com.lightfeather.core.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.core.usecase.UpdateTransaction
 import org.koin.core.qualifier.named
@@ -117,4 +118,5 @@ val useCaseModule = module {
     factory { UpdateCurrencyExchangeRates(get()) }
     factory { GetTotalExpenseOfCurrency(get()) }
     factory { GetTotalIncomeOfCurrency(get()) }
+    factory { GetWealthWorthInCurrency(get(), get(), get()) }
 }
