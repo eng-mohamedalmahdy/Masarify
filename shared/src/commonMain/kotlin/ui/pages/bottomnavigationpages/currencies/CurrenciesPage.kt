@@ -121,7 +121,7 @@ private fun CurrenciesPageViews(
     currencies: List<UiCurrency>,
     exchangeRates: List<List<UiExchangeRate>>,
     onSaveClick: (List<List<UiExchangeRate>>) -> Unit,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
 ) {
     CurrencyTable(currencies = currencies, exchangeRates = exchangeRates, onSaveClick, onAddClick)
 }
@@ -193,15 +193,13 @@ private fun CurrencyTable(
     currencies: List<UiCurrency>,
     exchangeRates: List<List<UiExchangeRate>>,
     onSaveClick: (List<List<UiExchangeRate>>) -> Unit,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     var inEditMode by remember { mutableStateOf(false) }
     val exchangeRatesState by remember { mutableStateOf(exchangeRates.map { it.toMutableList() }) }
 
     Column {
-
-//        Text(stringResource(MR.strings.))
 
         Card(
             Modifier.padding(24.dp).padding(bottom = 100.dp).fillMaxSize(),
@@ -257,6 +255,7 @@ private fun CurrencyTable(
                                         onTextChange = {
                                             exchangeRatesState[x][y] =
                                                 exchangeRate.copy(rate = it.toDoubleOrNull() ?: 0.0)
+                                            exchangeRatesState[y][x] = exchangeRate.copy(rate = (1.0).div(it.toDoubleOrNull() ?: 1.0))
                                         }
                                     )
                                 }
@@ -308,7 +307,7 @@ fun CustomFloatingActionButton(
     onSaveClick: () -> Unit,
     onEditClick: () -> Unit,
     onAddClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     if (!expandable) { // Close the expanded fab if you change to non expandable nav destination
@@ -392,7 +391,7 @@ private fun CurrencyCell(
     text: String,
     isEditing: Boolean = false,
     isHeader: Boolean = false,
-    onTextChange: (String) -> Unit = {}
+    onTextChange: (String) -> Unit = {},
 ) {
     var text by remember { mutableStateOf(text) }
     val cellModifier = if (isHeader) {
