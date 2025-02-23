@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
+import com.lightfeather.core.domain.Currency
 import ui.pages.bottomnavigationpages.home.model.UiWealthWorthInCurrency
 import ui.util.Preview
 
@@ -32,13 +33,19 @@ fun WealthWorthInCurrencyItem(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = wealthWorthInCurrency.worth.toString(),
+                text = formatCurrencyTo2Decimal(wealthWorthInCurrency.worth),
                 style = MaterialTheme.typography.titleLarge
             )
         }
 
 
     }
+}
+
+private fun formatCurrencyTo2Decimal(amount: Double): String {
+    val decimalPart = amount.toInt()
+    val fractionPart = (amount - decimalPart) * 100
+    return "$decimalPart.${fractionPart.toInt()}"
 }
 
 
