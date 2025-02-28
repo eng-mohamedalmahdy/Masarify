@@ -14,11 +14,19 @@ fun WealthWorthInCurrencyItem(
     wealthWorthInCurrency: UiWealthWorthInCurrency,
     modifier: Modifier = Modifier,
 ) {
-    Card {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
         Column(
             modifier = modifier.padding(12.dp),
         ) {
             Row(
+                modifier = Modifier.height(34.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(

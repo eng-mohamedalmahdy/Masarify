@@ -87,7 +87,7 @@ object AppLightTheme : AppTheme {
             headlineMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 28.sp,
                 fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
             ),
             headlineSmall = TextStyle(

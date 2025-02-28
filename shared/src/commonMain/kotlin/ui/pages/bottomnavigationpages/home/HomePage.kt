@@ -162,7 +162,7 @@ private fun HomePageViews(
             Text(
                 stringResource(MR.strings.accounts),
                 modifier = Modifier.padding(horizontal = 12.dp),
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             LazyRow {
@@ -174,7 +174,7 @@ private fun HomePageViews(
             Text(
                 stringResource(MR.strings.accounts_worth),
                 modifier = Modifier.padding(horizontal = 12.dp),
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             LazyRow(
@@ -189,7 +189,7 @@ private fun HomePageViews(
             Text(
                 stringResource(MR.strings.your_transactions_history),
                 modifier = Modifier.padding(12.dp),
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(10.dp))
