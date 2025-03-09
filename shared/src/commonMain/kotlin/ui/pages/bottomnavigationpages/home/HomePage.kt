@@ -65,11 +65,13 @@ import ext.toComposeColor
 import ext.truncateIfExceeds
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.coroutines.flow.map
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 import ui.composeables.SearchTextField
 import ui.composeables.WealthWorthInCurrencyItem
 import ui.entity.UiBankAccount
+import ui.entity.UiState
 import ui.main.LocalAppTheme
 import ui.main.LocalBottomNavigationNavController
 import ui.pages.bottomnavigationpages.BottomNavigationPageModel
@@ -90,19 +92,21 @@ fun HomePage() {
             deleteTransferUseCase = koinInject(named("transfer")),
             getWealthWorthInCurrency = koinInject(),
 
-        ).let { getViewModel(Unit, viewModelFactory { it }) }
+            ).let { getViewModel(Unit, viewModelFactory { it }) }
     val viewModelState = remember { homePageViewModel }
-    val expensesListWithDates by viewModelState.expensesWithDateListFlow.collectAsState()
+    val expensesListWithDates by viewModelState.expensesWithDateListFlow.map {
+        (it as? UiState.SUCCESS<Map<String, List<UiTransactionModel>>>)?.data ?: mapOf()
+    }.collectAsState(
+        mapOf()
+    )
     val bankAccounts by viewModelState.bankAccountsListFlow.collectAsState()
     val worthInCurrency by viewModelState.worthInCurrency.collectAsState()
-    OnUiStateChange(expensesListWithDates) {
-        HomePageViews(
-            bankAccounts,
-            it,
-            worthInCurrency,
-            onSearchTransactions = { viewModelState.filterTransactions(it) },
-            onDeleteTransaction = { viewModelState.deleteTransaction(it) })
-    }
+    HomePageViews(
+        bankAccounts,
+        expensesListWithDates,
+        worthInCurrency,
+        onSearchTransactions = { viewModelState.filterTransactions(it) },
+        onDeleteTransaction = { viewModelState.deleteTransaction(it) })
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -140,7 +144,7 @@ private fun HomePageViews(
                 SearchTextField(
                     searchValue,
                     { searchValue = it; onSearchTransactions(it) },
-                    modifier = Modifier.fillMaxWidth(.9f)
+                    modifier = Modifier.fillMaxWidth()
                 )
 //                IconButton(
 //                    {},
@@ -178,7 +182,7 @@ private fun HomePageViews(
                 color = MaterialTheme.colorScheme.onBackground
             )
             LazyRow(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -193,60 +197,38 @@ private fun HomePageViews(
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(10.dp))
-            if (expensesList.isEmpty()) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Spacer(Modifier.weight(1f))
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painterResource(MR.images.no_transacions_placeholder),
-                            contentDescription = stringResource(MR.strings.no_income_or_expenses_were_added),
+            LazyColumn(Modifier.fillMaxSize()) {
+                expensesList.forEach { (date, expenses) ->
+                    item {
+                        DateItem(date)
+                    }
+                    items(expenses) { transaction ->
+                        val dismissState = rememberDismissState(
+                            initialValue = DismissValue.Default,
+                            confirmStateChange = {
+                                if (it == DismissValue.DismissedToStart) {
+                                    toBeDeleted = transaction
+                                    isShowingDeleteDialog = true
+                                } else if (it == DismissValue.DismissedToEnd) {
+                                    toBeEdited = transaction
+                                    router.navigateSingleTop {
+                                        BottomNavigationPageModel.CreateTransactionPageModel(toBeEdited)
+                                    }
+                                }
+                                false
+                            }
                         )
-                        Text(
-                            stringResource(MR.strings.no_income_or_expenses_were_added),
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onBackground
+                        SwipeToDismiss(
+                            state = dismissState,
+                            background = { DismissExpenseItemBackground(dismissState) },
+                            dismissContent = { ExpenseCardItem(transaction) }
                         )
                     }
-                    Spacer(Modifier.weight(1f))
 
                 }
-            } else {
-                LazyColumn(Modifier.fillMaxSize()) {
-                    expensesList.forEach { (date, expenses) ->
-                        item {
-                            DateItem(date)
-                        }
-                        items(expenses) { transaction ->
-                            val dismissState = rememberDismissState(
-                                initialValue = DismissValue.Default,
-                                confirmStateChange = {
-                                    if (it == DismissValue.DismissedToStart) {
-                                        toBeDeleted = transaction
-                                        isShowingDeleteDialog = true
-                                    } else if (it == DismissValue.DismissedToEnd) {
-                                        toBeEdited = transaction
-                                        router.navigateSingleTop {
-                                            BottomNavigationPageModel.CreateTransactionPageModel(toBeEdited)
-                                        }
-                                    }
-                                    false
-                                }
-                            )
-                            SwipeToDismiss(
-                                state = dismissState,
-                                background = { DismissExpenseItemBackground(dismissState) },
-                                dismissContent = { ExpenseCardItem(transaction) }
-                            )
-                        }
 
-                    }
-
-                    item {
-                        Spacer(Modifier.height(120.dp))
-                    }
+                item {
+                    Spacer(Modifier.height(120.dp))
                 }
             }
         }
@@ -363,7 +345,7 @@ private fun ExpenseCardItem(expenseModel: UiTransactionModel) {
 private fun BankAccountCard(bankAccount: UiBankAccount, onAccountClick: (UiBankAccount) -> Unit) {
     Card(
         modifier = Modifier.height(height = 100.dp).clickable { onAccountClick(bankAccount) }
-            .padding(vertical = 6.dp, horizontal = 16.dp),
+            .padding(vertical = 6.dp, horizontal = 4.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = bankAccount.color.toComposeColor()),
         elevation = CardDefaults.cardElevation(0.dp)

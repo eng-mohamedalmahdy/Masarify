@@ -63,98 +63,98 @@ object AppLightTheme : AppTheme {
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             displayMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             displaySmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             headlineLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             headlineMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             headlineSmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             titleLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             titleMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
                 fontSize = 28.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_regular)
 
             ),
             titleSmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.medium)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_medium)
             ),
             bodyLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_regular)
             ),
             bodyMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_regular)
 
             ),
             labelLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             bodySmall = TextStyle(
                 color = secondaryTextColor,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 12.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.medium)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_medium)
 
             ),
             labelSmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 10.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             labelMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold),
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold),
             ),
         )
 }
@@ -192,98 +192,98 @@ object AppDarkTheme : AppTheme {
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             displayMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             displaySmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             headlineLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             headlineMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             headlineSmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             titleLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             titleMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
                 fontSize = 28.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_regular)
 
             ),
             titleSmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.medium)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_medium)
             ),
             bodyLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_regular)
             ),
             bodyMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.regular)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_regular)
 
             ),
             labelLarge = TextStyle(
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
 
             ),
             bodySmall = TextStyle(
                 color = secondaryTextColor,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 12.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.medium)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_medium)
 
             ),
             labelSmall = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 10.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold)
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold)
             ),
             labelMedium = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
-                fontFamily = fontFamilyResource(MR.fonts.Tajawal.bold),
+                fontFamily = fontFamilyResource(MR.fonts.tajawal_bold),
             ),
         )
 }

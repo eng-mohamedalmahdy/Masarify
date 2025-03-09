@@ -2,10 +2,12 @@ plugins {
     kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
+    alias(libs.plugins.composeCompiler)
+
 }
 
 kotlin {
-    android()
+    androidTarget()
     sourceSets {
         val androidMain by getting {
             dependencies {
@@ -42,12 +44,7 @@ android {
             enableSplit = false
         }
     }
-//    buildFeatures {
-//        compose = true
-//    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
-    }
+
 }
 dependencies {
     val koinVersion = "3.5.2-RC1"

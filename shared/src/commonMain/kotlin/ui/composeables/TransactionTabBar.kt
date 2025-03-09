@@ -72,8 +72,6 @@ private fun TabItem(expenseType: UiTransactionType, isSelected: Boolean, onTabSe
             Modifier.size(80.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = true),
                     onClick = { onTabSelected(expenseType) }
                 )
                 .background(backgroundColor, RoundedCornerShape(16.dp))

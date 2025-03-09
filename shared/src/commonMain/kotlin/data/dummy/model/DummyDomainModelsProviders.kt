@@ -4,7 +4,7 @@ import com.lightfeather.core.domain.Account
 import com.lightfeather.core.domain.Category
 import com.lightfeather.core.domain.Currency
 import com.lightfeather.core.domain.transaction.Transaction
-import com.lightfeather.masarify.MR.strings.currency
+import com.lightfeather.masarify.MR
 
 object DummyDomainModelsProviders {
     val currency = Currency(id = 3008, name = "Nina Nieves", sign = "EGP")

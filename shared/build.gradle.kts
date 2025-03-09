@@ -15,8 +15,10 @@ plugins {
     id("app.cash.sqldelight") version "2.0.0"
     id("kotlin-parcelize") // Apply the plugin for Android
     id("com.arkivanov.parcelize.darwin")
-    id("dev.icerock.mobile.multiplatform-resources")
     kotlin("plugin.serialization") version "1.9.10"
+
+    alias(libs.plugins.moko.resources)
+    alias(libs.plugins.composeCompiler)
 
 }
 
@@ -67,7 +69,7 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            export("dev.icerock.moko:resources:0.23.0")
+            export("dev.icerock.moko:resources:0.24.5")
             export("dev.icerock.moko:graphics:0.9.0") // toUIColor here
             export("io.github.xxfast:decompose-router:0.5.1")
         }
@@ -76,7 +78,7 @@ kotlin {
 
     sourceSets {
 
-        val ktorVersion = "2.3.4"
+        val ktorVersion = "3.0.2"
         val sqlDelightVersion = "2.0.0"
         val decomposeVersion = "2.1.0-compose-experimental"
         val koinVersion = "3.5.0"
@@ -201,8 +203,6 @@ dependencies {
 
     implementation("androidx.compose.ui:ui-tooling-preview-desktop:1.6.1")
     implementation("androidx.compose.material3:material3:1.2.0")
-    commonMainApi("dev.icerock.moko:resources:0.23.0")
-    commonMainApi("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
     commonTestImplementation("dev.icerock.moko:resources-test:0.23.0")
 
     //MVVM
@@ -215,14 +215,17 @@ dependencies {
 
     implementation("androidx.compose.ui:ui-tooling-preview-android:1.5.1")
 
+
+    commonMainApi(libs.moko.resources)
+    commonMainApi(libs.moko.resources.compose) // for compose multiplatform
+
+
 }
 
 
 
 multiplatformResources {
-    multiplatformResourcesPackage = "com.lightfeather.masarify" // required
-    disableStaticFrameworkWarning = true
-
+    resourcesPackage.set("com.lightfeather.masarify") // required
 }
 
 task("testClasses").doLast {

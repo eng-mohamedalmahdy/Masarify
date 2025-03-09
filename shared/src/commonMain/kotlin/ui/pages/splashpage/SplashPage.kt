@@ -54,7 +54,7 @@ private fun SplashPageViews(onAnimationDone: () -> Unit) {
                 style = TextStyle(
                     fontSize = 48.sp,
                     fontStyle = FontStyle.Italic,
-                    fontFamily = fontFamilyResource(MR.fonts.Tajawal.black)
+                    fontFamily = fontFamilyResource(MR.fonts.tajawal_black)
                 ),
             )
             Spacer(Modifier.height(50.dp))
