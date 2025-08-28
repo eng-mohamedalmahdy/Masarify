@@ -79,7 +79,7 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization.json)
-
+                implementation(libs.koin.core)
             }
         }
 
@@ -98,6 +98,7 @@ kotlin {
                 implementation(libs.androidx.runner)
                 implementation(libs.androidx.core)
                 implementation(libs.androidx.testExt.junit)
+                implementation(libs.koin.core)
             }
         }
 

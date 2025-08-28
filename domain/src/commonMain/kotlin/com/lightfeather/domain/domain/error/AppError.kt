@@ -1,4 +1,4 @@
-package com.lightfeather.domain.domain
+package com.lightfeather.domain.domain.error
 
 import kotlinx.serialization.Serializable
 

@@ -1,5 +1,7 @@
 package com.lightfeather.domain.domain
 
+import com.lightfeather.domain.domain.error.AppError
+
 sealed class DomainResult<T>(open val data: T?) {
     data class Success<T>(override val data: T) : DomainResult<T>(data)
     data class Failure<T>(val error: AppError) : DomainResult<T>(null)
@@ -32,6 +34,10 @@ sealed class DomainResult<T>(open val data: T?) {
         is DomainResult.Failure -> default
     }
 
+    fun<R> map(transform: (T) -> R): DomainResult<R> = when (this) {
+        is DomainResult.Success -> DomainResult.Success(transform(data))
+        is DomainResult.Failure -> DomainResult.Failure(error)
+    }
 
 
     inline fun <R> foldResult(

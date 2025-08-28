@@ -9,5 +9,6 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 actual suspend fun provideDbDriver(
     schema: SqlSchema<QueryResult.AsyncValue<Unit>>
 ): SqlDriver {
+    val context = getApplication()
     return AndroidSqliteDriver(schema.synchronous(), context, "appDatabase.db")
 }

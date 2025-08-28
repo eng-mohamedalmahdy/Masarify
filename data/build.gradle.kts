@@ -2,13 +2,14 @@
 
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
-val appPackageName = "com.lightfeather.masarify"
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.kotlinSerialization)
+
 }
 
 kotlin {
@@ -81,7 +82,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.koin.core)
+                implementation(projects.domain)
+                implementation(libs.sqldelight.coroutines)
             }
         }
 

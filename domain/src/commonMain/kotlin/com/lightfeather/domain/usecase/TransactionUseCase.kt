@@ -9,12 +9,11 @@ import com.lightfeather.domain.data.repository.TransferRepository
 import com.lightfeather.domain.domain.Currency
 import com.lightfeather.domain.domain.CurrencyExchangeRate
 import com.lightfeather.domain.domain.DomainResult
-import com.lightfeather.domain.domain.transaction.InvalidTransaction
+import com.lightfeather.domain.domain.error.InvalidTransaction
 import com.lightfeather.domain.domain.transaction.Transaction
 import com.lightfeather.domain.domain.transaction.TransactionFilter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -27,21 +26,27 @@ class CreateTransaction<T : Transaction>(
     private val accountRepository: AccountRepository,
     private val exchangeRateRepository: CurrencyExchangeRateRepository,
 ) {
-    suspend operator fun invoke(transaction: T): DomainResult<Int> =
+    suspend operator fun invoke(transaction: T): DomainResult<Int> {
         with(transaction) {
+            val getExchangeRateUseCase = GetCurrencyExchangeRateById(exchangeRateRepository)
             if (isFeasible()) {
                 if (this is Transaction.Transfer) {
-                    val exchangeRate = GetCurrencyExchangeRateById(exchangeRateRepository)(
-                        account.currency.id, receiverAccount.currency.id
+                    val exchangeRate = getExchangeRateUseCase(account.currency.id, receiverAccount.currency.id)
+                    exchangeRate.foldSuspend(
+                        onSuccess = { exchangeRate ->
+                            accountRepository.updateAccount(receiverAccount.copy(balance = copy(amount = amount * exchangeRate.rate).receiverAccountNewBalance))
+                        }
                     )
-                    accountRepository.updateAccount(receiverAccount.copy(balance = copy(amount = amount * exchangeRate.rate).receiverAccountNewBalance))
                 }
 
                 accountRepository.updateAccount(account.copy(balance = accountNewBalance))
 
-                transactionRepository.createTransaction(transaction)
-            } else DomainResult.Failure(InvalidTransaction("Invalid Transaction double check your balance"))
+                return transactionRepository.createTransaction(transaction)
+            } else {
+               return DomainResult.Failure(InvalidTransaction("Invalid Transaction double check your balance"))
+            }
         }
+    }
 }
 
 
@@ -103,7 +108,7 @@ class UpdateTransaction<T : Transaction>(
         }
     }
 
-    private suspend fun getExchangeRate(fromCurrencyId: Int, toCurrencyId: Int): CurrencyExchangeRate {
+    private suspend fun getExchangeRate(fromCurrencyId: Int, toCurrencyId: Int): DomainResult<CurrencyExchangeRate> {
         return GetCurrencyExchangeRateById(exchangeRateRepository)(fromCurrencyId, toCurrencyId)
     }
 }
