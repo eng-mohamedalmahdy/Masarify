@@ -2,14 +2,14 @@ CREATE TABLE bank_accounts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   currency INTEGER NOT NULL,
   name TEXT NOT NULL ,
-  desceription TEXT,
+  description TEXT,
   balance REAL NOT NULL DEFAULT  0.0,
   color TEXT NOT NULL,
   logo TEXT
 );
 
 insertBankAccount:
-INSERT INTO bank_accounts (currency,name,desceription,balance,color,logo) VALUES (?,?,?,?,?,?);
+INSERT INTO bank_accounts (currency,name,description,balance,color,logo) VALUES (?,?,?,?,?,?);
 
 updateAccount:
 UPDATE bank_accounts SET balance=?, name = ?,color = ?,logo = ?  WHERE id = ?;
@@ -21,7 +21,7 @@ getAllAccounts:
 SELECT DISTINCT
 bank_accounts.id,
 bank_accounts.name,
-bank_accounts.desceription,
+bank_accounts.description,
 bank_accounts.balance,
 bank_accounts.currency,
 bank_accounts.color,
@@ -36,7 +36,7 @@ WHERE bank_accounts.currency = currencies.id;
 getAccountById:
 SELECT bank_accounts.id,
       bank_accounts.name,
-      bank_accounts.desceription,
+      bank_accounts.description,
       bank_accounts.balance,
       bank_accounts.currency,
       bank_accounts.color,

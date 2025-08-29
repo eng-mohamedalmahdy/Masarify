@@ -34,7 +34,12 @@ sealed class DomainResult<T>(open val data: T?) {
         is DomainResult.Failure -> default
     }
 
-    fun<R> map(transform: (T) -> R): DomainResult<R> = when (this) {
+    fun <R> map(transform: (T) -> R): DomainResult<R> = when (this) {
+        is DomainResult.Success -> DomainResult.Success(transform(data))
+        is DomainResult.Failure -> DomainResult.Failure(error)
+    }
+
+    suspend fun <R> mapSuspend(transform: suspend (T) -> R): DomainResult<R> = when (this) {
         is DomainResult.Success -> DomainResult.Success(transform(data))
         is DomainResult.Failure -> DomainResult.Failure(error)
     }
@@ -47,8 +52,25 @@ sealed class DomainResult<T>(open val data: T?) {
         is Success -> onSuccess(data)
         is DomainResult.Failure -> onFailure(error)
     }
-}
 
+    fun <R, S> combine(other: DomainResult<R>, transform: (T, R) -> S): DomainResult<S> = when (this) {
+        is DomainResult.Success -> when (other) {
+            is DomainResult.Success -> DomainResult.Success(transform(data, other.data))
+            is DomainResult.Failure -> DomainResult.Failure(other.error)
+        }
+
+        is DomainResult.Failure -> DomainResult.Failure(error)
+    }
+
+    companion object {
+        fun <T, R, S> combine(
+            first: DomainResult<T>,
+            second: DomainResult<R>,
+            transform: (T, R) -> S
+        ): DomainResult<S> = first.combine(second, transform)
+    }
+
+}
 
 
 fun <R, T> T.toDomainResult(mapper: (input: T) -> R): DomainResult<R> =
@@ -56,3 +78,17 @@ fun <R, T> T.toDomainResult(mapper: (input: T) -> R): DomainResult<R> =
         .getOrElse { DomainResult.Failure(AppError.InternalError(it.message.orEmpty())) }
 
 fun <T> T.toDomainResult(): DomainResult<T> = DomainResult.Success(this)
+
+fun <T> runCatchingDomainResult(block: () -> T): DomainResult<T> =
+    runCatching(block).fold(
+        { DomainResult.Success(it) },
+        { DomainResult.Failure(AppError.InternalError(it.message.orEmpty())) }
+    )
+
+suspend fun <T> runCatchingDomainResultSuspend(block: suspend () -> T): DomainResult<T> =
+    runCatching {
+        block()
+    }.fold(
+        { DomainResult.Success(it) },
+        { DomainResult.Failure(AppError.InternalError(it.message.orEmpty())) }
+    )

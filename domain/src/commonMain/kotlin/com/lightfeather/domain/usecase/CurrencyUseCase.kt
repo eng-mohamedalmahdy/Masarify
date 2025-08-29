@@ -4,6 +4,7 @@ import com.lightfeather.domain.data.repository.CurrencyExchangeRateRepository
 import com.lightfeather.domain.data.repository.CurrencyRepository
 import com.lightfeather.domain.domain.Currency
 import com.lightfeather.domain.domain.CurrencyExchangeRate
+import com.lightfeather.domain.domain.DomainResult
 import kotlinx.coroutines.flow.first
 
 
@@ -11,18 +12,36 @@ class CreateCurrency(
     private val currencyRepository: CurrencyRepository,
     private val exchangeRateRepository: CurrencyExchangeRateRepository
 ) {
-    suspend operator fun invoke(currency: Currency): Int {
-
-        val id = currencyRepository.createCurrency(currency)
-        val currencies = currencyRepository.getAllCurrencies().first()
-        currencies.forEach {
-            exchangeRateRepository.createCurrencyExchangeRate(CurrencyExchangeRate(it, currency.copy(id = id), 1.0))
-            exchangeRateRepository.createCurrencyExchangeRate(CurrencyExchangeRate(currency.copy(id = id), it, 1.0))
+    suspend operator fun invoke(currency: Currency): DomainResult<Int> {
+        return currencyRepository.createCurrency(currency).mapSuspend { id ->
+            currencyRepository.getAllCurrencies().foldSuspend(
+                onSuccess = { currencies ->
+                    currencies.first().forEach {
+                        exchangeRateRepository.createCurrencyExchangeRate(
+                            CurrencyExchangeRate(
+                                it,
+                                currency.copy(id = id),
+                                1.0
+                            )
+                        )
+                        exchangeRateRepository.createCurrencyExchangeRate(
+                            CurrencyExchangeRate(
+                                currency.copy(id = id),
+                                it,
+                                1.0
+                            )
+                        )
+                    }
+                }
+            )
+            exchangeRateRepository.createCurrencyExchangeRate(
+                CurrencyExchangeRate(currency.copy(id = id), currency.copy(id = id), 1.0)
+            ).foldResult(
+                onSuccess = { id },
+                onFailure = { -1 }
+            )
         }
-        exchangeRateRepository.createCurrencyExchangeRate(
-            CurrencyExchangeRate(currency.copy(id = id), currency.copy(id = id), 1.0)
-        )
-        return id
+
     }
 }
 

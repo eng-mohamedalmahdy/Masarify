@@ -1,154 +1,190 @@
+-- Table
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY,
     name TEXT,
     description TEXT,
     amount REAL,
     timestamp INTEGER,
-    account_id INTEGER,
-    type TEXT CHECK(type IN ("INCOME", "EXPENSE", "TRANSFER")), -- 1: Income, 2: Expense, 3: Transfer
-
-    receiver_account_id INTEGER, -- For Income transactions
-    fee REAL -- For Transfer transactions
+    account_id INTEGER NOT NULL,
+    type TEXT CHECK(type IN ("INCOME", "EXPENSE", "TRANSFER")),
+    attachment_id INTEGER,
+    receiver_account_id INTEGER, -- Only for TRANSFER
+    fee REAL -- Only for TRANSFER
 );
 
+-- Insert Queries
 insertTransaction:
-INSERT INTO transactions (type, name, description, amount, timestamp, account_id)
-VALUES (?, ?, ?, ?, ?, ?);
-
+INSERT INTO transactions (type, name, description, amount, timestamp, account_id, attachment_id)
+VALUES (:type, :name, :description, :amount, :timestamp, :account_id, :attachment);
 
 insertTransfer:
-INSERT INTO transactions (type, name, description, amount, timestamp, account_id, receiver_account_id, fee)
-VALUES ("TRANSFER", ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO transactions (type, name, description, amount, timestamp, account_id, attachment_id, receiver_account_id, fee)
+VALUES ("TRANSFER", :name, :description, :amount, :timestamp, :account_id, :attachment, :receiver_account_id, :fee);
 
 insertTransactionCategory:
-INSERT OR IGNORE INTO transaction_categories(transaction_id,category_id)
-VALUES (?,?);
+INSERT OR IGNORE INTO transaction_categories(transaction_id, category_id)
+VALUES (:transaction_id, :category_id);
 
-
--- Update Queries
+-- Update Query (consolidated)
 updateTransaction:
-UPDATE transactions
-SET name = ?, description = ?, amount = ?, timestamp = ?, account_id = ?
-WHERE id = ?;
-
--- Delete Queries
-deleteTransaction:
-DELETE FROM transactions WHERE id = ?;
-
-deleteTransactionCategory:
-DELETE FROM transaction_categories WHERE transaction_id = ?;
-
-
-getAllTransactionsOfType:
-SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
-                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
-                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
-                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
-                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
-
-
- FROM transactions,bank_accounts,currencies
-WHERE type = ?
-    AND transactions.account_id = bank_accounts.id
-    AND bank_accounts.currency = currencies.id
-ORDER BY transactions.timestamp DESC;
-
-
-getCategoriesForTransactionByTransactionId:
-SELECT categories.id, categories.name ,categories.desceription,categories.color,categories.icon FROM categories
-JOIN transaction_categories ON categories.id = transaction_categories.category_id
-WHERE transaction_categories.transaction_id = ?;
-
-getTransactionOfTypeById:
-SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
-                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
-                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
-                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
-                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
-
- FROM transactions,bank_accounts,currencies
-WHERE type = ?
-    AND transactions.account_id = bank_accounts.id
-    AND bank_accounts.currency = currencies.id
-    AND transactions.id = ?;
-
-
-getMinExpenseOfTransactionType:
-SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
-                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
-                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
-                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
-                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
-
-
- FROM transactions,bank_accounts,currencies
-WHERE type = ?
-    AND transactions.account_id = bank_accounts.id
-    AND bank_accounts.currency = currencies.id
-    AND transactions.amount = MIN(amount);
-
-getMaxExpenseOfTransactionType:
-SELECT DISTINCT transactions.id AS id, transactions.name AS transactionName, transactions.description AS transactionDescription,
-                transactions.amount AS amount,transactions.timestamp AS timestamp,transactions.receiver_account_id AS receiverAccountId,transactions.fee AS fee,
-                bank_accounts.id AS accountId, bank_accounts.name AS accountName,bank_accounts.desceription AS accountDescription,
-                bank_accounts.balance AS accountBalance,bank_accounts.color AS accountColor,
-                bank_accounts.logo AS accountLogo,currencies.id AS currencyId, currencies.name AS currencyName,currencies.sign AS currencySign
-
-
-FROM transactions,bank_accounts,currencies
-WHERE type = ?
-    AND transactions.account_id = bank_accounts.id
-    AND bank_accounts.currency = currencies.id
-    AND transactions.amount = MAX(amount);
-
-
-getAvgExpenseOfTransactionType:
-SELECT AVG(transactions.amount) AS averageAmount
-FROM transactions
-WHERE transactions.type = ?;
-
--- UpdateTransaction.sq
-
 UPDATE transactions
 SET
     name = :name,
     description = :description,
     amount = :amount,
     timestamp = :timestamp,
-    account_id = :account_id
-WHERE
-    id = :id;
+    account_id = :account_id,
+    attachment_id = :attachment_id,
+    type = :type
+WHERE id = :id;
+
+-- Delete Queries
+deleteTransaction:
+DELETE FROM transactions WHERE id = :id;
+
+deleteTransactionCategory:
+DELETE FROM transaction_categories WHERE transaction_id = :transaction_id;
+
+-- Queries
+getAllTransactionsOfType:
+SELECT
+    t.id AS id,
+    t.name AS transactionName,
+    t.description AS transactionDescription,
+    t.amount AS amount,
+    t.timestamp AS timestamp,
+    t.receiver_account_id AS receiverAccountId,
+    t.fee AS fee,
+    t.attachment_id AS attachmentId,
+    a.id AS accountId,
+    a.name AS accountName,
+    a.description AS accountDescription,
+    a.balance AS accountBalance,
+    a.color AS accountColor,
+    a.logo AS accountLogo,
+    c.id AS currencyId,
+    c.name AS currencyName,
+    c.sign AS currencySign
+FROM transactions t
+JOIN bank_accounts a ON t.account_id = a.id
+JOIN currencies c ON a.currency = c.id
+WHERE t.type = :type
+ORDER BY t.timestamp DESC;
+
+getCategoriesForTransactionByTransactionId:
+SELECT
+    c.id,
+    c.name,
+    c.description,
+    c.color,
+    c.icon
+FROM categories c
+JOIN transaction_categories tc ON c.id = tc.category_id
+WHERE tc.transaction_id = :transaction_id;
+
+getTransactionOfTypeById:
+SELECT
+    t.id AS id,
+    t.name AS transactionName,
+    t.description AS transactionDescription,
+    t.amount AS amount,
+    t.timestamp AS timestamp,
+    t.receiver_account_id AS receiverAccountId,
+    t.fee AS fee,
+    t.attachment_id AS attachment_id,
+    a.id AS accountId,
+    a.name AS accountName,
+    a.description AS accountDescription,
+    a.balance AS accountBalance,
+    a.color AS accountColor,
+    a.logo AS accountLogo,
+    c.id AS currencyId,
+    c.name AS currencyName,
+    c.sign AS currencySign
+FROM transactions t
+JOIN bank_accounts a ON t.account_id = a.id
+JOIN currencies c ON a.currency = c.id
+WHERE t.type = :type
+  AND t.id = :id;
+
+-- Aggregates
+getMinExpenseOfTransactionType:
+SELECT
+    t.id AS id,
+    t.name AS transactionName,
+    t.description AS transactionDescription,
+    t.amount AS amount,
+    t.timestamp AS timestamp,
+    t.receiver_account_id AS receiverAccountId,
+    t.fee AS fee,
+    t.attachment_id AS attachmentId,
+    a.id AS accountId,
+    a.name AS accountName,
+    a.description AS accountDescription,
+    a.balance AS accountBalance,
+    a.color AS accountColor,
+    a.logo AS accountLogo,
+    c.id AS currencyId,
+    c.name AS currencyName,
+    c.sign AS currencySign
+FROM transactions t
+JOIN bank_accounts a ON t.account_id = a.id
+JOIN currencies c ON a.currency = c.id
+WHERE t.type = :type
+ORDER BY t.amount ASC
+LIMIT 1;
+
+getMaxExpenseOfTransactionType:
+SELECT
+    t.id AS id,
+    t.name AS transactionName,
+    t.description AS transactionDescription,
+    t.amount AS amount,
+    t.timestamp AS timestamp,
+    t.receiver_account_id AS receiverAccountId,
+    t.fee AS fee,
+    t.attachment_id AS attachment_id,
+    a.id AS accountId,
+    a.name AS accountName,
+    a.description AS accountDescription,
+    a.balance AS accountBalance,
+    a.color AS accountColor,
+    a.logo AS accountLogo,
+    c.id AS currencyId,
+    c.name AS currencyName,
+    c.sign AS currencySign
+FROM transactions t
+JOIN bank_accounts a ON t.account_id = a.id
+JOIN currencies c ON a.currency = c.id
+WHERE t.type = :type
+ORDER BY t.amount DESC
+LIMIT 1;
+
+getAvgExpenseOfTransactionType:
+SELECT AVG(t.amount) AS averageAmount
+FROM transactions t
+WHERE t.type = :type;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
 
-
 getTotalTransactionsOfTypeOfCurrency:
-SELECT
-    SUM(t.amount) AS total_expenses
-FROM  transactions t
-JOIN
-    bank_accounts a ON t.account_id = a.id
-WHERE
-    t.type = :type -- Only consider expense transactions
-    AND a.currency = :currencyId; -- Replace :currencyId with the actual currency ID you want to query
-
+SELECT SUM(t.amount) AS total_amount
+FROM transactions t
+JOIN bank_accounts a ON t.account_id = a.id
+WHERE t.type = :type
+  AND a.currency = :currencyId;
 
 getTransactionsSumByCategoriesOfType:
 SELECT
     c.id AS category_id,
     c.name AS category_name,
-    c.desceription AS category_description,
+    c.description AS category_description,
     c.color AS category_color,
     c.icon AS category_icon,
-    SUM(t.amount) AS total_expenses
-FROM
-    transactions t
-JOIN
-    transaction_categories tc ON t.id = tc.transaction_id
-JOIN
-    categories c ON tc.category_id = c.id
-WHERE
-    t.type = :type
-GROUP BY
-    c.id;
+    SUM(t.amount) AS total_amount
+FROM transactions t
+JOIN transaction_categories tc ON t.id = tc.transaction_id
+JOIN categories c ON tc.category_id = c.id
+WHERE t.type = :type
+GROUP BY c.id;
