@@ -1,0 +1,50 @@
+CREATE TABLE attachments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT ,
+    transaction_id INTEGER NOT NULL,
+    data BLOB NOT NULL,
+    mime_type TEXT NOT NULL
+);
+
+insertAttachment:
+INSERT INTO attachments (transaction_id, name, data, mime_type)
+VALUES (:transaction_id, :name, :data, :mime_type);
+
+updateAttachment:
+UPDATE attachments
+SET transaction_id = :transaction_id,
+    data = :data,
+    mime_type = :mime_type
+WHERE id = :id;
+
+
+
+getAllAttachments:
+SELECT * FROM v_attachments;
+
+getAttachmentById:
+SELECT * FROM v_attachments
+WHERE attachmentId = :id;
+
+getAttachmentsByTransactionId:
+SELECT * FROM v_attachments
+WHERE transactionId = :transaction_id;
+
+
+deleteAttachmentById:
+DELETE FROM attachments
+WHERE id = :id;
+
+deleteAttachmentsByTransactionId:
+DELETE FROM attachments
+WHERE transaction_id = :transaction_id;
+
+
+
+countAttachmentsByTransactionId:
+SELECT COUNT(*)
+FROM attachments
+WHERE transaction_id = :transaction_id;
+
+selectLastInsertedAttachmentId:
+SELECT last_insert_rowid();

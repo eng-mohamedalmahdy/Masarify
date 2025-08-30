@@ -9,43 +9,29 @@ CREATE TABLE bank_accounts (
 );
 
 insertBankAccount:
-INSERT INTO bank_accounts (currency,name,description,balance,color,logo) VALUES (?,?,?,?,?,?);
+INSERT INTO bank_accounts (currency, name, description, balance, color, logo)
+VALUES (:currency, :name, :description, :balance, :color, :logo);
 
 updateAccount:
-UPDATE bank_accounts SET balance=?, name = ?,color = ?,logo = ?  WHERE id = ?;
+UPDATE bank_accounts
+SET balance = :balance,
+    name    = :name,
+    color   = :color,
+    logo    = :logo
+WHERE id = :id;
 
 deleteAccount:
-DELETE FROM bank_accounts WHERE id = ?;
+DELETE FROM bank_accounts
+WHERE id = :id;
+
 
 getAllAccounts:
-SELECT DISTINCT
-bank_accounts.id,
-bank_accounts.name,
-bank_accounts.description,
-bank_accounts.balance,
-bank_accounts.currency,
-bank_accounts.color,
-bank_accounts.logo,
-currencies.id AS currencyId,
-currencies.name AS currencyMame,
-currencies.sign
-FROM bank_accounts,currencies
-WHERE bank_accounts.currency = currencies.id;
-
+SELECT * FROM v_accounts;
 
 getAccountById:
-SELECT bank_accounts.id,
-      bank_accounts.name,
-      bank_accounts.description,
-      bank_accounts.balance,
-      bank_accounts.currency,
-      bank_accounts.color,
-      bank_accounts.logo,
-      currencies.id AS currencyId,
-      currencies.name AS currencyName,
-      currencies.sign
-FROM bank_accounts,currencies
-WHERE bank_accounts.id =? AND bank_accounts.currency = currencies.id;
+SELECT * FROM v_accounts
+WHERE accountId = :id;
+
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();

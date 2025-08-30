@@ -1,0 +1,145 @@
+CREATE VIEW v_exchange_rates AS
+SELECT
+    er.from_currency_id      AS fromCurrencyId,
+    fc.name                  AS fromCurrencyName,
+    fc.sign                  AS fromCurrencySign,
+
+    er.to_currency_id        AS toCurrencyId,
+    tc.name                  AS toCurrencyName,
+    tc.sign                  AS toCurrencySign,
+
+    er.rate                  AS rate
+FROM exchange_rates er
+JOIN currencies fc ON fc.id = er.from_currency_id
+JOIN currencies tc ON tc.id = er.to_currency_id;
+
+
+CREATE VIEW v_transactions AS
+SELECT
+    t.id                     AS transactionId,
+    t.type                   AS transactionType,
+    t.name                   AS transactionName,
+    t.description            AS transactionDescription,
+    t.amount                 AS transactionAmount,
+    t.timestamp              AS transactionTimestamp,
+    t.receiver_account_id    AS receiverAccountId,
+    t.fee                    AS transactionFee,
+
+    -- Main Account
+    a.id                     AS accountId,
+    a.name                   AS accountName,
+    a.description            AS accountDescription,
+    a.balance                AS accountBalance,
+    a.color                  AS accountColor,
+    a.logo                   AS accountLogo,
+
+    -- Currency (main account)
+    c.id                     AS currencyId,
+    c.name                   AS currencyName,
+    c.sign                   AS currencySign,
+
+    -- Receiver Account (for transfers only)
+    ra.id                    AS receiverAccountIdFull,
+    ra.name                  AS receiverAccountName,
+    ra.description           AS receiverAccountDescription,
+    ra.balance               AS receiverAccountBalance,
+    ra.color                 AS receiverAccountColor,
+    ra.logo                  AS receiverAccountLogo,
+
+    -- Receiver Account Currency
+    rc.id                    AS receiverCurrencyId,
+    rc.name                  AS receiverCurrencyName,
+    rc.sign                  AS receiverCurrencySign,
+
+    -- Attachment (if exists)
+    ath.id                   AS attachmentId,
+    ath.mime_type            AS attachmentMimeType,
+    ath.data                 AS attachmentData,
+    ath.name                 AS attachmentName,
+
+    -- Category (if exists)
+    cat.id                   AS categoryId,
+    cat.name                 AS categoryName,
+    cat.description          AS categoryDescription,
+    cat.color                AS categoryColor,
+    cat.icon                 AS categoryIcon
+
+FROM transactions t
+JOIN bank_accounts a ON t.account_id = a.id
+JOIN currencies c ON a.currency = c.id
+LEFT JOIN bank_accounts ra ON t.receiver_account_id = ra.id
+LEFT JOIN currencies rc ON ra.currency = rc.id
+LEFT JOIN attachments ath ON ath.transaction_id = t.id
+LEFT JOIN transaction_categories tc ON tc.transaction_id = t.id
+LEFT JOIN categories cat ON tc.category_id = cat.id;
+
+
+CREATE VIEW v_accounts AS
+SELECT
+    a.id          AS accountId,
+    a.name        AS accountName,
+    a.description AS accountDescription,
+    a.balance     AS accountBalance,
+    a.color       AS accountColor,
+    a.logo        AS accountLogo,
+    a.currency    AS accountCurrencyId,
+
+    c.id          AS currencyId,
+    c.name        AS currencyName,
+    c.sign        AS currencySign
+FROM bank_accounts a
+JOIN currencies c ON a.currency = c.id;
+
+
+CREATE VIEW v_attachments AS
+SELECT
+    id          AS attachmentId,
+    transaction_id AS transactionId,
+    name        AS attachmentName,
+    mime_type   AS attachmentMimeType,
+    data        AS attachmentData
+FROM attachments;
+
+
+CREATE VIEW v_categories AS
+SELECT
+    id          AS categoryId,
+    name        AS categoryName,
+    description AS categoryDescription,
+    color       AS categoryColor,
+    icon        AS categoryIcon
+FROM categories;
+
+
+CREATE VIEW v_currencies AS
+SELECT
+    id   AS currencyId,
+    name AS currencyName,
+    sign AS currencySign
+FROM currencies;
+
+
+CREATE VIEW v_transaction_categories AS
+SELECT
+    tc.transaction_id AS transactionId,
+    c.categoryId,
+    c.categoryName,
+    c.categoryDescription,
+    c.categoryColor,
+    c.categoryIcon
+FROM transaction_categories tc
+JOIN v_categories c ON c.categoryId = tc.category_id;
+
+
+CREATE VIEW v_exchange_rates_full AS
+SELECT
+    er.from_currency_id AS fromCurrencyId,
+    fc.currencyName     AS fromCurrencyName,
+    fc.currencySign     AS fromCurrencySign,
+    er.to_currency_id   AS toCurrencyId,
+    tc.currencyName     AS toCurrencyName,
+    tc.currencySign     AS toCurrencySign,
+    er.rate             AS rate
+FROM exchange_rates er
+JOIN v_currencies fc ON fc.currencyId = er.from_currency_id
+JOIN v_currencies tc ON tc.currencyId = er.to_currency_id;

@@ -4,21 +4,27 @@ CREATE TABLE currencies(
   sign TEXT NOT NULL
 );
 
-
 insertCurrency:
-INSERT INTO currencies (name, sign) VALUES (?, ?);
+INSERT INTO currencies (name, sign)
+VALUES (:name, :sign);
 
-selectAllCurrencies:
-SELECT * FROM currencies;
-
-updateCurreny:
-UPDATE currencies SET name = ?,sign = ?  WHERE id = ?;
+updateCurrency:
+UPDATE currencies
+SET name = :name,
+    sign = :sign
+WHERE id = :id;
 
 deleteCurrency:
-DELETE FROM currencies WHERE id = ?;
+DELETE FROM currencies
+WHERE id = :id;
+
+selectAllCurrencies:
+SELECT * FROM v_currencies;
 
 selectCurrencyById:
-SELECT * FROM currencies WHERE id = ?;
+SELECT * FROM v_currencies
+WHERE currencyId = :id;
+
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();

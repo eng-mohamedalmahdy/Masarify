@@ -6,30 +6,36 @@ import com.lightfeather.domain.domain.DomainResult
 import com.lightfeather.domain.domain.transaction.Transaction
 import com.lightfeather.domain.domain.transaction.TransactionFilter
 import kotlinx.coroutines.flow.Flow
+import kotlin.reflect.KClass
 
 
-interface TransactionRepository<T : Transaction> {
+interface TransactionRepository {
 
-    suspend fun createTransaction(transaction: T): DomainResult<Int>
+    suspend fun createTransaction(transaction: Transaction): DomainResult<Int>
 
 
     suspend fun deleteTransaction(transaction: Transaction): DomainResult<Boolean>
 
-    suspend fun getAllTransactions(): DomainResult<Flow<List<T>>>
+    suspend fun <T : Transaction> getAllTransactionsOfType(type: KClass<T>): DomainResult<Flow<List<T>>>
 
-    suspend fun getTransactionById(id: Int): DomainResult<T>
+    suspend fun <T : Transaction> getTransactionById(id: Int): DomainResult<T>
 
-    suspend fun getMinTransaction():  DomainResult<T>
+    suspend fun <T : Transaction> getMinTransactionOfType(type: KClass<T>): DomainResult<T>
 
-    suspend fun getMaxTransaction():  DomainResult<T>
+    suspend fun <T : Transaction> getMaxTransactionOfType(type: KClass<T>): DomainResult<T>
 
-    suspend fun getAverageTransactionValue(): DomainResult<Double>
+    suspend fun <T : Transaction> getAverageTransactionValueOfType(type: KClass<T>): DomainResult<Double>
 
-    suspend fun getFilteredTransactions(transactions: List<T>, filter: TransactionFilter): DomainResult<List<T>>
+    suspend fun getFilteredTransactions(filter: TransactionFilter): DomainResult<List<Transaction>>
 
-    suspend fun updateTransaction(newTransaction: T): DomainResult<Boolean>
+    suspend fun updateTransaction(newTransaction: Transaction): DomainResult<Boolean>
 
-    suspend fun getTotalTransactionsOfCurrency(currency: Currency): DomainResult<Flow<Int>>
+    suspend fun <T : Transaction> getTotalTransactionsOfTypeAndCurrency(
+        currency: Currency,
+        type: KClass<T>
+    ): DomainResult<Flow<Double>>
 
-    suspend fun getTotalTransactionsOfCategories(): DomainResult<Flow<Map<Category, Int>>>
+    suspend fun <T : Transaction> getTotalTransactionsOfTypesAndCategories(type: KClass<T>): DomainResult<Flow<Map<Category, Double>>>
+
+    suspend fun getAllTransactions(): DomainResult<Flow<List<Transaction>>>
 }

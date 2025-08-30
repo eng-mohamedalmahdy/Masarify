@@ -1,6 +1,5 @@
-import com.lightfeather.domain.data.repository.AllTransactionsRepository
-import com.lightfeather.domain.data.repository.ExpensesRepository
-import com.lightfeather.domain.data.repository.IncomeRepository
+package com.lightfeather.domain.usecase
+
 import com.lightfeather.domain.data.repository.TransactionRepository
 import com.lightfeather.domain.domain.Currency
 import com.lightfeather.domain.domain.DomainResult
@@ -8,24 +7,24 @@ import com.lightfeather.domain.domain.transaction.Transaction
 import com.lightfeather.domain.domain.transaction.TransactionFilter
 import kotlinx.coroutines.flow.Flow
 
-class CreateTransaction<T : Transaction>(
-    private val transactionRepository: TransactionRepository<T>
+class CreateTransaction(
+    private val transactionRepository: TransactionRepository
 ) {
-    suspend operator fun invoke(transaction: T): DomainResult<Int> {
+    suspend operator fun invoke(transaction: Transaction): DomainResult<Int> {
         return transactionRepository.createTransaction(transaction)
     }
 }
 
-class UpdateTransaction<T : Transaction>(
-    private val transactionRepository: TransactionRepository<T>
+class UpdateTransaction(
+    private val transactionRepository: TransactionRepository
 ) {
-    suspend operator fun invoke(newTransaction: T): DomainResult<Boolean> {
+    suspend operator fun invoke(newTransaction: Transaction): DomainResult<Boolean> {
         return transactionRepository.updateTransaction(newTransaction)
     }
 }
 
-class DeleteTransaction<T : Transaction>(
-    private val transactionRepository: TransactionRepository<T>
+class DeleteTransaction(
+    private val transactionRepository: TransactionRepository
 ) {
     suspend operator fun invoke(transaction: Transaction): DomainResult<Boolean> {
         return transactionRepository.deleteTransaction(transaction)
@@ -33,13 +32,13 @@ class DeleteTransaction<T : Transaction>(
 }
 
 class GetTransactionById<T : Transaction>(
-    private val transactionRepository: TransactionRepository<T>
+    private val transactionRepository: TransactionRepository
 ) {
-    suspend operator fun invoke(id: Int) = transactionRepository.getTransactionById(id)
+    suspend operator fun invoke(id: Int) = transactionRepository.getTransactionById<T>(id)
 }
 
 class GetAllTransactions(
-   private val allTransactionsRepository: AllTransactionsRepository
+    private val allTransactionsRepository: TransactionRepository
 ) {
     suspend operator fun invoke(): DomainResult<Flow<List<Transaction>>> {
         return allTransactionsRepository.getAllTransactions()
@@ -47,31 +46,34 @@ class GetAllTransactions(
 }
 
 // Aggregates — all pushed into repo
-class GetMaxTransaction<T : Transaction>(private val repository: TransactionRepository<T>) {
-    suspend operator fun invoke() = repository.getMaxTransaction()
+class GetMaxTransaction(val repository: TransactionRepository) {
+    suspend inline operator fun <reified T : Transaction> invoke() = repository.getMaxTransactionOfType(T::class)
 }
 
-class GetMinTransaction<T : Transaction>(private val repository: TransactionRepository<T>) {
-    suspend operator fun invoke() = repository.getMinTransaction()
+class GetMinTransaction(val repository: TransactionRepository) {
+    suspend inline operator fun <reified T : Transaction> invoke() = repository.getMinTransactionOfType(T::class)
 }
 
-class GetAverageTransactionValue<T : Transaction>(private val repository: TransactionRepository<T>) {
-    suspend operator fun invoke() = repository.getAverageTransactionValue()
+class GetAverageTransactionValue(val repository: TransactionRepository) {
+    suspend inline operator fun <reified T : Transaction> invoke() =
+        repository.getAverageTransactionValueOfType(T::class)
 }
 
-class GetFilteredTransactions<T : Transaction>(private val repository: TransactionRepository<T>) {
-    suspend operator fun invoke(transactions: List<T>, filter: TransactionFilter) =
-        repository.getFilteredTransactions(transactions, filter)
+class GetFilteredTransactions(private val repository: TransactionRepository) {
+    suspend operator fun invoke(filter: TransactionFilter) =
+        repository.getFilteredTransactions(filter)
 }
 
-class GetTotalTransactionsByCategories<T : Transaction>(private val repository: TransactionRepository<T>) {
-    suspend operator fun invoke() = repository.getTotalTransactionsOfCategories()
+class GetTotalTransactionsByCategories<T : Transaction>(private val repository: TransactionRepository) {
+    suspend operator fun invoke() = repository.getTotalTransactionsOfTypesAndCategories()
 }
 
-class GetTotalExpenseOfCurrency(private val repository: ExpensesRepository) {
-    suspend operator fun invoke(currency: Currency) = repository.getTotalTransactionsOfCurrency(currency)
+class GetTotalExpenseOfCurrency(val repository: TransactionRepository) {
+    suspend inline operator fun <reified T : Transaction> invoke(currency: Currency) =
+        repository.getTotalTransactionsOfTypeAndCurrency<Transaction.Expense>(currency, Transaction.Expense::class)
 }
 
-class GetTotalIncomeOfCurrency(private val repository: IncomeRepository) {
-    suspend operator fun invoke(currency: Currency) = repository.getTotalTransactionsOfCurrency(currency)
+class GetTotalIncomeOfCurrency(private val repository: TransactionRepository) {
+    suspend operator fun invoke(currency: Currency) =
+        repository.getTotalTransactionsOfTypeAndCurrency(currency, Transaction.Income::class)
 }

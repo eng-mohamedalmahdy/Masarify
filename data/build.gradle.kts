@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
+import org.gradle.declarative.dsl.schema.FqName.Empty.packageName
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
@@ -141,9 +142,15 @@ kotlin {
 
 sqldelight {
     databases {
+
         create("Database") {
             packageName.set("com.lightfeather.masarify.database")
             generateAsync.set(true)
+            dialect("${libs.sqldelight.sqlite.dialect.get().module}:${libs.sqldelight.sqlite.dialect.get().version}")
+            module("${libs.sqldelight.sqlite.json.get().module}:${libs.sqldelight.sqlite.json.get().version}")
+
         }
+
+
     }
 }

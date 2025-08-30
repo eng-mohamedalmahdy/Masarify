@@ -1,15 +1,12 @@
 package com.lightfeather.domain.di
 
-import CreateTransaction
-import DeleteTransaction
-import GetAllTransactions
-import GetTotalExpenseOfCurrency
-import GetTotalIncomeOfCurrency
-import GetTotalTransactionsByCategories
-import UpdateTransaction
-import com.lightfeather.domain.data.repository.ExpensesRepository
-import com.lightfeather.domain.data.repository.IncomeRepository
-import com.lightfeather.domain.data.repository.TransferRepository
+import com.lightfeather.domain.usecase.CreateTransaction
+import com.lightfeather.domain.usecase.DeleteTransaction
+import com.lightfeather.domain.usecase.GetAllTransactions
+import com.lightfeather.domain.usecase.GetTotalExpenseOfCurrency
+import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
+import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
+import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.domain.domain.transaction.Transaction
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCategory

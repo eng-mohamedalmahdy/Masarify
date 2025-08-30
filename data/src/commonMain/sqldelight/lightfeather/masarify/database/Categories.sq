@@ -7,20 +7,27 @@ CREATE TABLE  categories(
 );
 
 insertCategory:
-INSERT INTO categories ( name, description, color, icon) VALUES ( ?, ?, ?, ?);
-
+INSERT INTO categories (name, description, color, icon)
+VALUES (:name, :description, :color, :icon);
 
 updateById:
-UPDATE categories SET name = ?,description=?,color=?, icon=? WHERE id = ?;
+UPDATE categories
+SET name        = :name,
+    description = :description,
+    color       = :color,
+    icon        = :icon
+WHERE id = :id;
 
 deleteById:
-DELETE FROM categories WHERE id = ?;
+DELETE FROM categories
+WHERE id = :id;
 
 selectAllCategories:
-SELECT * FROM categories;
+SELECT * FROM v_categories;
 
 selectCategoryById:
-SELECT * FROM categories WHERE id = ?;
+SELECT * FROM v_categories
+WHERE categoryId = :id;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
