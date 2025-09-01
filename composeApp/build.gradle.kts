@@ -57,6 +57,11 @@ kotlin {
     sourceSets {
 
         commonMain.dependencies {
+            implementation(projects.domain)
+            implementation(projects.data)
+            implementation(projects.designsystem)
+
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

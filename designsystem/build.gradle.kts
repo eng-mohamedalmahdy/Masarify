@@ -1,35 +1,44 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val moduleName = "com.lightfeather.designsystem"
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.androidLint)
     alias(libs.plugins.composeHotReload)
 
 }
 
 kotlin {
 
-    // Target declarations - add or remove as needed below. These define
-    // which platforms this KMP module supports.
-    // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
-    androidLibrary {
-        namespace = "com.lightfeather.designsystem"
-        compileSdk = 36
-        minSdk = 24
+//    // Target declarations - add or remove as needed below. These define
+//    // which platforms this KMP module supports.
+//    // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
+//    androidLibrary {
+//        namespace =
+//        compileSdk = 36
+//        minSdk = 24
+//
+//        withHostTestBuilder {
+//        }
+//
+//        withDeviceTestBuilder {
+//            sourceSetTreeName = "test"
+//        }.configure {
+//            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        }
+//
+//    }
 
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-
 
 
     val xcfName = "designsystemKit"
@@ -90,23 +99,42 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(compose.preview)
+                implementation(libs.androidx.ui.tooling)
             }
         }
 
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.core)
-                implementation(libs.androidx.testExt.junit)
-            }
-        }
 
-        iosMain {
-            dependencies {
 
-            }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutinesSwing)
         }
     }
+
+}
+android {
+    namespace = moduleName
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    defaultConfig {
+        namespace = moduleName
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    debugImplementation(compose.uiTooling)
 
 }

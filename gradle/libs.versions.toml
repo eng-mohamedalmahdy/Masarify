@@ -1,8 +1,8 @@
 [versions]
 agp = "8.11.0"
-android-compileSdk = "35"
+android-compileSdk = "36"
 android-minSdk = "24"
-android-targetSdk = "35"
+android-targetSdk = "36"
 androidx-activity = "1.10.1"
 androidx-appcompat = "1.7.1"
 androidx-core = "1.16.0"
@@ -24,6 +24,7 @@ sqlJs = "1.8.0"
 webPackPlugin = "9.1.0"
 koin = "4.0.0"
 materialKolor = "3.0.1"
+uiTooling = "1.9.0"
 
 
 [libraries]
@@ -60,6 +61,8 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 
 materialKolor-utilities = { module = "com.materialkolor:material-color-utilities", version.ref = "materialKolor" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
+
 
 [bundles]
 koinCommon = [
@@ -72,11 +75,11 @@ koinCommon = [
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }

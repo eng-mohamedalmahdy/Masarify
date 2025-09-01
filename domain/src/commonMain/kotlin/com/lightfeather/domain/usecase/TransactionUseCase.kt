@@ -64,8 +64,9 @@ class GetFilteredTransactions(private val repository: TransactionRepository) {
         repository.getFilteredTransactions(filter)
 }
 
-class GetTotalTransactionsByCategories<T : Transaction>(private val repository: TransactionRepository) {
-    suspend operator fun invoke() = repository.getTotalTransactionsOfTypesAndCategories()
+class GetTotalTransactionsByCategories<T : Transaction>(val repository: TransactionRepository) {
+    suspend inline operator fun <reified T : Transaction> invoke() =
+        repository.getTotalTransactionsOfTypesAndCategories(type = T::class)
 }
 
 class GetTotalExpenseOfCurrency(val repository: TransactionRepository) {
