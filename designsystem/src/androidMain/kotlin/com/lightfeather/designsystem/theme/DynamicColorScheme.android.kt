@@ -1,4 +1,4 @@
-package com.lightfeather.designsystem
+package com.lightfeather.designsystem.theme
 
 import android.os.Build
 import androidx.compose.material3.ColorScheme

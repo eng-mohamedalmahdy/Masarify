@@ -1,4 +1,4 @@
-package com.lightfeather.designsystem
+package com.lightfeather.designsystem.theme
 
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -234,7 +234,7 @@ object AppTheme {
         val colorScheme = when {
             dynamicColor -> dynamicColorScheme(
                 isDark = useDarkTheme,
-                fallback = if (useDarkTheme) AppTheme.colors.dark else AppTheme.colors.light,
+                fallback = if (useDarkTheme) colors.dark else colors.light,
             )
             useDarkTheme -> colors.light
             else -> colors.dark
