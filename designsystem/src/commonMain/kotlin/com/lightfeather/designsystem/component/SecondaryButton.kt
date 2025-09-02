@@ -4,19 +4,19 @@ import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.*
-import com.lightfeather.designsystem.theme.AppTheme
+import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PrimaryButton(
+fun SecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     colors: ButtonColors = ButtonDefaults.buttonColors().copy(
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
+        containerColor = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.onSecondary,
         disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
     ),
@@ -30,21 +30,21 @@ fun PrimaryButton(
         colors = colors,
         content = content
     )
-
 }
 
 
 @Preview
 @Composable
-private fun PreviewPrimaryButton() {
+private fun PreviewSecondaryButton() {
     AppTheme {
-        PrimaryButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true
-        ) {
-            Text("Primary Button")
-        }
+        SecondaryButton(
+            onClick = { },
+            modifier = Modifier.padding(16.dp),
+            enabled = true,
+            contentPadding = PaddingValues(16.dp),
+            content = {
+                Text("Secondary Button")
+            }
+        )
     }
-
 }

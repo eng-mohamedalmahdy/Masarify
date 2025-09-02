@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -230,12 +231,14 @@ object AppTheme {
         dynamicColor: Boolean = true, // support dynamic colors
         content: @Composable () -> Unit
     ) {
-
+        val isPreview = LocalInspectionMode.current
         val colorScheme = when {
+            isPreview -> if (useDarkTheme) colors.dark else colors.light
             dynamicColor -> dynamicColorScheme(
                 isDark = useDarkTheme,
                 fallback = if (useDarkTheme) colors.dark else colors.light,
             )
+
             useDarkTheme -> colors.light
             else -> colors.dark
 

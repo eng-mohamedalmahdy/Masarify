@@ -88,6 +88,7 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.materialKolor)
+                implementation(libs.jetbrains.iconsExtended)
             }
         }
 

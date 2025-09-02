@@ -4,25 +4,24 @@ import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.*
+import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.theme.AppTheme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PrimaryButton(
+fun TextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    colors: ButtonColors = ButtonDefaults.buttonColors().copy(
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
+    colors: ButtonColors = ButtonDefaults.textButtonColors().copy(
+        contentColor = MaterialTheme.colorScheme.primary,
         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
     ),
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(
+    androidx.compose.material3.TextButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
@@ -30,21 +29,19 @@ fun PrimaryButton(
         colors = colors,
         content = content
     )
-
 }
-
 
 @Preview
 @Composable
-private fun PreviewPrimaryButton() {
+private fun PreviewTextButton() {
     AppTheme {
-        PrimaryButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true
-        ) {
-            Text("Primary Button")
-        }
+        TextButton(
+            onClick = { },
+            modifier = Modifier.padding(16.dp),
+            enabled = true,
+            content = {
+                Text("Text Button")
+            }
+        )
     }
-
 }
