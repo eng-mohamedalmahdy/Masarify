@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.onboarding
+package com.lightfeather.masarify.pages.onboarding
 
 internal data class OnBoardingPageState(
     val userName: String = "",

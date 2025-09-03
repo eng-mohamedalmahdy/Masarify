@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.onboarding
+package com.lightfeather.masarify.pages.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +11,7 @@ import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.UpsertUserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -42,7 +43,7 @@ class OnBoardingPageViewModel(
                     )
                     val createCurrencyResult = createCurrency(toBeCreateCurrency)
 
-                    val createAccountResult = createCurrencyResult.flatMapSuspend { currencyId ->
+                     createCurrencyResult.flatMapSuspend { currencyId ->
                         val toBeCreateAccount = Account(
                             name = _state.value.accountName,
                             currency = toBeCreateCurrency.copy(id = currencyId),
@@ -57,6 +58,7 @@ class OnBoardingPageViewModel(
                 val upsertUserDataJob = async(Dispatchers.IoDispatcher) {
                     upsertUserData(UserData(_state.value.userName))
                 }
+                awaitAll(createAccountJob, upsertUserDataJob)
             }
         }
     }

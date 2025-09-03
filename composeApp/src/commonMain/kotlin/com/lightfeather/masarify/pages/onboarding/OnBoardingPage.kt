@@ -1,5 +1,4 @@
-
-package com.lightfeather.masarify.onboarding
+package com.lightfeather.masarify.pages.onboarding
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

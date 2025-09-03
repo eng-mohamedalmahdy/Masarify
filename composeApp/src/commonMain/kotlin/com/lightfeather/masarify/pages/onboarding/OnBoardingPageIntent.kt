@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.onboarding
+package com.lightfeather.masarify.pages.onboarding
 
 internal sealed interface OnBoardingPageIntent {
     data class UpdateUserName(val name: String) : OnBoardingPageIntent
