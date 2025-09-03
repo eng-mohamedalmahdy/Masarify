@@ -1,6 +1,5 @@
 package com.lightfeather.domain.di
 
-import com.lightfeather.domain.data.repository.TransactionRepository
 import com.lightfeather.domain.usecase.CreateTransaction
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllTransactions
@@ -8,7 +7,7 @@ import com.lightfeather.domain.usecase.GetTotalExpenseOfCurrency
 import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
 import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.domain.usecase.UpdateTransaction
-import com.lightfeather.domain.domain.transaction.Transaction
+import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCategory
 import com.lightfeather.domain.usecase.CreateCurrency
@@ -19,12 +18,15 @@ import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
+import com.lightfeather.domain.usecase.UpsertUserData
 
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
 val useCaseModule = module {
+
+    factory { UpsertUserData(get()) }
     factory { GetAllTransactions(get()) }
     factory { GetAllTransactions(get()) }
     factory { GetAllCategories(get()) }

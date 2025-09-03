@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 val moduleName = "com.lightfeather.designsystem"
 plugins {
@@ -63,16 +64,24 @@ kotlin {
 
     jvm() // For JVM apps
 
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        binaries.executable() // Allows creating WASM binary
-        // Optional: configure browser only if needed
         browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
             commonWebpackConfig {
-                // Can leave mostly default for non-UI modules
                 outputFileName = "${project.name}.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
             }
         }
+        binaries.executable()
     }
 
 

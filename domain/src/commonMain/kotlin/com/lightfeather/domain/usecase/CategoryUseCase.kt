@@ -1,7 +1,7 @@
 package com.lightfeather.domain.usecase
 
-import com.lightfeather.domain.data.repository.CategoryRepository
-import com.lightfeather.domain.domain.Category
+import com.lightfeather.domain.repository.CategoryRepository
+import com.lightfeather.domain.model.Category
 
 
 class CreateCategory(private val categoryRepository: CategoryRepository) {

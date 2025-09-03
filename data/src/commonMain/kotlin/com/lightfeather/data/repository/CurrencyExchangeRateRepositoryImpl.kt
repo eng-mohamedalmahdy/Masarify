@@ -2,23 +2,17 @@ package com.lightfeather.data.repository
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import com.lightfeather.data.database.drivers.SharedDatabase
-import com.lightfeather.domain.data.repository.CurrencyExchangeRateRepository
-import com.lightfeather.domain.domain.Currency
-import com.lightfeather.domain.domain.CurrencyExchangeRate
-import com.lightfeather.domain.domain.DomainResult
-import com.lightfeather.domain.domain.runCatchingDomainResult
-import com.lightfeather.domain.domain.runCatchingDomainResultSuspend
+import com.lightfeather.data.local.database.drivers.SharedDatabase
+import com.lightfeather.domain.repository.CurrencyExchangeRateRepository
+import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.CurrencyExchangeRate
+import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.runCatchingDomainResult
+import com.lightfeather.domain.model.runCatchingDomainResultSuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import lightfeather.masarify.database.GetAllExchangeRates
-import lightfeather.masarify.database.GetExchangeRatesOfCurrency
-import lightfeather.masarify.database.SelectExchangeRateById
-import kotlin.math.sign
 
 class CurrencyExchangeRateRepositoryImpl(
     private val database: SharedDatabase
@@ -131,8 +125,8 @@ class CurrencyExchangeRateRepositoryImpl(
         rate: Double?
     ): CurrencyExchangeRate {
         return CurrencyExchangeRate(
-            from = Currency(fromCurrencyId.toInt(), fromCurrencyName, fromCurrencySign),
-            to = Currency(toCurrencyId.toInt(), toCurrencyName, toCurrencySign),
+            from = Currency(fromCurrencyName, fromCurrencySign, fromCurrencyId.toInt()),
+            to = Currency(toCurrencyName, toCurrencySign, toCurrencyId.toInt()),
             rate = rate ?: 1.0
         )
     }

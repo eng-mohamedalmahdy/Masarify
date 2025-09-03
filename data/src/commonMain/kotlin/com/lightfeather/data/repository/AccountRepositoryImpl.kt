@@ -1,12 +1,12 @@
 package com.lightfeather.data.repository
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.lightfeather.data.database.drivers.SharedDatabase
-import com.lightfeather.domain.data.repository.AccountRepository
-import com.lightfeather.domain.domain.Account
-import com.lightfeather.domain.domain.error.AppError
-import com.lightfeather.domain.domain.Currency
-import com.lightfeather.domain.domain.DomainResult
+import com.lightfeather.data.local.database.drivers.SharedDatabase
+import com.lightfeather.domain.repository.AccountRepository
+import com.lightfeather.domain.model.Account
+import com.lightfeather.domain.model.error.AppError
+import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.DomainResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -99,9 +99,9 @@ class AccountRepositoryImpl(
             color = accountColor,
             logo = accountLogo.toString(),
             currency = Currency(
-                id = currencyId.toInt(),
                 name = currencyName,
-                sign = currencySign
+                sign = currencySign,
+                id = currencyId.toInt()
             )
         )
     }

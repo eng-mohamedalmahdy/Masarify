@@ -1,8 +1,8 @@
 package com.lightfeather.domain.usecase
 
-import com.lightfeather.domain.data.repository.CurrencyExchangeRateRepository
-import com.lightfeather.domain.domain.Currency
-import com.lightfeather.domain.domain.CurrencyExchangeRate
+import com.lightfeather.domain.repository.CurrencyExchangeRateRepository
+import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.CurrencyExchangeRate
 
 
 class CreateCurrencyExchangeRate(private val repository: CurrencyExchangeRateRepository) {

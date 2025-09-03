@@ -1,10 +1,10 @@
 package com.lightfeather.domain.usecase
 
-import com.lightfeather.domain.data.repository.TransactionRepository
-import com.lightfeather.domain.domain.Currency
-import com.lightfeather.domain.domain.DomainResult
-import com.lightfeather.domain.domain.transaction.Transaction
-import com.lightfeather.domain.domain.transaction.TransactionFilter
+import com.lightfeather.domain.repository.TransactionRepository
+import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.transaction.Transaction
+import com.lightfeather.domain.model.transaction.TransactionFilter
 import kotlinx.coroutines.flow.Flow
 
 class CreateTransaction(

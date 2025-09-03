@@ -26,6 +26,7 @@ koin = "4.0.0"
 materialKolor = "3.0.1"
 uiTooling = "1.9.0"
 iconsExtended = "1.7.3"
+multiplatformSettings = "1.3.0"
 
 [libraries]
 
@@ -53,15 +54,15 @@ sqldelight-webworker-driver = { module = "app.cash.sqldelight:web-worker-driver"
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-sqlite-dialect = { module = "app.cash.sqldelight:sqlite-3-18-dialect", version.ref = "sqldelight" }
 sqldelight-sqlite-json = { module = "app.cash.sqldelight:sqlite-json-module", version.ref = "sqldelight" }
-
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-composeVM = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
-
-materialKolor-utilities = { module = "com.materialkolor:material-color-utilities", version.ref = "materialKolor" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
+multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatformSettings" }
 
 
 [bundles]
@@ -69,6 +70,12 @@ koinCommon = [
     "koin-core",
     "koin-compose",
     "koin-composeVM"
+]
+
+multiplatformSettings = [
+    "multiplatform-settings",
+    "multiplatform-settings-no-arg",
+    "multiplatform-settings-serialization"
 ]
 
 

@@ -1,7 +1,7 @@
 package com.lightfeather.domain.usecase
 
-import com.lightfeather.domain.data.repository.AccountRepository
-import com.lightfeather.domain.domain.Account
+import com.lightfeather.domain.repository.AccountRepository
+import com.lightfeather.domain.model.Account
 
 
 class CreateAccount(private val accountRepository: AccountRepository) {

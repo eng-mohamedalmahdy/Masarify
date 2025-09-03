@@ -1,18 +1,19 @@
 package com.lightfeather.data.repository
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.lightfeather.data.database.drivers.SharedDatabase
-import com.lightfeather.domain.data.repository.CategoryRepository
-import com.lightfeather.domain.domain.Category
-import com.lightfeather.domain.domain.DomainResult
-import com.lightfeather.domain.domain.error.AppError
+import com.lightfeather.data.local.database.drivers.SharedDatabase
+import com.lightfeather.domain.repository.CategoryRepository
+import com.lightfeather.domain.model.Category
+import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.error.AppError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import lightfeather.masarify.database.V_categories
 
-class CategoryRepositoryImpl(
+class
+CategoryRepositoryImpl(
     private val database: SharedDatabase
 ) : CategoryRepository {
 

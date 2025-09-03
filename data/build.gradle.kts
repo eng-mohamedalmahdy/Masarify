@@ -89,6 +89,8 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(projects.domain)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.bundles.multiplatformSettings)
+
             }
         }
 
@@ -101,6 +103,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.sqldelight.android)
+                implementation(libs.koin.android)
             }
         }
 
@@ -133,6 +136,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.webworker.driver)
                 implementation(npm("sql.js", libs.versions.sqlJs.get()))
+                implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqldelight.get()))
                 implementation(devNpm("copy-webpack-plugin", libs.versions.webPackPlugin.get()))
             }
         }

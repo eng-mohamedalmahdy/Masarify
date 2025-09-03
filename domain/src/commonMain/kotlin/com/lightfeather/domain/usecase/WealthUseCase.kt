@@ -1,21 +1,16 @@
 package com.lightfeather.domain.usecase
 
-import com.lightfeather.domain.data.repository.AccountRepository
-import com.lightfeather.domain.data.repository.CurrencyExchangeRateRepository
-import com.lightfeather.domain.data.repository.CurrencyRepository
-import com.lightfeather.domain.domain.DomainResult
-import com.lightfeather.domain.domain.WealthWorthInCurrency
-import com.lightfeather.domain.domain.error.AppError
+import com.lightfeather.domain.repository.AccountRepository
+import com.lightfeather.domain.repository.CurrencyExchangeRateRepository
+import com.lightfeather.domain.repository.CurrencyRepository
+import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.WealthWorthInCurrency
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 
- class GetWealthWorthInCurrency(
+class GetWealthWorthInCurrency(
     private val accountRepository: AccountRepository,
     private val currencyExchangeRateRepository: CurrencyExchangeRateRepository,
     private val currencyRepository: CurrencyRepository

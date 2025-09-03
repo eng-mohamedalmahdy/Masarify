@@ -1,17 +1,16 @@
 package com.lightfeather.data.repository
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.lightfeather.data.database.drivers.SharedDatabase
-import com.lightfeather.domain.data.repository.CurrencyRepository
-import com.lightfeather.domain.domain.Currency
-import com.lightfeather.domain.domain.DomainResult
-import com.lightfeather.domain.domain.error.AppError
+import com.lightfeather.data.local.database.drivers.SharedDatabase
+import com.lightfeather.domain.repository.CurrencyRepository
+import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.error.AppError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import lightfeather.masarify.database.V_currencies
-import kotlin.math.sign
 
 class CurrencyRepositoryImpl(
     private val database: SharedDatabase
@@ -86,9 +85,9 @@ class CurrencyRepositoryImpl(
 
     private fun V_currencies.toDomain(): Currency {
         return Currency(
-            id = currencyId.toInt(),
             name = currencyName,
-            sign = currencySign
+            sign = currencySign,
+            id = currencyId.toInt()
         )
     }
 }

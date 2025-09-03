@@ -1,23 +1,22 @@
 package com.lightfeather.data.repository
 
 import app.cash.sqldelight.coroutines.asFlow
-import com.lightfeather.data.database.drivers.SharedDatabase
-import com.lightfeather.data.database.model.DbTransactionType
-import com.lightfeather.data.database.model.toDbTransactionType
-import com.lightfeather.domain.data.repository.TransactionRepository
-import com.lightfeather.domain.domain.Account
-import com.lightfeather.domain.domain.Attachment
-import com.lightfeather.domain.domain.Category
-import com.lightfeather.domain.domain.Currency
-import com.lightfeather.domain.domain.DomainResult
-import com.lightfeather.domain.domain.runCatchingDomainResultSuspend
-import com.lightfeather.domain.domain.transaction.Transaction
-import com.lightfeather.domain.domain.transaction.TransactionFilter
+import com.lightfeather.data.local.database.drivers.SharedDatabase
+import com.lightfeather.data.local.database.model.DbTransactionType
+import com.lightfeather.data.local.database.model.toDbTransactionType
+import com.lightfeather.domain.repository.TransactionRepository
+import com.lightfeather.domain.model.Account
+import com.lightfeather.domain.model.Attachment
+import com.lightfeather.domain.model.Category
+import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.runCatchingDomainResultSuspend
+import com.lightfeather.domain.model.transaction.Transaction
+import com.lightfeather.domain.model.transaction.TransactionFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import lightfeather.masarify.database.V_transactions
 import kotlin.reflect.KClass
-import kotlin.time.Clock
 
 class TransactionsRepositoryImpl(
     private val sharedDatabase: SharedDatabase
@@ -186,9 +185,9 @@ class TransactionsRepositoryImpl(
                     color = first.accountColor,
                     logo = first.accountLogo.orEmpty(),
                     currency = Currency(
-                        id = first.currencyId.toInt(),
                         name = first.currencyName,
-                        sign = first.currencySign
+                        sign = first.currencySign,
+                        id = first.currencyId.toInt()
                     )
                 )
 
@@ -200,9 +199,9 @@ class TransactionsRepositoryImpl(
                     color = first.receiverAccountColor.orEmpty(),
                     logo = first.receiverAccountLogo.orEmpty(),
                     currency = Currency(
-                        id = first.receiverCurrencyId?.toInt() ?: -1,
                         name = first.receiverCurrencyName.orEmpty(),
                         sign = first.receiverCurrencySign.orEmpty(),
+                        id = first.receiverCurrencyId?.toInt() ?: -1,
                     )
                 )
 
