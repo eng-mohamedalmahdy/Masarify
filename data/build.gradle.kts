@@ -146,7 +146,7 @@ kotlin {
 
 sqldelight {
     databases {
-
+        linkSqlite = true
         create("Database") {
             packageName.set("com.lightfeather.masarify.database")
             generateAsync.set(true)

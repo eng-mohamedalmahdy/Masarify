@@ -84,6 +84,8 @@ kotlin {
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.jetbrains.iconsExtended)
                 implementation(libs.materialKolor)
+                implementation(libs.bundles.coil)
+
             }
         }
 
@@ -132,5 +134,7 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    commonMainApi(libs.resources)
+    commonMainApi(libs.resources.compose) // for compose multiplatform
 
 }

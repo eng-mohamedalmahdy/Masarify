@@ -11,4 +11,6 @@ plugins {
     alias(libs.plugins.androidLint) apply false
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.sqldelight) apply false
+    id("dev.icerock.mobile.multiplatform-resources") version "0.25.0"
+
 }

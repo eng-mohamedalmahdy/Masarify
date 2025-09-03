@@ -1,4 +1,4 @@
-package com.lightfeather.happytail.designsystem.snackbar
+package com.lightfeather.designsystem.component.snackbar
 
 /**
  * Adapted from [androidx.compose.material3.SnackbarDuration]

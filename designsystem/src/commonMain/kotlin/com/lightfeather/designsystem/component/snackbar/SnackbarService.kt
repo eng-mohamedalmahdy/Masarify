@@ -1,6 +1,5 @@
-package com.lightfeather.happytail.designsystem.snackbar
+package com.lightfeather.designsystem.component.snackbar
 
-import com.lightfeather.happytail.designsystem.Res
 import dev.icerock.moko.resources.StringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -9,6 +8,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import masarify.designsystem.generated.resources.Res
 
 object SnackbarService {
 
@@ -91,11 +91,13 @@ object SnackbarService {
     }
 
     fun sendErrorMessageOrUnknown(message : String?){
-        if(message.isNullOrEmpty()){
-            sendErrorMessage(Res.strings.unknown_error)
-        }else{
-            sendErrorMessage(message)
-        }
+//        if(message.isNullOrEmpty()){
+//            sendErrorMessage(Res.strings.unknown_error)
+//        }else{
+//            sendErrorMessage(message)
+//        }
+        sendErrorMessage(message.orEmpty())
+
     }
 }
 

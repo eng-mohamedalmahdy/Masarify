@@ -1,4 +1,4 @@
-package com.lightfeather.happytail.navigation
+package com.lightfeather.masarify.navigation
 
 import androidx.core.bundle.Bundle
 import androidx.navigation.NavType

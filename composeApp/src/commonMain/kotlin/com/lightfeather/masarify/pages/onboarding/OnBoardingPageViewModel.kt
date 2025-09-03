@@ -9,6 +9,7 @@ import com.lightfeather.domain.model.UserData
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.UpsertUserData
+import com.lightfeather.masarify.navigation.Navigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -20,6 +21,7 @@ class OnBoardingPageViewModel(
     private val createCurrency: CreateCurrency,
     private val createAccount: CreateAccount,
     private val upsertUserData: UpsertUserData,
+    private val navigator: Navigator,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OnBoardingPageState())
@@ -43,7 +45,7 @@ class OnBoardingPageViewModel(
                     )
                     val createCurrencyResult = createCurrency(toBeCreateCurrency)
 
-                     createCurrencyResult.flatMapSuspend { currencyId ->
+                    createCurrencyResult.flatMapSuspend { currencyId ->
                         val toBeCreateAccount = Account(
                             name = _state.value.accountName,
                             currency = toBeCreateCurrency.copy(id = currencyId),

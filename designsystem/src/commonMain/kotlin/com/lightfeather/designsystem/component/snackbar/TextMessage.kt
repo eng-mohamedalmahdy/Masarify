@@ -1,4 +1,4 @@
-package com.lightfeather.happytail.designsystem.snackbar
+package com.lightfeather.designsystem.component.snackbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable

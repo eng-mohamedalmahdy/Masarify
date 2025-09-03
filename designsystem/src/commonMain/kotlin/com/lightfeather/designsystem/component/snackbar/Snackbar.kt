@@ -1,4 +1,4 @@
-package com.lightfeather.happytail.designsystem.snackbar
+package com.lightfeather.designsystem.component.snackbar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,9 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import com.lightfeather.happytail.designsystem.theme.AppTheme
-import com.lightfeather.happytail.designsystem.theme.getSnackbarBackgroundColor
-import com.lightfeather.happytail.designsystem.theme.getSnackbarTextColor
+import com.lightfeather.designsystem.theme.AppTheme
+
 
 
 @Composable
@@ -59,7 +58,7 @@ fun Snackbar(
     message: SnackbarMessage,
     onDismiss: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = AppTheme.shape.medium
+    shape: Shape = AppTheme.shapes.medium
 ) {
     Snackbar(
         type = message.type,
@@ -78,7 +77,7 @@ fun Snackbar(
 @Composable
 fun Snackbar(
     type: SnackbarType,
-    shape: Shape = AppTheme.shape.medium,
+    shape: Shape = AppTheme.shapes.medium,
     leading: @Composable (RowScope.() -> Unit)? = null,
     action: @Composable (RowScope.() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit

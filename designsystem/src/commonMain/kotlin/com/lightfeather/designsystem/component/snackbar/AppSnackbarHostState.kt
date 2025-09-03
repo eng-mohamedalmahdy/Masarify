@@ -1,4 +1,4 @@
-package com.lightfeather.happytail.designsystem.snackbar
+package com.lightfeather.designsystem.component.snackbar
 
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Stable

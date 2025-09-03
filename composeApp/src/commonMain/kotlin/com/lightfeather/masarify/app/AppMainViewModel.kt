@@ -1,0 +1,70 @@
+package com.lightfeather.masarify.app
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.repository.UserRepository
+import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.navigation.routes.HomeRoute
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+
+class AppMainViewModel(
+
+    private val navigator: Navigator,
+    private val userDataRepository: UserRepository
+) : ViewModel() {
+
+    private val _darkTheme = MutableStateFlow(false)
+    val darkTheme = _darkTheme.onStart {
+        val isDarkMode = userDataRepository.isDarkMode()
+        _darkTheme.value = isDarkMode
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
+    )
+
+    private val _dynamicColor = MutableStateFlow(false)
+    val dynamicColor = _dynamicColor.onStart {
+        val isDynamicColor = userDataRepository.isDynamicColors()
+        _dynamicColor.value = isDynamicColor
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
+    )
+    private val _currentLanguage = MutableStateFlow<AppLanguage>(AppLanguage.English)
+    val currentLanguage = _currentLanguage
+        .onStart {
+            val language = userDataRepository.getAppLanguage()
+            _currentLanguage.value = language ?: AppLanguage.English
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = AppLanguage.English
+        )
+
+    fun toggleDarkTheme() {
+        viewModelScope.launch {
+            userDataRepository.toggleDarkMode()
+            _darkTheme.value = !darkTheme.value
+        }
+    }
+
+    fun changeLanguage(language: AppLanguage) {
+        viewModelScope.launch {
+            userDataRepository.setAppLanguage(language)
+            _currentLanguage.value = language
+            delay(200)
+            navigator.navigateAndClearBackStack(HomeRoute)
+        }
+    }
+
+
+}

@@ -11,6 +11,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinSerialization)
+    id("dev.icerock.mobile.multiplatform-resources")
+
 }
 
 kotlin {
@@ -68,14 +71,19 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.navigation.compose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.bundles.koinCommon)
+            implementation("com.eygraber:uri-kmp:0.0.19")
+
         }
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -116,8 +124,14 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    commonMainApi(libs.resources)
+    commonMainApi(libs.resources.compose) // for compose multiplatform
+
 }
 
+multiplatformResources {
+    resourcesPackage.set(appPackageName) // required
+}
 compose.desktop {
     application {
         mainClass = "com.lightfeather.masarify.MainKt"
