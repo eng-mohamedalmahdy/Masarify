@@ -238,9 +238,8 @@ object AppTheme {
                 isDark = useDarkTheme,
                 fallback = if (useDarkTheme) colors.dark else colors.light,
             )
-
             useDarkTheme -> colors.light
-            else -> colors.dark
+            else -> colors.light
 
         }
 

@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.bundles.koinCommon)
+            implementation(libs.napier)
             implementation("com.eygraber:uri-kmp:0.0.19")
 
         }
@@ -111,6 +112,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -141,5 +145,13 @@ compose.desktop {
             packageName = appPackageName
             packageVersion = "1.0.0"
         }
+    }
+}
+tasks.named("wasmJsProcessResources") {
+    dependsOn("generateMRwasmJsMain") // moko’s codegen task
+}
+tasks.named<Copy>("wasmJsProcessResources") {
+    from("$buildDir/generated/moko-resources/wasmJsMain/res") {
+        into(".") // keep the folder structure (./localization/…)
     }
 }
