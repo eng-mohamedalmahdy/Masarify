@@ -10,6 +10,12 @@ import com.lightfeather.domain.repository.UserRepository
 class UserRepositoryImpl(
     private val preferences: AppPreferences
 ) : UserRepository {
+    override fun getUserData(): DomainResult<UserData?> {
+        return runCatchingDomainResult {
+            preferences.userData
+        }
+    }
+
     override fun upsertUserData(userData: UserData): DomainResult<Unit> {
         return runCatchingDomainResult {
             preferences.userData = userData

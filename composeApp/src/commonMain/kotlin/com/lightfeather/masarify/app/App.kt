@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -27,11 +28,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lightfeather.designsystem.component.AppBottomNavigation
+import com.lightfeather.designsystem.component.snackbar.Snackbar
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.masarify.di.getAppModules
 import com.lightfeather.masarify.model.AppTopLevelRoutes
 import com.lightfeather.masarify.navigation.routes.HomeRoute
+import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import com.lightfeather.masarify.pages.onboarding.OnBoardingPage
 import dev.icerock.moko.resources.desc.StringDesc
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -56,7 +59,7 @@ fun App(
         val isDarkMode by mainViewModel.darkTheme.collectAsState(false)
         val dynamicColor by mainViewModel.dynamicColor.collectAsState(false)
         val appLanguage by mainViewModel.currentLanguage.collectAsState(AppLanguage.English)
-
+        val initialDataSaved by mainViewModel.initialDataSaved.collectAsState(false)
         LaunchedEffect(appLanguage) {
             StringDesc.localeType = StringDesc.LocaleType.Custom(appLanguage.code)
         }
@@ -70,6 +73,8 @@ fun App(
                 val englishTopLevelRoutes = listOf<AppTopLevelRoutes>()
                 val arabicTopLevelRoutes = listOf<AppTopLevelRoutes>()
                 val topLevelRoutes = if (appLanguage.isRtl) arabicTopLevelRoutes.reversed() else englishTopLevelRoutes
+
+
                 Scaffold(
                     bottomBar = {
                         val navBackStackEntry =
@@ -113,7 +118,7 @@ fun App(
                         .background(MaterialTheme.colorScheme.background)
                 ) { innerPadding ->
                     val layoutDirection = LocalLayoutDirection.current
-
+                    val startDestination = if(initialDataSaved) HomeRoute else OnBoardingRoute
                     NavHost(
                         navController,
                         startDestination = HomeRoute,
@@ -127,11 +132,15 @@ fun App(
                             .background(MaterialTheme.colorScheme.background)
                     ) {
                         composable<HomeRoute> {
+                            Text("Masarify App")
+                        }
+                        composable<OnBoardingRoute> {
                             OnBoardingPage()
                         }
                     }
 
                 }
+                Snackbar()
             }
         }
 

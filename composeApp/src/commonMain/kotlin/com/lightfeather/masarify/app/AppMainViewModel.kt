@@ -3,20 +3,26 @@ package com.lightfeather.masarify.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.repository.UserRepository
+import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.HomeRoute
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 class AppMainViewModel(
-
     private val navigator: Navigator,
-    private val userDataRepository: UserRepository
+    private val userDataRepository: UserRepository,
+    private val getAllAccounts: GetAllAccounts,
 ) : ViewModel() {
 
     private val _darkTheme = MutableStateFlow(false)
@@ -39,6 +45,15 @@ class AppMainViewModel(
         initialValue = false
     )
     private val _currentLanguage = MutableStateFlow<AppLanguage>(AppLanguage.English)
+
+    val initialDataSaved: Flow<Boolean> = getAllAccounts().flatMap { accountsFlow ->
+        userDataRepository.getUserData().map { userData ->
+            accountsFlow.map { accounts -> accounts.isNotEmpty() && userData != null }
+        }
+    }.foldResult(
+        onSuccess = { it },
+        onFailure = { flowOf(false) }
+    )
     val currentLanguage = _currentLanguage
         .onStart {
             val language = userDataRepository.getAppLanguage()

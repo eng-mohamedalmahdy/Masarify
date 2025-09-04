@@ -1,5 +1,7 @@
 package com.lightfeather.data.repository
 
+import app.cash.sqldelight.async.coroutines.awaitAsList
+import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.repository.AccountRepository
@@ -64,7 +66,7 @@ class AccountRepositoryImpl(
     override suspend fun getAccountById(id: Int): DomainResult<Account> {
         return try {
             val account = database {
-                it.bankAccountsQueries.getAccountById(id.toLong()).executeAsOne()
+                it.bankAccountsQueries.getAccountById(id.toLong()).awaitAsOne()
             }
             DomainResult.Success(account.toDomain())
         } catch (e: Exception) {
@@ -79,7 +81,7 @@ class AccountRepositoryImpl(
                     db.bankAccountsQueries
                         .getAllAccounts()
                         .asFlow()
-                        .map { query -> query.executeAsList().map { it.toDomain() } }
+                        .map { query -> query.awaitAsList().map { it.toDomain() } }
                 }
                 emitAll(accountsFlow)
             }

@@ -1,5 +1,6 @@
 package com.lightfeather.data.repository
 
+import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.lightfeather.data.local.database.drivers.SharedDatabase
@@ -81,7 +82,7 @@ class CurrencyExchangeRateRepositoryImpl(
                     from_currency_id = id.toLong(),
                     to_currency_id = toId.toLong(),
                     ::mapCurrencyExchangeRate
-                ).executeAsOne()
+                ).awaitAsOne()
             }
         }
     }

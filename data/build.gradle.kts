@@ -149,10 +149,9 @@ sqldelight {
         linkSqlite = true
         create("Database") {
             packageName.set("com.lightfeather.masarify.database")
-            generateAsync.set(true)
+            generateAsync = true
             dialect("${libs.sqldelight.sqlite.dialect.get().module}:${libs.sqldelight.sqlite.dialect.get().version}")
             module("${libs.sqldelight.sqlite.json.get().module}:${libs.sqldelight.sqlite.json.get().version}")
-
         }
 
 

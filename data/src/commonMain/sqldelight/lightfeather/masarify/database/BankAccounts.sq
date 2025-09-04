@@ -1,4 +1,4 @@
-CREATE TABLE bank_accounts (
+CREATE TABLE  IF NOT EXISTS  bank_accounts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   currency INTEGER NOT NULL,
   name TEXT NOT NULL ,

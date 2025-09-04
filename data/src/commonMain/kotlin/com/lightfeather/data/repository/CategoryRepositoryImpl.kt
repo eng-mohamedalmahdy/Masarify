@@ -1,5 +1,7 @@
 package com.lightfeather.data.repository
 
+import app.cash.sqldelight.async.coroutines.awaitAsList
+import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.repository.CategoryRepository
@@ -26,7 +28,7 @@ CategoryRepositoryImpl(
                     color = category.color,
                     icon = category.icon
                 )
-                it.categoriesQueries.selectLastInsertedRowId().executeAsOne()
+                it.categoriesQueries.selectLastInsertedRowId().awaitAsOne()
             }
             DomainResult.Success(result.toInt())
         } catch (e: Exception) {
@@ -67,7 +69,7 @@ CategoryRepositoryImpl(
                     db.categoriesQueries
                         .selectAllCategories()
                         .asFlow()
-                        .map { query -> query.executeAsList().map { it.toDomain() } }
+                        .map { query -> query.awaitAsList().map { it.toDomain() } }
                 }
                 emitAll(flow)
             }
@@ -80,7 +82,7 @@ CategoryRepositoryImpl(
     override suspend fun getCategoryById(id: Int): DomainResult<Category> {
         return try {
             val category = database {
-                it.categoriesQueries.selectCategoryById(id.toLong()).executeAsOne()
+                it.categoriesQueries.selectCategoryById(id.toLong()).awaitAsOne()
             }
             DomainResult.Success(category.toDomain())
         } catch (e: Exception) {

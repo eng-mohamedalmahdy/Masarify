@@ -5,6 +5,8 @@ import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.UserData
 
 interface UserRepository {
+
+    fun getUserData(): DomainResult<UserData?>
     fun upsertUserData(userData: UserData): DomainResult<Unit>
     fun isDarkMode(): Boolean
     fun isDynamicColors(): Boolean

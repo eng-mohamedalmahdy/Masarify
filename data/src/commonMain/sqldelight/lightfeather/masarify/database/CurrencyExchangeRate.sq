@@ -1,4 +1,4 @@
-CREATE TABLE exchange_rates (
+CREATE TABLE  IF NOT EXISTS  exchange_rates (
 from_currency_id INTEGER NOT NULL,
 to_currency_id INTEGER NOT NULL,
 rate REAL ,

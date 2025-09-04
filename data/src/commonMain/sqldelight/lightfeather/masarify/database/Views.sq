@@ -1,4 +1,4 @@
-CREATE VIEW v_exchange_rates AS
+CREATE VIEW IF NOT EXISTS  v_exchange_rates AS
 SELECT
     er.from_currency_id      AS fromCurrencyId,
     fc.name                  AS fromCurrencyName,
@@ -14,7 +14,7 @@ JOIN currencies fc ON fc.id = er.from_currency_id
 JOIN currencies tc ON tc.id = er.to_currency_id;
 
 
-CREATE VIEW v_transactions AS
+CREATE VIEW IF NOT EXISTS  v_transactions AS
 SELECT
     t.id                     AS transactionId,
     t.type                   AS transactionType,
@@ -74,7 +74,7 @@ LEFT JOIN transaction_categories tc ON tc.transaction_id = t.id
 LEFT JOIN categories cat ON tc.category_id = cat.id;
 
 
-CREATE VIEW v_accounts AS
+CREATE VIEW IF NOT EXISTS  v_accounts AS
 SELECT
     a.id          AS accountId,
     a.name        AS accountName,
@@ -91,7 +91,7 @@ FROM bank_accounts a
 JOIN currencies c ON a.currency = c.id;
 
 
-CREATE VIEW v_attachments AS
+CREATE VIEW IF NOT EXISTS  v_attachments AS
 SELECT
     id          AS attachmentId,
     transaction_id AS transactionId,
@@ -101,7 +101,7 @@ SELECT
 FROM attachments;
 
 
-CREATE VIEW v_categories AS
+CREATE VIEW IF NOT EXISTS  v_categories AS
 SELECT
     id          AS categoryId,
     name        AS categoryName,
@@ -111,7 +111,7 @@ SELECT
 FROM categories;
 
 
-CREATE VIEW v_currencies AS
+CREATE VIEW IF NOT EXISTS  v_currencies AS
 SELECT
     id   AS currencyId,
     name AS currencyName,
@@ -119,7 +119,7 @@ SELECT
 FROM currencies;
 
 
-CREATE VIEW v_transaction_categories AS
+CREATE VIEW IF NOT EXISTS  v_transaction_categories AS
 SELECT
     tc.transaction_id AS transactionId,
     c.categoryId,
@@ -131,7 +131,7 @@ FROM transaction_categories tc
 JOIN v_categories c ON c.categoryId = tc.category_id;
 
 
-CREATE VIEW v_exchange_rates_full AS
+CREATE VIEW IF NOT EXISTS  v_exchange_rates_full AS
 SELECT
     er.from_currency_id AS fromCurrencyId,
     fc.currencyName     AS fromCurrencyName,

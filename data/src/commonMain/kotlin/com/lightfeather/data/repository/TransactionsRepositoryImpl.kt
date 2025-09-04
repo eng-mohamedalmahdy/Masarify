@@ -1,5 +1,6 @@
 package com.lightfeather.data.repository
 
+import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.data.local.database.model.DbTransactionType
@@ -54,7 +55,7 @@ class TransactionsRepositoryImpl(
                 it.transactionsQueries.getAllTransactionsOfType(type.toDbTransactionType().dbValue)
                     .asFlow()
                     .map { query ->
-                        query.executeAsList().toDomainTransactions().map { it as T }
+                        query.awaitAsList().toDomainTransactions().map { it as T }
                     }
             }
         }
@@ -64,7 +65,7 @@ class TransactionsRepositoryImpl(
     override suspend fun <T : Transaction> getTransactionById(id: Int): DomainResult<T> {
         return runCatchingDomainResultSuspend {
             sharedDatabase {
-                val rows = it.transactionsQueries.getTransactionById(id.toLong()).executeAsList()
+                val rows = it.transactionsQueries.getTransactionById(id.toLong()).awaitAsList()
                 rows.toDomainTransactions().first() as T
             }
         }
@@ -74,7 +75,7 @@ class TransactionsRepositoryImpl(
         return runCatchingDomainResultSuspend {
             sharedDatabase {
                 val rows = it.transactionsQueries.getMinTransactionOfType(type.toDbTransactionType().dbValue)
-                    .executeAsList()
+                    .awaitAsList()
                 rows.toDomainTransactions().first() as T
             }
         }

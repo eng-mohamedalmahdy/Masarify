@@ -43,39 +43,56 @@ class OnBoardingPageViewModel(
             is OnBoardingPageIntent.UpdateAccountBalance -> _state.value =
                 _state.value.copy(accountBalance = intent.balance)
 
-            OnBoardingPageIntent.Submit -> viewModelScope.launch {
-                val createAccountJob = async(Dispatchers.IoDispatcher) {
-                    val toBeCreateCurrency = Currency(
-                        _state.value.accountCurrencyName,
-                        _state.value.mainAccountCurrencySymbol.takeIf { it.isNotBlank() }
-                            ?: _state.value.accountCurrencyName
-                    )
-                    val createCurrencyResult = createCurrency(toBeCreateCurrency)
+            OnBoardingPageIntent.Submit -> {
+                val stateSnapshot = _state.value
+                if (stateSnapshot.userNameError != null) {
+                    SnackbarService.sendErrorMessage(stateSnapshot.userNameError)
+                    return
+                } else if (stateSnapshot.accountNameError != null) {
+                    SnackbarService.sendErrorMessage(stateSnapshot.accountNameError)
+                    return
+                } else if (stateSnapshot.currencyNameError != null) {
+                    SnackbarService.sendErrorMessage(stateSnapshot.currencyNameError)
+                    return
+                } else if (stateSnapshot.balanceError != null) {
+                    SnackbarService.sendErrorMessage(stateSnapshot.balanceError)
+                    return
+                }
 
-                    createCurrencyResult.flatMapSuspend { currencyId ->
-                        val toBeCreateAccount = Account(
-                            name = _state.value.accountName,
-                            currency = toBeCreateCurrency.copy(id = currencyId),
-                            description = "",
-                            balance = _state.value.accountBalance.toDouble(),
-                            color = _state.value.accountColor,
-                            logo = _state.value.accountLogo,
+                viewModelScope.launch {
+                    val createAccountJob = async(Dispatchers.IoDispatcher) {
+                        val toBeCreateCurrency = Currency(
+                            stateSnapshot.accountCurrencyName,
+                            stateSnapshot.mainAccountCurrencySymbol.takeIf { it.isNotBlank() }
+                                ?: stateSnapshot.accountCurrencyName
                         )
-                        createAccount(toBeCreateAccount)
+                        val createCurrencyResult = createCurrency(toBeCreateCurrency)
+
+                        createCurrencyResult.flatMapSuspend { currencyId ->
+                            val toBeCreateAccount = Account(
+                                name = stateSnapshot.accountName,
+                                currency = toBeCreateCurrency.copy(id = currencyId),
+                                description = "",
+                                balance = stateSnapshot.accountBalance.toDouble(),
+                                color = stateSnapshot.accountColor,
+                                logo = stateSnapshot.accountLogo,
+                            )
+                            createAccount(toBeCreateAccount)
+                        }
                     }
-                }
-                val upsertUserDataJob = async(Dispatchers.IoDispatcher) {
-                    upsertUserData(UserData(_state.value.userName))
-                }
-                val (createAccountResult, upsertUserDataResult) = awaitAll(createAccountJob, upsertUserDataJob)
-                createAccountResult.flatMap { accountId ->
-                    upsertUserDataResult.flatMap { userDataId ->
-                        DomainResult.Success(Unit)
+                    val upsertUserDataJob = async(Dispatchers.IoDispatcher) {
+                        upsertUserData(UserData(stateSnapshot.userName))
                     }
-                }.fold(
-                    onSuccess = { navigator.navigate(HomeRoute) },
-                    onFailure = { SnackbarService.sendErrorMessage(it.message) }
-                )
+                    val (createAccountResult, upsertUserDataResult) = awaitAll(createAccountJob, upsertUserDataJob)
+                    createAccountResult.flatMap { accountId ->
+                        upsertUserDataResult.flatMap { userDataId ->
+                            DomainResult.Success(Unit)
+                        }
+                    }.fold(
+                        onSuccess = { navigator.navigate(HomeRoute) },
+                        onFailure = { SnackbarService.sendErrorMessage(it.message) }
+                    )
+                }
             }
         }
 

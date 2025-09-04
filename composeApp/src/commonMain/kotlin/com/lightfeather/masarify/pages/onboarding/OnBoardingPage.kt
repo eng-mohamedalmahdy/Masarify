@@ -2,6 +2,7 @@ package com.lightfeather.masarify.pages.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,8 +39,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import com.lightfeather.masarify.MR
 import masarify.composeapp.generated.resources.Res
+import masarify.composeapp.generated.resources.bg
 import masarify.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun OnBoardingPage(viewModel: OnBoardingPageViewModel = koinViewModel()) {
@@ -55,78 +62,89 @@ internal fun OnBoardingPageContent(
     val localDensity = LocalDensity.current
     var topRowWidth by remember { mutableStateOf(0) }
     val topRowWidthDp by remember(topRowWidth) { derivedStateOf { with(localDensity) { topRowWidth.toDp() } } }
-    Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondary),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.onSizeChanged { topRowWidth = it.width }
-        ) {
-            AppImage(
-                model = painterResource(Res.drawable.compose_multiplatform),
-                contentDescription = null,
-                modifier = Modifier.size(100.dp),
-                placeholder = Res.drawable.compose_multiplatform,
+    Box(
+        Modifier.fillMaxSize()
+            .paint(
+                painterResource(Res.drawable.bg),
+                contentScale = ContentScale.FillBounds
             )
-            Column {
-                Text(
-                    text = stringResource(MR.strings.onboarding_title),
-                    style = MaterialTheme.typography.titleLarge,
+    ) {
+        Card(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(AppTheme.dimens.medium),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(AppTheme.dimens.default),
+                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.onSizeChanged { topRowWidth = it.width }
+                ) {
+                    AppImage(
+                        model = painterResource(Res.drawable.compose_multiplatform),
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp),
+                        placeholder = Res.drawable.compose_multiplatform,
+                    )
+                    Column {
+                        Text(
+                            text = stringResource(MR.strings.onboarding_title),
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        Text(
+                            text = stringResource(MR.strings.app_slogan),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+                TextField(
+                    value = state.userName,
+                    onValueChange = { onIntent(OnBoardingPageIntent.UpdateUserName(it)) },
+                    modifier = Modifier.width(topRowWidthDp),
+                    label = stringResource(MR.strings.user_name),
                 )
-                Text(
-                    text = stringResource(MR.strings.app_slogan),
-                    style = MaterialTheme.typography.bodyMedium,
+                TextField(
+                    value = state.accountName,
+                    onValueChange = { onIntent(OnBoardingPageIntent.UpdateAccountName(it)) },
+                    modifier = Modifier.width(topRowWidthDp),
+                    label = stringResource(MR.strings.account_name),
                 )
+                Row(
+                    modifier = Modifier.width(topRowWidthDp),
+                    horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium)
+                ) {
+                    TextField(
+                        value = state.accountBalance,
+                        onValueChange = { onIntent(OnBoardingPageIntent.UpdateAccountBalance(it)) },
+                        modifier = Modifier.weight(1f),
+                        label = stringResource(MR.strings.balance),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    )
+                    TextField(
+                        value = state.accountCurrencyName,
+                        onValueChange = { onIntent(OnBoardingPageIntent.UpdateCurrencyName(it)) },
+                        modifier = Modifier.weight(1f),
+                        label = stringResource(MR.strings.currency),
+                    )
+                }
+                PrimaryButton(
+                    onClick = { onIntent(OnBoardingPageIntent.Submit) },
+                    modifier = Modifier
+                        .padding(AppTheme.dimens.default)
+                        .width(topRowWidthDp),
+                ) {
+                    Text(text = stringResource(MR.strings.submit))
+                }
             }
         }
-        TextField(
-            value = state.userName,
-            onValueChange = { onIntent(OnBoardingPageIntent.UpdateUserName(it)) },
-            modifier = Modifier.width(topRowWidthDp),
-            label = stringResource(MR.strings.user_name)
-        )
-        TextField(
-            value = state.accountName,
-            onValueChange = { onIntent(OnBoardingPageIntent.UpdateAccountName(it)) },
-            modifier = Modifier.width(topRowWidthDp),
-            label = stringResource(MR.strings.account_name),
-            supportingText = stringResource(state.userNameError),
-            isError = state.userNameError != null
 
-        )
-        Row(
-            modifier = Modifier.width(topRowWidthDp),
-            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.small)
-        ) {
-            TextField(
-                value = state.accountBalance,
-                onValueChange = { onIntent(OnBoardingPageIntent.UpdateAccountBalance(it)) },
-                modifier = Modifier.weight(1f),
-                label = stringResource(MR.strings.balance),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                supportingText = stringResource(state.balanceError),
-                isError = state.balanceError != null
-            )
-            TextField(
-                value = state.accountCurrencyName,
-                onValueChange = { onIntent(OnBoardingPageIntent.UpdateCurrencyName(it)) },
-                modifier = Modifier.weight(1f),
-                label = stringResource(MR.strings.currency),
-                supportingText = stringResource(state.currencyNameError),
-                isError = state.currencyNameError != null
-            )
-        }
-        PrimaryButton(
-            onClick = { onIntent(OnBoardingPageIntent.Submit) },
-            modifier = Modifier
-                .padding(AppTheme.dimens.default)
-                .width(topRowWidthDp),
-            enabled = state.isSaveButtonEnabled,
-        ) {
-            Text(text = stringResource(MR.strings.submit))
-        }
     }
 }
 

@@ -1,5 +1,7 @@
 package com.lightfeather.data.repository
 
+import app.cash.sqldelight.async.coroutines.awaitAsList
+import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.repository.CurrencyRepository
@@ -23,7 +25,7 @@ class CurrencyRepositoryImpl(
                     name = currency.name,
                     sign = currency.sign
                 )
-                it.currenciesQueries.selectLastInsertedRowId().executeAsOne()
+                it.currenciesQueries.selectLastInsertedRowId().awaitAsOne()
             }
             DomainResult.Success(result.toInt())
         } catch (e: Exception) {
@@ -58,7 +60,7 @@ class CurrencyRepositoryImpl(
     override suspend fun getCurrencyById(id: Int): DomainResult<Currency> {
         return try {
             val currency = database {
-                it.currenciesQueries.selectCurrencyById(id.toLong()).executeAsOne()
+                it.currenciesQueries.selectCurrencyById(id.toLong()).awaitAsOne()
             }
             DomainResult.Success(currency.toDomain())
         } catch (e: Exception) {
@@ -73,7 +75,7 @@ class CurrencyRepositoryImpl(
                     db.currenciesQueries
                         .selectAllCurrencies()
                         .asFlow()
-                        .map { query -> query.executeAsList().map { it.toDomain() } }
+                        .map { query -> query.awaitAsList().map { it.toDomain() } }
                 }
                 emitAll(flow)
             }

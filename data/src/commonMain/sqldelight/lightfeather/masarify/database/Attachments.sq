@@ -1,4 +1,4 @@
-CREATE TABLE attachments (
+CREATE TABLE  IF NOT EXISTS  attachments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT ,
     transaction_id INTEGER NOT NULL,
