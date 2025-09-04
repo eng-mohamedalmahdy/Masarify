@@ -3,13 +3,16 @@ package com.lightfeather.masarify.pages.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
+import com.lightfeather.designsystem.component.snackbar.SnackbarService
 import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.UserData
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.UpsertUserData
 import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.navigation.routes.HomeRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -37,12 +40,15 @@ class OnBoardingPageViewModel(
                 _state.value.copy(mainAccountCurrencySymbol = intent.name)
 
             is OnBoardingPageIntent.UpdateUserName -> _state.value = _state.value.copy(userName = intent.name)
-            is OnBoardingPageIntent.UpdateAccountBalance -> _state.value = _state.value.copy(accountBalance = intent.balance)
+            is OnBoardingPageIntent.UpdateAccountBalance -> _state.value =
+                _state.value.copy(accountBalance = intent.balance)
+
             OnBoardingPageIntent.Submit -> viewModelScope.launch {
                 val createAccountJob = async(Dispatchers.IoDispatcher) {
                     val toBeCreateCurrency = Currency(
                         _state.value.accountCurrencyName,
-                        _state.value.mainAccountCurrencySymbol.takeIf { it.isNotBlank() } ?: _state.value.accountCurrencyName
+                        _state.value.mainAccountCurrencySymbol.takeIf { it.isNotBlank() }
+                            ?: _state.value.accountCurrencyName
                     )
                     val createCurrencyResult = createCurrency(toBeCreateCurrency)
 
@@ -61,9 +67,17 @@ class OnBoardingPageViewModel(
                 val upsertUserDataJob = async(Dispatchers.IoDispatcher) {
                     upsertUserData(UserData(_state.value.userName))
                 }
-                awaitAll(createAccountJob, upsertUserDataJob)
+                val (createAccountResult, upsertUserDataResult) = awaitAll(createAccountJob, upsertUserDataJob)
+                createAccountResult.flatMap { accountId ->
+                    upsertUserDataResult.flatMap { userDataId ->
+                        DomainResult.Success(Unit)
+                    }
+                }.fold(
+                    onSuccess = { navigator.navigate(HomeRoute) },
+                    onFailure = { SnackbarService.sendErrorMessage(it.message) }
+                )
             }
-
         }
+
     }
 }

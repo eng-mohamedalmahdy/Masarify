@@ -5,8 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface AppError {
 
+    val message: String
+
     @Serializable
-    data class InternalError(val message: String) : AppError
+    data class InternalError(override val message: String) : AppError
 
 
 }

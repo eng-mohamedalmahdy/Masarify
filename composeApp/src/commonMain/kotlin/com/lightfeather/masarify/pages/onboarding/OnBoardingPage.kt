@@ -1,5 +1,6 @@
 package com.lightfeather.masarify.pages.onboarding
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +56,7 @@ internal fun OnBoardingPageContent(
     var topRowWidth by remember { mutableStateOf(0) }
     val topRowWidthDp by remember(topRowWidth) { derivedStateOf { with(localDensity) { topRowWidth.toDp() } } }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -123,7 +124,7 @@ internal fun OnBoardingPageContent(
                 .padding(AppTheme.dimens.default)
                 .width(topRowWidthDp),
             enabled = state.isSaveButtonEnabled,
-        ){
+        ) {
             Text(text = stringResource(MR.strings.submit))
         }
     }

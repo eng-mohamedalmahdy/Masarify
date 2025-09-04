@@ -34,15 +34,6 @@ sealed class DomainResult<T>(open val data: T?) {
         is DomainResult.Failure -> default
     }
 
-    fun <R> map(transform: (T) -> R): DomainResult<R> = when (this) {
-        is DomainResult.Success -> DomainResult.Success(transform(data))
-        is DomainResult.Failure -> DomainResult.Failure(error)
-    }
-
-    suspend fun <R> mapSuspend(transform: suspend (T) -> R): DomainResult<R> = when (this) {
-        is DomainResult.Success -> DomainResult.Success(transform(data))
-        is DomainResult.Failure -> DomainResult.Failure(error)
-    }
 
 
     inline fun <R> foldResult(
@@ -61,6 +52,17 @@ sealed class DomainResult<T>(open val data: T?) {
 
         is DomainResult.Failure -> DomainResult.Failure(error)
     }
+
+    fun <R> map(transform: (T) -> R): DomainResult<R> = when (this) {
+        is DomainResult.Success -> DomainResult.Success(transform(data))
+        is DomainResult.Failure -> DomainResult.Failure(error)
+    }
+
+    suspend fun <R> mapSuspend(transform: suspend (T) -> R): DomainResult<R> = when (this) {
+        is DomainResult.Success -> DomainResult.Success(transform(data))
+        is DomainResult.Failure -> DomainResult.Failure(error)
+    }
+
 
     fun <R> flatMap(transform: (T) -> DomainResult<R>): DomainResult<R> = when (this) {
         is DomainResult.Success -> {
