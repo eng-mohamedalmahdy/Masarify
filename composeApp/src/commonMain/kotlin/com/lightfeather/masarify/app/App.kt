@@ -27,14 +27,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lightfeather.designsystem.component.AppBottomNavigation
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
+import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.masarify.di.getAppModules
 import com.lightfeather.masarify.model.AppTopLevelRoutes
 import com.lightfeather.masarify.navigation.routes.HomeRoute
 import com.lightfeather.masarify.pages.onboarding.OnBoardingPage
 import dev.icerock.moko.resources.desc.StringDesc
-import io.github.aakira.napier.Napier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel

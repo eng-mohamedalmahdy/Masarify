@@ -7,7 +7,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
+import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -67,7 +67,7 @@ private fun PreviewIconButton() {
     AppTheme {
         IconButton(
             onClick = { },
-            icon = { 
+            icon = {
                 Text(
                     text = "+",
                     style = MaterialTheme.typography.titleLarge
