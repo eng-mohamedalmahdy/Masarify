@@ -240,10 +240,6 @@ fun AppTheme(
     val isPreview = LocalInspectionMode.current
     val colorScheme = when {
         isPreview -> if (useDarkTheme) colors.dark else colors.light
-        dynamicColor -> dynamicColorScheme(
-            isDark = useDarkTheme,
-            fallback = if (useDarkTheme) colors.dark else colors.light,
-        )
         useDarkTheme -> colors.dark
         else -> colors.light
 

@@ -37,11 +37,12 @@ class OnBoardingPageViewModel(
                 _state.value.copy(mainAccountCurrencySymbol = intent.name)
 
             is OnBoardingPageIntent.UpdateUserName -> _state.value = _state.value.copy(userName = intent.name)
+            is OnBoardingPageIntent.UpdateAccountBalance -> _state.value = _state.value.copy(accountBalance = intent.balance)
             OnBoardingPageIntent.Submit -> viewModelScope.launch {
                 val createAccountJob = async(Dispatchers.IoDispatcher) {
                     val toBeCreateCurrency = Currency(
                         _state.value.accountCurrencyName,
-                        _state.value.mainAccountCurrencySymbol
+                        _state.value.mainAccountCurrencySymbol.takeIf { it.isNotBlank() } ?: _state.value.accountCurrencyName
                     )
                     val createCurrencyResult = createCurrency(toBeCreateCurrency)
 
@@ -62,6 +63,7 @@ class OnBoardingPageViewModel(
                 }
                 awaitAll(createAccountJob, upsertUserDataJob)
             }
+
         }
     }
 }

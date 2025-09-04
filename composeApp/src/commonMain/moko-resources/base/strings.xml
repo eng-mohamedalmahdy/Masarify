@@ -4,4 +4,13 @@
     <string name="onboarding_title">Welcome To Masarify</string>
     <string name="app_slogan">Track smart, spend wiser.</string>
     <string name="user_name">User Name</string>
+    <string name="account_name">Account Name</string>
+    <string name="balance">Balance</string>
+    <string name="currency">Currency</string>
+    <string name="submit">Submit</string>
+    <string name="onboarding_user_name_error">User name cannot be empty</string>
+    <string name="onboarding_account_name_error">Account name cannot be empty</string>
+    <string name="onboarding_account_balance_error">Account balance cannot be empty</string>
+    <string name="onboarding_account_currency_error">Account currency cannot be empty</string>
+
 </resources>

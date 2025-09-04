@@ -41,6 +41,7 @@ fun TextField(
     readOnly: Boolean = false,
     label: String? = null,
     placeholder: String? = null,
+    supportingText: String? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
@@ -48,7 +49,7 @@ fun TextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
-    colors : TextFieldColors = OutlinedTextFieldDefaults.colors(
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.surface,
         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
         disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -62,8 +63,7 @@ fun TextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         enabled = enabled,
         readOnly = readOnly,
         label = { if (label != null) Text(label) },
@@ -77,7 +77,8 @@ fun TextField(
         singleLine = singleLine,
         maxLines = maxLines,
         shape = MaterialTheme.shapes.medium,
-        colors = colors
+        colors = colors,
+        supportingText = { if (supportingText != null) Text(supportingText) }
     )
 }
 
@@ -90,6 +91,7 @@ fun PasswordTextField(
     readOnly: Boolean = false,
     label: String? = null,
     placeholder: String? = null,
+    supportingText: String? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -101,10 +103,10 @@ fun PasswordTextField(
         focusedIndicatorColor = MaterialTheme.colorScheme.primary,
         unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
         errorIndicatorColor = MaterialTheme.colorScheme.error,
-    )
+    ),
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
-    
+
     TextField(
         value = value,
         onValueChange = onValueChange,
@@ -114,13 +116,18 @@ fun PasswordTextField(
         label = label,
         placeholder = placeholder,
         leadingIcon = leadingIcon,
+        supportingText = supportingText,
         trailingIcon = {
             IconButton(
                 onClick = { passwordVisible = !passwordVisible },
                 icon = {
-                   Icon(
+                    Icon(
                         if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (passwordVisible) { "Hide password" } else { "Show password" }
+                        contentDescription = if (passwordVisible) {
+                            "Hide password"
+                        } else {
+                            "Show password"
+                        }
                     )
                 }
             )

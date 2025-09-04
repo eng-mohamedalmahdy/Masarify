@@ -83,7 +83,6 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.jetbrains.iconsExtended)
-                implementation(libs.materialKolor)
                 implementation(libs.bundles.coil)
                 implementation(libs.compose.window.sizes)
                 implementation(libs.bundles.material3Adaptive)
