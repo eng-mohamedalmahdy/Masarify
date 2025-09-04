@@ -31,6 +31,8 @@ resources = "0.25.0"
 navigationCompose = "2.9.0-rc01"
 coilCompose = "3.0.1"
 napier = "2.7.1"
+composeWindowSize = "1.9.0-beta04"
+composeAdaptive = "1.1.2"
 [libraries]
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -71,7 +73,11 @@ resources = { module = "dev.icerock.moko:resources", version.ref = "resources" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
-napier = {module =   "io.github.aakira:napier" , version.ref = "napier"}
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+compose-window-sizes = { module = "org.jetbrains.compose.material3:material3-window-size-class" , version.ref = "composeWindowSize" }
+material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "composeAdaptive" }
+material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "composeAdaptive" }
+material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "composeAdaptive" }
 
 [bundles]
 koinCommon = [
@@ -90,7 +96,11 @@ coil = [
     "coil-network-ktor"
 ]
 
-
+material3Adaptive = [
+    "material3-adaptive",
+    "material3-adaptive-layout",
+    "material3-adaptive-navigation"
+]
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

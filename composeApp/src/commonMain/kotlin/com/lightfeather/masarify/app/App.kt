@@ -64,9 +64,6 @@ fun App(
         LaunchedEffect(navController) {
             onNavHostReady(navController)
         }
-        LaunchedEffect(isDarkMode, dynamicColor){
-            Napier.d { "isDarkMode: $isDarkMode, dynamicColor: $dynamicColor" }
-        }
         CompositionLocalProvider(
             LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr
         ) {

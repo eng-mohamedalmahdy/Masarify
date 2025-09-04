@@ -1,16 +1,14 @@
 package com.lightfeather.designsystem.component
 
-import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.*
-import androidx.compose.ui.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Icon as MaterialIcon
+
 enum class IconSize {
     Small,
     Medium,

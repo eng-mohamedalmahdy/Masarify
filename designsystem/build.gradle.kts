@@ -85,6 +85,8 @@ kotlin {
                 implementation(libs.jetbrains.iconsExtended)
                 implementation(libs.materialKolor)
                 implementation(libs.bundles.coil)
+                implementation(libs.compose.window.sizes)
+                implementation(libs.bundles.material3Adaptive)
 
             }
         }
@@ -99,6 +101,7 @@ kotlin {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.androidx.ui.tooling)
+                implementation(libs.androidx.activity.compose)
             }
         }
 

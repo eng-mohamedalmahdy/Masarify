@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

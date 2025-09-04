@@ -9,7 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
+import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.FilterChip as MaterialFilterChip
 import androidx.compose.material3.AssistChip as MaterialAssistChip
@@ -118,21 +118,21 @@ private fun PreviewChips() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             var selected by remember { mutableStateOf(false) }
-            
+
             // Filter chip
             FilterChip(
                 selected = selected,
                 onClick = { selected = !selected },
                 label = { Text("Filter") }
             )
-            
+
             // Assist chip
             AssistChip(
                 onClick = { /* Handle click */ },
                 label = { Text("Assist") },
                 leadingIcon = { Text("🔍") }
             )
-            
+
             // Tags
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)

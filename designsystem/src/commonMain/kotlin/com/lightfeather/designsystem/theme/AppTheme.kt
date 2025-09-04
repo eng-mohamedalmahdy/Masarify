@@ -12,6 +12,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lightfeather.designsystem.theme.AppTheme.colors
+import com.lightfeather.designsystem.theme.AppTheme.shapes
+import com.lightfeather.designsystem.theme.AppTheme.typography
 import masarify.designsystem.generated.resources.NotoSansArabic_Black
 import masarify.designsystem.generated.resources.NotoSansArabic_Bold
 import masarify.designsystem.generated.resources.NotoSansArabic_ExtraBold
@@ -187,9 +190,9 @@ object AppTheme {
 
 
     val shapes = Shapes(
-        extraSmall = RoundedCornerShape(dimens.extraSmall),
-        small = RoundedCornerShape(dimens.small),
-        medium = RoundedCornerShape(dimens.medium),
+        extraSmall = RoundedCornerShape(dimens.small),
+        small = RoundedCornerShape(dimens.medium),
+        medium = RoundedCornerShape(dimens.default),
         large = RoundedCornerShape(dimens.large),
         extraLarge = RoundedCornerShape(dimens.extraLarge)
     )
@@ -225,29 +228,31 @@ object AppTheme {
         val sheetElevation = 8.dp
     }
 
-    @Composable
-    fun AppTheme(
-        useDarkTheme: Boolean = isSystemInDarkTheme(),
-        dynamicColor: Boolean = true, // support dynamic colors
-        content: @Composable () -> Unit
-    ) {
-        val isPreview = LocalInspectionMode.current
-        val colorScheme = when {
-            isPreview -> if (useDarkTheme) colors.dark else colors.light
-            dynamicColor -> dynamicColorScheme(
-                isDark = useDarkTheme,
-                fallback = if (useDarkTheme) colors.dark else colors.light,
-            )
-            useDarkTheme -> colors.light
-            else -> colors.light
+}
 
-        }
 
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = typography,
-            shapes = shapes,
-            content = content
+@Composable
+fun AppTheme(
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true, // support dynamic colors
+    content: @Composable () -> Unit
+) {
+    val isPreview = LocalInspectionMode.current
+    val colorScheme = when {
+        isPreview -> if (useDarkTheme) colors.dark else colors.light
+        dynamicColor -> dynamicColorScheme(
+            isDark = useDarkTheme,
+            fallback = if (useDarkTheme) colors.dark else colors.light,
         )
+        useDarkTheme -> colors.dark
+        else -> colors.light
+
     }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = if (isPreview) typography else  responsiveTypography(),
+        shapes = shapes,
+        content = content
+    )
 }

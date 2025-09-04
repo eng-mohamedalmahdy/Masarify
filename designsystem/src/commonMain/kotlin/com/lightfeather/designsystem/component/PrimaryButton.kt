@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.*
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.model.UiBottomNavigationItem
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

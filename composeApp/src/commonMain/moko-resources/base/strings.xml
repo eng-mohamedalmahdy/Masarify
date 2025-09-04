@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
     <string name="my_string">My default localization string</string>
+    <string name="onboarding_title">Welcome To Masarify</string>
+    <string name="app_slogan">Track smart, spend wiser.</string>
+    <string name="user_name">User Name</string>
 </resources>

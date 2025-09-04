@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.VerticalDivider as MaterialVerticalDivider
 

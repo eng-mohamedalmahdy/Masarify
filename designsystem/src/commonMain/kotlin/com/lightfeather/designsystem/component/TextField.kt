@@ -1,23 +1,35 @@
 package com.lightfeather.designsystem.component
 
-import androidx.compose.runtime.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation.Companion.keyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.theme.AppTheme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -27,33 +39,35 @@ fun TextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    label: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)? = null,
+    label: String? = null,
+    placeholder: String? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    singleLine: Boolean = false,
-    maxLines: Int = Int.MAX_VALUE,
-    colors: TextFieldColors = TextFieldDefaults.colors(
+    singleLine: Boolean = true,
+    colors : TextFieldColors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.surface,
         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.38f),
-        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-        errorIndicatorColor = MaterialTheme.colorScheme.error,
-    )
+        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        errorBorderColor = MaterialTheme.colorScheme.error,
+        cursorColor = MaterialTheme.colorScheme.primary
+    ),
+    maxLines: Int = 1,
 ) {
-    androidx.compose.material3.TextField(
+    OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth(),
         enabled = enabled,
         readOnly = readOnly,
-        label = label,
-        placeholder = placeholder,
+        label = { if (label != null) Text(label) },
+        placeholder = { if (placeholder != null) Text(placeholder) },
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         isError = isError,
@@ -62,6 +76,7 @@ fun TextField(
         keyboardActions = keyboardActions,
         singleLine = singleLine,
         maxLines = maxLines,
+        shape = MaterialTheme.shapes.medium,
         colors = colors
     )
 }
@@ -73,8 +88,8 @@ fun PasswordTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    label: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)? = null,
+    label: String? = null,
+    placeholder: String? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -129,7 +144,7 @@ fun SearchTextField(
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    placeholder: @Composable (() -> Unit)? = null,
+    placeholder: String? = null,
     colors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.surface,
         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -146,9 +161,9 @@ fun SearchTextField(
         enabled = enabled,
         placeholder = placeholder,
         leadingIcon = {
-            Text(
-                text = "🔍",
-                style = MaterialTheme.typography.bodyLarge
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null
             )
         },
         trailingIcon = if (value.isNotEmpty()) {
@@ -187,26 +202,26 @@ private fun PreviewTextField() {
             var text by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
             var search by remember { mutableStateOf("") }
-            
+
             TextField(
                 value = text,
                 onValueChange = { text = it },
-                label = { Text("Label") },
-                placeholder = { Text("Placeholder") }
+                label = "Label",
+                placeholder = "Enter text"
             )
-            
+
             PasswordTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
-                placeholder = { Text("Enter password") }
+                label = "Password",
+                placeholder = "Enter password"
             )
-            
+
             SearchTextField(
                 value = search,
                 onValueChange = { search = it },
                 onSearch = { /* Handle search */ },
-                placeholder = { Text("Search...") }
+                placeholder = "Search..."
             )
         }
     }
