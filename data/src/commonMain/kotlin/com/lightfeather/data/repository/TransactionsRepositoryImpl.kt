@@ -1,6 +1,8 @@
 package com.lightfeather.data.repository
 
 import app.cash.sqldelight.async.coroutines.awaitAsList
+import app.cash.sqldelight.async.coroutines.awaitAsOne
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.data.local.database.model.DbTransactionType
@@ -26,14 +28,17 @@ class TransactionsRepositoryImpl(
         return runCatchingDomainResultSuspend {
             sharedDatabase {
                 val transactionsQueries = it.transactionsQueries
-                transactionsQueries.insertTransaction(
-                    type = transaction.toDbTransactionType().dbValue,
-                    name = transaction.name,
-                    description = transaction.description,
-                    amount = transaction.amount,
-                    timestamp = transaction.timestamp,
-                    account_id = transaction.account.id.toLong()
-                ).toInt()
+                transactionsQueries.transactionWithResult {
+                    transactionsQueries.insertTransaction(
+                        type = transaction.toDbTransactionType().dbValue,
+                        name = transaction.name,
+                        description = transaction.description,
+                        amount = transaction.amount,
+                        timestamp = transaction.timestamp,
+                        account_id = transaction.account.id.toLong()
+                    )
+                    transactionsQueries.selectLastInsertedRowId().awaitAsOne().toInt()
+                }
             }
         }
     }
@@ -85,7 +90,7 @@ class TransactionsRepositoryImpl(
         return runCatchingDomainResultSuspend {
             sharedDatabase {
                 val rows = it.transactionsQueries.getMaxTransactionOfType(type.toDbTransactionType().dbValue)
-                    .executeAsList()
+                    .awaitAsList()
                 rows.toDomainTransactions().first() as T
             }
         }
@@ -97,7 +102,7 @@ class TransactionsRepositoryImpl(
         return runCatchingDomainResultSuspend {
             sharedDatabase {
                 it.transactionsQueries.getAverageTransactionValueOfType(type.toDbTransactionType().dbValue)
-                    .executeAsOne()
+                    .awaitAsOne()
                     .averageAmount ?: 0.0
             }
         }
@@ -134,7 +139,7 @@ class TransactionsRepositoryImpl(
                 it.transactionsQueries.getTotalTransactionsOfTypeOfCurrency(
                     type = type.toDbTransactionType().dbValue,
                     currencyId = currency.id.toLong()
-                ).asFlow().map { it.executeAsOneOrNull()?.total_amount ?: 0.0 }
+                ).asFlow().map { it.awaitAsOneOrNull()?.total_amount ?: 0.0 }
             }
         }
     }
@@ -146,7 +151,7 @@ class TransactionsRepositoryImpl(
                 it.transactionsQueries.getTransactionsSumByCategoriesOfType(
                     type.toDbTransactionType().dbValue
                 ).asFlow().map {
-                    it.executeAsList().associate {
+                    it.awaitAsList().associate {
                         Pair(
                             Category(
                                 it.category_id.toInt(),
@@ -166,7 +171,7 @@ class TransactionsRepositoryImpl(
         return runCatchingDomainResultSuspend {
             sharedDatabase {
                 it.transactionsQueries.getAllTransactions().asFlow().map {
-                    it.executeAsList().toDomainTransactions()
+                    it.awaitAsList().toDomainTransactions()
                 }
             }
         }

@@ -16,3 +16,4 @@ shared/shared.podspec
 /.kotlin/
 .kotlin
 /gradle/wrapper/
+/node_modules/

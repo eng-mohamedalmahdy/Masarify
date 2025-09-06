@@ -11,8 +11,9 @@ import com.lightfeather.domain.model.UserData
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.UpsertUserData
+import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.navigation.Navigator
-import com.lightfeather.masarify.navigation.routes.HomeRoute
+import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -89,7 +90,10 @@ class OnBoardingPageViewModel(
                             DomainResult.Success(Unit)
                         }
                     }.fold(
-                        onSuccess = { navigator.navigate(HomeRoute) },
+                        onSuccess = {
+                            navigator.navigateAndClearBackStack(DashboardRoute)
+                            SnackbarService.sendSuccessMessage(MR.strings.app_slogan)
+                        },
                         onFailure = { SnackbarService.sendErrorMessage(it.message) }
                     )
                 }

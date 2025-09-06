@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     amount REAL,
     timestamp INTEGER,
     account_id INTEGER NOT NULL,
-    type TEXT CHECK(type IN ("INCOME", "EXPENSE", "TRANSFER")),
+    type TEXT ,
     receiver_account_id INTEGER, -- Only for TRANSFER
     fee REAL -- Only for TRANSFER
 );

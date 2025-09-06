@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.io.FileNotFoundException
 
 val appPackageName = "com.lightfeather.masarify"
 plugins {
@@ -79,6 +80,8 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.bundles.koinCommon)
             implementation(libs.napier)
+            implementation(libs.bundles.material3Adaptive)
+            implementation(libs.jetbrains.iconsExtended)
             implementation("com.eygraber:uri-kmp:0.0.19")
 
         }
@@ -155,4 +158,17 @@ tasks.named<Copy>("wasmJsProcessResources") {
     from("$buildDir/generated/moko-resources/wasmJsMain/res") {
         into(".") // keep the folder structure (./localization/…)
     }
+}
+val copyWasmResources = tasks.register("copyWasmResources", Copy::class.java) {
+    // Source folder: your static resources folder
+    val resourcesDir = file("$rootDir/composeApp/src/wasmJsMain/resources")
+
+    from(resourcesDir)
+    into(layout.buildDirectory.dir("sqlite"))
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // Optional: flatten if you don’t want subfolders
+    include("**/*.js", "**/*.wasm")
+}
+tasks.named("wasmJsProcessResources") {
+    dependsOn(copyWasmResources)
 }

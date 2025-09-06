@@ -78,6 +78,7 @@ compose-window-sizes = { module = "org.jetbrains.compose.material3:material3-win
 material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "composeAdaptive" }
 material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "composeAdaptive" }
 material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "composeAdaptive" }
+material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version = "1.9.0-beta04" }
 
 [bundles]
 koinCommon = [
@@ -99,7 +100,8 @@ coil = [
 material3Adaptive = [
     "material3-adaptive",
     "material3-adaptive-layout",
-    "material3-adaptive-navigation"
+    "material3-adaptive-navigation",
+    "material3-adaptive-navigation-suite"
 ]
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

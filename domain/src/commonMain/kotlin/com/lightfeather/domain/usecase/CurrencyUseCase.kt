@@ -13,20 +13,20 @@ class CreateCurrency(
     private val exchangeRateRepository: CurrencyExchangeRateRepository
 ) {
     suspend operator fun invoke(currency: Currency): DomainResult<Int> {
-        return currencyRepository.createCurrency(currency).mapSuspend { id ->
+        return currencyRepository.createCurrency(currency).mapSuspend { currencyId ->
             currencyRepository.getAllCurrencies().foldSuspend(
                 onSuccess = { currencies ->
                     currencies.first().forEach {
                         exchangeRateRepository.createCurrencyExchangeRate(
                             CurrencyExchangeRate(
                                 it,
-                                currency.copy(id = id),
+                                currency.copy(id = currencyId),
                                 1.0
                             )
                         )
                         exchangeRateRepository.createCurrencyExchangeRate(
                             CurrencyExchangeRate(
-                                currency.copy(id = id),
+                                currency.copy(id = currencyId),
                                 it,
                                 1.0
                             )
@@ -35,9 +35,9 @@ class CreateCurrency(
                 }
             )
             exchangeRateRepository.createCurrencyExchangeRate(
-                CurrencyExchangeRate(currency.copy(id = id), currency.copy(id = id), 1.0)
+                CurrencyExchangeRate(currency.copy(id = currencyId), currency.copy(id = currencyId), 1.0)
             ).foldResult(
-                onSuccess = { id },
+                onSuccess = { currencyId },
                 onFailure = { -1 }
             )
         }

@@ -21,11 +21,15 @@ class CurrencyExchangeRateRepositoryImpl(
     override suspend fun createCurrencyExchangeRate(rate: CurrencyExchangeRate): DomainResult<Int> {
         return runCatchingDomainResultSuspend {
             val rowId = database {
-                it.currencyExchangeRateQueries.insertExchangeRate(
-                    from_currency_id = rate.from.id.toLong(),
-                    to_currency_id = rate.from.id.toLong(),
-                    rate = rate.rate
-                )
+                val currencyExchangeRateQueries = it.currencyExchangeRateQueries
+                currencyExchangeRateQueries.transactionWithResult {
+                    currencyExchangeRateQueries.insertExchangeRate(
+                        from_currency_id = rate.from.id.toLong(),
+                        to_currency_id = rate.from.id.toLong(),
+                        rate = rate.rate
+                    )
+                    currencyExchangeRateQueries.selectLastInsertedRowId().awaitAsOne()
+                }
             }.toInt()
             if (rowId > 0) {
                 rowId

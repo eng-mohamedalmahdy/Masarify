@@ -22,14 +22,18 @@ class AccountRepositoryImpl(
     override suspend fun createAccount(account: Account): DomainResult<Int> {
         return try {
             val result = database {
-                it.bankAccountsQueries.insertBankAccount(
-                    currency = account.currency.id.toLong(),
-                    name = account.name,
-                    description = account.description,
-                    balance = account.balance,
-                    color = account.color,
-                    logo = account.logo,
-                )
+                val bankAccountsQueries = it.bankAccountsQueries
+                bankAccountsQueries.transactionWithResult(){
+                    bankAccountsQueries.insertBankAccount(
+                        currency = account.currency.id.toLong(),
+                        name = account.name,
+                        description = account.description,
+                        balance = account.balance,
+                        color = account.color,
+                        logo = account.logo,
+                    )
+                    bankAccountsQueries.selectLastInsertedRowId().awaitAsOne()
+                }
             }
             DomainResult.Success(result.toInt())
         } catch (e: Exception) {

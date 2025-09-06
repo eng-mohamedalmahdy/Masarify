@@ -12,5 +12,6 @@
     <string name="onboarding_account_name_error">Account name cannot be empty</string>
     <string name="onboarding_account_balance_error">Account balance cannot be empty</string>
     <string name="onboarding_account_currency_error">Account currency cannot be empty</string>
+    <string name="dashboard">Dashboard</string>
 
 </resources>

@@ -22,13 +22,16 @@ CategoryRepositoryImpl(
     override suspend fun createCategory(category: Category): DomainResult<Int> {
         return try {
             val result = database {
-                it.categoriesQueries.insertCategory(
-                    name = category.name,
-                    description = category.description ?: "",
-                    color = category.color,
-                    icon = category.icon
-                )
-                it.categoriesQueries.selectLastInsertedRowId().awaitAsOne()
+                val categoriesQueries = it.categoriesQueries
+                categoriesQueries.transactionWithResult {
+                    categoriesQueries.insertCategory(
+                        name = category.name,
+                        description = category.description ?: "",
+                        color = category.color,
+                        icon = category.icon
+                    )
+                    categoriesQueries.selectLastInsertedRowId().awaitAsOne()
+                }
             }
             DomainResult.Success(result.toInt())
         } catch (e: Exception) {

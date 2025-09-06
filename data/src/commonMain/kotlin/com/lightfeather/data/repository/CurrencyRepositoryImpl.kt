@@ -8,11 +8,13 @@ import com.lightfeather.domain.repository.CurrencyRepository
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.error.AppError
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import lightfeather.masarify.database.V_currencies
+import kotlin.math.sign
 
 class CurrencyRepositoryImpl(
     private val database: SharedDatabase
@@ -21,12 +23,17 @@ class CurrencyRepositoryImpl(
     override suspend fun createCurrency(currency: Currency): DomainResult<Int> {
         return try {
             val result = database {
-                it.currenciesQueries.insertCurrency(
-                    name = currency.name,
-                    sign = currency.sign
-                )
-                it.currenciesQueries.selectLastInsertedRowId().awaitAsOne()
+
+                val currencyQueries = it.currenciesQueries
+                 currencyQueries.transactionWithResult{
+                     currencyQueries.insertCurrency(
+                         name = currency.name,
+                         sign = currency.sign
+                     )
+                     currencyQueries.selectLastInsertedRowId().awaitAsOne()
+                 }
             }
+            Napier.d { "CURRENCY ADDED WITH ID $result CURRENCY: $currency" }
             DomainResult.Success(result.toInt())
         } catch (e: Exception) {
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error creating currency"))

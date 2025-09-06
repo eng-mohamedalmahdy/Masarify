@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-import org.gradle.declarative.dsl.schema.FqName.Empty.packageName
+
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
@@ -90,6 +90,8 @@ kotlin {
                 implementation(projects.domain)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.bundles.multiplatformSettings)
+                implementation(libs.napier)
+
 
             }
         }
@@ -138,6 +140,7 @@ kotlin {
                 implementation(npm("sql.js", libs.versions.sqlJs.get()))
                 implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqldelight.get()))
                 implementation(devNpm("copy-webpack-plugin", libs.versions.webPackPlugin.get()))
+                implementation("org.jetbrains.kotlinx:kotlinx-browser:0.3.1") // or latest
             }
         }
     }
@@ -155,5 +158,39 @@ sqldelight {
         }
 
 
+    }
+}
+
+
+// Ensure codegen tasks run first if you have moko resources
+tasks.named("wasmJsProcessResources") {
+    dependsOn("generateMRwasmJsMain") // if using moko
+}
+
+// Copy sqljs.worker.js into the processed resources folder with debug
+tasks.named<Copy>("wasmJsProcessResources") {
+    from("data/src/wasmJsMain/resources") {
+        include("sqljs.worker.js")
+        into(".") // keep at root so import.meta.url finds it
+    }
+
+    // Debug: log when task starts
+    doFirst {
+        println(">>> wasmJsProcessResources starting...")
+        println(">>> Source folder: data/src/wasmJsMain/resources")
+        val files = fileTree("data/src/wasmJsMain/resources") {
+            include("sqljs.worker.js")
+        }.files
+        println(">>> Files found to copy: ${files.map { it.absolutePath }}")
+    }
+
+    // Debug: log when task finishes
+    doLast {
+        println(">>> wasmJsProcessResources finished.")
+        println(">>> Files copied to: ${destinationDir.absolutePath}")
+        val copiedFiles = fileTree(destinationDir) {
+            include("sqljs.worker.js")
+        }.files
+        println(">>> Files actually copied: ${copiedFiles.map { it.absolutePath }}")
     }
 }

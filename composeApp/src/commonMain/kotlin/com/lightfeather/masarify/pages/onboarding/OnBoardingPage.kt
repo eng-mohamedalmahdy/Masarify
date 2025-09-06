@@ -80,7 +80,6 @@ internal fun OnBoardingPageContent(
         ) {
             Column(
                 modifier = Modifier.padding(AppTheme.dimens.default),
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(

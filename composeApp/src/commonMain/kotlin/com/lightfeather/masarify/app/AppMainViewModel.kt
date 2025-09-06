@@ -3,11 +3,11 @@ package com.lightfeather.masarify.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.domain.model.AppLanguage
-import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.masarify.navigation.Navigator
-import com.lightfeather.masarify.navigation.routes.HomeRoute
+import com.lightfeather.masarify.navigation.routes.DashboardRoute
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 class AppMainViewModel(
@@ -48,7 +47,10 @@ class AppMainViewModel(
 
     val initialDataSaved: Flow<Boolean> = getAllAccounts().flatMap { accountsFlow ->
         userDataRepository.getUserData().map { userData ->
-            accountsFlow.map { accounts -> accounts.isNotEmpty() && userData != null }
+            accountsFlow.map { accounts ->
+                Napier.d("Accounts: ${accounts.size}, UserData: $userData")
+                accounts.isNotEmpty() && userData != null
+            }
         }
     }.foldResult(
         onSuccess = { it },
@@ -77,7 +79,7 @@ class AppMainViewModel(
             userDataRepository.setAppLanguage(language)
             _currentLanguage.value = language
             delay(200)
-            navigator.navigateAndClearBackStack(HomeRoute)
+            navigator.navigateAndClearBackStack(DashboardRoute)
         }
     }
 
