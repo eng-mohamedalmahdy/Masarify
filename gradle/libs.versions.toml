@@ -10,7 +10,7 @@ androidx-espresso = "3.6.1"
 androidx-lifecycle = "2.9.1"
 androidx-testExt = "1.2.1"
 composeHotReload = "1.0.0-beta04"
-composeMultiplatform = "1.9.0-rc01"
+composeMultiplatform = "1.9.0-beta03"
 junit = "4.13.2"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
@@ -78,7 +78,8 @@ compose-window-sizes = { module = "org.jetbrains.compose.material3:material3-win
 material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "composeAdaptive" }
 material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "composeAdaptive" }
 material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "composeAdaptive" }
-material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version = "1.9.0-beta04" }
+material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "composeMultiplatform" }
+material3-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatform" }
 
 [bundles]
 koinCommon = [

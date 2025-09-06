@@ -86,6 +86,7 @@ kotlin {
                 implementation(libs.bundles.coil)
                 implementation(libs.compose.window.sizes)
                 implementation(libs.bundles.material3Adaptive)
+                implementation(libs.material3.material3)
 
             }
         }
