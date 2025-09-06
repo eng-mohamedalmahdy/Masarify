@@ -25,6 +25,9 @@ kotlin {
         }
     }
 
+    compilerOptions{
+        freeCompilerArgs.add("-Xwhen-guards")
+    }
     listOf(
         iosX64(),
         iosArm64(),

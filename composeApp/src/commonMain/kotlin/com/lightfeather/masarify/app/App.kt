@@ -29,12 +29,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.lightfeather.designsystem.component.snackbar.Snackbar
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.domain.usecase.GetAllAccounts
+import com.lightfeather.masarify.PlatformsSlugs
+import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.di.getAppModules
+import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.model.AppTopLevelRoutes
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
@@ -97,7 +101,13 @@ fun App(
                         with(adaptiveInfo) {
                             if (
                                 topLevelRoutes.any { topLevelRoute -> currentDestination?.hasRoute(topLevelRoute.route::class) == true }) {
-                                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(this)
+                                when(getPlatform().asSlug()){
+                                    PlatformsSlugs.WEB if (adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) -> {
+                                        NavigationSuiteType.NavigationDrawer
+                                    }
+                                    else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(this)
+                                }
+
                             } else {
                                 NavigationSuiteType.None
 
@@ -144,7 +154,7 @@ fun App(
                         .fillMaxSize()
                         .statusBarsPadding()
                         .navigationBarsPadding()
-                        .background(MaterialTheme.colorScheme.background)
+                        .background(MaterialTheme.colorScheme.background),
                 ) {
                     NavHost(
                         navController = navController,
