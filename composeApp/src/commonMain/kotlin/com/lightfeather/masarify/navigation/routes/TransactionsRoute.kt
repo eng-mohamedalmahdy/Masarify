@@ -4,6 +4,7 @@ import com.lightfeather.masarify.navigation.Route
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object OnBoardingRoute : Route() {
-    override val route: String = "onboarding"
+data object TransactionsRoute : Route() {
+
+    override val route: String = "com.lightfeather.masarify.navigation.routes.TransactionsRoute"
 }

@@ -48,9 +48,14 @@ import com.lightfeather.masarify.di.getAppModules
 import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.model.AppTopLevelRoutes
 import com.lightfeather.masarify.navigation.Route
+import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
+import com.lightfeather.masarify.navigation.routes.SettingsRoute
+import com.lightfeather.masarify.navigation.routes.SplashRoute
+import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.pages.onboarding.OnBoardingPage
+import com.lightfeather.masarify.pages.splash.SplashPage
 import dev.icerock.moko.resources.desc.StringDesc
 import io.github.aakira.napier.Napier
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -86,15 +91,20 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                 LaunchedEffect(initialDataSaved) {
                     Napier.d("Initial Data Saved: $initialDataSaved")
                 }
-                val startDestination = if (initialDataSaved) DashboardRoute else OnBoardingRoute()
 
                 val englishTopLevelRoutes =
                     listOf<AppTopLevelRoutes>(
                         AppTopLevelRoutes.Dashboard,
+                        AppTopLevelRoutes.Transactions,
+                        AppTopLevelRoutes.Accounts,
+                        AppTopLevelRoutes.Settings,
                     )
                 val arabicTopLevelRoutes =
                     listOf<AppTopLevelRoutes>(
                         AppTopLevelRoutes.Dashboard,
+                        AppTopLevelRoutes.Transactions,
+                        AppTopLevelRoutes.Accounts,
+                        AppTopLevelRoutes.Settings,
                     )
                 val topLevelRoutes = if (appLanguage.isRtl) arabicTopLevelRoutes.reversed() else englishTopLevelRoutes
                 val adaptiveInfo = currentWindowAdaptiveInfo()
@@ -116,7 +126,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                     PlatformsSlugs.WEB if (
                                         adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
                                             WindowWidthSizeClass.EXPANDED
-                                    ) -> {
+                                        ) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
@@ -128,9 +138,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         }
                     }
                 }
-                LaunchedEffect(currentDestination) {
-                    Napier.d("LaunchedEffect: $currentDestination ${currentDestination?.route}")
-                }
+
                 Surface(
                     modifier =
                         Modifier
@@ -163,7 +171,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                 ),
                             content = {
                                 topLevelRoutes.forEach { item ->
-
+                                    val isSelected by remember(currentDestination) { derivedStateOf{isSelected(item.route, currentDestination)} }
                                     item(
                                         icon = {
                                             Icon(
@@ -172,7 +180,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                             )
                                         },
                                         label = { Text(stringResource(item.label).orEmpty()) },
-                                        selected = isSelected(item.route, currentDestination),
+                                        selected = isSelected,
                                         onClick = {
                                             if (topLevelRoutes.any { topLevelRoute ->
                                                     currentDestination!!.hasRoute(topLevelRoute.route::class)
@@ -214,28 +222,28 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = startDestination,
+                        startDestination = SplashRoute,
                         modifier = Modifier,
                     ) {
-                        composable<DashboardRoute> {
-                            val getAllAccounts = koinInject<GetAllAccounts>()
-                            LaunchedEffect(Unit) {
-                                getAllAccounts().foldSuspend(
-                                    onSuccess = {
-                                        it.collect {
-                                            Napier.d("In get all Accounts: $it")
-                                        }
-                                    },
-                                    onFailure = {
-                                        // Handle failure
-                                    },
-                                )
-                            }
-                            Text("Masarify App")
+                        composable<SplashRoute> {
+                            SplashPage()
                         }
                         composable<OnBoardingRoute> {
                             OnBoardingPage()
                         }
+                        composable<DashboardRoute> {
+                            Text("Masarify App")
+                        }
+                        composable<AccountsRoute> {
+                            Text("Accounts Page")
+                        }
+                        composable<TransactionsRoute> {
+                            Text("Transactions Page")
+                        }
+                        composable<SettingsRoute> {
+                            Text("Settings Page")
+                        }
+
                     }
                 }
                 Snackbar()
@@ -247,4 +255,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
 fun isSelected(
     route: Route,
     currentDestination: NavDestination?,
-) = currentDestination?.hierarchy?.any { it.route == route.route } == true
+) = currentDestination?.hierarchy?.any {
+    Napier.d("${it.route} from ${currentDestination.route}")
+    it.route == route.route
+}.also { Napier.d { "isSelected: $it" } } == true

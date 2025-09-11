@@ -13,5 +13,8 @@
     <string name="onboarding_account_balance_error">Account balance cannot be empty</string>
     <string name="onboarding_account_currency_error">Account currency cannot be empty</string>
     <string name="dashboard">Dashboard</string>
+    <string name="transactions">Transactions</string>
+    <string name="accounts">Accounts</string>
+    <string name="settings">Settings</string>
 
 </resources>
