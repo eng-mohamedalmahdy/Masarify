@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 val moduleName = "com.lightfeather.designsystem"
 plugins {
@@ -11,6 +10,9 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
 
+    // Code Quality
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -41,7 +43,6 @@ kotlin {
         }
     }
 
-
     val xcfName = "designsystemKit"
 
     iosX64 {
@@ -64,13 +65,10 @@ kotlin {
 
     jvm() // For JVM apps
 
-
     @OptIn(ExperimentalWasmDsl::class)
-    wasmJs{
+    wasmJs {
         browser()
     }
-
-
 
     sourceSets {
         commonMain {
@@ -87,7 +85,6 @@ kotlin {
                 implementation(libs.compose.window.sizes)
                 implementation(libs.bundles.material3Adaptive)
                 implementation(libs.material3.material3)
-
             }
         }
 
@@ -105,23 +102,29 @@ kotlin {
             }
         }
 
-
-
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
     }
-
 }
 android {
     namespace = moduleName
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         namespace = moduleName
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.android.targetSdk
+                .get()
+                .toInt()
     }
     packaging {
         resources {
@@ -139,5 +142,19 @@ dependencies {
     debugImplementation(compose.uiTooling)
     commonMainApi(libs.resources)
     commonMainApi(libs.resources.compose) // for compose multiplatform
+}
 
+// KtLint Configuration (inherits from root)
+// Global configuration is applied via subprojects block in root build.gradle.kts
+
+// DetektKT Configuration
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$rootDir/detekt.yml")
+    baseline = file("$rootDir/detekt-baseline.xml")
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
 }

@@ -8,11 +8,8 @@ import com.lightfeather.domain.model.transaction.TransactionFilter
 import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KClass
 
-
 interface TransactionRepository {
-
     suspend fun createTransaction(transaction: Transaction): DomainResult<Int>
-
 
     suspend fun deleteTransaction(transaction: Transaction): DomainResult<Boolean>
 
@@ -32,10 +29,12 @@ interface TransactionRepository {
 
     suspend fun <T : Transaction> getTotalTransactionsOfTypeAndCurrency(
         currency: Currency,
-        type: KClass<T>
+        type: KClass<T>,
     ): DomainResult<Flow<Double>>
 
-    suspend fun <T : Transaction> getTotalTransactionsOfTypesAndCategories(type: KClass<T>): DomainResult<Flow<Map<Category, Double>>>
+    suspend fun <T : Transaction> getTotalTransactionsOfTypesAndCategories(
+        type: KClass<T>,
+    ): DomainResult<Flow<Map<Category, Double>>>
 
     suspend fun getAllTransactions(): DomainResult<Flow<List<Transaction>>>
 }

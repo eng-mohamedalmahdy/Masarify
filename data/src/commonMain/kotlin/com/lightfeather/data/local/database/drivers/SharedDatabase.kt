@@ -11,9 +11,10 @@ class SharedDatabase(
     private suspend fun initDatabase() {
         if (!::database.isInitialized) {
             val driver = driverFactory.createDriver("masarify.db")
-            database = Database(driver).also {
-                Database.Schema.awaitCreate(driver)
-            }
+            database =
+                Database(driver).also {
+                    Database.Schema.awaitCreate(driver)
+                }
         }
     }
 

@@ -1,8 +1,8 @@
 package com.lightfeather.designsystem.component
 
-import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
@@ -14,11 +14,12 @@ fun TextButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
-    colors: ButtonColors = ButtonDefaults.textButtonColors().copy(
-        contentColor = MaterialTheme.colorScheme.primary,
-        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-    ),
-    content: @Composable RowScope.() -> Unit
+    colors: ButtonColors =
+        ButtonDefaults.textButtonColors().copy(
+            contentColor = MaterialTheme.colorScheme.primary,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+        ),
+    content: @Composable RowScope.() -> Unit,
 ) {
     androidx.compose.material3.TextButton(
         onClick = onClick,
@@ -26,7 +27,7 @@ fun TextButton(
         enabled = enabled,
         contentPadding = contentPadding,
         colors = colors,
-        content = content
+        content = content,
     )
 }
 
@@ -40,7 +41,7 @@ private fun PreviewTextButton() {
             enabled = true,
             content = {
                 Text("Text Button")
-            }
+            },
         )
     }
 }

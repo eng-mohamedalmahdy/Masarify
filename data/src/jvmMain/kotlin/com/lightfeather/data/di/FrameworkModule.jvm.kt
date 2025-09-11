@@ -5,6 +5,15 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.nio.file.Paths
 
-actual val frameworkModule: Module = module {
-    single { DriverFactory(Paths.get("").toAbsolutePath().parent.toString()) }
-}
+actual val frameworkModule: Module =
+    module {
+        single {
+            DriverFactory(
+                Paths
+                    .get("")
+                    .toAbsolutePath()
+                    .parent
+                    .toString(),
+            )
+        }
+    }

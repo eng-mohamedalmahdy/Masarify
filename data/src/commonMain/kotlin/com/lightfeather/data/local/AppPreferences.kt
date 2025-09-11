@@ -4,13 +4,13 @@ import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.domain.model.UserData
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.serialization.decodeValue
 import com.russhwolf.settings.serialization.decodeValueOrNull
 import com.russhwolf.settings.serialization.encodeValue
 import com.russhwolf.settings.set
 
-class AppPreferences(private val settings: Settings) {
-
+class AppPreferences(
+    private val settings: Settings,
+) {
     companion object {
         const val USER_DATA = "userData"
         const val DARK_MODE = "darkMode"

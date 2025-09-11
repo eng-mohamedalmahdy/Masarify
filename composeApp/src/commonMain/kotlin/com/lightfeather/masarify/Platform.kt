@@ -4,12 +4,16 @@ interface Platform {
     val name: String
     val slug: String
 }
-enum class PlatformsSlugs(val slug: String) {
+
+enum class PlatformsSlugs(
+    val slug: String,
+) {
     IOS("iOS"),
     ANDROID("Android"),
     DESKTOP("JVM"),
-    WEB("WASM")
+    WEB("WASM"),
 }
+
 fun Platform.asSlug() = PlatformsSlugs.entries.find { it.slug == this.slug }
 
 expect fun getPlatform(): Platform

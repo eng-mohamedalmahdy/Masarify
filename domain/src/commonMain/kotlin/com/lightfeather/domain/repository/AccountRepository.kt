@@ -4,7 +4,6 @@ import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.DomainResult
 import kotlinx.coroutines.flow.Flow
 
-
 interface AccountRepository {
     suspend fun createAccount(account: Account): DomainResult<Int>
 

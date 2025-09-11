@@ -1,0 +1,92 @@
+# Absolute path patterns
+build/
+.gradle/
+out/
+
+# Build directories (all patterns)
+**/build/**
+**/generated/**
+**/.gradle/**
+**/buildSrc/**
+**/out/**
+**/tmp/**
+**/classes/**
+
+# Gradle wrapper
+gradlew
+gradlew.bat
+gradle/wrapper/**
+
+# IDE files
+**/.idea/**
+**/*.iml
+**/.vscode/**
+
+# Compose resource generator files (specific patterns)
+build/generated/compose/resourceGenerator/
+**/build/generated/compose/resourceGenerator/**
+**/resourceGenerator/**
+**/commonMainResourceCollectors/**
+**/commonMainResourceAccessors/**
+**/commonResClass/**
+**/androidMainResourceCollectors/**
+**/jvmMainResourceCollectors/**
+**/iosMainResourceCollectors/**
+**/iosX64MainResourceCollectors/**
+**/iosArm64MainResourceCollectors/**
+**/iosSimulatorArm64MainResourceCollectors/**
+**/wasmJsMainResourceCollectors/**
+
+# Generated file names (exact matches)
+MR.kt
+Res.kt
+**/MR.kt
+**/Res.kt
+**/ActualResourceCollectors.kt
+**/ExpectResourceCollectors.kt
+**/Font0.commonMain.kt
+**/*ResourceCollectors.kt
+**/*ResourceAccessors.kt
+
+# SQLDelight generated files (comprehensive patterns)
+**/sqldelight/**
+**/Database.kt
+**/build/generated/sqldelight/**
+**/generated/sqldelight/**
+**/build/generated/sqldelight/code/**
+build/generated/sqldelight/
+data/build/generated/sqldelight/
+**/BankAccountsQueries.kt
+**/*Queries.kt
+**/database/*Queries.kt
+**/lightfeather/masarify/database/**
+lightfeather/masarify/database/**
+
+# Moko resources generated files
+**/build/generated/moko-resources/**
+build/generated/moko-resources/
+**/build/generated/moko-resources/*/src/**
+**/wasmJsMain/src/com/lightfeather/masarify/MR.kt
+**/build/generated/moko-resources/wasmJsMain/**
+
+# Compose resources generated files
+**/composeResources/**
+**/compose/resources/generated/**
+**/build/generated/compose/resourceGenerator/**
+**/build/generated/compose/resourceGenerator/kotlin/**
+**/wasmJsMainResourceCollectors/**
+**/resourceGenerator/kotlin/**
+
+# Kotlin compiler generated files
+**/build/classes/**
+**/build/kotlin/**
+**/build/tmp/**
+build/classes/
+build/kotlin/
+build/tmp/
+
+# Platform-specific build paths
+composeApp/build/
+designsystem/build/
+domain/build/
+data/build/

@@ -4,7 +4,6 @@ import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.DomainResult
 import kotlinx.coroutines.flow.Flow
 
-
 interface CurrencyRepository {
     suspend fun createCurrency(currency: Currency): DomainResult<Int>
 

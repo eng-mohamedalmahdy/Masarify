@@ -24,27 +24,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import com.lightfeather.designsystem.theme.AppTheme
 
-
-
 @Composable
 fun Snackbar() {
     val snackbarHostState = remember { AppSnackbarHostState() }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-            .imePadding()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .imePadding(),
     ) {
         SnackbarHost(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(
-                    bottom = AppTheme.dimens.large,
-                    start = AppTheme.dimens.medium,
-                    end = AppTheme.dimens.medium
-                ),
-            hostState = snackbarHostState
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(
+                        bottom = AppTheme.dimens.large,
+                        start = AppTheme.dimens.medium,
+                        end = AppTheme.dimens.medium,
+                    ),
+            hostState = snackbarHostState,
         )
     }
 
@@ -58,13 +58,13 @@ fun Snackbar(
     message: SnackbarMessage,
     onDismiss: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = AppTheme.shapes.medium
+    shape: Shape = AppTheme.shapes.medium,
 ) {
     Snackbar(
         type = message.type,
         leading = null,
         action = null,
-        shape = shape
+        shape = shape,
     ) {
         Text(
             message.textMessage.getText(),
@@ -73,27 +73,26 @@ fun Snackbar(
     }
 }
 
-
 @Composable
 fun Snackbar(
     type: SnackbarType,
     shape: Shape = AppTheme.shapes.medium,
     leading: @Composable (RowScope.() -> Unit)? = null,
     action: @Composable (RowScope.() -> Unit)? = null,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     CompositionLocalProvider(
-        LocalContentColor provides getSnackbarTextColor(type)
+        LocalContentColor provides getSnackbarTextColor(type),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = getSnackbarBackgroundColor(type),
-                    shape = shape
-                )
-                .padding(AppTheme.dimens.default),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = getSnackbarBackgroundColor(type),
+                        shape = shape,
+                    ).padding(AppTheme.dimens.default),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (leading != null) {
                 leading()
@@ -101,7 +100,7 @@ fun Snackbar(
             }
 
             CompositionLocalProvider(
-                LocalTextStyle provides AppTheme.typography.labelSmall
+                LocalTextStyle provides AppTheme.typography.labelSmall,
             ) {
                 content()
             }

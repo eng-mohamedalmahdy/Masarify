@@ -1,18 +1,18 @@
 package com.lightfeather.designsystem.theme
 //
-//import androidx.compose.material3.ColorScheme
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.graphics.Color
-//import com.materialkolor.toColorScheme
-//import kotlinx.browser.document
-//import kotlinx.browser.window
+// import androidx.compose.material3.ColorScheme
+// import androidx.compose.runtime.Composable
+// import androidx.compose.ui.graphics.Color
+// import com.materialkolor.toColorScheme
+// import kotlinx.browser.document
+// import kotlinx.browser.window
 //
 //
-//@Composable
-//actual fun dynamicColorScheme(
+// @Composable
+// actual fun dynamicColorScheme(
 //    isDark: Boolean,
 //    fallback: ColorScheme
-//): ColorScheme {
+// ): ColorScheme {
 //    val seed = getCssAccentColor()?.let { parseCssColor(it) }
 //    return if (seed != null) rememberAppColorScheme(
 //        seedColor = seed,
@@ -20,14 +20,14 @@ package com.lightfeather.designsystem.theme
 //        fallback = fallback
 //    ).toColorScheme()
 //    else fallback
-//}
+// }
 //
-//fun getCssAccentColor(): String? {
+// fun getCssAccentColor(): String? {
 //    val style = document.documentElement?.let { window.getComputedStyle(it) }
 //    return style?.getPropertyValue("accent-color")?.takeIf { it.isNotBlank() }
-//}
+// }
 //
-//fun parseCssColor(css: String): Color {
+// fun parseCssColor(css: String): Color {
 //    val value = css.trim().lowercase()
 //
 //    // HEX (#rrggbb or #rgb)
@@ -83,4 +83,4 @@ package com.lightfeather.designsystem.theme
 //        "magenta" -> Color.Magenta
 //        else -> Color.Unspecified
 //    }
-//}
+// }

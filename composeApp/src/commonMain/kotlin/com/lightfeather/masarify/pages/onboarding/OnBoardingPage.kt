@@ -1,6 +1,5 @@
 package com.lightfeather.masarify.pages.onboarding
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,15 +33,14 @@ import com.lightfeather.designsystem.component.PrimaryButton
 import com.lightfeather.designsystem.component.TextField
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
-import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 import com.lightfeather.masarify.MR
+import dev.icerock.moko.resources.compose.stringResource
 import masarify.composeapp.generated.resources.Res
 import masarify.composeapp.generated.resources.bg
 import masarify.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OnBoardingPage(viewModel: OnBoardingPageViewModel = koinViewModel()) {
@@ -50,41 +48,44 @@ fun OnBoardingPage(viewModel: OnBoardingPageViewModel = koinViewModel()) {
 
     OnBoardingPageContent(
         state = state,
-        onIntent = viewModel::onIntent
+        onIntent = viewModel::onIntent,
     )
 }
 
 @Composable
 internal fun OnBoardingPageContent(
     state: OnBoardingPageState,
-    onIntent: (OnBoardingPageIntent) -> Unit
+    onIntent: (OnBoardingPageIntent) -> Unit,
 ) {
     val localDensity = LocalDensity.current
     var topRowWidth by remember { mutableStateOf(0) }
     val topRowWidthDp by remember(topRowWidth) { derivedStateOf { with(localDensity) { topRowWidth.toDp() } } }
     Box(
-        Modifier.fillMaxSize()
+        Modifier
+            .fillMaxSize()
             .paint(
                 painterResource(Res.drawable.bg),
-                contentScale = ContentScale.FillBounds
-            )
+                contentScale = ContentScale.FillBounds,
+            ),
     ) {
         Card(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(AppTheme.dimens.medium),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface
-            )
+            modifier =
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(AppTheme.dimens.medium),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
         ) {
             Column(
                 modifier = Modifier.padding(AppTheme.dimens.default),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.onSizeChanged { topRowWidth = it.width }
+                    modifier = Modifier.onSizeChanged { topRowWidth = it.width },
                 ) {
                     AppImage(
                         model = painterResource(Res.drawable.compose_multiplatform),
@@ -117,7 +118,7 @@ internal fun OnBoardingPageContent(
                 )
                 Row(
                     modifier = Modifier.width(topRowWidthDp),
-                    horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium)
+                    horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium),
                 ) {
                     TextField(
                         value = state.accountBalance,
@@ -135,15 +136,15 @@ internal fun OnBoardingPageContent(
                 }
                 PrimaryButton(
                     onClick = { onIntent(OnBoardingPageIntent.Submit) },
-                    modifier = Modifier
-                        .padding(AppTheme.dimens.default)
-                        .width(topRowWidthDp),
+                    modifier =
+                        Modifier
+                            .padding(AppTheme.dimens.default)
+                            .width(topRowWidthDp),
                 ) {
                     Text(text = stringResource(MR.strings.submit))
                 }
             }
         }
-
     }
 }
 
@@ -153,7 +154,7 @@ fun OnBoardingScreenPreview() {
     AppTheme {
         OnBoardingPageContent(
             state = OnBoardingPageState(),
-            onIntent = {}
+            onIntent = {},
         )
     }
 }

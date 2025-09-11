@@ -46,15 +46,16 @@ fun TextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        focusedContainerColor = MaterialTheme.colorScheme.surface,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-        focusedBorderColor = MaterialTheme.colorScheme.primary,
-        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-        errorBorderColor = MaterialTheme.colorScheme.error,
-        cursorColor = MaterialTheme.colorScheme.primary
-    ),
+    colors: TextFieldColors =
+        OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            errorBorderColor = MaterialTheme.colorScheme.error,
+            cursorColor = MaterialTheme.colorScheme.primary,
+        ),
     maxLines: Int = 1,
 ) {
     OutlinedTextField(
@@ -75,7 +76,7 @@ fun TextField(
         maxLines = maxLines,
         shape = MaterialTheme.shapes.medium,
         colors = colors,
-        supportingText = { if (supportingText != null) Text(supportingText) }
+        supportingText = { if (supportingText != null) Text(supportingText) },
     )
 }
 
@@ -93,14 +94,15 @@ fun PasswordTextField(
     isError: Boolean = false,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
-    colors: TextFieldColors = TextFieldDefaults.colors(
-        focusedContainerColor = MaterialTheme.colorScheme.surface,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.38f),
-        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-        errorIndicatorColor = MaterialTheme.colorScheme.error,
-    ),
+    colors: TextFieldColors =
+        TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.38f),
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            errorIndicatorColor = MaterialTheme.colorScheme.error,
+        ),
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -120,24 +122,26 @@ fun PasswordTextField(
                 icon = {
                     Icon(
                         if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (passwordVisible) {
-                            "Hide password"
-                        } else {
-                            "Show password"
-                        }
+                        contentDescription =
+                            if (passwordVisible) {
+                                "Hide password"
+                            } else {
+                                "Show password"
+                            },
                     )
-                }
+                },
             )
         },
         isError = isError,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+            ),
         keyboardActions = keyboardActions,
         singleLine = singleLine,
-        colors = colors
+        colors = colors,
     )
 }
 
@@ -149,14 +153,15 @@ fun SearchTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     placeholder: String? = null,
-    colors: TextFieldColors = TextFieldDefaults.colors(
-        focusedContainerColor = MaterialTheme.colorScheme.surface,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.38f),
-        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-        errorIndicatorColor = MaterialTheme.colorScheme.error,
-    )
+    colors: TextFieldColors =
+        TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.38f),
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            errorIndicatorColor = MaterialTheme.colorScheme.error,
+        ),
 ) {
     TextField(
         value = value,
@@ -167,31 +172,36 @@ fun SearchTextField(
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = null
+                contentDescription = null,
             )
         },
-        trailingIcon = if (value.isNotEmpty()) {
-            {
-                IconButton(
-                    onClick = { onValueChange("") },
-                    icon = {
-                        Text(
-                            text = "✕",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    }
-                )
-            }
-        } else null,
+        trailingIcon =
+            if (value.isNotEmpty()) {
+                {
+                    IconButton(
+                        onClick = { onValueChange("") },
+                        icon = {
+                            Text(
+                                text = "✕",
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                        },
+                    )
+                }
+            } else {
+                null
+            },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = { onSearch() }
-        ),
-        colors = colors
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Search,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onSearch = { onSearch() },
+            ),
+        colors = colors,
     )
 }
 
@@ -201,7 +211,7 @@ private fun PreviewTextField() {
     AppTheme {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             var text by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
@@ -211,21 +221,21 @@ private fun PreviewTextField() {
                 value = text,
                 onValueChange = { text = it },
                 label = "Label",
-                placeholder = "Enter text"
+                placeholder = "Enter text",
             )
 
             PasswordTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = "Password",
-                placeholder = "Enter password"
+                placeholder = "Enter password",
             )
 
             SearchTextField(
                 value = search,
                 onValueChange = { search = it },
                 onSearch = { /* Handle search */ },
-                placeholder = "Search..."
+                placeholder = "Search...",
             )
         }
     }

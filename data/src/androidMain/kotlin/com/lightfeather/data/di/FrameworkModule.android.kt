@@ -5,6 +5,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-actual val frameworkModule: Module = module {
-    single<DriverFactory> { DriverFactory(androidContext()) }
-}
+actual val frameworkModule: Module =
+    module {
+        single<DriverFactory> { DriverFactory(androidContext()) }
+    }

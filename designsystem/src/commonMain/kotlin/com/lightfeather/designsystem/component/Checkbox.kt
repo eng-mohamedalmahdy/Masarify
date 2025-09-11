@@ -29,21 +29,22 @@ fun Checkbox(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: CheckboxColors = CheckboxDefaults.colors(
-        checkedColor = MaterialTheme.colorScheme.primary,
-        uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-        checkmarkColor = MaterialTheme.colorScheme.onPrimary,
-        disabledCheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-        disabledUncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-        disabledIndeterminateColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-    )
+    colors: CheckboxColors =
+        CheckboxDefaults.colors(
+            checkedColor = MaterialTheme.colorScheme.primary,
+            uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            checkmarkColor = MaterialTheme.colorScheme.onPrimary,
+            disabledCheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            disabledUncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            disabledIndeterminateColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+        ),
 ) {
     MaterialCheckbox(
         checked = checked,
         onCheckedChange = onCheckedChange,
         modifier = modifier,
         enabled = enabled,
-        colors = colors
+        colors = colors,
     )
 }
 
@@ -54,26 +55,28 @@ fun CheckboxWithLabel(
     label: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: CheckboxColors = CheckboxDefaults.colors(
-        checkedColor = MaterialTheme.colorScheme.primary,
-        uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-        checkmarkColor = MaterialTheme.colorScheme.onPrimary,
-        disabledCheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-        disabledUncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-        disabledIndeterminateColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-    )
+    colors: CheckboxColors =
+        CheckboxDefaults.colors(
+            checkedColor = MaterialTheme.colorScheme.primary,
+            uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            checkmarkColor = MaterialTheme.colorScheme.onPrimary,
+            disabledCheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            disabledUncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            disabledIndeterminateColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+        ),
 ) {
     Row(
-        modifier = modifier
-            .clickable(enabled = enabled) { onCheckedChange(!checked) }
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .clickable(enabled = enabled) { onCheckedChange(!checked) }
+                .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
             checked = checked,
             onCheckedChange = null, // We handle changes through the row's clickable modifier
             enabled = enabled,
-            colors = colors
+            colors = colors,
         )
         Spacer(modifier = Modifier.width(8.dp))
         label()
@@ -86,24 +89,24 @@ private fun PreviewCheckbox() {
     AppTheme {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             var checked1 by remember { mutableStateOf(false) }
             var checked2 by remember { mutableStateOf(true) }
 
             Checkbox(
                 checked = checked1,
-                onCheckedChange = { checked1 = it }
+                onCheckedChange = { checked1 = it },
             )
             Checkbox(
                 checked = checked2,
-                onCheckedChange = { checked2 = it }
+                onCheckedChange = { checked2 = it },
             )
 
             CheckboxWithLabel(
                 checked = checked2,
                 onCheckedChange = { checked2 = it },
-                label = { Text("Accept terms and conditions") }
+                label = { Text("Accept terms and conditions") },
             )
         }
     }

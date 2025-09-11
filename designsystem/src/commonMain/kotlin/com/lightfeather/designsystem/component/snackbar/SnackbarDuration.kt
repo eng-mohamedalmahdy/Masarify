@@ -17,5 +17,5 @@ enum class SnackbarDuration {
     /**
      * Show the Snackbar indefinitely until explicitly dismissed or action is clicked
      */
-    Indefinite
+    Indefinite,
 }

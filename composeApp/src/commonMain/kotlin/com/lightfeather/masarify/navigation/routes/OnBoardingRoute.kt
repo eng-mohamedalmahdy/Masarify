@@ -5,6 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class OnBoardingRoute : Route() {
-
     override val route: String = "onboarding"
 }

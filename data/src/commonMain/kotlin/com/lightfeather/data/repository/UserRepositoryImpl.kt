@@ -8,31 +8,23 @@ import com.lightfeather.domain.model.runCatchingDomainResult
 import com.lightfeather.domain.repository.UserRepository
 
 class UserRepositoryImpl(
-    private val preferences: AppPreferences
+    private val preferences: AppPreferences,
 ) : UserRepository {
-    override fun getUserData(): DomainResult<UserData?> {
-        return runCatchingDomainResult {
+    override fun getUserData(): DomainResult<UserData?> =
+        runCatchingDomainResult {
             preferences.userData
         }
-    }
 
-    override fun upsertUserData(userData: UserData): DomainResult<Unit> {
-        return runCatchingDomainResult {
+    override fun upsertUserData(userData: UserData): DomainResult<Unit> =
+        runCatchingDomainResult {
             preferences.userData = userData
         }
-    }
 
-    override fun isDarkMode(): Boolean {
-        return preferences.isDarkMode
-    }
+    override fun isDarkMode(): Boolean = preferences.isDarkMode
 
-    override fun isDynamicColors(): Boolean {
-        return preferences.isDynamicColors
-    }
+    override fun isDynamicColors(): Boolean = preferences.isDynamicColors
 
-    override fun getAppLanguage(): AppLanguage? {
-        return preferences.appLanguage
-    }
+    override fun getAppLanguage(): AppLanguage? = preferences.appLanguage
 
     override fun toggleDarkMode() {
         preferences.isDarkMode = !preferences.isDarkMode

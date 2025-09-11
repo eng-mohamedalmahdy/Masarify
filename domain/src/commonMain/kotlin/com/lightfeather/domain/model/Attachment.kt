@@ -5,7 +5,7 @@ data class Attachment(
     val transactionId: Int,
     val mimeType: String,
     val fileName: String,
-    val fileContent: ByteArray
+    val fileContent: ByteArray,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

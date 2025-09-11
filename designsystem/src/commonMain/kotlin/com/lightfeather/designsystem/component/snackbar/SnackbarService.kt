@@ -8,28 +8,28 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import masarify.designsystem.generated.resources.Res
 
 object SnackbarService {
-
     // kotlinx.coroutines.channels.Channel.CHANNEL_DEFAULT_CAPACITY
     private const val CHANNEL_DEFAULT_CAPACITY = 64
 
-    private val messageFlow = MutableSharedFlow<SnackbarMessage>(
-        extraBufferCapacity = CHANNEL_DEFAULT_CAPACITY
-    )
+    private val messageFlow =
+        MutableSharedFlow<SnackbarMessage>(
+            extraBufferCapacity = CHANNEL_DEFAULT_CAPACITY,
+        )
 
-    fun getSnackBarMessageFlow() = flow {
-        val count = messageFlow.subscriptionCount.value + 1
-        // only emit the snackbar message event to the last subscriber
-        emitAll(messageFlow.filter { messageFlow.subscriptionCount.value == count })
-    }
+    fun getSnackBarMessageFlow() =
+        flow {
+            val count = messageFlow.subscriptionCount.value + 1
+            // only emit the snackbar message event to the last subscriber
+            emitAll(messageFlow.filter { messageFlow.subscriptionCount.value == count })
+        }
 
     fun sendSuccessMessage(text: String) {
         messageFlow.tryEmit(
             SnackbarMessage(
                 textMessage = StringTextMessage(text = text),
-            )
+            ),
         )
     }
 
@@ -37,7 +37,7 @@ object SnackbarService {
         messageFlow.tryEmit(
             SnackbarMessage(
                 textMessage = StringResTextMessage(textRes = textRes),
-            )
+            ),
         )
     }
 
@@ -46,7 +46,7 @@ object SnackbarService {
             SnackbarMessage(
                 textMessage = StringTextMessage(text = text),
                 type = SnackbarType.WARNING,
-            )
+            ),
         )
     }
 
@@ -55,7 +55,7 @@ object SnackbarService {
             SnackbarMessage(
                 textMessage = StringResTextMessage(textRes = textRes),
                 type = SnackbarType.WARNING,
-            )
+            ),
         )
     }
 
@@ -64,7 +64,7 @@ object SnackbarService {
             SnackbarMessage(
                 textMessage = StringTextMessage(text = text),
                 type = SnackbarType.ERROR,
-            )
+            ),
         )
     }
 
@@ -73,7 +73,7 @@ object SnackbarService {
             SnackbarMessage(
                 textMessage = StringResTextMessage(textRes = textRes),
                 type = SnackbarType.ERROR,
-            )
+            ),
         )
     }
 
@@ -82,7 +82,7 @@ object SnackbarService {
             SnackbarMessage(
                 textMessage = textMessage,
                 type = SnackbarType.ERROR,
-            )
+            ),
         )
     }
 
@@ -90,21 +90,20 @@ object SnackbarService {
         messageFlow.tryEmit(message)
     }
 
-    fun sendErrorMessageOrUnknown(message : String?){
+    fun sendErrorMessageOrUnknown(message: String?) {
 //        if(message.isNullOrEmpty()){
 //            sendErrorMessage(Res.strings.unknown_error)
 //        }else{
 //            sendErrorMessage(message)
 //        }
         sendErrorMessage(message.orEmpty())
-
     }
 }
 
 fun CoroutineScope.handleSnackbarMessages(snackbarHostState: AppSnackbarHostState) {
-    SnackbarService.getSnackBarMessageFlow()
+    SnackbarService
+        .getSnackBarMessageFlow()
         .onEach { message ->
             snackbarHostState.showSnackbar(message)
-        }
-        .launchIn(this)
+        }.launchIn(this)
 }

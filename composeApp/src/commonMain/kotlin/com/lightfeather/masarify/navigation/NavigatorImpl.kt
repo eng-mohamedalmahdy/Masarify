@@ -5,13 +5,10 @@ import androidx.navigation.NavHostController
 class NavigatorImpl(
     private val navController: NavHostController,
 ) : Navigator {
-
-
     override fun navigate(route: Route) {
         navController.navigate(route) {
             launchSingleTop = true
         }
-
     }
 
     override fun navigateAndClearBackStack(route: Route) {

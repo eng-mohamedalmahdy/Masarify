@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-import java.io.FileNotFoundException
 
 val appPackageName = "com.lightfeather.masarify"
 plugins {
@@ -15,6 +14,9 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     id("dev.icerock.mobile.multiplatform-resources")
 
+    // Code Quality
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -25,13 +27,13 @@ kotlin {
         }
     }
 
-    compilerOptions{
+    compilerOptions {
         freeCompilerArgs.add("-Xwhen-guards")
     }
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -49,13 +51,15 @@ kotlin {
             val projectDirPath = project.projectDir.path
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
+                devServer =
+                    (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                        static =
+                            (static ?: mutableListOf()).apply {
+                                // Serve sources to debug inside browser
+                                add(rootDirPath)
+                                add(projectDirPath)
+                            }
                     }
-                }
             }
         }
         binaries.executable()
@@ -67,7 +71,6 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.data)
             implementation(projects.designsystem)
-
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -86,7 +89,6 @@ kotlin {
             implementation(libs.bundles.material3Adaptive)
             implementation(libs.jetbrains.iconsExtended)
             implementation("com.eygraber:uri-kmp:0.0.19")
-
         }
         androidMain.dependencies {
             implementation(compose.preview)
@@ -105,12 +107,21 @@ kotlin {
 
 android {
     namespace = appPackageName
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = appPackageName
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.android.targetSdk
+                .get()
+                .toInt()
         versionCode = 1
         versionName = "1.0"
     }
@@ -137,7 +148,6 @@ dependencies {
     debugImplementation(compose.uiTooling)
     commonMainApi(libs.resources)
     commonMainApi(libs.resources.compose) // for compose multiplatform
-
 }
 
 multiplatformResources {
@@ -162,16 +172,76 @@ tasks.named<Copy>("wasmJsProcessResources") {
         into(".") // keep the folder structure (./localization/…)
     }
 }
-val copyWasmResources = tasks.register("copyWasmResources", Copy::class.java) {
-    // Source folder: your static resources folder
-    val resourcesDir = file("$rootDir/composeApp/src/wasmJsMain/resources")
+val copyWasmResources =
+    tasks.register("copyWasmResources", Copy::class.java) {
+        // Source folder: your static resources folder
+        val resourcesDir = file("$rootDir/composeApp/src/wasmJsMain/resources")
 
-    from(resourcesDir)
-    into(layout.buildDirectory.dir("sqlite"))
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    // Optional: flatten if you don’t want subfolders
-    include("**/*.js", "**/*.wasm")
-}
+        from(resourcesDir)
+        into(layout.buildDirectory.dir("sqlite"))
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        // Optional: flatten if you don’t want subfolders
+        include("**/*.js", "**/*.wasm")
+    }
 tasks.named("wasmJsProcessResources") {
     dependsOn(copyWasmResources)
+}
+
+// KtLint Configuration - disable scanning of generated files
+ktlint {
+    filter {
+        include("src/**/*.kt")
+        exclude("build/**")
+        exclude("**/generated/**")
+        exclude("**/build/generated/**")
+        exclude("**/MR.kt")
+        exclude("**/Res.kt")
+        exclude("**/*ResourceCollectors*.kt")
+        exclude("**/*ResourceAccessors*.kt")
+    }
+
+    reporters {
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.SARIF)
+    }
+}
+
+// DetektKT Configuration
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$rootDir/detekt.yml")
+    baseline = file("$rootDir/detekt-baseline.xml")
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
+}
+
+// Disable KtLint for generated files by disabling specific problematic tasks
+afterEvaluate {
+    // Disable source sets that contain generated code
+    listOf(
+        "ktlintAndroidMainSourceSetCheck",
+        "ktlintCommonMainSourceSetCheck",
+        "ktlintWasmJsMainSourceSetCheck",
+        "ktlintIosMainSourceSetCheck",
+        "ktlintJvmMainSourceSetCheck",
+    ).forEach { taskName ->
+        tasks.findByName(taskName)?.enabled = false
+    }
+
+    // Create a custom KtLint task that only scans actual source files
+    tasks.register("ktlintCheckSourceOnly") {
+        group = "verification"
+        description = "Run KtLint only on source files, excluding generated code"
+
+        doLast {
+            exec {
+                workingDir = project.rootDir
+                commandLine = listOf("./gradlew", "ktlintFormat")
+            }
+        }
+    }
 }

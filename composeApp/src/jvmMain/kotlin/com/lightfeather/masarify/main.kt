@@ -7,13 +7,14 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
 
-fun main() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Masarify",
-    ) {
-        Napier.base(DebugAntilog())
-        startKoin {  }
-        App()
+fun main() =
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "Masarify",
+        ) {
+            Napier.base(DebugAntilog())
+            startKoin { }
+            App()
+        }
     }
-}

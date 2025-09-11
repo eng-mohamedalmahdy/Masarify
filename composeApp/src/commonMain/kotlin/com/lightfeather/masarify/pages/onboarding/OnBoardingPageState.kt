@@ -12,7 +12,6 @@ internal data class OnBoardingPageState(
     val accountColor: String = "#FFA726",
     val accountLogo: String = "",
 ) {
-
     val userNameError: StringResource? = MR.strings.onboarding_user_name_error.takeIf { userName.isBlank() }
     val accountNameError: StringResource? = MR.strings.onboarding_account_name_error.takeIf { accountName.isBlank() }
     val balanceError: StringResource? =

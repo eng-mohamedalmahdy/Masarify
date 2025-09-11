@@ -27,22 +27,24 @@ class OnBoardingPageViewModel(
     private val upsertUserData: UpsertUserData,
     private val navigator: Navigator,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(OnBoardingPageState())
     internal val state: StateFlow<OnBoardingPageState> = _state
 
     internal fun onIntent(intent: OnBoardingPageIntent) {
         when (intent) {
             is OnBoardingPageIntent.UpdateAccountName -> _state.value = _state.value.copy(accountName = intent.name)
-            is OnBoardingPageIntent.UpdateCurrencyName -> _state.value =
-                _state.value.copy(accountCurrencyName = intent.name)
+            is OnBoardingPageIntent.UpdateCurrencyName ->
+                _state.value =
+                    _state.value.copy(accountCurrencyName = intent.name)
 
-            is OnBoardingPageIntent.UpdateCurrencySymbol -> _state.value =
-                _state.value.copy(mainAccountCurrencySymbol = intent.name)
+            is OnBoardingPageIntent.UpdateCurrencySymbol ->
+                _state.value =
+                    _state.value.copy(mainAccountCurrencySymbol = intent.name)
 
             is OnBoardingPageIntent.UpdateUserName -> _state.value = _state.value.copy(userName = intent.name)
-            is OnBoardingPageIntent.UpdateAccountBalance -> _state.value =
-                _state.value.copy(accountBalance = intent.balance)
+            is OnBoardingPageIntent.UpdateAccountBalance ->
+                _state.value =
+                    _state.value.copy(accountBalance = intent.balance)
 
             OnBoardingPageIntent.Submit -> {
                 val stateSnapshot = _state.value
@@ -61,44 +63,48 @@ class OnBoardingPageViewModel(
                 }
 
                 viewModelScope.launch {
-                    val createAccountJob = async(Dispatchers.IoDispatcher) {
-                        val toBeCreateCurrency = Currency(
-                            stateSnapshot.accountCurrencyName,
-                            stateSnapshot.mainAccountCurrencySymbol.takeIf { it.isNotBlank() }
-                                ?: stateSnapshot.accountCurrencyName
-                        )
-                        val createCurrencyResult = createCurrency(toBeCreateCurrency)
+                    val createAccountJob =
+                        async(Dispatchers.IoDispatcher) {
+                            val toBeCreateCurrency =
+                                Currency(
+                                    stateSnapshot.accountCurrencyName,
+                                    stateSnapshot.mainAccountCurrencySymbol.takeIf { it.isNotBlank() }
+                                        ?: stateSnapshot.accountCurrencyName,
+                                )
+                            val createCurrencyResult = createCurrency(toBeCreateCurrency)
 
-                        createCurrencyResult.flatMapSuspend { currencyId ->
-                            val toBeCreateAccount = Account(
-                                name = stateSnapshot.accountName,
-                                currency = toBeCreateCurrency.copy(id = currencyId),
-                                description = "",
-                                balance = stateSnapshot.accountBalance.toDouble(),
-                                color = stateSnapshot.accountColor,
-                                logo = stateSnapshot.accountLogo,
-                            )
-                            createAccount(toBeCreateAccount)
+                            createCurrencyResult.flatMapSuspend { currencyId ->
+                                val toBeCreateAccount =
+                                    Account(
+                                        name = stateSnapshot.accountName,
+                                        currency = toBeCreateCurrency.copy(id = currencyId),
+                                        description = "",
+                                        balance = stateSnapshot.accountBalance.toDouble(),
+                                        color = stateSnapshot.accountColor,
+                                        logo = stateSnapshot.accountLogo,
+                                    )
+                                createAccount(toBeCreateAccount)
+                            }
                         }
-                    }
-                    val upsertUserDataJob = async(Dispatchers.IoDispatcher) {
-                        upsertUserData(UserData(stateSnapshot.userName))
-                    }
+                    val upsertUserDataJob =
+                        async(Dispatchers.IoDispatcher) {
+                            upsertUserData(UserData(stateSnapshot.userName))
+                        }
                     val (createAccountResult, upsertUserDataResult) = awaitAll(createAccountJob, upsertUserDataJob)
-                    createAccountResult.flatMap { accountId ->
-                        upsertUserDataResult.flatMap { userDataId ->
-                            DomainResult.Success(Unit)
-                        }
-                    }.fold(
-                        onSuccess = {
-                            navigator.navigateAndClearBackStack(DashboardRoute)
-                            SnackbarService.sendSuccessMessage(MR.strings.app_slogan)
-                        },
-                        onFailure = { SnackbarService.sendErrorMessage(it.message) }
-                    )
+                    createAccountResult
+                        .flatMap { accountId ->
+                            upsertUserDataResult.flatMap { userDataId ->
+                                DomainResult.Success(Unit)
+                            }
+                        }.fold(
+                            onSuccess = {
+                                navigator.navigateAndClearBackStack(DashboardRoute)
+                                SnackbarService.sendSuccessMessage(MR.strings.app_slogan)
+                            },
+                            onFailure = { SnackbarService.sendErrorMessage(it.message) },
+                        )
                 }
             }
         }
-
     }
 }

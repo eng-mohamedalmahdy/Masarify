@@ -23,49 +23,54 @@ class AppMainViewModel(
     private val userDataRepository: UserRepository,
     private val getAllAccounts: GetAllAccounts,
 ) : ViewModel() {
-
     private val _darkTheme = MutableStateFlow(false)
-    val darkTheme = _darkTheme.onStart {
-        val isDarkMode = userDataRepository.isDarkMode()
-        _darkTheme.value = isDarkMode
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = false
-    )
+    val darkTheme =
+        _darkTheme
+            .onStart {
+                val isDarkMode = userDataRepository.isDarkMode()
+                _darkTheme.value = isDarkMode
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = false,
+            )
 
     private val _dynamicColor = MutableStateFlow(false)
-    val dynamicColor = _dynamicColor.onStart {
-        val isDynamicColor = userDataRepository.isDynamicColors()
-        _dynamicColor.value = isDynamicColor
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = false
-    )
+    val dynamicColor =
+        _dynamicColor
+            .onStart {
+                val isDynamicColor = userDataRepository.isDynamicColors()
+                _dynamicColor.value = isDynamicColor
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = false,
+            )
     private val _currentLanguage = MutableStateFlow<AppLanguage>(AppLanguage.English)
 
-    val initialDataSaved: Flow<Boolean> = getAllAccounts().flatMap { accountsFlow ->
-        userDataRepository.getUserData().map { userData ->
-            accountsFlow.map { accounts ->
-                Napier.d("Accounts: ${accounts.size}, UserData: $userData")
-                accounts.isNotEmpty() && userData != null
-            }
-        }
-    }.foldResult(
-        onSuccess = { it },
-        onFailure = { flowOf(false) }
-    )
-    val currentLanguage = _currentLanguage
-        .onStart {
-            val language = userDataRepository.getAppLanguage()
-            _currentLanguage.value = language ?: AppLanguage.English
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = AppLanguage.English
-        )
+    val initialDataSaved: Flow<Boolean> =
+        getAllAccounts()
+            .flatMap { accountsFlow ->
+                userDataRepository.getUserData().map { userData ->
+                    accountsFlow.map { accounts ->
+                        Napier.d("Accounts: ${accounts.size}, UserData: $userData")
+                        accounts.isNotEmpty() && userData != null
+                    }
+                }
+            }.foldResult(
+                onSuccess = { it },
+                onFailure = { flowOf(false) },
+            )
+    val currentLanguage =
+        _currentLanguage
+            .onStart {
+                val language = userDataRepository.getAppLanguage()
+                _currentLanguage.value = language ?: AppLanguage.English
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = AppLanguage.English,
+            )
 
     fun toggleDarkTheme() {
         viewModelScope.launch {
@@ -82,6 +87,4 @@ class AppMainViewModel(
             navigator.navigateAndClearBackStack(DashboardRoute)
         }
     }
-
-
 }

@@ -10,22 +10,23 @@ sealed class TextMessage
 
 @Immutable
 data class StringTextMessage(
-    val text: String
+    val text: String,
 ) : TextMessage()
 
 @Immutable
 data class StringResTextMessage(
     val textRes: StringResource,
-    val formatArgs: Any? = null
+    val formatArgs: Any? = null,
 ) : TextMessage()
 
 @Composable
 fun TextMessage.getText(): String =
     when (this) {
         is StringTextMessage -> text
-        is StringResTextMessage -> if (formatArgs != null) {
-            stringResource(textRes, formatArgs)
-        } else {
-            stringResource(textRes)
-        }
+        is StringResTextMessage ->
+            if (formatArgs != null) {
+                stringResource(textRes, formatArgs)
+            } else {
+                stringResource(textRes)
+            }
     }

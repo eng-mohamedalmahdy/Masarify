@@ -14,15 +14,12 @@ import org.w3c.dom.Worker
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalBrowserHistoryApi::class)
 fun main() {
     ComposeViewport(document.body!!) {
-
-        startKoin{}
+        startKoin {}
         Napier.base(DebugAntilog())
         App(
-            onNavHostReady = { it.bindToBrowserNavigation() }
+            onNavHostReady = { it.bindToBrowserNavigation() },
         )
     }
 }
 
-
-fun jsWorker(): Worker =
-    js("""new Worker(new URL("./masarifyworker.worker.js", import.meta.url))""")
+fun jsWorker(): Worker = js("""new Worker(new URL("./masarifyworker.worker.js", import.meta.url))""")

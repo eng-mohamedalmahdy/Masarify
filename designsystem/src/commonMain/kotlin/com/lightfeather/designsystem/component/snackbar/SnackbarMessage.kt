@@ -9,9 +9,12 @@ data class SnackbarMessage(
     val duration: SnackbarDuration = SnackbarDuration.Short,
     val type: SnackbarType = SnackbarType.SUCCESS,
     val drawableResource: DrawableResource? = null,
-    val autoDismiss: Boolean = true
+    val autoDismiss: Boolean = true,
 )
 
 enum class SnackbarType {
-    ERROR, WARNING, SUCCESS,INFO
+    ERROR,
+    WARNING,
+    SUCCESS,
+    INFO,
 }

@@ -12,7 +12,7 @@ import androidx.compose.material3.Icon as MaterialIcon
 enum class IconSize {
     Small,
     Medium,
-    Large
+    Large,
 }
 
 @Composable
@@ -21,19 +21,20 @@ fun Icon(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current,
-    size: IconSize = IconSize.Medium
+    size: IconSize = IconSize.Medium,
 ) {
-    val iconSize = when (size) {
-        IconSize.Small -> AppTheme.dimens.iconSizeSmall
-        IconSize.Medium -> AppTheme.dimens.iconSizeMedium
-        IconSize.Large -> AppTheme.dimens.iconSizeLarge
-    }
+    val iconSize =
+        when (size) {
+            IconSize.Small -> AppTheme.dimens.iconSizeSmall
+            IconSize.Medium -> AppTheme.dimens.iconSizeMedium
+            IconSize.Large -> AppTheme.dimens.iconSizeLarge
+        }
 
     MaterialIcon(
         imageVector = imageVector,
         contentDescription = contentDescription,
         modifier = modifier.size(iconSize),
-        tint = tint
+        tint = tint,
     )
 }
 
@@ -43,19 +44,20 @@ fun Icon(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current,
-    size: IconSize = IconSize.Medium
+    size: IconSize = IconSize.Medium,
 ) {
-    val iconSize = when (size) {
-        IconSize.Small -> AppTheme.dimens.iconSizeSmall
-        IconSize.Medium -> AppTheme.dimens.iconSizeMedium
-        IconSize.Large -> AppTheme.dimens.iconSizeLarge
-    }
+    val iconSize =
+        when (size) {
+            IconSize.Small -> AppTheme.dimens.iconSizeSmall
+            IconSize.Medium -> AppTheme.dimens.iconSizeMedium
+            IconSize.Large -> AppTheme.dimens.iconSizeLarge
+        }
 
     MaterialIcon(
         painter = painter,
         contentDescription = contentDescription,
         modifier = modifier.size(iconSize),
-        tint = tint
+        tint = tint,
     )
 }
 

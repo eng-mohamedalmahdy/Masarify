@@ -1,8 +1,8 @@
 package com.lightfeather.designsystem.component
 
-import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -16,19 +16,20 @@ fun IconButton(
     icon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: IconButtonColors = IconButtonDefaults.iconButtonColors(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.primary,
-        disabledContainerColor = Color.Transparent,
-        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-    )
+    colors: IconButtonColors =
+        IconButtonDefaults.iconButtonColors(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+        ),
 ) {
     androidx.compose.material3.IconButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
         colors = colors,
-        content = { icon() }
+        content = { icon() },
     )
 }
 
@@ -39,25 +40,26 @@ fun IconButton(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: IconButtonColors = IconButtonDefaults.iconButtonColors(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.primary,
-        disabledContainerColor = Color.Transparent,
-        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-    )
+    colors: IconButtonColors =
+        IconButtonDefaults.iconButtonColors(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+        ),
 ) {
     IconButton(
         onClick = onClick,
-        icon = { 
+        icon = {
             Icon(
                 imageVector = icon,
                 contentDescription = contentDescription,
-                tint = if (enabled) colors.contentColor else colors.disabledContentColor
+                tint = if (enabled) colors.contentColor else colors.disabledContentColor,
             )
         },
         modifier = modifier,
         enabled = enabled,
-        colors = colors
+        colors = colors,
     )
 }
 
@@ -70,10 +72,10 @@ private fun PreviewIconButton() {
             icon = {
                 Text(
                     text = "+",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
             },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 }

@@ -26,11 +26,12 @@ fun AppBottomNavigation(
     onItemClick: (UiBottomNavigationItem) -> Unit,
 ) {
     NavigationBar(
-        modifier = modifier.shadow(
-            elevation = 20.dp,
-            shape = RectangleShape,
-            clip = true,
-        ),
+        modifier =
+            modifier.shadow(
+                elevation = 20.dp,
+                shape = RectangleShape,
+                clip = true,
+            ),
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.primary,
     ) {
@@ -41,11 +42,14 @@ fun AppBottomNavigation(
                     AppImage(
                         navigationItem.icon,
                         contentDescription = stringResource(navigationItem.label),
-                        modifier = Modifier.size(AppTheme.dimens.large)
-                            .padding(bottom = AppTheme.dimens.small),
-                        colorFilter = ColorFilter.tint(
-                            if (selected.not())  MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
-                        )
+                        modifier =
+                            Modifier
+                                .size(AppTheme.dimens.large)
+                                .padding(bottom = AppTheme.dimens.small),
+                        colorFilter =
+                            ColorFilter.tint(
+                                if (selected.not()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
+                            ),
                     )
                 },
                 label = {
@@ -54,7 +58,6 @@ fun AppBottomNavigation(
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                         color = if (selected.not()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
-
                     )
                 },
                 selected = selected,
@@ -62,7 +65,6 @@ fun AppBottomNavigation(
             )
         }
     }
-
 }
 
 @Preview
@@ -73,7 +75,7 @@ private fun PreviewAppBottomNavigation() {
             navItems = listOf(),
             isCurrentDestination = { true },
             onItemClick = {},
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 }

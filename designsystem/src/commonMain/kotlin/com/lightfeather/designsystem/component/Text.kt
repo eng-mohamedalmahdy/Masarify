@@ -1,8 +1,8 @@
 package com.lightfeather.designsystem.component
 
-import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -18,7 +18,7 @@ fun DisplayLarge(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -27,7 +27,7 @@ fun DisplayLarge(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -38,7 +38,7 @@ fun DisplayMedium(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -47,7 +47,7 @@ fun DisplayMedium(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -58,7 +58,7 @@ fun DisplaySmall(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -67,7 +67,7 @@ fun DisplaySmall(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -78,7 +78,7 @@ fun HeadlineLarge(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -87,7 +87,7 @@ fun HeadlineLarge(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -98,7 +98,7 @@ fun HeadlineMedium(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -107,7 +107,7 @@ fun HeadlineMedium(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -118,7 +118,7 @@ fun HeadlineSmall(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -127,7 +127,7 @@ fun HeadlineSmall(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -138,7 +138,7 @@ fun TitleLarge(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -147,7 +147,7 @@ fun TitleLarge(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -158,7 +158,7 @@ fun TitleMedium(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -167,7 +167,7 @@ fun TitleMedium(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -178,7 +178,7 @@ fun TitleSmall(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -187,7 +187,7 @@ fun TitleSmall(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -198,7 +198,7 @@ fun BodyLarge(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -207,7 +207,7 @@ fun BodyLarge(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -218,7 +218,7 @@ fun BodyMedium(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -227,7 +227,7 @@ fun BodyMedium(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -238,7 +238,7 @@ fun BodySmall(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -247,7 +247,7 @@ fun BodySmall(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -258,7 +258,7 @@ fun LabelLarge(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -267,7 +267,7 @@ fun LabelLarge(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -278,7 +278,7 @@ fun LabelMedium(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -287,7 +287,7 @@ fun LabelMedium(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -298,7 +298,7 @@ fun LabelSmall(
     color: Color = Color.Unspecified,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
@@ -307,7 +307,7 @@ fun LabelSmall(
         color = color,
         textAlign = textAlign,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -317,7 +317,7 @@ private fun PreviewTextComponents() {
     AppTheme {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             DisplayLarge("Display Large")
             DisplayMedium("Display Medium")

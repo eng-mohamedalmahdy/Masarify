@@ -13,9 +13,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.ExtendedFloatingActionButton as MaterialSmallFloatingActionButton
 import androidx.compose.material3.FloatingActionButton as MaterialFloatingActionButton
 import androidx.compose.material3.SmallFloatingActionButton as MaterialSmallFloatingActionButton
-import androidx.compose.material3.ExtendedFloatingActionButton as MaterialSmallFloatingActionButton
 
 @Composable
 fun FloatingActionButton(
@@ -24,7 +24,7 @@ fun FloatingActionButton(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation()
+    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
 ) {
     MaterialFloatingActionButton(
         onClick = onClick,
@@ -32,7 +32,7 @@ fun FloatingActionButton(
         containerColor = containerColor,
         contentColor = contentColor,
         elevation = elevation,
-        content = icon
+        content = icon,
     )
 }
 
@@ -44,7 +44,7 @@ fun FloatingActionButton(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation()
+    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
 ) {
     FloatingActionButton(
         onClick = onClick,
@@ -52,13 +52,13 @@ fun FloatingActionButton(
             Icon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
-                tint = contentColor
+                tint = contentColor,
             )
         },
         modifier = modifier,
         containerColor = containerColor,
         contentColor = contentColor,
-        elevation = elevation
+        elevation = elevation,
     )
 }
 
@@ -69,7 +69,7 @@ fun SmallFloatingActionButton(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation()
+    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
 ) {
     MaterialSmallFloatingActionButton(
         onClick = onClick,
@@ -77,7 +77,7 @@ fun SmallFloatingActionButton(
         containerColor = containerColor,
         contentColor = contentColor,
         elevation = elevation,
-        content = icon
+        content = icon,
     )
 }
 
@@ -89,7 +89,7 @@ fun ExtendedFloatingActionButton(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation()
+    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
 ) {
     MaterialSmallFloatingActionButton(
         onClick = onClick,
@@ -98,7 +98,7 @@ fun ExtendedFloatingActionButton(
         contentColor = contentColor,
         elevation = elevation,
         icon = icon,
-        text = text
+        text = text,
     )
 }
 
@@ -111,10 +111,10 @@ private fun PreviewFloatingActionButton() {
             icon = {
                 Text(
                     text = "+",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
             },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 }
@@ -128,10 +128,10 @@ private fun PreviewSmallFloatingActionButton() {
             icon = {
                 Text(
                     text = "+",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 }
@@ -142,9 +142,8 @@ private fun PreviewLargeFloatingActionButton() {
     AppTheme {
         LargeFloatingActionButton(
             onClick = { },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
-
         }
     }
 }

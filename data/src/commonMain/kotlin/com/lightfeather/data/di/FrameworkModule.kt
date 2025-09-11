@@ -2,4 +2,4 @@ package com.lightfeather.data.di
 
 import org.koin.core.module.Module
 
-expect val frameworkModule : Module
+expect val frameworkModule: Module

@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
@@ -11,6 +10,9 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlinSerialization)
 
+    // Code Quality
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -91,8 +93,6 @@ kotlin {
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.bundles.multiplatformSettings)
                 implementation(libs.napier)
-
-
             }
         }
 
@@ -119,7 +119,6 @@ kotlin {
 
         iosMain {
             dependencies {
-
             }
         }
         nativeMain {
@@ -144,7 +143,6 @@ kotlin {
             }
         }
     }
-
 }
 
 sqldelight {
@@ -156,11 +154,8 @@ sqldelight {
             dialect("${libs.sqldelight.sqlite.dialect.get().module}:${libs.sqldelight.sqlite.dialect.get().version}")
             module("${libs.sqldelight.sqlite.json.get().module}:${libs.sqldelight.sqlite.json.get().version}")
         }
-
-
     }
 }
-
 
 // Ensure codegen tasks run first if you have moko resources
 tasks.named("wasmJsProcessResources") {
@@ -178,9 +173,10 @@ tasks.named<Copy>("wasmJsProcessResources") {
     doFirst {
         println(">>> wasmJsProcessResources starting...")
         println(">>> Source folder: data/src/wasmJsMain/resources")
-        val files = fileTree("data/src/wasmJsMain/resources") {
-            include("sqljs.worker.js")
-        }.files
+        val files =
+            fileTree("data/src/wasmJsMain/resources") {
+                include("sqljs.worker.js")
+            }.files
         println(">>> Files found to copy: ${files.map { it.absolutePath }}")
     }
 
@@ -188,9 +184,25 @@ tasks.named<Copy>("wasmJsProcessResources") {
     doLast {
         println(">>> wasmJsProcessResources finished.")
         println(">>> Files copied to: ${destinationDir.absolutePath}")
-        val copiedFiles = fileTree(destinationDir) {
-            include("sqljs.worker.js")
-        }.files
+        val copiedFiles =
+            fileTree(destinationDir) {
+                include("sqljs.worker.js")
+            }.files
         println(">>> Files actually copied: ${copiedFiles.map { it.absolutePath }}")
     }
+}
+
+// KtLint Configuration (inherits from root)
+// Global configuration is applied via subprojects block in root build.gradle.kts
+
+// DetektKT Configuration
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$rootDir/detekt.yml")
+    baseline = file("$rootDir/detekt-baseline.xml")
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
 }

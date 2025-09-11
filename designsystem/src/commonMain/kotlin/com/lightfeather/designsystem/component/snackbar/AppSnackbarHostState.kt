@@ -18,25 +18,23 @@ class AppSnackbarHostState {
     var currentSnackbarData by mutableStateOf<SnackbarMessageData?>(null)
         private set
 
-    suspend fun showSnackbar(
-        message: SnackbarMessage
-    ): SnackbarResult = mutex.withLock {
-        try {
-            return suspendCancellableCoroutine { continuation ->
-                currentSnackbarData = SnackbarMessageData(message, continuation)
+    suspend fun showSnackbar(message: SnackbarMessage): SnackbarResult =
+        mutex.withLock {
+            try {
+                return suspendCancellableCoroutine { continuation ->
+                    currentSnackbarData = SnackbarMessageData(message, continuation)
+                }
+            } finally {
+                currentSnackbarData = null
             }
-        } finally {
-            currentSnackbarData = null
         }
-    }
 }
 
 @Stable
 class SnackbarMessageData(
     val message: SnackbarMessage,
-    private val continuation: CancellableContinuation<SnackbarResult>
+    private val continuation: CancellableContinuation<SnackbarResult>,
 ) {
-
     fun performAction() {
         if (continuation.isActive) {
             continuation.resume(SnackbarResult.ActionPerformed)

@@ -33,6 +33,8 @@ coilCompose = "3.0.1"
 napier = "2.7.1"
 composeWindowSize = "1.9.0-beta04"
 composeAdaptive = "1.1.2"
+ktlint = "1.4.1"
+detekt = "1.23.8"
 [libraries]
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -81,6 +83,9 @@ material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adap
 material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "composeMultiplatform" }
 material3-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatform" }
 
+# Code Quality Tools
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
 [bundles]
 koinCommon = [
     "koin-core",
@@ -115,3 +120,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+
+# Code Quality Plugins
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.2" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

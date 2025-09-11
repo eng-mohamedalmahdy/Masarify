@@ -1,6 +1,5 @@
 package com.lightfeather.designsystem.theme
 
-
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -28,7 +27,6 @@ import masarify.designsystem.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
 object AppTheme {
-
     object colors {
         // Masarify Base Palette
         val primary = Color(0xFF1E3A8A) // Deep Royal Blue
@@ -45,157 +43,176 @@ object AppTheme {
         val error = Color(0xFFCF6679)
         val warning = Color(0xFFFFA726)
 
-        internal val light = lightColorScheme(
-            primary = primary,
-            secondary = secondary,
-            background = backgroundLight,
-            surface = surfaceLight,
-            onPrimary = Color.White,
-            onSecondary = Color.White,
-            onBackground = Color.Black,
-            onSurface = Color.Black,
-            surfaceVariant = surfaceVariantLight,
-            error = error,
-        )
+        internal val light =
+            lightColorScheme(
+                primary = primary,
+                secondary = secondary,
+                background = backgroundLight,
+                surface = surfaceLight,
+                onPrimary = Color.White,
+                onSecondary = Color.White,
+                onBackground = Color.Black,
+                onSurface = Color.Black,
+                surfaceVariant = surfaceVariantLight,
+                error = error,
+            )
 
-        internal val dark = darkColorScheme(
-            primary = Color(0xFF93C5FD), // lighter for contrast
-            secondary = Color(0xFF60A5FA),
-            background = backgroundDark,
-            surface = surfaceDark,
-            onPrimary = Color(0xFF0B1120),
-            onSecondary = Color(0xFF0B1120),
-            onBackground = Color(0xFFEDEDED),
-            onSurface = Color(0xFFF5F5F5),
-            surfaceVariant = surfaceVariantDark,
-            error = error,
-        )
+        internal val dark =
+            darkColorScheme(
+                primary = Color(0xFF93C5FD), // lighter for contrast
+                secondary = Color(0xFF60A5FA),
+                background = backgroundDark,
+                surface = surfaceDark,
+                onPrimary = Color(0xFF0B1120),
+                onSecondary = Color(0xFF0B1120),
+                onBackground = Color(0xFFEDEDED),
+                onSurface = Color(0xFFF5F5F5),
+                surfaceVariant = surfaceVariantDark,
+                error = error,
+            )
     }
 
     private val NotoSansArabic
-        @Composable get() = FontFamily(
-            Font(Res.font.NotoSansArabic_Thin, FontWeight.Thin),
-            Font(Res.font.NotoSansArabic_ExtraLight, FontWeight.ExtraLight),
-            Font(Res.font.NotoSansArabic_Light, FontWeight.Light),
-            Font(Res.font.NotoSansArabic_Regular, FontWeight.Normal),
-            Font(Res.font.NotoSansArabic_Medium, FontWeight.Medium),
-            Font(Res.font.NotoSansArabic_SemiBold, FontWeight.SemiBold),
-            Font(Res.font.NotoSansArabic_Bold, FontWeight.Bold),
-            Font(Res.font.NotoSansArabic_ExtraBold, FontWeight.ExtraBold),
-            Font(Res.font.NotoSansArabic_Black, FontWeight.Black)
-        )
+        @Composable get() =
+            FontFamily(
+                Font(Res.font.NotoSansArabic_Thin, FontWeight.Thin),
+                Font(Res.font.NotoSansArabic_ExtraLight, FontWeight.ExtraLight),
+                Font(Res.font.NotoSansArabic_Light, FontWeight.Light),
+                Font(Res.font.NotoSansArabic_Regular, FontWeight.Normal),
+                Font(Res.font.NotoSansArabic_Medium, FontWeight.Medium),
+                Font(Res.font.NotoSansArabic_SemiBold, FontWeight.SemiBold),
+                Font(Res.font.NotoSansArabic_Bold, FontWeight.Bold),
+                Font(Res.font.NotoSansArabic_ExtraBold, FontWeight.ExtraBold),
+                Font(Res.font.NotoSansArabic_Black, FontWeight.Black),
+            )
 
     val typography
-        @Composable get() = Typography(
-            displayLarge = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Light,
-                fontSize = 57.sp,
-                lineHeight = 64.sp,
-                letterSpacing = (-0.25).sp
-            ),
-            displayMedium = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Light,
-                fontSize = 45.sp,
-                lineHeight = 52.sp
-            ),
-            displaySmall = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Normal,
-                fontSize = 36.sp,
-                lineHeight = 44.sp
-            ),
-            headlineLarge = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 32.sp,
-                lineHeight = 40.sp
-            ),
-            headlineMedium = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 28.sp,
-                lineHeight = 36.sp
-            ),
-            headlineSmall = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 24.sp,
-                lineHeight = 32.sp
-            ),
-            titleLarge = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 22.sp,
-                lineHeight = 28.sp
-            ),
-            titleMedium = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                letterSpacing = 0.1.sp
-            ),
-            titleSmall = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.1.sp
-            ),
-            bodyLarge = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                letterSpacing = 0.5.sp
-            ),
-            bodyMedium = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.25.sp
-            ),
-            bodySmall = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Light,
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                letterSpacing = 0.4.sp
-            ),
-            labelLarge = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.1.sp
-            ),
-            labelMedium = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                letterSpacing = 0.5.sp
-            ),
-            labelSmall = TextStyle(
-                fontFamily = NotoSansArabic,
-                fontWeight = FontWeight.Medium,
-                fontSize = 11.sp,
-                lineHeight = 16.sp,
-                letterSpacing = 0.5.sp
+        @Composable get() =
+            Typography(
+                displayLarge =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 57.sp,
+                        lineHeight = 64.sp,
+                        letterSpacing = (-0.25).sp,
+                    ),
+                displayMedium =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 45.sp,
+                        lineHeight = 52.sp,
+                    ),
+                displaySmall =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 36.sp,
+                        lineHeight = 44.sp,
+                    ),
+                headlineLarge =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 32.sp,
+                        lineHeight = 40.sp,
+                    ),
+                headlineMedium =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 28.sp,
+                        lineHeight = 36.sp,
+                    ),
+                headlineSmall =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 24.sp,
+                        lineHeight = 32.sp,
+                    ),
+                titleLarge =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 22.sp,
+                        lineHeight = 28.sp,
+                    ),
+                titleMedium =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        letterSpacing = 0.1.sp,
+                    ),
+                titleSmall =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.1.sp,
+                    ),
+                bodyLarge =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        letterSpacing = 0.5.sp,
+                    ),
+                bodyMedium =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.25.sp,
+                    ),
+                bodySmall =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.4.sp,
+                    ),
+                labelLarge =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.1.sp,
+                    ),
+                labelMedium =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.5.sp,
+                    ),
+                labelSmall =
+                    TextStyle(
+                        fontFamily = NotoSansArabic,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 11.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.5.sp,
+                    ),
             )
+
+    val shapes =
+        Shapes(
+            extraSmall = RoundedCornerShape(dimens.small),
+            small = RoundedCornerShape(dimens.medium),
+            medium = RoundedCornerShape(dimens.default),
+            large = RoundedCornerShape(dimens.large),
+            extraLarge = RoundedCornerShape(dimens.extraLarge),
         )
-
-
-    val shapes = Shapes(
-        extraSmall = RoundedCornerShape(dimens.small),
-        small = RoundedCornerShape(dimens.medium),
-        medium = RoundedCornerShape(dimens.default),
-        large = RoundedCornerShape(dimens.large),
-        extraLarge = RoundedCornerShape(dimens.extraLarge)
-    )
 
     object dimens {
         // Core Spacing
@@ -227,28 +244,26 @@ object AppTheme {
         val cardElevation = 4.dp
         val sheetElevation = 8.dp
     }
-
 }
-
 
 @Composable
 fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true, // support dynamic colors
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val isPreview = LocalInspectionMode.current
-    val colorScheme = when {
-        isPreview -> if (useDarkTheme) colors.dark else colors.light
-        useDarkTheme -> colors.dark
-        else -> colors.light
-
-    }
+    val colorScheme =
+        when {
+            isPreview -> if (useDarkTheme) colors.dark else colors.light
+            useDarkTheme -> colors.dark
+            else -> colors.light
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = if (isPreview) typography else  responsiveTypography(),
+        typography = if (isPreview) typography else responsiveTypography(),
         shapes = shapes,
-        content = content
+        content = content,
     )
 }

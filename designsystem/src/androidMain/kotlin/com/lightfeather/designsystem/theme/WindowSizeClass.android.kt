@@ -17,8 +17,9 @@ actual fun rememberAppWindowSizeClass(): WindowWidthSizeClass {
     return windowSize.widthSizeClass
 }
 
-fun Context.getActivity(): ComponentActivity? = when (this) {
-    is ComponentActivity -> this
-    is ContextWrapper -> baseContext.getActivity()
-    else -> null
-}
+fun Context.getActivity(): ComponentActivity? =
+    when (this) {
+        is ComponentActivity -> this
+        is ContextWrapper -> baseContext.getActivity()
+        else -> null
+    }

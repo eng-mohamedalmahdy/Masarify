@@ -4,9 +4,7 @@ import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.DomainResult
 import kotlinx.coroutines.flow.Flow
 
-
 interface CategoryRepository {
-
     suspend fun createCategory(category: Category): DomainResult<Int>
 
     suspend fun updateCategory(category: Category): DomainResult<Boolean>
@@ -18,5 +16,4 @@ interface CategoryRepository {
     suspend fun getCategoryById(id: Int): DomainResult<Category>
 
     fun getAllCategoryIcons(): DomainResult<Flow<List<Any>>>
-
 }

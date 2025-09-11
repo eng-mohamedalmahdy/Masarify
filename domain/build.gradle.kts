@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
     alias(libs.plugins.kotlinSerialization)
+
+    // Code Quality
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -106,5 +110,19 @@ kotlin {
             dependencies {}
         }
     }
+}
 
+// KtLint Configuration (inherits from root)
+// Global configuration is applied via subprojects block in root build.gradle.kts
+
+// DetektKT Configuration
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$rootDir/detekt.yml")
+    baseline = file("$rootDir/detekt-baseline.xml")
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
 }

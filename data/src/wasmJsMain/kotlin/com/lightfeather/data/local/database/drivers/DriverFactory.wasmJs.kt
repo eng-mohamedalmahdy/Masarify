@@ -6,7 +6,6 @@ import app.cash.sqldelight.driver.worker.WebWorkerDriver
 import com.lightfeather.masarify.database.Database
 import org.w3c.dom.Worker
 
-
 actual class DriverFactory {
     actual suspend fun createDriver(name: String): SqlDriver {
         val driver: SqlDriver = WebWorkerDriver(jsWorker())

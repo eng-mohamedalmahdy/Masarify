@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:function-naming")
+
 package com.lightfeather.masarify
 
 import androidx.compose.ui.window.ComposeUIViewController
@@ -6,10 +8,8 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
 
-
 fun InitApp() {
     startKoin {
-
     }
     Napier.base(antilog = DebugAntilog())
 }

@@ -1,7 +1,6 @@
 package com.lightfeather.masarify.app
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -62,17 +61,13 @@ import org.koin.mp.KoinPlatform
 
 @Composable
 @Preview
-fun App(
-    onNavHostReady: suspend (NavController) -> Unit = {}
-) {
+fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
     val navController = rememberNavController()
     KoinContext(
         KoinPlatform.getKoin().apply {
             loadModules(getAppModules(navController))
-        }
+        },
     ) {
-
-
         val mainViewModel = koinViewModel<AppMainViewModel>()
         val isDarkMode by mainViewModel.darkTheme.collectAsState(false)
         val dynamicColor by mainViewModel.dynamicColor.collectAsState(false)
@@ -85,7 +80,7 @@ fun App(
             onNavHostReady(navController)
         }
         CompositionLocalProvider(
-            LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr
+            LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
         ) {
             AppTheme(isDarkMode, dynamicColor) {
                 LaunchedEffect(initialDataSaved) {
@@ -93,34 +88,42 @@ fun App(
                 }
                 val startDestination = if (initialDataSaved) DashboardRoute else OnBoardingRoute()
 
-
-                val englishTopLevelRoutes = listOf<AppTopLevelRoutes>(
-                    AppTopLevelRoutes.Dashboard,
-                )
-                val arabicTopLevelRoutes = listOf<AppTopLevelRoutes>(
-                    AppTopLevelRoutes.Dashboard,
-                )
+                val englishTopLevelRoutes =
+                    listOf<AppTopLevelRoutes>(
+                        AppTopLevelRoutes.Dashboard,
+                    )
+                val arabicTopLevelRoutes =
+                    listOf<AppTopLevelRoutes>(
+                        AppTopLevelRoutes.Dashboard,
+                    )
                 val topLevelRoutes = if (appLanguage.isRtl) arabicTopLevelRoutes.reversed() else englishTopLevelRoutes
                 val adaptiveInfo = currentWindowAdaptiveInfo()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination by remember(navBackStackEntry) { derivedStateOf { navBackStackEntry?.destination } }
+                val currentDestination by remember(
+                    navBackStackEntry,
+                ) { derivedStateOf { navBackStackEntry?.destination } }
 
                 val navSuiteType by remember(navBackStackEntry) {
                     derivedStateOf {
                         with(adaptiveInfo) {
                             if (
-                                topLevelRoutes.any { topLevelRoute -> currentDestination?.hasRoute(topLevelRoute.route::class) == true }) {
+                                topLevelRoutes.any { topLevelRoute ->
+                                    currentDestination?.hasRoute(topLevelRoute.route::class) ==
+                                        true
+                                }
+                            ) {
                                 when (getPlatform().asSlug()) {
-                                    PlatformsSlugs.WEB if (adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) -> {
+                                    PlatformsSlugs.WEB if (
+                                        adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
+                                            WindowWidthSizeClass.EXPANDED
+                                    ) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
                                     else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(this)
                                 }
-
                             } else {
                                 NavigationSuiteType.None
-
                             }
                         }
                     }
@@ -129,33 +132,35 @@ fun App(
                     Napier.d("LaunchedEffect: $currentDestination ${currentDestination?.route}")
                 }
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()
-                        .navigationBarsPadding()
-                        .background(MaterialTheme.colorScheme.background),
-
-                    ) {
-
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
+                            .background(MaterialTheme.colorScheme.background),
+                ) {
                 }
                 NavigationSuiteScaffoldLayout(
                     navigationSuite = {
                         AppNavigationSuite(
                             navigationSuiteType = navSuiteType,
                             builder = {
-                                set(NavigationSuiteType.NavigationDrawer) { items, primaryActionContent, verticalArrangement, colors ->
+                                set(
+                                    NavigationSuiteType.NavigationDrawer,
+                                ) { items, primaryActionContent, verticalArrangement, colors ->
                                     AppAlwaysExpandedNavigationDrawer(
                                         items = items,
                                         primaryActionContent = primaryActionContent,
                                         verticalArrangement = verticalArrangement,
-                                        colors = colors
+                                        colors = colors,
                                     )
                                 }
                             },
-                            navigationSuiteColors = NavigationSuiteDefaults.colors(
-                                navigationDrawerContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
-                                navigationDrawerContentColor = AppTheme.colors.surfaceLight,
-                            ),
+                            navigationSuiteColors =
+                                NavigationSuiteDefaults.colors(
+                                    navigationDrawerContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
+                                    navigationDrawerContentColor = AppTheme.colors.surfaceLight,
+                                ),
                             content = {
                                 topLevelRoutes.forEach { item ->
 
@@ -163,7 +168,7 @@ fun App(
                                         icon = {
                                             Icon(
                                                 imageVector = item.icon,
-                                                contentDescription = stringResource(item.label)
+                                                contentDescription = stringResource(item.label),
                                             )
                                         },
                                         label = { Text(stringResource(item.label).orEmpty()) },
@@ -171,13 +176,19 @@ fun App(
                                         onClick = {
                                             if (topLevelRoutes.any { topLevelRoute ->
                                                     currentDestination!!.hasRoute(topLevelRoute.route::class)
-                                                }) {
+                                                }
+                                            ) {
                                                 navController.navigate(item.route) {
                                                     popUpTo(0) { inclusive = true }
                                                 }
                                             } else {
                                                 navController.navigate(item.route) {
-                                                    popUpTo(navController.graph.findStartDestination().route.orEmpty()) {
+                                                    popUpTo(
+                                                        navController.graph
+                                                            .findStartDestination()
+                                                            .route
+                                                            .orEmpty(),
+                                                    ) {
                                                         saveState = true
                                                     }
                                                     launchSingleTop = true
@@ -185,17 +196,18 @@ fun App(
                                                 }
                                             }
                                         },
-                                        colors = AppNavigationItemColors.defaultColors().copy(
-                                            selectedIconColor = AppTheme.colors.primary,
-                                            unselectedIconColor = AppTheme.colors.surfaceLight,
-                                            selectedTextColor = AppTheme.colors.primary,
-                                            unselectedTextColor = AppTheme.colors.surfaceLight,
-                                            selectedContainerColor = AppTheme.colors.surfaceLight,
-                                            unselectedContainerColor = Color.Transparent,
-                                        )
+                                        colors =
+                                            AppNavigationItemColors.defaultColors().copy(
+                                                selectedIconColor = AppTheme.colors.primary,
+                                                unselectedIconColor = AppTheme.colors.surfaceLight,
+                                                selectedTextColor = AppTheme.colors.primary,
+                                                unselectedTextColor = AppTheme.colors.surfaceLight,
+                                                selectedContainerColor = AppTheme.colors.surfaceLight,
+                                                unselectedContainerColor = Color.Transparent,
+                                            ),
                                     )
                                 }
-                            }
+                            },
                         )
                     },
                     layoutType = navSuiteType,
@@ -203,7 +215,7 @@ fun App(
                     NavHost(
                         navController = navController,
                         startDestination = startDestination,
-                        modifier = Modifier
+                        modifier = Modifier,
                     ) {
                         composable<DashboardRoute> {
                             val getAllAccounts = koinInject<GetAllAccounts>()
@@ -216,7 +228,7 @@ fun App(
                                     },
                                     onFailure = {
                                         // Handle failure
-                                    }
+                                    },
                                 )
                             }
                             Text("Masarify App")
@@ -229,9 +241,10 @@ fun App(
                 Snackbar()
             }
         }
-
     }
 }
 
-fun isSelected(route: Route, currentDestination: NavDestination?) =
-    currentDestination?.hierarchy?.any { it.route == route.route } == true
+fun isSelected(
+    route: Route,
+    currentDestination: NavDestination?,
+) = currentDestination?.hierarchy?.any { it.route == route.route } == true

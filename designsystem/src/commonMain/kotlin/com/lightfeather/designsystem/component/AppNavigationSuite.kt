@@ -3,7 +3,6 @@ package com.lightfeather.designsystem.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -33,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 // --- DATA / ITEM SCOPE ----------------------------------------------------
 
 /**
@@ -48,9 +46,8 @@ data class AppNavItem(
     val alwaysShowLabel: Boolean? = null,
     val enabled: Boolean = true,
     val badge: (@Composable () -> Unit)? = null,
-    val colors: AppNavigationItemColors
+    val colors: AppNavigationItemColors,
 )
-
 
 data class AppNavigationItemColors(
     val selectedIconColor: Color,
@@ -100,18 +97,19 @@ class AppNavigationItemsScope internal constructor() {
         alwaysShowLabel: Boolean? = null,
         enabled: Boolean = true,
         badge: (@Composable () -> Unit)? = null,
-        colors: AppNavigationItemColors
+        colors: AppNavigationItemColors,
     ) {
-        items += AppNavItem(
-            selected = selected,
-            onClick = onClick,
-            icon = icon,
-            label = label,
-            alwaysShowLabel = alwaysShowLabel,
-            enabled = enabled,
-            badge = badge,
-            colors = colors
-        )
+        items +=
+            AppNavItem(
+                selected = selected,
+                onClick = onClick,
+                icon = icon,
+                label = label,
+                alwaysShowLabel = alwaysShowLabel,
+                enabled = enabled,
+                badge = badge,
+                colors = colors,
+            )
     }
 }
 
@@ -128,13 +126,14 @@ class AppNavigationItemsScope internal constructor() {
 class AppNavigationSuiteScope {
     private val map =
         mutableMapOf<
-                NavigationSuiteType,
-                @Composable (
-                    items: List<AppNavItem>,
-                    primaryActionContent: @Composable () -> Unit,
-                    verticalArrangement: Arrangement.Vertical,
-                    colors: NavigationSuiteColors
-                ) -> Unit>()
+            NavigationSuiteType,
+            @Composable (
+                items: List<AppNavItem>,
+                primaryActionContent: @Composable () -> Unit,
+                verticalArrangement: Arrangement.Vertical,
+                colors: NavigationSuiteColors,
+            ) -> Unit,
+        >()
 
     fun set(
         type: NavigationSuiteType,
@@ -142,20 +141,23 @@ class AppNavigationSuiteScope {
             items: List<AppNavItem>,
             primaryActionContent: @Composable () -> Unit,
             verticalArrangement: Arrangement.Vertical,
-            colors: NavigationSuiteColors
-        ) -> Unit
+            colors: NavigationSuiteColors,
+        ) -> Unit,
     ) {
         map[type] = container
     }
 
     internal fun resolve(
-        type: NavigationSuiteType
-    ): (@Composable (
-        items: List<AppNavItem>,
-        primaryActionContent: @Composable () -> Unit,
-        verticalArrangement: Arrangement.Vertical,
-        colors: NavigationSuiteColors
-    ) -> Unit)? = map[type]
+        type: NavigationSuiteType,
+    ): (
+        @Composable (
+            items: List<AppNavItem>,
+            primaryActionContent: @Composable () -> Unit,
+            verticalArrangement: Arrangement.Vertical,
+            colors: NavigationSuiteColors,
+        ) -> Unit
+    )? =
+        map[type]
 }
 
 // --- APP NAVIGATION SUITE -------------------------------------------------
@@ -170,12 +172,8 @@ fun AppNavigationSuite(
     // Items DSL (declare items once)
     content: @Composable AppNavigationItemsScope.() -> Unit,
     // Container overrides
-    builder: AppNavigationSuiteScope.() -> Unit = {}
+    builder: AppNavigationSuiteScope.() -> Unit = {},
 ) {
-
-
-
-
     // Build container overrides
     val suiteScope = remember { AppNavigationSuiteScope() }.apply(builder)
 
@@ -191,14 +189,9 @@ fun AppNavigationSuite(
     // Just snapshot contents so Render helpers see current state.
     val items: List<AppNavItem> by remember(itemsScope.items) { derivedStateOf { itemsScope.items.toList() } }
 
-
-
-
-
     LaunchedEffect(Unit) { /* no-op to satisfy lint; items are reset every composition below */ }
     itemsScope.clear()
     content(itemsScope) // this is a @Composable invocation that will run in the composition and *only* add items
-
 
     // Resolve custom container if provided
     val customContainer = suiteScope.resolve(navigationSuiteType)
@@ -213,11 +206,12 @@ fun AppNavigationSuite(
     // We choose explicit containers so the items DSL is universal but the fallback uses Material components.
     when (navigationSuiteType) {
         NavigationSuiteType.ShortNavigationBarCompact,
-        NavigationSuiteType.ShortNavigationBarMedium -> {
+        NavigationSuiteType.ShortNavigationBarMedium,
+        -> {
             ShortNavigationBar(
                 modifier = modifier,
                 containerColor = navigationSuiteColors.shortNavigationBarContainerColor,
-                contentColor = navigationSuiteColors.shortNavigationBarContentColor
+                contentColor = navigationSuiteColors.shortNavigationBarContentColor,
             ) {
                 RenderAsNavigationBarItems(items)
             }
@@ -239,7 +233,7 @@ fun AppNavigationSuite(
                 modifier = modifier,
                 header = primaryActionContent,
                 arrangement = navigationItemVerticalArrangement,
-                colors = navigationSuiteColors.wideNavigationRailColors
+                colors = navigationSuiteColors.wideNavigationRailColors,
             ) {
                 RenderAsRailItems(items, navigationItemVerticalArrangement)
             }
@@ -251,7 +245,7 @@ fun AppNavigationSuite(
                 header = primaryActionContent,
                 state = rememberWideNavigationRailState(initialValue = WideNavigationRailValue.Expanded),
                 arrangement = navigationItemVerticalArrangement,
-                colors = navigationSuiteColors.wideNavigationRailColors
+                colors = navigationSuiteColors.wideNavigationRailColors,
             ) {
                 RenderAsRailItems(items, navigationItemVerticalArrangement)
             }
@@ -262,7 +256,7 @@ fun AppNavigationSuite(
                 modifier = modifier,
                 header = { primaryActionContent() },
                 containerColor = navigationSuiteColors.navigationRailContainerColor,
-                contentColor = navigationSuiteColors.navigationRailContentColor
+                contentColor = navigationSuiteColors.navigationRailContentColor,
             ) {
                 if (
                     navigationItemVerticalArrangement == Arrangement.Center ||
@@ -281,7 +275,7 @@ fun AppNavigationSuite(
             PermanentDrawerSheet(
                 modifier = modifier,
                 drawerContainerColor = navigationSuiteColors.navigationDrawerContainerColor,
-                drawerContentColor = navigationSuiteColors.navigationDrawerContentColor
+                drawerContentColor = navigationSuiteColors.navigationDrawerContentColor,
             ) {
                 primaryActionContent()
                 if (
@@ -310,18 +304,22 @@ private fun RenderAsNavigationBarItems(items: List<AppNavItem>) {
             icon = { it.icon() },
             label = it.label,
             enabled = it.enabled,
-            colors = ShortNavigationBarItemDefaults.colors(
-                selectedIconColor = it.colors.selectedIconColor,
-                unselectedIconColor = it.colors.unselectedIconColor,
-                selectedTextColor = it.colors.selectedTextColor,
-                unselectedTextColor = it.colors.unselectedTextColor
-            )
+            colors =
+                ShortNavigationBarItemDefaults.colors(
+                    selectedIconColor = it.colors.selectedIconColor,
+                    unselectedIconColor = it.colors.unselectedIconColor,
+                    selectedTextColor = it.colors.selectedTextColor,
+                    unselectedTextColor = it.colors.unselectedTextColor,
+                ),
         )
     }
 }
 
 @Composable
-private fun RenderAsRailItems(items: List<AppNavItem>, arrangement: Arrangement.Vertical) {
+private fun RenderAsRailItems(
+    items: List<AppNavItem>,
+    arrangement: Arrangement.Vertical,
+) {
     // Material's NavigationRailItem expects a slightly different API but we can map
     items.forEach { item ->
         NavigationRailItem(
@@ -331,12 +329,13 @@ private fun RenderAsRailItems(items: List<AppNavItem>, arrangement: Arrangement.
             label = item.label,
             alwaysShowLabel = item.alwaysShowLabel ?: false,
             enabled = item.enabled,
-            colors = NavigationRailItemDefaults.colors(
-                selectedIconColor = item.colors.selectedIconColor,
-                unselectedIconColor = item.colors.unselectedIconColor,
-                selectedTextColor = item.colors.selectedTextColor,
-                unselectedTextColor = item.colors.unselectedTextColor
-            )
+            colors =
+                NavigationRailItemDefaults.colors(
+                    selectedIconColor = item.colors.selectedIconColor,
+                    unselectedIconColor = item.colors.unselectedIconColor,
+                    selectedTextColor = item.colors.selectedTextColor,
+                    unselectedTextColor = item.colors.unselectedTextColor,
+                ),
         )
     }
 }
@@ -351,19 +350,19 @@ private fun RenderAsDrawerItems(items: List<AppNavItem>) {
             selected = item.selected,
             onClick = item.onClick,
             icon = { item.icon() },
-            colors = NavigationDrawerItemDefaults.colors(
-                selectedContainerColor = item.colors.selectedContainerColor,
-                unselectedContainerColor = item.colors.unselectedContainerColor,
-                selectedTextColor = item.colors.selectedTextColor,
-                unselectedTextColor = item.colors.unselectedTextColor,
-                selectedIconColor = item.colors.selectedIconColor,
-                unselectedIconColor = item.colors.unselectedIconColor
-            )
+            colors =
+                NavigationDrawerItemDefaults.colors(
+                    selectedContainerColor = item.colors.selectedContainerColor,
+                    unselectedContainerColor = item.colors.unselectedContainerColor,
+                    selectedTextColor = item.colors.selectedTextColor,
+                    unselectedTextColor = item.colors.unselectedTextColor,
+                    selectedIconColor = item.colors.selectedIconColor,
+                    unselectedIconColor = item.colors.unselectedIconColor,
+                ),
             // note: NavigationDrawerItem has many params; adapt as you need
         )
     }
 }
-
 
 @Preview
 @Composable
@@ -373,7 +372,7 @@ private fun PreviewAppNavigationSuite() {
             navigationSuiteType = NavigationSuiteType.NavigationBar,
             modifier = Modifier.fillMaxSize(),
             builder = {},
-            content = {}
+            content = {},
         )
     }
 }

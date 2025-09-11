@@ -1,4 +1,5 @@
 package com.lightfeather.domain.model.error
 
-
-data class InvalidTransaction(override val message: String) : AppError
+data class InvalidTransaction(
+    override val message: String,
+) : AppError

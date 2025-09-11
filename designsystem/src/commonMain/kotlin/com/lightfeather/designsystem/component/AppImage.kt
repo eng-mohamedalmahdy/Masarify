@@ -23,7 +23,6 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun AppImage(
     model: Any?,
@@ -42,19 +41,18 @@ fun AppImage(
     val isPreview = LocalInspectionMode.current
 
     if (isPreview) {
-
         Image(
-            painter = placeholder?.let { painterResource(resource = it) }
-                ?: mokoPlaceholder?.let { painterResource(mokoPlaceholder) }
-                ?: ColorPainter(Color.Gray),
+            painter =
+                placeholder?.let { painterResource(resource = it) }
+                    ?: mokoPlaceholder?.let { painterResource(mokoPlaceholder) }
+                    ?: ColorPainter(Color.Gray),
             contentDescription = contentDescription,
             modifier = modifier,
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha,
-            colorFilter = colorFilter
+            colorFilter = colorFilter,
         )
-
     } else if (model is Painter) {
         Image(
             painter = model,
@@ -63,7 +61,7 @@ fun AppImage(
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha,
-            colorFilter = colorFilter
+            colorFilter = colorFilter,
         )
     } else if (model is DrawableResource) {
         Image(
@@ -73,7 +71,7 @@ fun AppImage(
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha,
-            colorFilter = colorFilter
+            colorFilter = colorFilter,
         )
     } else if (model is ImageVector) {
         Image(
@@ -83,10 +81,9 @@ fun AppImage(
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha,
-            colorFilter = colorFilter
+            colorFilter = colorFilter,
         )
     } else {
-
         AsyncImage(
             model = model,
             error = errorPlaceholder?.let { painterResource(resource = it) },
@@ -104,7 +101,6 @@ fun AppImage(
         )
     }
 }
-
 
 @Preview
 @Composable

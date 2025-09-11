@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.util.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -31,10 +30,11 @@ fun AppAlwaysExpandedNavigationDrawer(
 ) {
     Column(
         verticalArrangement = verticalArrangement,
-        modifier = Modifier
-            .fillMaxHeight()
-            .background(colors.navigationDrawerContainerColor)
-            .widthIn(max = DrawerDefaults.MaximumDrawerWidth)
+        modifier =
+            Modifier
+                .fillMaxHeight()
+                .background(colors.navigationDrawerContainerColor)
+                .widthIn(max = DrawerDefaults.MaximumDrawerWidth),
     ) {
         items.forEach { item ->
             NavigationDrawerItem(
@@ -42,55 +42,55 @@ fun AppAlwaysExpandedNavigationDrawer(
                 label = { item.label?.invoke() },
                 selected = item.selected,
                 onClick = item.onClick,
-                colors = NavigationDrawerItemDefaults.colors(
-                    selectedContainerColor = item.colors.selectedContainerColor,
-                    unselectedContainerColor = item.colors.unselectedContainerColor,
-                    selectedIconColor = item.colors.selectedIconColor,
-                    unselectedIconColor = item.colors.unselectedIconColor,
-                    selectedTextColor = item.colors.selectedTextColor,
-                    unselectedTextColor = item.colors.unselectedTextColor,
-                    selectedBadgeColor = item.colors.indicatorColor,
-                    unselectedBadgeColor = item.colors.unselectedTextColor
-                ),
-                shape = RectangleShape
+                colors =
+                    NavigationDrawerItemDefaults.colors(
+                        selectedContainerColor = item.colors.selectedContainerColor,
+                        unselectedContainerColor = item.colors.unselectedContainerColor,
+                        selectedIconColor = item.colors.selectedIconColor,
+                        unselectedIconColor = item.colors.unselectedIconColor,
+                        selectedTextColor = item.colors.selectedTextColor,
+                        unselectedTextColor = item.colors.unselectedTextColor,
+                        selectedBadgeColor = item.colors.indicatorColor,
+                        unselectedBadgeColor = item.colors.unselectedTextColor,
+                    ),
+                shape = RectangleShape,
             )
-
         }
         primaryActionContent()
-
     }
 }
-
 
 @Preview
 @Composable
 private fun PreviewAppNavigationDrawer() {
     AppTheme {
         AppAlwaysExpandedNavigationDrawer(
-            items = List(4) {
-                AppNavItem(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu"
-                        )
-                    },
-                    label = { Text("Menu") },
-                    selected = it == 0,
-                    onClick = {},
-                    colors = AppNavigationItemColors.defaultColors().copy(
-                        selectedIconColor = AppTheme.colors.primary,
-                        unselectedIconColor = AppTheme.colors.surfaceLight,
-                        selectedTextColor = AppTheme.colors.primary,
-                        unselectedTextColor = AppTheme.colors.surfaceLight,
-                        selectedContainerColor = AppTheme.colors.surfaceLight,
-                        unselectedContainerColor = Color.Transparent,
+            items =
+                List(4) {
+                    AppNavItem(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Menu",
+                            )
+                        },
+                        label = { Text("Menu") },
+                        selected = it == 0,
+                        onClick = {},
+                        colors =
+                            AppNavigationItemColors.defaultColors().copy(
+                                selectedIconColor = AppTheme.colors.primary,
+                                unselectedIconColor = AppTheme.colors.surfaceLight,
+                                selectedTextColor = AppTheme.colors.primary,
+                                unselectedTextColor = AppTheme.colors.surfaceLight,
+                                selectedContainerColor = AppTheme.colors.surfaceLight,
+                                unselectedContainerColor = Color.Transparent,
+                            ),
                     )
-                )
-            },
+                },
             primaryActionContent = {
                 // Primary action content (e.g., a logo or header)
-            }
+            },
         )
     }
 }
