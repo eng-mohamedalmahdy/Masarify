@@ -33,9 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
-import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.model.UiBankAccount
@@ -63,11 +61,11 @@ fun BankAccountItem(
         targetValue = if (hoverState) MaterialTheme.colorScheme.primary else accountColor,
         label = "borderColorAnimated",
     )
-    val borderThicknessAnimated = if (hoverState) AppTheme.dimens.border.thin else 0.dp
+    val borderThicknessAnimated = if (hoverState) AppTheme.dimens.border.thin else AppTheme.dimens.elevation.level0
     Card(
         elevation =
             CardDefaults.cardElevation(
-                defaultElevation = 0.dp,
+                defaultElevation = AppTheme.dimens.elevation.level0,
                 hoveredElevation = AppTheme.dimens.elevation.component.card,
             ),
         modifier =
@@ -267,7 +265,7 @@ private fun BankAccountActions(
                     }
                 }
                 Text(
-                    text =  stringResource(MR.strings.edit).orEmpty(),
+                    text = stringResource(MR.strings.edit).orEmpty(),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

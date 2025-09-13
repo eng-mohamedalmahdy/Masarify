@@ -33,7 +33,6 @@ fun SnackbarHost(
     snackbar: @Composable (SnackbarMessageData) -> Unit = { snackbarMessageData ->
         Snackbar(
             message = snackbarMessageData.message,
-            onDismiss = { snackbarMessageData.dismiss() },
         )
     },
 ) {
@@ -69,8 +68,8 @@ private fun SnackbarDuration.toMillis(
     val original =
         when (this) {
             SnackbarDuration.Indefinite -> Long.MAX_VALUE
-            SnackbarDuration.Long -> LongDurationMillis
-            SnackbarDuration.Short -> ShortDurationMillis
+            SnackbarDuration.Long -> LONG_DURATION_MILLIS
+            SnackbarDuration.Short -> SHORT_DURATION_MILLIS
         }
 
     if (accessibilityManager == null) {
@@ -107,8 +106,8 @@ private fun FadeInFadeOutWithScale(
         keys.filterNotNull().mapTo(state.items) { key ->
             FadeInFadeOutAnimationItem(key) { children ->
                 val isVisible = key == current
-                val duration = if (isVisible) SnackbarFadeInMillis else SnackbarFadeOutMillis
-                val delay = SnackbarFadeOutMillis + SnackbarInBetweenDelayMillis
+                val duration = if (isVisible) SNACK_BAR_FADE_IN_MILLIS else SNACK_BAR_FADE_OUT_MILLIS
+                val delay = SNACK_BAR_FADE_OUT_MILLIS + SNACK_BAR_IN_BETWEEN_DELAY_MILLIS
                 val animationDelay = if (isVisible && keys.filterNotNull().size != 1) delay else 0
                 val opacity =
                     animatedOpacity(
@@ -221,7 +220,7 @@ private fun animatedScale(
         if (!visible) {
             1f
         } else {
-            SnackbarInvisibleScaleFactor
+            SNACK_BAR_INVISIBLE_SCALE_FACTOR
         }
 
     val scale =
@@ -234,7 +233,7 @@ private fun animatedScale(
             if (visible) {
                 1f
             } else {
-                SnackbarInvisibleScaleFactor
+                SNACK_BAR_INVISIBLE_SCALE_FACTOR
             }
 
         scale.animateTo(
@@ -246,10 +245,10 @@ private fun animatedScale(
     return scale.asState()
 }
 
-private const val SnackbarFadeInMillis = 150
-private const val SnackbarFadeOutMillis = 75
-private const val SnackbarInvisibleScaleFactor = 0.8f
-private const val SnackbarInBetweenDelayMillis = 0
+private const val SNACK_BAR_FADE_IN_MILLIS = 150
+private const val SNACK_BAR_FADE_OUT_MILLIS = 75
+private const val SNACK_BAR_INVISIBLE_SCALE_FACTOR = 0.8f
+private const val SNACK_BAR_IN_BETWEEN_DELAY_MILLIS = 1
 
-private const val LongDurationMillis = 10000L
-private const val ShortDurationMillis = 4000L
+private const val LONG_DURATION_MILLIS = 10000L
+private const val SHORT_DURATION_MILLIS = 4000L

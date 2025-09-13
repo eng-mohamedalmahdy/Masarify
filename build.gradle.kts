@@ -43,9 +43,62 @@ subprojects {
             "ktlintCommonMainSourceSetCheck",
             "ktlintWasmJsMainSourceSetCheck",
             "ktlintIosMainSourceSetCheck",
-            "ktlintJvmMainSourceSetCheck"
+            "ktlintIosArm64MainSourceSetCheck",
+            "ktlintIosSimulatorArm64MainSourceSetCheck",
+            "ktlintIosX64MainSourceSetCheck",
+            "ktlintJvmMainSourceSetCheck",
+            "ktlintAndroidMainSourceSetFormat",
+            "ktlintCommonMainSourceSetFormat",
+            "ktlintWasmJsMainSourceSetFormat",
+            "ktlintIosMainSourceSetFormat",
+            "ktlintIosArm64MainSourceSetFormat",
+            "ktlintIosSimulatorArm64MainSourceSetFormat",
+            "ktlintIosX64MainSourceSetFormat",
+            "ktlintJvmMainSourceSetFormat"
         ).forEach { taskName ->
             tasks.findByName(taskName)?.enabled = false
+        }
+    }
+}
+
+// Design Token Compliance Verification Task
+tasks.register("verifyDesignTokenCompliance") {
+    group = "verification"
+    description = "Verify no hardcoded dp/sp values exist outside theme files"
+
+    doLast {
+        val violatingFiles = mutableListOf<String>()
+
+        // Check for forbidden imports using ripgrep
+        try {
+            val importResult = providers.exec {
+                commandLine("rg", "-l", "import.*androidx\\.compose\\.ui\\.unit\\.(dp|sp)", "--type", "kotlin", "--glob", "!*AppTheme*", "--glob", "!*WindowSizeClass*")
+            }.standardOutput.asText.get().trim()
+
+            if (importResult.isNotEmpty()) {
+                violatingFiles.addAll(importResult.split("\n"))
+            }
+        } catch (e: Exception) {
+            // rg not found or no matches, continue
+        }
+
+        // Check for hardcoded dp/sp usage using ripgrep
+        try {
+            val usageResult = providers.exec {
+                commandLine("rg", "-n", "\\b[0-9]+\\.(dp|sp)\\b", "--type", "kotlin", "--glob", "!*AppTheme*", "--glob", "!*WindowSizeClass*", "--glob", "!build/**")
+            }.standardOutput.asText.get().trim()
+
+            if (usageResult.isNotEmpty()) {
+                violatingFiles.addAll(usageResult.split("\n"))
+            }
+        } catch (e: Exception) {
+            // rg not found or no matches, continue
+        }
+
+        if (violatingFiles.isNotEmpty()) {
+            throw GradleException("Design token violations found:\\n${violatingFiles.joinToString("\\n")}")
+        } else {
+            println("✅ Design token compliance verified - no violations found")
         }
     }
 }

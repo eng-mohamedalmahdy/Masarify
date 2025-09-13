@@ -1,7 +1,6 @@
 package com.lightfeather.designsystem.component.molecules.snackbar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -56,8 +55,6 @@ fun Snackbar() {
 @Composable
 fun Snackbar(
     message: SnackbarMessage,
-    onDismiss: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = AppTheme.shapes.medium,
 ) {
     Snackbar(

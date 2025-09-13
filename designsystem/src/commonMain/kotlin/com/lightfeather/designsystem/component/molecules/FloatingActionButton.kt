@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.component.atoms.Icon
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -115,7 +114,7 @@ private fun PreviewFloatingActionButton() {
                     style = MaterialTheme.typography.titleLarge,
                 )
             },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
         )
     }
 }
@@ -132,7 +131,7 @@ private fun PreviewSmallFloatingActionButton() {
                     style = MaterialTheme.typography.titleMedium,
                 )
             },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
         )
     }
 }
@@ -143,7 +142,7 @@ private fun PreviewLargeFloatingActionButton() {
     AppTheme {
         LargeFloatingActionButton(
             onClick = { },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
         ) {
         }
     }

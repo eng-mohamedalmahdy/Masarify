@@ -89,6 +89,7 @@ class AppNavigationItemsScope internal constructor() {
      * We store composable lambdas for icon/label/badge — they will be invoked later
      * when rendering in the container.
      */
+
     fun item(
         selected: Boolean,
         onClick: () -> Unit,
@@ -235,7 +236,7 @@ fun AppNavigationSuite(
                 arrangement = navigationItemVerticalArrangement,
                 colors = navigationSuiteColors.wideNavigationRailColors,
             ) {
-                RenderAsRailItems(items, navigationItemVerticalArrangement)
+                RenderAsRailItems(items)
             }
         }
 
@@ -247,7 +248,7 @@ fun AppNavigationSuite(
                 arrangement = navigationItemVerticalArrangement,
                 colors = navigationSuiteColors.wideNavigationRailColors,
             ) {
-                RenderAsRailItems(items, navigationItemVerticalArrangement)
+                RenderAsRailItems(items)
             }
         }
 
@@ -264,7 +265,7 @@ fun AppNavigationSuite(
                 ) {
                     Spacer(Modifier.weight(1f))
                 }
-                RenderAsRailItems(items, navigationItemVerticalArrangement)
+                RenderAsRailItems(items)
                 if (navigationItemVerticalArrangement == Arrangement.Center) {
                     Spacer(Modifier.weight(1f))
                 }
@@ -297,7 +298,7 @@ fun AppNavigationSuite(
 
 @Composable
 private fun RenderAsNavigationBarItems(items: List<AppNavItem>) {
-    items.forEach { it ->
+    items.forEach {
         ShortNavigationBarItem(
             selected = it.selected,
             onClick = it.onClick,
@@ -319,7 +320,6 @@ private fun RenderAsNavigationBarItems(items: List<AppNavItem>) {
 @Composable
 private fun RenderAsRailItems(
     items: List<AppNavItem>,
-    arrangement: Arrangement.Vertical,
 ) {
     // Material's NavigationRailItem expects a slightly different API but we can map
     items.forEach { item ->

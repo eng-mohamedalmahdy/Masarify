@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -75,7 +74,7 @@ private fun PreviewIconButton() {
                     style = MaterialTheme.typography.titleLarge,
                 )
             },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
         )
     }
 }

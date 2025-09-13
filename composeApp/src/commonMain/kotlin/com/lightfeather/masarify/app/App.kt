@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -271,7 +270,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         composable<DashboardRoute> {
                             BankAccountItem(
                                 UiBankAccount.dummy,
-                                Modifier.padding(8.dp).fillMaxWidth(),
+                                Modifier.padding(AppTheme.dimens.medium).fillMaxWidth(),
                                 {},
                                 {},
                                 {},

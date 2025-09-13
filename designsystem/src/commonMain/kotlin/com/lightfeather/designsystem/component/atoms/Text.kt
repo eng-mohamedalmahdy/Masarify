@@ -7,7 +7,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -316,8 +315,8 @@ fun LabelSmall(
 private fun PreviewTextComponents() {
     AppTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium),
         ) {
             DisplayLarge("Display Large")
             DisplayMedium("Display Medium")

@@ -27,7 +27,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.PrimaryButton
 import com.lightfeather.designsystem.component.molecules.TextField
@@ -90,7 +89,7 @@ internal fun OnBoardingPageContent(
                     AppImage(
                         model = painterResource(Res.drawable.compose_multiplatform),
                         contentDescription = null,
-                        modifier = Modifier.size(100.dp),
+                        modifier = Modifier.size(AppTheme.dimens.massive),
                         placeholder = Res.drawable.compose_multiplatform,
                     )
                     Column {

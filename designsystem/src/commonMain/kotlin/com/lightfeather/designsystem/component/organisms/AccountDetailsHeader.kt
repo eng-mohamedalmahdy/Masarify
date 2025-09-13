@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.SummaryCard
@@ -71,8 +70,7 @@ fun AccountDetailsHeader(
             onTransferMoney = onTransferMoney,
             onEditAccount = onEditAccount,
             onDeleteAccount = onDeleteAccount,
-
-            )
+        )
 
         Spacer(modifier = Modifier.height(AppTheme.dimens.large))
 
@@ -203,7 +201,7 @@ private fun ActionButton(
                 contentColor = Color.White,
                 containerColor = Color.White.copy(alpha = 0.25f),
             ),
-        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(width = 1.dp),
+        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(width = AppTheme.dimens.hairline),
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(AppTheme.dimens.tiny),
     ) {

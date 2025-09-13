@@ -1,23 +1,27 @@
 package com.lightfeather.designsystem.model
 
+import com.lightfeather.designsystem.util.now
+import kotlinx.datetime.LocalDateTime
+
 data class UiTransaction(
     val id: String,
+    val type: UiTransactionType,
     val amount: String,
-    val date: String,
-    val time: String,
+    val dateTime: LocalDateTime,
     val description: String,
     val category: UiCategory,
-    val hasAttachment: Boolean
-){
-    companion object{
-        val dummy = UiTransaction(
-            id = "1",
-            amount = "100",
-            date = "2021-01-01",
-            time = "12:00",
-            description = "description",
-            category = UiCategory.dummy,
-            hasAttachment = false
-        )
+    val hasAttachment: Boolean,
+) {
+    companion object {
+        val dummy =
+            UiTransaction(
+                id = "1",
+                amount = "100",
+                type = UiTransactionType.EXPENSE,
+                dateTime = LocalDateTime.now(),
+                description = "Coffee Shop Purchase",
+                category = UiCategory.dummy,
+                hasAttachment = false,
+            )
     }
 }

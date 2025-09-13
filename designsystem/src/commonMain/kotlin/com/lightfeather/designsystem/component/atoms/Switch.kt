@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -67,12 +66,12 @@ fun SwitchWithLabel(
         modifier =
             modifier
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }
-                .padding(vertical = 8.dp),
+                .padding(vertical = AppTheme.dimens.medium),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         label()
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AppTheme.dimens.default))
         Switch(
             checked = checked,
             onCheckedChange = null, // We handle changes through the row's clickable modifier
@@ -87,8 +86,8 @@ fun SwitchWithLabel(
 private fun PreviewSwitch() {
     AppTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
         ) {
             var checked1 by remember { mutableStateOf(false) }
             var checked2 by remember { mutableStateOf(true) }

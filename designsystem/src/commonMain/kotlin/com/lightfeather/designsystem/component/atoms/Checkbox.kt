@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Checkbox as MaterialCheckbox
@@ -69,7 +68,7 @@ fun CheckboxWithLabel(
         modifier =
             modifier
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }
-                .padding(vertical = 8.dp),
+                .padding(vertical = AppTheme.dimens.medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
@@ -78,7 +77,7 @@ fun CheckboxWithLabel(
             enabled = enabled,
             colors = colors,
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(AppTheme.dimens.medium))
         label()
     }
 }
@@ -88,8 +87,8 @@ fun CheckboxWithLabel(
 private fun PreviewCheckbox() {
     AppTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
         ) {
             var checked1 by remember { mutableStateOf(false) }
             var checked2 by remember { mutableStateOf(true) }

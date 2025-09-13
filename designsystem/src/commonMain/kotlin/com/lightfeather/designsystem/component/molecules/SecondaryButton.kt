@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -39,9 +38,9 @@ private fun PreviewSecondaryButton() {
     AppTheme {
         SecondaryButton(
             onClick = { },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
             enabled = true,
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(AppTheme.dimens.default),
             content = {
                 Text("Secondary Button")
             },

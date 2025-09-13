@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -51,7 +50,7 @@ fun RadioButtonWithLabel(
         modifier =
             modifier
                 .clickable(enabled = enabled) { onClick() }
-                .padding(vertical = 8.dp),
+                .padding(vertical = AppTheme.dimens.medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
@@ -60,7 +59,7 @@ fun RadioButtonWithLabel(
             enabled = enabled,
             colors = colors,
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(AppTheme.dimens.medium))
         label()
     }
 }
@@ -99,8 +98,8 @@ fun RadioGroup(
 private fun PreviewRadioButton() {
     AppTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
         ) {
             var selected by remember { mutableStateOf(false) }
 

@@ -7,7 +7,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.VerticalDivider as MaterialVerticalDivider
@@ -15,7 +14,7 @@ import androidx.compose.material3.VerticalDivider as MaterialVerticalDivider
 @Composable
 fun Divider(
     modifier: Modifier = Modifier,
-    thickness: Dp = 1.dp,
+    thickness: Dp = AppTheme.dimens.hairline,
     color: Color = MaterialTheme.colorScheme.outlineVariant,
 ) {
     HorizontalDivider(
@@ -28,7 +27,7 @@ fun Divider(
 @Composable
 fun VerticalDivider(
     modifier: Modifier = Modifier,
-    thickness: Dp = 1.dp,
+    thickness: Dp = AppTheme.dimens.hairline,
     color: Color = MaterialTheme.colorScheme.outlineVariant,
 ) {
     MaterialVerticalDivider(
@@ -45,8 +44,8 @@ fun VerticalDivider(
 private fun PreviewDivider() {
     AppTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
         ) {
             // Horizontal divider
             Text("Above divider")
@@ -54,12 +53,12 @@ private fun PreviewDivider() {
             Text("Below divider")
 
             // Thicker divider
-            Divider(thickness = 4.dp, color = MaterialTheme.colorScheme.primary)
+            Divider(thickness = AppTheme.dimens.small, color = MaterialTheme.colorScheme.primary)
 
             // Row with vertical divider
             Row(
-                modifier = Modifier.height(40.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.height(AppTheme.dimens.component.textField.heightSmall),
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
             ) {
                 Text("Left")
                 VerticalDivider()

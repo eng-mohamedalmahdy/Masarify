@@ -12,7 +12,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.model.UiBottomNavigationItem
 import com.lightfeather.designsystem.theme.AppTheme
@@ -29,7 +28,7 @@ fun AppBottomNavigation(
     NavigationBar(
         modifier =
             modifier.shadow(
-                elevation = 20.dp,
+                elevation = AppTheme.dimens.normal,
                 shape = RectangleShape,
                 clip = true,
             ),
@@ -49,7 +48,9 @@ fun AppBottomNavigation(
                                 .padding(bottom = AppTheme.dimens.small),
                         colorFilter =
                             ColorFilter.tint(
-                                if (selected.not()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
+                                if (selected.not())
+                                    MaterialTheme.colorScheme.onBackground
+                                else MaterialTheme.colorScheme.primary,
                             ),
                     )
                 },
@@ -58,7 +59,8 @@ fun AppBottomNavigation(
                         stringResource(navigationItem.label),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (selected.not()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
+                        color = if (selected.not()) MaterialTheme.colorScheme.onBackground
+                        else MaterialTheme.colorScheme.primary,
                     )
                 },
                 selected = selected,
@@ -76,7 +78,7 @@ private fun PreviewAppBottomNavigation() {
             navItems = listOf(),
             isCurrentDestination = { true },
             onItemClick = {},
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
         )
     }
 }

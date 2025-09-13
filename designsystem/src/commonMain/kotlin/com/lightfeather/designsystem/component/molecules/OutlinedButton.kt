@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -29,7 +28,15 @@ fun OutlinedButton(
         enabled = enabled,
         contentPadding = contentPadding,
         colors = colors,
-        border = if (enabled) border else BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)),
+        border =
+            if (enabled) {
+                border
+            } else {
+                BorderStroke(
+                    AppTheme.dimens.hairline,
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                )
+            },
         content = content,
     )
 }
@@ -40,7 +47,7 @@ private fun PreviewOutlinedButton() {
     AppTheme {
         OutlinedButton(
             onClick = { },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(AppTheme.dimens.default),
             enabled = true,
             content = {
                 Text("Outlined Button")
