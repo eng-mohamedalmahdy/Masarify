@@ -2,7 +2,9 @@ package com.lightfeather.masarify.app
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -34,11 +38,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.lightfeather.designsystem.component.molecules.listitem.BankAccountItem
+import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
 import com.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
 import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
 import com.lightfeather.designsystem.component.organisms.AppNavigationSuite
-import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
+import com.lightfeather.designsystem.component.organisms.listitem.BankAccountItem
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
@@ -126,7 +130,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                     PlatformsSlugs.WEB if (
                                         adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
                                             WindowWidthSizeClass.EXPANDED
-                                        ) -> {
+                                    ) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
@@ -168,8 +172,8 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                 NavigationSuiteDefaults.colors(
                                     navigationDrawerContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
                                     navigationDrawerContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
-                                    navigationBarContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
-                                    navigationBarContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
+                                    shortNavigationBarContainerColor = MaterialTheme.colorScheme.primary,
+                                    shortNavigationBarContentColor = MaterialTheme.colorScheme.onPrimary,
                                     navigationRailContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
                                     navigationRailContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
                                 ),
@@ -190,7 +194,13 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                                 contentDescription = stringResource(item.label),
                                             )
                                         },
-                                        label = { Text(stringResource(item.label).orEmpty()) },
+                                        label = {
+                                            Text(
+                                                stringResource(item.label).orEmpty(),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                            )
+                                        },
                                         selected = isSelected,
                                         onClick = {
                                             if (topLevelRoutes.any { topLevelRoute ->
@@ -222,15 +232,19 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                                     MaterialTheme.colorScheme.onPrimary.copy(
                                                         alpha = 0.7f,
                                                     ),
-                                                selectedTextColor = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+                                                selectedTextColor =
+                                                    if (navSuiteType ==
+                                                        NavigationSuiteType.NavigationDrawer
+                                                    ) {
+                                                        MaterialTheme.colorScheme.primary
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onPrimary
+                                                    },
                                                 unselectedTextColor =
                                                     if (isDarkMode) {
                                                         MaterialTheme.colorScheme.surface
                                                     } else {
-                                                        MaterialTheme.colorScheme.onPrimary
-                                                            .copy(
-                                                                alpha = 0.7f,
-                                                            )
+                                                        MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                                                     },
                                                 selectedContainerColor = MaterialTheme.colorScheme.surface,
                                                 unselectedContainerColor = Color.Transparent,
@@ -255,9 +269,13 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                             OnBoardingPage()
                         }
                         composable<DashboardRoute> {
-                            Text("Masarify App")
-                            BankAccountItem(UiBankAccount.dummy) {
-                            }
+                            BankAccountItem(
+                                UiBankAccount.dummy,
+                                Modifier.padding(8.dp).fillMaxWidth(),
+                                {},
+                                {},
+                                {},
+                            )
                         }
                         composable<AccountsRoute> {
                             Text("Accounts Page")

@@ -310,6 +310,7 @@ private fun RenderAsNavigationBarItems(items: List<AppNavItem>) {
                     unselectedIconColor = it.colors.unselectedIconColor,
                     selectedTextColor = it.colors.selectedTextColor,
                     unselectedTextColor = it.colors.unselectedTextColor,
+                    selectedIndicatorColor = it.colors.indicatorColor,
                 ),
         )
     }

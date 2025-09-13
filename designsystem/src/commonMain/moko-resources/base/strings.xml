@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="test">Test</string>
+    <string name="total_wealth">Total Wealth</string>
+    <string name="accounts_count">%d Accounts</string>
+    <string name="original_values">Original Values</string>
+    
+    <!-- Account Details Header -->
+    <string name="updated_time">Updated %s</string>
+    <string name="add_transaction">Add\nTransaction</string>
+    <string name="transfer">Transfer</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="income">Income</string>
+    <string name="expenses">Expenses</string>
+    <string name="transactions">Transactions</string>
+
+</resources>

@@ -10,14 +10,15 @@ data class UiBankAccount(
     val image: Any?,
 ) {
     companion object {
-        val dummy = UiBankAccount(
-            id = "1",
-            name = "My Bank Account",
-            description = "My personal bank account",
-            balance = "1,000.00",
-            currency = UiCurrency.dummy,
-            color = "#FFFFFF",
-            image = null
-        )
+        val dummy =
+            UiBankAccount(
+                id = "1",
+                name = "My Bank Account",
+                description = "My personal bank account",
+                balance = "1,000.00",
+                currency = UiCurrency.dummy,
+                color = "#FFFFFF",
+                image = null,
+            )
     }
 }

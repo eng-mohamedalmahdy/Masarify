@@ -16,5 +16,7 @@
     <string name="transactions">Transactions</string>
     <string name="accounts">Accounts</string>
     <string name="settings">Settings</string>
+    <string name="transfer">Transfer</string>
+    <string name="edit">Edit</string>
 
 </resources>

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    id("dev.icerock.mobile.multiplatform-resources")
 
     // Code Quality
     alias(libs.plugins.ktlint)
@@ -157,4 +158,7 @@ detekt {
 
 dependencies {
     detektPlugins(libs.detekt.formatting)
+}
+multiplatformResources {
+    resourcesPackage.set(moduleName) // required
 }

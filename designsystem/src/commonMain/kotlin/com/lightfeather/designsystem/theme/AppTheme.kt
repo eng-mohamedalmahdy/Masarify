@@ -56,15 +56,15 @@ object AppTheme {
 
         // Feedback Colors
         val success = Color(0xFF4CAF50) // Green
-        val error = Color(0xFFCF6679)   // Red/Pink
+        val error = Color(0xFFCF6679) // Red/Pink
         val warning = Color(0xFFFFA726) // Orange
-        val info = Color(0xFF42A5F5)    // Blue (optional, fintech clarity)
+        val info = Color(0xFF42A5F5) // Blue (optional, fintech clarity)
 
         // Tonal Variants
         val primaryContainerLight = Color(0xFFB2DFDB) // Soft teal tint
-        val primaryContainerDark = Color(0xFF003D39)  // Deep teal
+        val primaryContainerDark = Color(0xFF003D39) // Deep teal
         val secondaryContainerLight = Color(0xFFFFE0B2) // Soft golden beige
-        val secondaryContainerDark = Color(0xFF5C4630)  // Dark gold-brown
+        val secondaryContainerDark = Color(0xFF5C4630) // Dark gold-brown
 
         internal val light =
             lightColorScheme(
@@ -72,19 +72,16 @@ object AppTheme {
                 onPrimary = Color.White,
                 primaryContainer = primaryContainerLight,
                 onPrimaryContainer = Color(0xFF00201D),
-
                 secondary = secondary,
                 onSecondary = Color(0xFF1C1B17),
                 secondaryContainer = secondaryContainerLight,
                 onSecondaryContainer = Color(0xFF251A00),
-
                 background = backgroundLight,
                 onBackground = Color(0xFF1C1B1F),
                 surface = surfaceLight,
                 onSurface = Color(0xFF1C1B1F),
                 surfaceVariant = surfaceVariantLight,
                 onSurfaceVariant = Color(0xFF49454F),
-
                 error = error,
                 onError = Color.White,
                 outline = outlineLight,
@@ -96,25 +93,21 @@ object AppTheme {
                 onPrimary = Color(0xFF003732),
                 primaryContainer = primaryContainerDark,
                 onPrimaryContainer = Color(0xFFB2DFDB),
-
                 secondary = secondary,
                 onSecondary = Color(0xFF382E1F),
                 secondaryContainer = secondaryContainerDark,
                 onSecondaryContainer = Color(0xFFFFE0B2),
-
                 background = backgroundDark,
                 onBackground = Color(0xFFEDEDED),
                 surface = surfaceDark,
                 onSurface = Color(0xFFF5F5F5),
                 surfaceVariant = surfaceVariantDark,
                 onSurfaceVariant = Color(0xFFCAC4D0),
-
                 error = error,
                 onError = Color.Black,
                 outline = outlineDark,
             )
     }
-
 
     private val NotoSansArabic
         @Composable get() =
