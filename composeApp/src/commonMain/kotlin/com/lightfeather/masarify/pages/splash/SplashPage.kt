@@ -14,14 +14,14 @@ fun SplashPage(viewModel: SplashPageViewModel = koinViewModel()) {
 
     SplashPageContent(
         state = state,
-        onIntent = viewModel::onIntent
+        onIntent = viewModel::onIntent,
     )
 }
 
 @Composable
 internal fun SplashPageContent(
     state: SplashPageState,
-    onIntent: (SplashPageIntent) -> Unit
+    onIntent: (SplashPageIntent) -> Unit,
 ) {
     Text("Splash Page")
 }
@@ -32,7 +32,7 @@ fun SplashScreenPreview() {
     AppTheme {
         SplashPageContent(
             state = SplashPageState(),
-            onIntent = {}
+            onIntent = {},
         )
     }
 }

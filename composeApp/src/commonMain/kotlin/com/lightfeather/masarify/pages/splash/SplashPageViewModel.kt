@@ -19,9 +19,8 @@ import kotlinx.coroutines.launch
 class SplashPageViewModel(
     private val navigator: Navigator,
     private val userRepository: UserRepository,
-    private val bankAccountRepository: AccountRepository
+    private val bankAccountRepository: AccountRepository,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(SplashPageState())
     internal val state: StateFlow<SplashPageState> = _state
 
@@ -35,14 +34,16 @@ class SplashPageViewModel(
                 viewModelScope.launch {
                     Napier.d("SplashPageViewModel: NavigateToStart")
                     delay(3000)
-                    val isUserDataInitialized = userRepository.getUserData().foldResult(
-                        onSuccess = { it != null },
-                        onFailure = { false }
-                    )
-                    val hasBankAccountsAndUserData: Flow<Boolean> = bankAccountRepository.getAccounts().foldResult(
-                        onSuccess = { it.map { it.isNotEmpty() && isUserDataInitialized } },
-                        onFailure = { flowOf(false) }
-                    )
+                    val isUserDataInitialized =
+                        userRepository.getUserData().foldResult(
+                            onSuccess = { it != null },
+                            onFailure = { false },
+                        )
+                    val hasBankAccountsAndUserData: Flow<Boolean> =
+                        bankAccountRepository.getAccounts().foldResult(
+                            onSuccess = { it.map { it.isNotEmpty() && isUserDataInitialized } },
+                            onFailure = { flowOf(false) },
+                        )
                     Napier.d("isUserDataInitialized: $isUserDataInitialized")
                     hasBankAccountsAndUserData.collect { hasBankAccounts ->
                         Napier.d("hasBankAccounts: $hasBankAccounts")

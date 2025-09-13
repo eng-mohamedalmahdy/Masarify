@@ -1,3 +1,3 @@
 package com.lightfeather.masarify.pages.splash
 
-internal  class SplashPageState()
+internal class SplashPageState

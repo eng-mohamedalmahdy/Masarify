@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.TransferWithinAStation
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.lightfeather.designsystem.model.UiBottomNavigationItem
 import com.lightfeather.masarify.MR

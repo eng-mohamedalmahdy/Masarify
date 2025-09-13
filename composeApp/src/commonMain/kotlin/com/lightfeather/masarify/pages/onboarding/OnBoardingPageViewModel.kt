@@ -3,7 +3,7 @@ package com.lightfeather.masarify.pages.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
-import com.lightfeather.designsystem.component.snackbar.SnackbarService
+import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.DomainResult

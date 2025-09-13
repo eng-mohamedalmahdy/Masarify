@@ -28,9 +28,9 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.lightfeather.designsystem.component.AppImage
-import com.lightfeather.designsystem.component.PrimaryButton
-import com.lightfeather.designsystem.component.TextField
+import com.lightfeather.designsystem.component.molecules.AppImage
+import com.lightfeather.designsystem.component.molecules.PrimaryButton
+import com.lightfeather.designsystem.component.molecules.TextField
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.masarify.MR

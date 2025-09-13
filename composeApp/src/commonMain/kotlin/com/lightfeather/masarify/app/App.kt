@@ -34,14 +34,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.lightfeather.designsystem.component.AppAlwaysExpandedNavigationDrawer
-import com.lightfeather.designsystem.component.AppNavigationItemColors
-import com.lightfeather.designsystem.component.AppNavigationSuite
-import com.lightfeather.designsystem.component.snackbar.Snackbar
+import com.lightfeather.designsystem.component.molecules.listitem.BankAccountItem
+import com.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
+import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
+import com.lightfeather.designsystem.component.organisms.AppNavigationSuite
+import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
+import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.domain.model.AppLanguage
-import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.masarify.PlatformsSlugs
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.di.getAppModules
@@ -60,7 +61,6 @@ import dev.icerock.moko.resources.desc.StringDesc
 import io.github.aakira.napier.Napier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.mp.KoinPlatform
 
@@ -167,11 +167,22 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                             navigationSuiteColors =
                                 NavigationSuiteDefaults.colors(
                                     navigationDrawerContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
-                                    navigationDrawerContentColor = AppTheme.colors.surfaceLight,
+                                    navigationDrawerContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
+                                    navigationBarContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
+                                    navigationBarContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
+                                    navigationRailContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
+                                    navigationRailContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
                                 ),
                             content = {
                                 topLevelRoutes.forEach { item ->
-                                    val isSelected by remember(currentDestination) { derivedStateOf{isSelected(item.route, currentDestination)} }
+                                    val isSelected by remember(currentDestination) {
+                                        derivedStateOf {
+                                            isSelected(
+                                                item.route,
+                                                currentDestination,
+                                            )
+                                        }
+                                    }
                                     item(
                                         icon = {
                                             Icon(
@@ -206,12 +217,24 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                         },
                                         colors =
                                             AppNavigationItemColors.defaultColors().copy(
-                                                selectedIconColor = AppTheme.colors.primary,
-                                                unselectedIconColor = AppTheme.colors.surfaceLight,
-                                                selectedTextColor = AppTheme.colors.primary,
-                                                unselectedTextColor = AppTheme.colors.surfaceLight,
-                                                selectedContainerColor = AppTheme.colors.surfaceLight,
+                                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                                unselectedIconColor =
+                                                    MaterialTheme.colorScheme.onPrimary.copy(
+                                                        alpha = 0.7f,
+                                                    ),
+                                                selectedTextColor = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+                                                unselectedTextColor =
+                                                    if (isDarkMode) {
+                                                        MaterialTheme.colorScheme.surface
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onPrimary
+                                                            .copy(
+                                                                alpha = 0.7f,
+                                                            )
+                                                    },
+                                                selectedContainerColor = MaterialTheme.colorScheme.surface,
                                                 unselectedContainerColor = Color.Transparent,
+                                                indicatorColor = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
                                             ),
                                     )
                                 }
@@ -233,6 +256,8 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         }
                         composable<DashboardRoute> {
                             Text("Masarify App")
+                            BankAccountItem(UiBankAccount.dummy) {
+                            }
                         }
                         composable<AccountsRoute> {
                             Text("Accounts Page")
@@ -243,7 +268,6 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         composable<SettingsRoute> {
                             Text("Settings Page")
                         }
-
                     }
                 }
                 Snackbar()
@@ -255,7 +279,9 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
 fun isSelected(
     route: Route,
     currentDestination: NavDestination?,
-) = currentDestination?.hierarchy?.any {
-    Napier.d("${it.route} from ${currentDestination.route}")
-    it.route == route.route
-}.also { Napier.d { "isSelected: $it" } } == true
+) = currentDestination
+    ?.hierarchy
+    ?.any {
+        Napier.d("${it.route} from ${currentDestination.route}")
+        it.route == route.route
+    }.also { Napier.d { "isSelected: $it" } } == true
