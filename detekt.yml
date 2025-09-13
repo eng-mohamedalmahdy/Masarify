@@ -492,7 +492,7 @@ style:
     active: false
   ForbiddenImport:
     active: true
-    forbiddenPatterns: '.*\.(dp|sp)'
+    forbiddenPatterns: 'androidx.compose.ui.unit\.(dp|sp)'
     excludes:
       - '**/theme/AppTheme.kt'
       - '**/theme/**/*Theme*.kt'

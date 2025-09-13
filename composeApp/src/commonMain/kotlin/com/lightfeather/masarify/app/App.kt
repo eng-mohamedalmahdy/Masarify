@@ -90,25 +90,23 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
         CompositionLocalProvider(
             LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
         ) {
-            AppTheme(isDarkMode, dynamicColor) {
+            AppTheme(isDarkMode) {
                 LaunchedEffect(initialDataSaved) {
                     Napier.d("Initial Data Saved: $initialDataSaved")
                 }
 
-                val englishTopLevelRoutes =
-                    listOf<AppTopLevelRoutes>(
-                        AppTopLevelRoutes.Dashboard,
-                        AppTopLevelRoutes.Transactions,
-                        AppTopLevelRoutes.Accounts,
-                        AppTopLevelRoutes.Settings,
-                    )
-                val arabicTopLevelRoutes =
-                    listOf<AppTopLevelRoutes>(
-                        AppTopLevelRoutes.Dashboard,
-                        AppTopLevelRoutes.Transactions,
-                        AppTopLevelRoutes.Accounts,
-                        AppTopLevelRoutes.Settings,
-                    )
+                val englishTopLevelRoutes = listOf<AppTopLevelRoutes>(
+                    AppTopLevelRoutes.Dashboard,
+                    AppTopLevelRoutes.Transactions,
+                    AppTopLevelRoutes.Accounts,
+                    AppTopLevelRoutes.Settings,
+                )
+                val arabicTopLevelRoutes = listOf<AppTopLevelRoutes>(
+                    AppTopLevelRoutes.Dashboard,
+                    AppTopLevelRoutes.Transactions,
+                    AppTopLevelRoutes.Accounts,
+                    AppTopLevelRoutes.Settings,
+                )
                 val topLevelRoutes = if (appLanguage.isRtl) arabicTopLevelRoutes.reversed() else englishTopLevelRoutes
                 val adaptiveInfo = currentWindowAdaptiveInfo()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -119,17 +117,11 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                 val navSuiteType by remember(navBackStackEntry) {
                     derivedStateOf {
                         with(adaptiveInfo) {
-                            if (
-                                topLevelRoutes.any { topLevelRoute ->
-                                    currentDestination?.hasRoute(topLevelRoute.route::class) ==
-                                        true
-                                }
-                            ) {
+                            if (topLevelRoutes.any { topLevelRoute ->
+                                    currentDestination?.hasRoute(topLevelRoute.route::class) == true
+                                }) {
                                 when (getPlatform().asSlug()) {
-                                    PlatformsSlugs.WEB if (
-                                        adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
-                                            WindowWidthSizeClass.EXPANDED
-                                    ) -> {
+                                    PlatformsSlugs.WEB if (adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
@@ -143,14 +135,9 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                 }
 
                 Surface(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .statusBarsPadding()
-                            .navigationBarsPadding()
-                            .background(MaterialTheme.colorScheme.background),
-                ) {
-                }
+                    modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()
+                        .background(MaterialTheme.colorScheme.background),
+                ) {}
                 NavigationSuiteScaffoldLayout(
                     navigationSuite = {
                         AppNavigationSuite(
@@ -167,15 +154,18 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                     )
                                 }
                             },
-                            navigationSuiteColors =
-                                NavigationSuiteDefaults.colors(
-                                    navigationDrawerContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
-                                    navigationDrawerContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
-                                    shortNavigationBarContainerColor = MaterialTheme.colorScheme.primary,
-                                    shortNavigationBarContentColor = MaterialTheme.colorScheme.onPrimary,
-                                    navigationRailContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
-                                    navigationRailContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary,
-                                ),
+                            navigationSuiteColors = NavigationSuiteDefaults.colors(
+                                navigationDrawerContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface
+                                                                   else MaterialTheme.colorScheme.primary,
+                                navigationDrawerContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface
+                                                                   else MaterialTheme.colorScheme.onPrimary,
+                                shortNavigationBarContainerColor = MaterialTheme.colorScheme.primary,
+                                shortNavigationBarContentColor = MaterialTheme.colorScheme.onPrimary,
+                                navigationRailContainerColor = if (isDarkMode) MaterialTheme.colorScheme.surface
+                                                                   else MaterialTheme.colorScheme.primary,
+                                navigationRailContentColor = if (isDarkMode) MaterialTheme.colorScheme.onSurface
+                                                                   else MaterialTheme.colorScheme.onPrimary,
+                            ),
                             content = {
                                 topLevelRoutes.forEach { item ->
                                     val isSelected by remember(currentDestination) {
@@ -204,18 +194,14 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                         onClick = {
                                             if (topLevelRoutes.any { topLevelRoute ->
                                                     currentDestination!!.hasRoute(topLevelRoute.route::class)
-                                                }
-                                            ) {
+                                                }) {
                                                 navController.navigate(item.route) {
                                                     popUpTo(0) { inclusive = true }
                                                 }
                                             } else {
                                                 navController.navigate(item.route) {
                                                     popUpTo(
-                                                        navController.graph
-                                                            .findStartDestination()
-                                                            .route
-                                                            .orEmpty(),
+                                                        navController.graph.findStartDestination().route.orEmpty(),
                                                     ) {
                                                         saveState = true
                                                     }
@@ -224,31 +210,25 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                                 }
                                             }
                                         },
-                                        colors =
-                                            AppNavigationItemColors.defaultColors().copy(
-                                                selectedIconColor = MaterialTheme.colorScheme.primary,
-                                                unselectedIconColor =
-                                                    MaterialTheme.colorScheme.onPrimary.copy(
-                                                        alpha = 0.7f,
-                                                    ),
-                                                selectedTextColor =
-                                                    if (navSuiteType ==
-                                                        NavigationSuiteType.NavigationDrawer
-                                                    ) {
-                                                        MaterialTheme.colorScheme.primary
-                                                    } else {
-                                                        MaterialTheme.colorScheme.onPrimary
-                                                    },
-                                                unselectedTextColor =
-                                                    if (isDarkMode) {
-                                                        MaterialTheme.colorScheme.surface
-                                                    } else {
-                                                        MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
-                                                    },
-                                                selectedContainerColor = MaterialTheme.colorScheme.surface,
-                                                unselectedContainerColor = Color.Transparent,
-                                                indicatorColor = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+                                        colors = AppNavigationItemColors.defaultColors().copy(
+                                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(
+                                                alpha = 0.7f,
                                             ),
+                                            selectedTextColor = if (navSuiteType == NavigationSuiteType.NavigationDrawer) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.onPrimary
+                                            },
+                                            unselectedTextColor = if (isDarkMode) {
+                                                MaterialTheme.colorScheme.surface
+                                            } else {
+                                                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                                            },
+                                            selectedContainerColor = MaterialTheme.colorScheme.surface,
+                                            unselectedContainerColor = Color.Transparent,
+                                            indicatorColor = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+                                        ),
                                     )
                                 }
                             },
@@ -296,9 +276,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
 fun isSelected(
     route: Route,
     currentDestination: NavDestination?,
-) = currentDestination
-    ?.hierarchy
-    ?.any {
-        Napier.d("${it.route} from ${currentDestination.route}")
-        it.route == route.route
-    }.also { Napier.d { "isSelected: $it" } } == true
+) = currentDestination?.hierarchy?.any {
+    Napier.d("${it.route} from ${currentDestination.route}")
+    it.route == route.route
+}.also { Napier.d { "isSelected: $it" } } == true
