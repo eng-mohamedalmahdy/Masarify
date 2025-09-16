@@ -36,6 +36,7 @@ composeAdaptive = "1.1.2"
 ktlint = "1.4.1"
 detekt = "1.23.8"
 kotlinx-datetime = "0.7.1"
+androidx-paging = "3.4.0-alpha04"
 [libraries]
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -89,6 +90,10 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 
 # DateTime
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+# Paging
+androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging" }
 
 [bundles]
 koinCommon = [

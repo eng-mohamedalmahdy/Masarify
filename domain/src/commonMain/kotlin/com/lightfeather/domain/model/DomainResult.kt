@@ -45,6 +45,12 @@ sealed class DomainResult<T>(
             is DomainResult.Failure -> default
         }
 
+    val isSuccess: Boolean
+        get() = this is Success
+
+    val isFailure: Boolean
+        get() = this is DomainResult.Failure
+
     inline fun <R> foldResult(
         onSuccess: (T) -> R,
         onFailure: (AppError) -> R,

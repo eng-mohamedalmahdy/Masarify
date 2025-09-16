@@ -71,7 +71,7 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.data)
             implementation(projects.designsystem)
-
+            implementation(libs.kotlinx.datetime)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -94,6 +94,8 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+            implementation(libs.androidx.paging.common)
+            implementation(libs.androidx.paging.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -101,6 +103,10 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+        }
+        iosMain.dependencies {
+            implementation(libs.androidx.paging.common)
+            implementation(libs.androidx.paging.compose)
         }
     }
 }

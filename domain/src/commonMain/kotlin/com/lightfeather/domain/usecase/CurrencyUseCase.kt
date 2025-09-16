@@ -64,5 +64,5 @@ class GetCurrencyById(
 class GetAllCurrencies(
     private val currencyRepository: CurrencyRepository,
 ) {
-    suspend operator fun invoke() = currencyRepository.getAllCurrencies()
+    operator fun invoke() = currencyRepository.getAllCurrencies()
 }

@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.pages.onboarding
+package com.lightfeather.masarify.page.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

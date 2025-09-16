@@ -3,6 +3,7 @@ package com.lightfeather.domain.repository
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.PagedData
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
 import kotlinx.coroutines.flow.Flow
@@ -37,4 +38,23 @@ interface TransactionRepository {
     ): DomainResult<Flow<Map<Category, Double>>>
 
     suspend fun getAllTransactions(): DomainResult<Flow<List<Transaction>>>
+
+    // Pagination methods
+    suspend fun getAllTransactionsPaged(page: Int): DomainResult<Flow<PagedData<Transaction>>>
+
+    suspend fun <T : Transaction> getAllTransactionsOfTypePaged(
+        type: KClass<T>,
+        page: Int,
+    ): DomainResult<Flow<PagedData<T>>>
+
+    suspend fun getFilteredTransactionsPaged(
+        filter: TransactionFilter,
+        page: Int,
+    ): DomainResult<Flow<PagedData<Transaction>>>
+
+    suspend fun getTransactionCount(): DomainResult<Long>
+
+    suspend fun <T : Transaction> getTransactionCountOfType(type: KClass<T>): DomainResult<Long>
+
+    suspend fun getFilteredTransactionCount(filter: TransactionFilter): DomainResult<Long>
 }

@@ -19,4 +19,54 @@
     <string name="transfer">Transfer</string>
     <string name="edit">Edit</string>
 
+    <!-- Account CRUD Messages -->
+    <string name="account_create_success">Account created successfully</string>
+    <string name="account_create_failure">Failed to create account</string>
+    <string name="account_update_success">Account updated successfully</string>
+    <string name="account_update_failure">Failed to update account</string>
+    <string name="account_delete_success">Account deleted successfully</string>
+    <string name="account_delete_failure">Failed to delete account</string>
+    <string name="account_fetch_success">Accounts loaded successfully</string>
+    <string name="account_fetch_failure">Failed to load accounts</string>
+
+    <!-- Transaction CRUD Messages -->
+    <string name="transaction_create_success">Transaction created successfully</string>
+    <string name="transaction_create_failure">Failed to create transaction</string>
+    <string name="transaction_update_success">Transaction updated successfully</string>
+    <string name="transaction_update_failure">Failed to update transaction</string>
+    <string name="transaction_delete_success">Transaction deleted successfully</string>
+    <string name="transaction_delete_failure">Failed to delete transaction</string>
+    <string name="transaction_fetch_success">Transactions loaded successfully</string>
+    <string name="transaction_fetch_failure">Failed to load transactions</string>
+
+    <!-- Category CRUD Messages -->
+    <string name="category_create_success">Category created successfully</string>
+    <string name="category_create_failure">Failed to create category</string>
+    <string name="category_update_success">Category updated successfully</string>
+    <string name="category_update_failure">Failed to update category</string>
+    <string name="category_delete_success">Category deleted successfully</string>
+    <string name="category_delete_failure">Failed to delete category</string>
+    <string name="category_fetch_success">Categories loaded successfully</string>
+    <string name="category_fetch_failure">Failed to load categories</string>
+
+    <!-- Currency CRUD Messages -->
+    <string name="currency_create_success">Currency created successfully</string>
+    <string name="currency_create_failure">Failed to create currency</string>
+    <string name="currency_update_success">Currency updated successfully</string>
+    <string name="currency_update_failure">Failed to update currency</string>
+    <string name="currency_delete_success">Currency deleted successfully</string>
+    <string name="currency_delete_failure">Failed to delete currency</string>
+    <string name="currency_fetch_success">Currencies loaded successfully</string>
+    <string name="currency_fetch_failure">Failed to load currencies</string>
+
+    <!-- Exchange Rate CRUD Messages -->
+    <string name="exchange_rate_create_success">Exchange rate created successfully</string>
+    <string name="exchange_rate_create_failure">Failed to create exchange rate</string>
+    <string name="exchange_rate_update_success">Exchange rate updated successfully</string>
+    <string name="exchange_rate_update_failure">Failed to update exchange rate</string>
+    <string name="exchange_rate_delete_success">Exchange rate deleted successfully</string>
+    <string name="exchange_rate_delete_failure">Failed to delete exchange rate</string>
+    <string name="exchange_rate_fetch_success">Exchange rates loaded successfully</string>
+    <string name="exchange_rate_fetch_failure">Failed to load exchange rates</string>
+
 </resources>

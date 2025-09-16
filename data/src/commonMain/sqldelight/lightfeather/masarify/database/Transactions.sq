@@ -117,3 +117,27 @@ JOIN transaction_categories tc ON t.transactionId = tc.transaction_id
 JOIN categories c ON tc.category_id = c.id
 WHERE t.transactionType = :type
 GROUP BY c.id;
+
+-- Pagination queries
+getAllTransactionsPaged:
+SELECT *
+FROM v_transactions
+ORDER BY transactionTimestamp DESC
+LIMIT :limit OFFSET :offset;
+
+getAllTransactionsOfTypePaged:
+SELECT *
+FROM v_transactions
+WHERE transactionType = :type
+ORDER BY transactionTimestamp DESC
+LIMIT :limit OFFSET :offset;
+
+-- Count queries
+getTransactionCount:
+SELECT COUNT(*)
+FROM v_transactions;
+
+getTransactionCountOfType:
+SELECT COUNT(*)
+FROM v_transactions
+WHERE transactionType = :type;

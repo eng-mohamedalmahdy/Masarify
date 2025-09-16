@@ -1,5 +1,8 @@
 package com.lightfeather.designsystem.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UiBankAccount(
     val id: String,
     val name: String,
@@ -7,7 +10,7 @@ data class UiBankAccount(
     val balance: String,
     val currency: UiCurrency,
     val color: String,
-    val image: Any?,
+    val image: String?,
 ) {
     companion object {
         val dummy =

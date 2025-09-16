@@ -5,6 +5,7 @@ import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCategory
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.CreateTransaction
+import com.lightfeather.domain.usecase.DeleteAccount
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
@@ -12,10 +13,17 @@ import com.lightfeather.domain.usecase.GetAllCategoryIcons
 import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.domain.usecase.GetAllTransactions
+import com.lightfeather.domain.usecase.GetAllTransactionsOfTypePaged
+import com.lightfeather.domain.usecase.GetAllTransactionsPaged
+import com.lightfeather.domain.usecase.GetFilteredTransactionCount
+import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import com.lightfeather.domain.usecase.GetTotalExpenseOfCurrency
 import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
 import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
+import com.lightfeather.domain.usecase.GetTransactionCount
+import com.lightfeather.domain.usecase.GetTransactionCountOfType
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.domain.usecase.UpsertUserData
@@ -31,6 +39,9 @@ val useCaseModule =
         factory { GetAllCategories(get()) }
         factory { GetAllAccounts(get()) }
 
+
+        factory { DeleteAccount(get()) }
+        factory { UpdateAccount(get()) }
         factory<CreateTransaction> {
             CreateTransaction(get())
         }
@@ -65,4 +76,31 @@ val useCaseModule =
         factory { GetTotalExpenseOfCurrency(get()) }
         factory { GetTotalIncomeOfCurrency(get()) }
         factory { GetWealthWorthInCurrency(get(), get(), get()) }
+
+        // Pagination use cases
+        factory { GetAllTransactionsPaged(get()) }
+        factory { GetFilteredTransactionsPaged(get()) }
+        factory { GetTransactionCount(get()) }
+        factory { GetFilteredTransactionCount(get()) }
+
+        // Type-specific pagination use cases
+        factory<GetAllTransactionsOfTypePaged<Transaction.Expense>>(named("expense-paged")) {
+            GetAllTransactionsOfTypePaged(get())
+        }
+        factory<GetAllTransactionsOfTypePaged<Transaction.Income>>(named("income-paged")) {
+            GetAllTransactionsOfTypePaged(get())
+        }
+        factory<GetAllTransactionsOfTypePaged<Transaction.Transfer>>(named("transfer-paged")) {
+            GetAllTransactionsOfTypePaged(get())
+        }
+
+        factory<GetTransactionCountOfType<Transaction.Expense>>(named("expense-count")) {
+            GetTransactionCountOfType(get())
+        }
+        factory<GetTransactionCountOfType<Transaction.Income>>(named("income-count")) {
+            GetTransactionCountOfType(get())
+        }
+        factory<GetTransactionCountOfType<Transaction.Transfer>>(named("transfer-count")) {
+            GetTransactionCountOfType(get())
+        }
     }

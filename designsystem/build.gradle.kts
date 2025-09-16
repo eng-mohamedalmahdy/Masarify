@@ -1,5 +1,4 @@
 import io.gitlab.arturbosch.detekt.Detekt
-import org.gradle.internal.impldep.org.jsoup.nodes.Document
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -151,7 +150,6 @@ dependencies {
 // KtLint Configuration (inherits from root)
 // Global configuration is applied via subprojects block in root build.gradle.kts
 
-
 detekt {
     buildUponDefaultConfig = true
     allRules = false
@@ -161,12 +159,13 @@ detekt {
 
     // Optional: be explicit about what source roots you expect detekt to analyze
     // (useful for KMP modules)
-    source = files(
-        "src/commonMain/kotlin",
-        "src/androidMain/kotlin",
-        "src/jvmMain/kotlin",
-        "src/iosMain/kotlin"
-    )
+    source =
+        files(
+            "src/commonMain/kotlin",
+            "src/androidMain/kotlin",
+            "src/jvmMain/kotlin",
+            "src/iosMain/kotlin",
+        )
 }
 
 tasks.withType<Detekt>().configureEach {
@@ -175,9 +174,13 @@ tasks.withType<Detekt>().configureEach {
 
     // Optional: show what files will be analyzed (use --info to see logger output)
     doFirst {
-        val ktFiles = source.files.flatMap { root ->
-            root.walkTopDown().filter { it.isFile && (it.extension == "kt" || it.extension == "kts") }.toList()
-        }.filterNot { it.absolutePath.contains("${project.buildDir.path}") } // attempt to filter build dir copies
+        val ktFiles =
+            source.files
+                .flatMap { root ->
+                    root.walkTopDown().filter { it.isFile && (it.extension == "kt" || it.extension == "kts") }.toList()
+                }.filterNot {
+                    it.absolutePath.contains("${project.buildDir.path}")
+                } // attempt to filter build dir copies
 
         logger.lifecycle("Detekt will analyze ${ktFiles.size} Kotlin files (showing first 100):")
         ktFiles.take(100).forEach { logger.lifecycle("  - ${it.absolutePath}") }

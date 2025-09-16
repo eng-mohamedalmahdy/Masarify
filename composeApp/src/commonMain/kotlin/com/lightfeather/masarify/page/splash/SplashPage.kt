@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.pages.splash
+package com.lightfeather.masarify.page.splash
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

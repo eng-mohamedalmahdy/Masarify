@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.pages.splash
+package com.lightfeather.masarify.page.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

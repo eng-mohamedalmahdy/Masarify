@@ -2,6 +2,7 @@ package com.lightfeather.domain.usecase
 
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.PagedData
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
 import com.lightfeather.domain.repository.TransactionRepository
@@ -86,4 +87,48 @@ class GetTotalIncomeOfCurrency(
 ) {
     suspend operator fun invoke(currency: Currency) =
         repository.getTotalTransactionsOfTypeAndCurrency(currency, Transaction.Income::class)
+}
+
+// Pagination use cases
+class GetAllTransactionsPaged(
+    private val repository: TransactionRepository,
+) {
+    suspend operator fun invoke(page: Int): DomainResult<Flow<PagedData<Transaction>>> =
+        repository.getAllTransactionsPaged(page)
+}
+
+class GetAllTransactionsOfTypePaged<T : Transaction>(
+    val repository: TransactionRepository,
+) {
+    suspend inline operator fun <reified T : Transaction> invoke(page: Int): DomainResult<Flow<PagedData<T>>> =
+        repository.getAllTransactionsOfTypePaged(T::class, page)
+}
+
+class GetFilteredTransactionsPaged(
+    private val repository: TransactionRepository,
+) {
+    suspend operator fun invoke(
+        filter: TransactionFilter,
+        page: Int,
+    ): DomainResult<Flow<PagedData<Transaction>>> = repository.getFilteredTransactionsPaged(filter, page)
+}
+
+class GetTransactionCount(
+    private val repository: TransactionRepository,
+) {
+    suspend operator fun invoke(): DomainResult<Long> = repository.getTransactionCount()
+}
+
+class GetTransactionCountOfType<T : Transaction>(
+     val repository: TransactionRepository,
+) {
+    suspend inline operator fun <reified T : Transaction> invoke(): DomainResult<Long> =
+        repository.getTransactionCountOfType(T::class)
+}
+
+class GetFilteredTransactionCount(
+    private val repository: TransactionRepository,
+) {
+    suspend operator fun invoke(filter: TransactionFilter): DomainResult<Long> =
+        repository.getFilteredTransactionCount(filter)
 }

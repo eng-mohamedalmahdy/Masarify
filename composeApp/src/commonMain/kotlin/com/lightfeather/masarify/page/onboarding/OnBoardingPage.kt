@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.pages.onboarding
+package com.lightfeather.masarify.page.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +31,6 @@ import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.PrimaryButton
 import com.lightfeather.designsystem.component.molecules.TextField
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import masarify.composeapp.generated.resources.Res

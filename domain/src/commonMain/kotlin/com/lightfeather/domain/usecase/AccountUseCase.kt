@@ -9,7 +9,7 @@ class CreateAccount(
     suspend operator fun invoke(account: Account) = accountRepository.createAccount(account)
 }
 
-class UpdateAccountName(
+class UpdateAccount(
     private val accountRepository: AccountRepository,
 ) {
     suspend operator fun invoke(account: Account) = accountRepository.updateAccount(account)

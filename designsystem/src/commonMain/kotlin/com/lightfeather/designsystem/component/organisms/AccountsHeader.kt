@@ -16,7 +16,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun AccountsHeader(
     totalAmountInSelectedOrDefaultCurrency: String,
-    defaultCurrency: UiCurrency,
+    defaultCurrency: UiCurrency?,
     selectedCurrency: UiCurrency?,
     totalAccounts: Int,
     userAccountsCurrencies: List<UiCurrency>,
@@ -70,7 +70,7 @@ fun AccountsHeader(
                     )
 
                     Text(
-                        text = (selectedCurrency ?: defaultCurrency).symbol,
+                        text = (selectedCurrency ?: defaultCurrency)?.symbol.orEmpty(),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Medium,

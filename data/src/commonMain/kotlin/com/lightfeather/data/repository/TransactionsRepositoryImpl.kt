@@ -7,23 +7,26 @@ import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.data.local.database.model.DbTransactionType
 import com.lightfeather.data.local.database.model.toDbTransactionType
-import com.lightfeather.domain.model.Account
-import com.lightfeather.domain.model.Attachment
+import com.lightfeather.data.mapper.toDomainTransactions
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.PagedData
 import com.lightfeather.domain.model.runCatchingDomainResultSuspend
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
 import com.lightfeather.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import lightfeather.masarify.database.V_transactions
 import kotlin.reflect.KClass
 
 class TransactionsRepositoryImpl(
     private val sharedDatabase: SharedDatabase,
 ) : TransactionRepository {
+
+    companion object {
+        const val PAGE_SIZE = 20
+    }
     override suspend fun createTransaction(transaction: Transaction): DomainResult<Int> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
@@ -172,109 +175,126 @@ class TransactionsRepositoryImpl(
             }
         }
 
-    fun List<V_transactions>.toDomainTransactions(): List<Transaction> =
-        this
-            .groupBy { it.transactionId }
-            .map { (_, rows) ->
-                val first = rows.first()
+    // Pagination methods
+    override suspend fun getAllTransactionsPaged(page: Int): DomainResult<Flow<PagedData<Transaction>>> =
+        runCatchingDomainResultSuspend {
+            sharedDatabase { database ->
+                val offset = page * PAGE_SIZE
+                database.transactionsQueries
+                    .getAllTransactionsPaged(limit = PAGE_SIZE.toLong(), offset = offset.toLong())
+                    .asFlow()
+                    .map { query ->
+                        val transactions = query.awaitAsList().toDomainTransactions()
+                        val totalCount = database.transactionsQueries
+                            .getTransactionCount()
+                            .awaitAsOne()
 
-                val account =
-                    Account(
-                        id = first.accountId.toInt(),
-                        name = first.accountName,
-                        description = first.accountDescription,
-                        balance = first.accountBalance,
-                        color = first.accountColor,
-                        logo = first.accountLogo.orEmpty(),
-                        currency =
-                            Currency(
-                                name = first.currencyName,
-                                sign = first.currencySign,
-                                id = first.currencyId.toInt(),
-                            ),
-                    )
-
-                val receiverAccount =
-                    Account(
-                        id = (first.receiverAccountId ?: -1).toInt(),
-                        name = first.receiverAccountName.orEmpty(),
-                        description = first.receiverAccountDescription.orEmpty(),
-                        balance = first.receiverAccountBalance ?: 0.0,
-                        color = first.receiverAccountColor.orEmpty(),
-                        logo = first.receiverAccountLogo.orEmpty(),
-                        currency =
-                            Currency(
-                                name = first.receiverCurrencyName.orEmpty(),
-                                sign = first.receiverCurrencySign.orEmpty(),
-                                id = first.receiverCurrencyId?.toInt() ?: -1,
-                            ),
-                    )
-
-                val attachments =
-                    rows
-                        .filter { it.attachmentId != null }
-                        .map {
-                            Attachment(
-                                id = it.attachmentId!!.toInt(),
-                                fileName = it.attachmentName.orEmpty(),
-                                mimeType = it.attachmentMimeType.orEmpty(),
-                                fileContent = it.attachmentData ?: byteArrayOf(),
-                                transactionId = first.transactionId.toInt(),
-                            )
-                        }.distinctBy { it.id }
-
-                val categories =
-                    rows
-                        .filter { it.categoryId != null }
-                        .map {
-                            Category(
-                                id = it.categoryId?.toInt()!!,
-                                name = it.categoryName!!,
-                                description = it.categoryDescription!!,
-                                color = it.categoryColor!!,
-                                icon = it.categoryIcon!!,
-                            )
-                        }.distinctBy { it.id }
-
-                when (first.transactionType?.toDbTransactionType()) {
-                    DbTransactionType.Income ->
-                        Transaction.Income(
-                            id = first.transactionId.toInt(),
-                            name = first.transactionName.orEmpty(),
-                            description = first.transactionDescription,
-                            amount = first.transactionAmount ?: 0.0,
-                            timestamp = first.transactionTimestamp ?: 0,
-                            account = account,
-                            source = categories.firstOrNull() ?: Category(-1, "Unknown", "", "#000000", "❓"),
-                            attachments = attachments,
+                        PagedData.create(
+                            data = transactions,
+                            page = page,
+                            pageSize = PAGE_SIZE,
+                            totalItems = totalCount,
                         )
-
-                    DbTransactionType.Expense ->
-                        Transaction.Expense(
-                            id = first.transactionId.toInt(),
-                            name = first.transactionName.orEmpty(),
-                            description = first.transactionDescription,
-                            amount = first.transactionAmount ?: 0.0,
-                            timestamp = first.transactionTimestamp ?: 0,
-                            account = account,
-                            categories = categories,
-                            attachments = attachments,
-                        )
-
-                    DbTransactionType.Transfer ->
-                        Transaction.Transfer(
-                            id = first.transactionId.toInt(),
-                            name = first.transactionName.orEmpty(),
-                            description = first.transactionDescription,
-                            amount = first.transactionAmount ?: 0.0,
-                            timestamp = first.transactionTimestamp ?: 0,
-                            account = account,
-                            receiverAccount = receiverAccount,
-                            fee = first.transactionFee ?: 0.0,
-                            attachments = attachments,
-                        )
-
-                    else -> throw IllegalArgumentException("Unknown transaction type: ${first.transactionType}")
-                }
+                    }
             }
+        }
+
+    override suspend fun <T : Transaction> getAllTransactionsOfTypePaged(
+        type: KClass<T>,
+        page: Int,
+    ): DomainResult<Flow<PagedData<T>>> =
+        runCatchingDomainResultSuspend {
+            sharedDatabase { database ->
+                val offset = page * PAGE_SIZE
+                database.transactionsQueries
+                    .getAllTransactionsOfTypePaged(
+                        type = type.toDbTransactionType().dbValue,
+                        limit = PAGE_SIZE.toLong(),
+                        offset = offset.toLong(),
+                    )
+                    .asFlow()
+                    .map { query ->
+                        val transactions = query.awaitAsList()
+                            .toDomainTransactions()
+                            .map { it as T }
+
+                        val totalCount = database.transactionsQueries
+                            .getTransactionCountOfType(type.toDbTransactionType().dbValue)
+                            .awaitAsOne()
+
+                        PagedData.create(
+                            data = transactions,
+                            page = page,
+                            pageSize = PAGE_SIZE,
+                            totalItems = totalCount,
+                        )
+                    }
+            }
+        }
+
+    override suspend fun getFilteredTransactionsPaged(
+        filter: TransactionFilter,
+        page: Int,
+    ): DomainResult<Flow<PagedData<Transaction>>> {
+        // For now, this will filter in memory since filtering is done via TransactionFilter logic
+        // In a real implementation, we would convert filter to SQL queries for better performance
+        return runCatchingDomainResultSuspend {
+            sharedDatabase { database ->
+                database.transactionsQueries
+                    .getAllTransactions()
+                    .asFlow()
+                    .map { query ->
+                        // Get all transactions and filter in memory
+                        val allTransactions = query.awaitAsList()
+                            .toDomainTransactions()
+                            .filter { filter.filterAll(it) }
+
+                        val totalCount = allTransactions.size.toLong()
+                        val offset = page * PAGE_SIZE
+                        val pagedTransactions = allTransactions
+                            .drop(offset)
+                            .take(PAGE_SIZE)
+
+                        PagedData.create(
+                            data = pagedTransactions,
+                            page = page,
+                            pageSize = PAGE_SIZE,
+                            totalItems = totalCount,
+                        )
+                    }
+            }
+        }
+    }
+
+    override suspend fun getTransactionCount(): DomainResult<Long> =
+        runCatchingDomainResultSuspend {
+            sharedDatabase {
+                it.transactionsQueries.getTransactionCount().awaitAsOne()
+            }
+        }
+
+    override suspend fun <T : Transaction> getTransactionCountOfType(type: KClass<T>): DomainResult<Long> =
+        runCatchingDomainResultSuspend {
+            sharedDatabase {
+                it.transactionsQueries
+                    .getTransactionCountOfType(type.toDbTransactionType().dbValue)
+                    .awaitAsOne()
+            }
+        }
+
+    override suspend fun getFilteredTransactionCount(filter: TransactionFilter): DomainResult<Long> =
+        runCatchingDomainResultSuspend {
+            sharedDatabase { database ->
+                // For now, filter in memory since filtering is done via TransactionFilter logic
+                val allTransactions = database.transactionsQueries
+                    .getAllTransactions()
+                    .awaitAsList()
+                    .toDomainTransactions()
+                    .count { filter.filterAll(it) }
+                    .toLong()
+
+                allTransactions
+            }
+        }
+
 }

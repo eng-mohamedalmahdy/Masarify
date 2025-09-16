@@ -1,4 +1,4 @@
-package com.lightfeather.masarify.pages.onboarding
+package com.lightfeather.masarify.page.onboarding
 
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.StringResource
