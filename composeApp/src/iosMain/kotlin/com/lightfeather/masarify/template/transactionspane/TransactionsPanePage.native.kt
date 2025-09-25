@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,13 +19,39 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.listitem.TransactionItem
 import com.lightfeather.designsystem.theme.AppTheme
+import masarify.designsystem.generated.resources.Res
+import masarify.designsystem.generated.resources.empty_filtered_transactions_message
+import masarify.designsystem.generated.resources.empty_filtered_transactions_title
+import masarify.designsystem.generated.resources.empty_transactions_message
+import masarify.designsystem.generated.resources.empty_transactions_title
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-actual fun TransactionsPane(viewModel: TransactionsPanePageViewModel) {
+actual fun TransactionsPane(
+    filter: com.lightfeather.designsystem.model.UiTransactionFilter,
+    viewModel: TransactionsPanePageViewModel,
+) {
+    // Update the filter when it changes
+    LaunchedEffect(filter) {
+        viewModel.updateFilter(filter)
+    }
+
     val transactions = viewModel.transactions.collectAsLazyPagingItems()
+    val isEmpty by viewModel.isEmpty.collectAsState()
+    val isFiltered by viewModel.isFiltered.collectAsState()
+
+    // Update empty state based on PagingData load state
+    LaunchedEffect(transactions.loadState.refresh, transactions.itemCount) {
+        when {
+            transactions.loadState.refresh is LoadState.NotLoading -> {
+                viewModel.updateEmptyState(transactions.itemCount == 0)
+            }
+        }
+    }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -32,39 +59,63 @@ actual fun TransactionsPane(viewModel: TransactionsPanePageViewModel) {
         isRefreshing = isRefreshing,
         onRefresh = { viewModel.refresh() },
         state = pullToRefreshState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline)
-        ) {
-            items(
-                count = transactions.itemCount,
-                key = transactions.itemKey { it.id }
-            ) { index ->
-                val transaction = transactions[index]
-                transaction?.let {
-                    TransactionItem(
-                        transaction = it,
-                        onClick = { viewModel.onTransactionClick(it.id) }
-                    )
-                }
-            }
-
-            when (transactions.loadState.append) {
-                is LoadState.Loading -> {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(AppTheme.dimens.default),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
+        if (isEmpty && transactions.loadState.refresh is LoadState.NotLoading) {
+            // Show empty state
+            EmptyState(
+                title =
+                    stringResource(
+                        if (isFiltered) {
+                            Res.string.empty_filtered_transactions_title
+                        } else {
+                            Res.string.empty_transactions_title
+                        },
+                    ),
+                message =
+                    stringResource(
+                        if (isFiltered) {
+                            Res.string.empty_filtered_transactions_message
+                        } else {
+                            Res.string.empty_transactions_message
+                        },
+                    ),
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
+            ) {
+                items(
+                    count = transactions.itemCount,
+                    key = transactions.itemKey { it.id },
+                ) { index ->
+                    val transaction = transactions[index]
+                    transaction?.let {
+                        TransactionItem(
+                            transaction = it,
+                            onClick = { viewModel.onTransactionClick(it.id) },
+                        )
                     }
                 }
-                else -> {}
+
+                when (transactions.loadState.append) {
+                    is LoadState.Loading -> {
+                        item {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(AppTheme.dimens.default),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                    else -> {}
+                }
             }
         }
     }

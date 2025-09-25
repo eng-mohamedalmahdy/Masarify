@@ -24,4 +24,19 @@
     <string name="time_in_minutes">In %d minutes</string>
     <string name="time_in_hours">In %d hours</string>
 
+    <!-- Empty States -->
+    <string name="empty_transactions_title">No transactions yet</string>
+    <string name="empty_transactions_message">Start tracking your finances by adding your first transaction</string>
+    <string name="empty_filtered_transactions_title">No matching transactions</string>
+    <string name="empty_filtered_transactions_message">Try adjusting your filters to find the transactions you\'re looking for</string>
+    <string name="empty_state_action">Add Transaction</string>
+    <string name="no_account_selected_title">No account selected</string>
+    <string name="no_account_selected_message">Select a bank account from the list to view its transactions and details</string>
+
+    <!-- Bank Accounts Page -->
+    <string name="your_accounts">Your Accounts</string>
+    <string name="no_accounts_title">No accounts yet</string>
+    <string name="no_accounts_message">Add your first bank account to start tracking your finances</string>
+    <string name="add_account">Add Account</string>
+
 </resources>

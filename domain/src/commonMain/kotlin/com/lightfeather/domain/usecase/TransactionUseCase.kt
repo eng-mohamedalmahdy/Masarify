@@ -120,7 +120,7 @@ class GetTransactionCount(
 }
 
 class GetTransactionCountOfType<T : Transaction>(
-     val repository: TransactionRepository,
+    val repository: TransactionRepository,
 ) {
     suspend inline operator fun <reified T : Transaction> invoke(): DomainResult<Long> =
         repository.getTransactionCountOfType(T::class)

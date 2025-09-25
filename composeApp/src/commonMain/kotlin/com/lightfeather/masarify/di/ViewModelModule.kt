@@ -8,7 +8,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-expect val frameworkViewModelModule : Module
+expect val frameworkViewModelModule: Module
 val viewModelModule =
     module {
         viewModelOf(::AppMainViewModel)

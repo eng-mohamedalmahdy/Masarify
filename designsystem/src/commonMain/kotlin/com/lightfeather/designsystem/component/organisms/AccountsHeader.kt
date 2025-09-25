@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.model.UiCurrency
@@ -22,6 +23,7 @@ fun AccountsHeader(
     userAccountsCurrencies: List<UiCurrency>,
     onCurrencyClick: (UiCurrency?) -> Unit,
     modifier: Modifier = Modifier,
+    shape: Shape = AppTheme.shapes.medium,
 ) {
     Card(
         modifier = modifier,
@@ -34,6 +36,7 @@ fun AccountsHeader(
             CardDefaults.cardElevation(
                 defaultElevation = AppTheme.dimens.elevation.component.card,
             ),
+        shape = shape,
     ) {
         Column(
             modifier = Modifier.padding(AppTheme.dimens.spacing.padding.large),

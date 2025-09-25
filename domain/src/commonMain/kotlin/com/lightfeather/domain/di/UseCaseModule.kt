@@ -39,7 +39,6 @@ val useCaseModule =
         factory { GetAllCategories(get()) }
         factory { GetAllAccounts(get()) }
 
-
         factory { DeleteAccount(get()) }
         factory { UpdateAccount(get()) }
         factory<CreateTransaction> {

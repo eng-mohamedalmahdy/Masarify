@@ -318,9 +318,7 @@ private fun RenderAsNavigationBarItems(items: List<AppNavItem>) {
 }
 
 @Composable
-private fun RenderAsRailItems(
-    items: List<AppNavItem>,
-) {
+private fun RenderAsRailItems(items: List<AppNavItem>) {
     // Material's NavigationRailItem expects a slightly different API but we can map
     items.forEach { item ->
         NavigationRailItem(

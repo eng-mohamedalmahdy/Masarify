@@ -2,15 +2,16 @@ package com.lightfeather.masarify.template.transactionspane
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import app.cash.sqldelight.async.coroutines.awaitAsList
 import com.lightfeather.data.local.database.drivers.SharedDatabase
-import com.lightfeather.data.mapper.toDomainTransactions
 import com.lightfeather.domain.model.transaction.Transaction
+import com.lightfeather.domain.model.transaction.TransactionFilter
+import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 
 class TransactionsPagingSource(
     private val sharedDatabase: SharedDatabase,
+    private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
+    private val filter: TransactionFilter,
 ) : PagingSource<Int, Transaction>() {
-
     companion object {
         const val PAGE_SIZE = 20
     }
@@ -18,19 +19,26 @@ class TransactionsPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> {
         return try {
             val page = params.key ?: 0
-            val offset = page * PAGE_SIZE
 
-            val transactions = sharedDatabase {
-                it.transactionsQueries
-                    .getAllTransactionsPaged(limit = PAGE_SIZE.toLong(), offset = offset.toLong())
-                    .awaitAsList()
-                    .toDomainTransactions()
-            }
+            val result = getFilteredTransactionsPaged(filter, page)
+            result.fold(
+                onSuccess = { pagedDataFlow ->
+                    // For PagingSource, we need to collect the first emission
+                    var transactions: List<Transaction> = emptyList()
+                    pagedDataFlow.collect { pagedData ->
+                        transactions = pagedData.data
+                        return@collect // Take only the first emission
+                    }
 
-            LoadResult.Page(
-                data = transactions,
-                prevKey = if (page == 0) null else page - 1,
-                nextKey = if (transactions.size < PAGE_SIZE) null else page + 1,
+                    LoadResult.Page(
+                        data = transactions,
+                        prevKey = if (page == 0) null else page - 1,
+                        nextKey = if (transactions.size < PAGE_SIZE) null else page + 1,
+                    )
+                },
+                onFailure = { exception ->
+                    LoadResult.Error(exception)
+                },
             )
         } catch (exception: Exception) {
             LoadResult.Error(exception)

@@ -4,18 +4,19 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.runtime.Composable
+import com.lightfeather.designsystem.model.UiTransactionFilter
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 expect fun TransactionsPane(
-    viewModel: TransactionsPanePageViewModel = koinViewModel()
+    filter: UiTransactionFilter = UiTransactionFilter.EMPTY,
+    viewModel: TransactionsPanePageViewModel = koinViewModel(),
 )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun ThreePaneScaffoldPaneScope.TransactionsPaneAsDetail() {
+fun ThreePaneScaffoldPaneScope.TransactionsPaneAsDetail(filter: UiTransactionFilter = UiTransactionFilter.EMPTY) {
     AnimatedPane {
-        TransactionsPane()
+        TransactionsPane(filter = filter)
     }
 }
-

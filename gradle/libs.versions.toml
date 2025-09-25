@@ -10,7 +10,7 @@ androidx-espresso = "3.6.1"
 androidx-lifecycle = "2.9.1"
 androidx-testExt = "1.2.1"
 composeHotReload = "1.0.0-beta04"
-composeMultiplatform = "1.9.0-beta03"
+composeMultiplatform = "1.9.0"
 junit = "4.13.2"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
@@ -31,12 +31,12 @@ resources = "0.25.0"
 navigationCompose = "2.9.0-rc01"
 coilCompose = "3.0.1"
 napier = "2.7.1"
-composeWindowSize = "1.9.0-beta04"
 composeAdaptive = "1.1.2"
 ktlint = "1.4.1"
 detekt = "1.23.8"
 kotlinx-datetime = "0.7.1"
 androidx-paging = "3.4.0-alpha04"
+material3 = "1.9.0-beta06"
 [libraries]
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -78,13 +78,13 @@ navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-co
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
-compose-window-sizes = { module = "org.jetbrains.compose.material3:material3-window-size-class" , version.ref = "composeWindowSize" }
+compose-window-sizes = { module = "org.jetbrains.compose.material3:material3-window-size-class" , version.ref = "material3" }
 material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "composeAdaptive" }
 material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "composeAdaptive" }
 material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "composeAdaptive" }
-material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "composeMultiplatform" }
-material3-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatform" }
-
+material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3" }
+material3-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
+compose-back-handler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "composeMultiplatform"}
 # Code Quality Tools
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 

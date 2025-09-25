@@ -5,7 +5,6 @@ import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
-import com.lightfeather.data.local.database.model.DbTransactionType
 import com.lightfeather.data.local.database.model.toDbTransactionType
 import com.lightfeather.data.mapper.toDomainTransactions
 import com.lightfeather.domain.model.Category
@@ -23,10 +22,10 @@ import kotlin.reflect.KClass
 class TransactionsRepositoryImpl(
     private val sharedDatabase: SharedDatabase,
 ) : TransactionRepository {
-
     companion object {
         const val PAGE_SIZE = 20
     }
+
     override suspend fun createTransaction(transaction: Transaction): DomainResult<Int> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
@@ -105,9 +104,30 @@ class TransactionsRepositoryImpl(
             }
         }
 
-    override suspend fun getFilteredTransactions(filter: TransactionFilter): DomainResult<List<Transaction>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getFilteredTransactions(filter: TransactionFilter): DomainResult<List<Transaction>> =
+        runCatchingDomainResultSuspend {
+            if (filter.isEmpty()) {
+                // If filter is empty, return all transactions
+                sharedDatabase {
+                    it.transactionsQueries
+                        .getAllTransactions()
+                        .awaitAsList()
+                        .toDomainTransactions()
+                }
+            } else {
+                // For comprehensive filtering, we currently filter in memory
+                // In production, this should be optimized with SQL WHERE clauses
+                sharedDatabase { database ->
+                    val allTransactions =
+                        database.transactionsQueries
+                            .getAllTransactions()
+                            .awaitAsList()
+                            .toDomainTransactions()
+
+                    allTransactions.filter { filter.matches(it) }
+                }
+            }
+        }
 
     override suspend fun updateTransaction(newTransaction: Transaction): DomainResult<Boolean> =
         runCatchingDomainResultSuspend {
@@ -185,9 +205,10 @@ class TransactionsRepositoryImpl(
                     .asFlow()
                     .map { query ->
                         val transactions = query.awaitAsList().toDomainTransactions()
-                        val totalCount = database.transactionsQueries
-                            .getTransactionCount()
-                            .awaitAsOne()
+                        val totalCount =
+                            database.transactionsQueries
+                                .getTransactionCount()
+                                .awaitAsOne()
 
                         PagedData.create(
                             data = transactions,
@@ -211,16 +232,18 @@ class TransactionsRepositoryImpl(
                         type = type.toDbTransactionType().dbValue,
                         limit = PAGE_SIZE.toLong(),
                         offset = offset.toLong(),
-                    )
-                    .asFlow()
+                    ).asFlow()
                     .map { query ->
-                        val transactions = query.awaitAsList()
-                            .toDomainTransactions()
-                            .map { it as T }
+                        val transactions =
+                            query
+                                .awaitAsList()
+                                .toDomainTransactions()
+                                .map { it as T }
 
-                        val totalCount = database.transactionsQueries
-                            .getTransactionCountOfType(type.toDbTransactionType().dbValue)
-                            .awaitAsOne()
+                        val totalCount =
+                            database.transactionsQueries
+                                .getTransactionCountOfType(type.toDbTransactionType().dbValue)
+                                .awaitAsOne()
 
                         PagedData.create(
                             data = transactions,
@@ -245,15 +268,18 @@ class TransactionsRepositoryImpl(
                     .asFlow()
                     .map { query ->
                         // Get all transactions and filter in memory
-                        val allTransactions = query.awaitAsList()
-                            .toDomainTransactions()
-                            .filter { filter.filterAll(it) }
+                        val allTransactions =
+                            query
+                                .awaitAsList()
+                                .toDomainTransactions()
+                                .filter { filter.matches(it) }
 
                         val totalCount = allTransactions.size.toLong()
                         val offset = page * PAGE_SIZE
-                        val pagedTransactions = allTransactions
-                            .drop(offset)
-                            .take(PAGE_SIZE)
+                        val pagedTransactions =
+                            allTransactions
+                                .drop(offset)
+                                .take(PAGE_SIZE)
 
                         PagedData.create(
                             data = pagedTransactions,
@@ -286,15 +312,15 @@ class TransactionsRepositoryImpl(
         runCatchingDomainResultSuspend {
             sharedDatabase { database ->
                 // For now, filter in memory since filtering is done via TransactionFilter logic
-                val allTransactions = database.transactionsQueries
-                    .getAllTransactions()
-                    .awaitAsList()
-                    .toDomainTransactions()
-                    .count { filter.filterAll(it) }
-                    .toLong()
+                val allTransactions =
+                    database.transactionsQueries
+                        .getAllTransactions()
+                        .awaitAsList()
+                        .toDomainTransactions()
+                        .count { filter.matches(it) }
+                        .toLong()
 
                 allTransactions
             }
         }
-
 }

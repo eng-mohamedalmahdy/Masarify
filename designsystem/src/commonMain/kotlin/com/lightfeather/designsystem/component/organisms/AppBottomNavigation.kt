@@ -48,9 +48,11 @@ fun AppBottomNavigation(
                                 .padding(bottom = AppTheme.dimens.small),
                         colorFilter =
                             ColorFilter.tint(
-                                if (selected.not())
+                                if (selected.not()) {
                                     MaterialTheme.colorScheme.onBackground
-                                else MaterialTheme.colorScheme.primary,
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
                             ),
                     )
                 },
@@ -59,8 +61,12 @@ fun AppBottomNavigation(
                         stringResource(navigationItem.label),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (selected.not()) MaterialTheme.colorScheme.onBackground
-                        else MaterialTheme.colorScheme.primary,
+                        color =
+                            if (selected.not()) {
+                                MaterialTheme.colorScheme.onBackground
+                            } else {
+                                MaterialTheme.colorScheme.primary
+                            },
                     )
                 },
                 selected = selected,

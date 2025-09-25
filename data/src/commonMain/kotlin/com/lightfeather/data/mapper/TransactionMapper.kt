@@ -1,12 +1,12 @@
 package com.lightfeather.data.mapper
 
+import com.lightfeather.data.local.database.model.DbTransactionType
+import com.lightfeather.data.local.database.model.toDbTransactionType
 import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.Attachment
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.transaction.Transaction
-import com.lightfeather.data.local.database.model.DbTransactionType
-import com.lightfeather.data.local.database.model.toDbTransactionType
 import lightfeather.masarify.database.V_transactions
 
 fun List<V_transactions>.toDomainTransactions(): List<Transaction> =

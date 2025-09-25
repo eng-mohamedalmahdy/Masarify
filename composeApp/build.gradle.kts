@@ -88,6 +88,7 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.bundles.material3Adaptive)
             implementation(libs.jetbrains.iconsExtended)
+            implementation(libs.compose.back.handler)
             implementation("com.eygraber:uri-kmp:0.0.19")
         }
         androidMain.dependencies {

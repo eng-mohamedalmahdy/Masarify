@@ -3,26 +3,29 @@ package com.lightfeather.masarify.mappers
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.domain.model.transaction.Transaction
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 fun Transaction.toUiTransaction(): UiTransaction {
-    val type = when (this) {
-        is Transaction.Income -> UiTransactionType.INCOME
-        is Transaction.Expense -> UiTransactionType.EXPENSE
-        is Transaction.Transfer -> UiTransactionType.TRANSFER
-    }
+    val type =
+        when (this) {
+            is Transaction.Income -> UiTransactionType.INCOME
+            is Transaction.Expense -> UiTransactionType.EXPENSE
+            is Transaction.Transfer -> UiTransactionType.TRANSFER
+        }
 
-    val category = when (this) {
-        is Transaction.Income -> source.toUiCategory()
-        is Transaction.Expense -> categories.firstOrNull()?.toUiCategory() ?: com.lightfeather.designsystem.model.UiCategory.dummy
-        is Transaction.Transfer -> com.lightfeather.designsystem.model.UiCategory.dummy
-    }
-
+    val category =
+        when (this) {
+            is Transaction.Income -> source.toUiCategory()
+            is Transaction.Expense ->
+                categories.firstOrNull()?.toUiCategory()
+                    ?: com.lightfeather.designsystem.model.UiCategory.dummy
+            is Transaction.Transfer -> com.lightfeather.designsystem.model.UiCategory.dummy
+        }
 
     return UiTransaction(
         id = id.toString(),

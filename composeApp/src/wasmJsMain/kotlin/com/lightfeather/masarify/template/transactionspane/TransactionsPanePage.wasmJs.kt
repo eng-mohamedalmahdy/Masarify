@@ -24,31 +24,46 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import com.lightfeather.designsystem.MR
+import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.listitem.TransactionItem
 import com.lightfeather.designsystem.theme.AppTheme
+import dev.icerock.moko.resources.compose.stringResource
+
 
 @Composable
-actual fun TransactionsPane(viewModel: TransactionsPanePageViewModel) {
+actual fun TransactionsPane(
+    filter: com.lightfeather.designsystem.model.UiTransactionFilter,
+    viewModel: TransactionsPanePageViewModel,
+) {
+    // Update the filter when it changes
+    LaunchedEffect(filter) {
+        viewModel.updateFilter(filter)
+    }
+
     val transactions by viewModel.transactions.collectAsState()
     val currentPage by viewModel.currentPage.collectAsState()
     val totalPages by viewModel.totalPages.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val isEmpty by viewModel.isEmpty.collectAsState()
+    val isFiltered by viewModel.isFiltered.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         when {
             isLoading && transactions.isEmpty() -> {
                 Box(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator()
                 }
@@ -57,28 +72,50 @@ actual fun TransactionsPane(viewModel: TransactionsPanePageViewModel) {
             error != null -> {
                 Box(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = error,
+                        text = error!!,
                         color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
+            }
+
+            isEmpty && !isLoading -> {
+                EmptyState(
+                    title =
+                        stringResource(
+                            if (isFiltered) {
+                                MR.strings.empty_filtered_transactions_title
+                            } else {
+                                MR.strings.empty_transactions_title
+                            },
+                        ),
+                    message =
+                        stringResource(
+                            if (isFiltered) {
+                                MR.strings.empty_filtered_transactions_message
+                            } else {
+                                MR.strings.empty_transactions_message
+                            },
+                        ),
+                    modifier = Modifier.weight(1f),
+                )
             }
 
             else -> {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline)
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
                 ) {
                     items(
                         items = transactions,
-                        key = { it.id }
+                        key = { it.id },
                     ) { transaction ->
                         TransactionItem(
                             transaction = transaction,
-                            onClick = { viewModel.onTransactionClick(transaction.id) }
+                            onClick = { viewModel.onTransactionClick(transaction.id) },
                         )
                     }
                 }
@@ -92,7 +129,7 @@ actual fun TransactionsPane(viewModel: TransactionsPanePageViewModel) {
                 onPageChange = { page -> viewModel.goToPage(page) },
                 onPreviousPage = { viewModel.previousPage() },
                 onNextPage = { viewModel.nextPage() },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
@@ -105,61 +142,64 @@ private fun PaginationFooter(
     onPageChange: (Int) -> Unit,
     onPreviousPage: () -> Unit,
     onNextPage: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.padding(AppTheme.dimens.default),
-        elevation = CardDefaults.cardElevation(defaultElevation = AppTheme.dimens.elevation.level1)
+        elevation = CardDefaults.cardElevation(defaultElevation = AppTheme.dimens.elevation.level1),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = AppTheme.dimens.default,
-                    vertical = AppTheme.dimens.compact
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = AppTheme.dimens.default,
+                        vertical = AppTheme.dimens.compact,
+                    ),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
                 onClick = onPreviousPage,
-                enabled = currentPage > 1
+                enabled = currentPage > 1,
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = "Previous page"
+                    contentDescription = "Previous page",
                 )
             }
 
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 val visiblePages = getVisiblePages(currentPage, totalPages)
 
                 items(visiblePages) { page ->
                     when (page) {
-                        -1 -> Text(
-                            text = "...",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                        else -> PageNumber(
-                            page = page,
-                            isSelected = page == currentPage,
-                            onClick = { onPageChange(page) }
-                        )
+                        -1 ->
+                            Text(
+                                text = "...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.outline,
+                            )
+                        else ->
+                            PageNumber(
+                                page = page,
+                                isSelected = page == currentPage,
+                                onClick = { onPageChange(page) },
+                            )
                     }
                 }
             }
 
             IconButton(
                 onClick = onNextPage,
-                enabled = currentPage < totalPages
+                enabled = currentPage < totalPages,
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "Next page"
+                    contentDescription = "Next page",
                 )
             }
         }
@@ -171,32 +211,34 @@ private fun PageNumber(
     page: Int,
     isSelected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .size(AppTheme.dimens.touchTarget.min)
-            .clip(CircleShape)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .size(AppTheme.dimens.touchTarget.min)
+                .clip(CircleShape)
+                .clickable { onClick() },
+        contentAlignment = Alignment.Center,
     ) {
         if (isSelected) {
             Card(
                 modifier = Modifier.size(AppTheme.dimens.large),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = CircleShape
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+                shape = CircleShape,
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = page.toString(),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
             }
@@ -204,13 +246,16 @@ private fun PageNumber(
             Text(
                 text = page.toString(),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
 }
 
-private fun getVisiblePages(currentPage: Int, totalPages: Int): List<Int> {
+private fun getVisiblePages(
+    currentPage: Int,
+    totalPages: Int,
+): List<Int> {
     if (totalPages <= 7) {
         return (1..totalPages).toList()
     }

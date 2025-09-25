@@ -14,7 +14,7 @@ val coreModules =
         viewModelModule,
         frameworkModule,
         useCaseModule,
-        frameworkViewModelModule
+        frameworkViewModelModule,
     )
 
 // Function to get all modules including UI module that requires parameters
