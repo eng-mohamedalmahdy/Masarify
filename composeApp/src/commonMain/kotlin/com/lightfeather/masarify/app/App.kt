@@ -39,7 +39,6 @@ import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
 import com.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
 import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
 import com.lightfeather.designsystem.component.organisms.AppNavigationSuite
-import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.domain.model.AppLanguage
@@ -58,7 +57,6 @@ import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
 import com.lightfeather.masarify.page.onboarding.OnBoardingPage
 import com.lightfeather.masarify.page.splash.SplashPage
-import com.lightfeather.masarify.template.transactionspane.TransactionsPane
 import dev.icerock.moko.resources.desc.StringDesc
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
@@ -89,7 +87,6 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
             LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
         ) {
             AppTheme(isDarkMode) {
-
                 val englishTopLevelRoutes =
                     listOf<AppTopLevelRoutes>(
                         AppTopLevelRoutes.Dashboard,
@@ -287,9 +284,6 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
 //                                {},
 //                                {},
 //                            )
-                            TransactionsPane(
-                                title = "Transactions",
-                            )
                         }
                         composable<AccountsRoute> {
                             BankAccountsPage()

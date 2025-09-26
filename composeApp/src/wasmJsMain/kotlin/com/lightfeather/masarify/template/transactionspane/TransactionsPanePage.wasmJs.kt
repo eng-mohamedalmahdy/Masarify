@@ -38,12 +38,13 @@ import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
 
-
 @Composable
 actual fun TransactionsPane(
     title: String,
     filter: UiTransactionFilter,
     viewModel: TransactionsPanePageViewModel,
+    onBackClick: () -> Unit,
+    topBarSupportingContent: @Composable (() -> Unit),
 ) {
     // Update the filter when it changes
     LaunchedEffect(filter) {
@@ -185,6 +186,7 @@ private fun PaginationFooter(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.outline,
                             )
+
                         else ->
                             PageNumber(
                                 page = page,
@@ -272,11 +274,13 @@ private fun getVisiblePages(
             pages.add(-1)
             pages.add(totalPages)
         }
+
         currentPage >= totalPages - 3 -> {
             pages.add(-1)
             pages.addAll((totalPages - 4)..(totalPages - 1))
             pages.add(totalPages)
         }
+
         else -> {
             pages.add(-1)
             pages.addAll((currentPage - 1)..(currentPage + 1))

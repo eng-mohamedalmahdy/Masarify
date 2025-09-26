@@ -1,12 +1,13 @@
 package com.lightfeather.designsystem.component.organisms.topbar
 
-import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -18,11 +19,14 @@ fun TopAppBar(
     modifier: Modifier = Modifier,
     supportingContent: @Composable () -> Unit = {},
     navigationIcon: @Composable () -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         title = {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.margin.small),
+            ) {
                 supportingContent()
                 Text(text = title)
             }
@@ -30,17 +34,16 @@ fun TopAppBar(
         modifier = modifier,
         navigationIcon = navigationIcon,
         actions = actions,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            scrolledContainerColor = MaterialTheme.colorScheme.primary,
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+            ),
     )
-
 }
-
 
 @Preview
 @Composable
@@ -49,7 +52,7 @@ private fun PreviewTopAppBar() {
         TopAppBar(
             title = "Preview",
             navigationIcon = { /* TODO: Add navigation icon */ },
-            actions = { /* TODO: Add actions */ }
+            actions = { /* TODO: Add actions */ },
         )
     }
 }

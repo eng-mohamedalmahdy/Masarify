@@ -23,10 +23,10 @@ import androidx.paging.compose.itemKey
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.listitem.TransactionItem
+import com.lightfeather.designsystem.component.organisms.topbar.TopAppBarWithBackAndFullTitle
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
-import io.github.aakira.napier.Napier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +34,8 @@ actual fun TransactionsPane(
     title: String,
     filter: UiTransactionFilter,
     viewModel: TransactionsPanePageViewModel,
+    onBackClick: () -> Unit,
+    topBarSupportingContent: @Composable (() -> Unit),
 ) {
     // Update the filter when it changes
     LaunchedEffect(filter) {
@@ -48,7 +50,6 @@ actual fun TransactionsPane(
 
     // Update empty state based on PagingData load state
     LaunchedEffect(transactions.loadState.refresh, transactions.itemCount) {
-
         when {
             transactions.loadState.refresh is LoadState.NotLoading -> {
                 viewModel.updateEmptyState(transactions.itemCount == 0)
@@ -63,6 +64,12 @@ actual fun TransactionsPane(
         modifier = Modifier.fillMaxSize(),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
+            TopAppBarWithBackAndFullTitle(
+                title = title,
+                modifier = Modifier.fillMaxWidth(),
+                supportingContent = topBarSupportingContent,
+                onBackClick = { onBackClick() },
+            )
             if (isEmpty && transactions.loadState.refresh is LoadState.NotLoading) {
                 // Show empty state
                 EmptyState(

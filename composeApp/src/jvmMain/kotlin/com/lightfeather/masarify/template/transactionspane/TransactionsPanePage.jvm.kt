@@ -37,13 +37,14 @@ import com.lightfeather.designsystem.component.organisms.listitem.TransactionIte
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 actual fun TransactionsPane(
     title: String,
     filter: UiTransactionFilter,
     viewModel: TransactionsPanePageViewModel,
+    onBackClick: () -> Unit,
+    topBarSupportingContent: @Composable (() -> Unit),
 ) {
     // Update the filter when it changes
     LaunchedEffect(filter) {

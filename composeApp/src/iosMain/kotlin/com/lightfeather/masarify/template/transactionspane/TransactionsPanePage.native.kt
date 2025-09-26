@@ -2,6 +2,7 @@ package com.lightfeather.masarify.template.transactionspane
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.paging.compose.itemKey
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.listitem.TransactionItem
+import com.lightfeather.designsystem.component.organisms.topbar.TopAppBarWithBackAndFullTitle
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
@@ -32,6 +34,8 @@ actual fun TransactionsPane(
     title: String,
     filter: UiTransactionFilter,
     viewModel: TransactionsPanePageViewModel,
+    onBackClick: () -> Unit,
+    topBarSupportingContent: @Composable (() -> Unit),
 ) {
     // Update the filter when it changes
     LaunchedEffect(filter) {
@@ -59,60 +63,69 @@ actual fun TransactionsPane(
         state = pullToRefreshState,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (isEmpty && transactions.loadState.refresh is LoadState.NotLoading) {
-            // Show empty state
-            EmptyState(
-                title =
-                    stringResource(
-                        if (isFiltered) {
-                            MR.strings.empty_filtered_transactions_title
-                        } else {
-                            MR.strings.empty_transactions_title
-                        },
-                    ),
-                message =
-                    stringResource(
-                        if (isFiltered) {
-                            MR.strings.empty_filtered_transactions_message
-                        } else {
-                            MR.strings.empty_transactions_message
-                        },
-                    ),
-                modifier = Modifier.fillMaxSize(),
+        Column(modifier = Modifier.fillMaxSize()) {
+            TopAppBarWithBackAndFullTitle(
+                title = title,
+                modifier = Modifier.fillMaxWidth(),
+                supportingContent = topBarSupportingContent,
+                onBackClick = { onBackClick() },
             )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
-            ) {
-                items(
-                    count = transactions.itemCount,
-                    key = transactions.itemKey { it.id },
-                ) { index ->
-                    val transaction = transactions[index]
-                    transaction?.let {
-                        TransactionItem(
-                            transaction = it,
-                            onClick = { viewModel.onTransactionClick(it.id) },
-                        )
-                    }
-                }
-
-                when (transactions.loadState.append) {
-                    is LoadState.Loading -> {
-                        item {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(AppTheme.dimens.default),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                CircularProgressIndicator()
-                            }
+            if (isEmpty && transactions.loadState.refresh is LoadState.NotLoading) {
+                // Show empty state
+                EmptyState(
+                    title =
+                        stringResource(
+                            if (isFiltered) {
+                                MR.strings.empty_filtered_transactions_title
+                            } else {
+                                MR.strings.empty_transactions_title
+                            },
+                        ),
+                    message =
+                        stringResource(
+                            if (isFiltered) {
+                                MR.strings.empty_filtered_transactions_message
+                            } else {
+                                MR.strings.empty_transactions_message
+                            },
+                        ),
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
+                ) {
+                    items(
+                        count = transactions.itemCount,
+                        key = transactions.itemKey { it.id },
+                    ) { index ->
+                        val transaction = transactions[index]
+                        transaction?.let {
+                            TransactionItem(
+                                transaction = it,
+                                onClick = { viewModel.onTransactionClick(it.id) },
+                            )
                         }
                     }
-                    else -> {}
+
+                    when (transactions.loadState.append) {
+                        is LoadState.Loading -> {
+                            item {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(AppTheme.dimens.default),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
                 }
             }
         }

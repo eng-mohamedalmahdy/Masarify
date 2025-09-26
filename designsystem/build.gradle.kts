@@ -111,6 +111,9 @@ kotlin {
         }
     }
 }
+compose.resources {
+    publicResClass = true
+}
 android {
     namespace = moduleName
     compileSdk =

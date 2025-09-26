@@ -12,15 +12,19 @@ expect fun TransactionsPane(
     title: String,
     filter: UiTransactionFilter = UiTransactionFilter.EMPTY,
     viewModel: TransactionsPanePageViewModel = koinViewModel(),
+    onBackClick: () -> Unit,
+    topBarSupportingContent: @Composable () -> Unit = {},
 )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ThreePaneScaffoldPaneScope.TransactionsPaneAsDetail(
     title: String,
-    filter: UiTransactionFilter = UiTransactionFilter.EMPTY
+    filter: UiTransactionFilter = UiTransactionFilter.EMPTY,
+    onBackClick: () -> Unit,
+    supportingContent: @Composable () -> Unit,
 ) {
     AnimatedPane {
-        TransactionsPane(title, filter = filter)
+        TransactionsPane(title, filter = filter, onBackClick = onBackClick, topBarSupportingContent = supportingContent)
     }
 }
