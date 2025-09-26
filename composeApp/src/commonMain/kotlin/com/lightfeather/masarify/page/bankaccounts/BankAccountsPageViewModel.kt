@@ -1,10 +1,13 @@
 package com.lightfeather.masarify.page.bankaccounts
 
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCurrencies
+import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCurrency
@@ -23,6 +26,7 @@ class BankAccountsPageViewModel(
     private val getAllAccounts: GetAllAccounts,
     private val getAllCurrencies: GetAllCurrencies,
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
+    private val exchangeRates: GetAllCurrenciesExchangeRates,
 ) : ViewModel() {
 
 
@@ -60,40 +64,41 @@ class BankAccountsPageViewModel(
         )
     internal val state: StateFlow<BankAccountsPageState> = _state
 
+    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     internal fun onIntent(intent: BankAccountsPageIntent) {
         when (intent) {
-            is BankAccountsPageIntent.AddBankAccount ->
-                viewModelScope.launch {
-                }
 
-            is BankAccountsPageIntent.DeleteBankAccount ->
-                viewModelScope.launch {
-                }
 
-            is BankAccountsPageIntent.UpdateBankAccount ->
-                viewModelScope.launch {
-                }
+            is BankAccountsPageIntent.DeleteBankAccount -> {
+
+            }
+
 
             is BankAccountsPageIntent.CreateTransactionInAccount -> {
             }
 
             is BankAccountsPageIntent.TransferFromAccount -> {
+
             }
 
             is BankAccountsPageIntent.SelectCurrency -> {
                 _state.value = _state.value.copy(selectedCurrency = intent.currency)
             }
 
-            is BankAccountsPageIntent.SelectAccount ->
-                _state.value =
-                    _state.value.copy(selectedAccount = intent.account)
-
-            BankAccountsPageIntent.CreateBankAccount -> {
-
-            }
 
             is BankAccountsPageIntent.LoadData -> {
                 loadWealthWorthListening()
+            }
+
+            BankAccountsPageIntent.ClearNavigation -> {
+                _state.value = _state.value.copy(selectedAccount = null)
+            }
+
+            is BankAccountsPageIntent.NavigationIntent -> {
+                viewModelScope.launch {
+                    intent.navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, intent)
+                    _state.value = _state.value.copy(selectedAccount = intent.bankAccount)
+                }
             }
         }
     }
@@ -108,12 +113,52 @@ class BankAccountsPageViewModel(
             .combine(wealthInAllCurrenciesFlow) { selectedCurrency, wealthInAllCurrencies ->
                 selectedCurrency to wealthInAllCurrencies
             }
+
+        val exchangeRates = exchangeRates().foldResult(
+            onSuccess = { exchangeRatesFlow -> exchangeRatesFlow },
+            onFailure = { error -> flowOf() }
+        )
+
+        val exchangeRatesAndPageStateFlow =
+            exchangeRates.combine(selectedCurrencyFlow) { exchangeRates, state ->
+                exchangeRates to state
+            }
+
         viewModelScope.launch(Dispatchers.IoDispatcher) {
             selectedCurrencyAndWealthFlow.collect { (selectedCurrency, wealthInAllCurrencies) ->
-                val selectedCurrencyWealth = wealthInAllCurrencies.find { it.currency == selectedCurrency }
-                    ?: wealthInAllCurrencies.firstOrNull()
+                val selectedCurrencyWealth =
+                    wealthInAllCurrencies.find { it.currency.toUiCurrency() == selectedCurrency }
+                        ?: wealthInAllCurrencies.firstOrNull()
                 _state.value = _state.value.copy(
                     totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString()
+                )
+            }
+        }
+        viewModelScope.launch {
+            exchangeRatesAndPageStateFlow.collect { (exchangeRates, selectedCurrency) ->
+                if (selectedCurrency == null) {
+                    _state.value = _state.value.copy(
+                        bankAccounts = getAllAccounts().foldResult(
+                            onSuccess = { accountsFlow -> accountsFlow.map { it.map { it.toUiBankAccount() } } },
+                            onFailure = { error -> flowOf() }
+                        )
+                    )
+                    return@collect
+                }
+
+                val accountsWithEquivalentAmounts = _state.value.bankAccounts.map { accountsFlow ->
+                    accountsFlow.map { account ->
+                        val selectedCurrencyExchangeRate =
+                            exchangeRates.find { it.from == account.currency && it.to == selectedCurrency }
+                        account.copy(
+                            balance = (account.balance.toDouble() * (selectedCurrencyExchangeRate?.rate
+                                ?: 1.0)).toString(),
+                            currency = selectedCurrency
+                        )
+                    }
+                }
+                _state.value = _state.value.copy(
+                    bankAccounts = accountsWithEquivalentAmounts
                 )
             }
         }

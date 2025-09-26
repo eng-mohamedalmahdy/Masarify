@@ -51,7 +51,7 @@ import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
-import com.lightfeather.masarify.navigation.routes.SettingsRoute
+import com.lightfeather.masarify.navigation.routes.MoreRoute
 import com.lightfeather.masarify.navigation.routes.SplashRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
@@ -92,14 +92,14 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         AppTopLevelRoutes.Dashboard,
                         AppTopLevelRoutes.Transactions,
                         AppTopLevelRoutes.Accounts,
-                        AppTopLevelRoutes.Settings,
+                        AppTopLevelRoutes.More,
                     )
                 val arabicTopLevelRoutes =
                     listOf<AppTopLevelRoutes>(
                         AppTopLevelRoutes.Dashboard,
                         AppTopLevelRoutes.Transactions,
                         AppTopLevelRoutes.Accounts,
-                        AppTopLevelRoutes.Settings,
+                        AppTopLevelRoutes.More,
                     )
                 val topLevelRoutes = if (appLanguage.isRtl) arabicTopLevelRoutes.reversed() else englishTopLevelRoutes
                 val adaptiveInfo = currentWindowAdaptiveInfo()
@@ -291,7 +291,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         composable<TransactionsRoute> {
                             Text("Transactions Page")
                         }
-                        composable<SettingsRoute> {
+                        composable<MoreRoute> {
                             Text("Settings Page")
                         }
                     }

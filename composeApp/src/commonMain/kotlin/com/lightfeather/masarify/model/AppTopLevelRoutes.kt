@@ -3,6 +3,7 @@ package com.lightfeather.masarify.model
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -11,7 +12,7 @@ import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
-import com.lightfeather.masarify.navigation.routes.SettingsRoute
+import com.lightfeather.masarify.navigation.routes.MoreRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import dev.icerock.moko.resources.StringResource
 
@@ -39,10 +40,10 @@ sealed class AppTopLevelRoutes(
             get() = MR.strings.accounts
     }
 
-    data object Settings : AppTopLevelRoutes(SettingsRoute) {
+    data object More : AppTopLevelRoutes(MoreRoute) {
         override val icon: ImageVector
-            get() = Icons.Default.Settings
+            get() = Icons.Default.MoreVert
         override val label: StringResource
-            get() = MR.strings.settings
+            get() = MR.strings.more
     }
 }

@@ -117,6 +117,34 @@ Masarify is a Kotlin Multiplatform project targeting Android, iOS, Web (WASM), a
 - **Stateless UI**: Pass state + intent handlers to composables
 - **Modifier Last**: Place modifiers as last parameter in composables
 
+### Error Handling & User Messaging Guidelines (CRITICAL)
+**Use SnackbarService for All User Messages:**
+- **SUCCESS**: Use `SnackbarService.sendSuccessMessage()` for operation confirmations
+- **ERROR**: Use `SnackbarService.sendErrorMessage()` for validation errors and failures
+- **WARNING**: Use `SnackbarService.sendWarningMessage()` for warnings and cautions
+- **NEVER store error messages in state** - always use SnackbarService instead
+
+**Error Message Patterns:**
+```kotlin
+// ✅ CORRECT - Using SnackbarService with string resources
+SnackbarService.sendErrorMessage(MR.strings.account_name_required)
+SnackbarService.sendSuccessMessage(MR.strings.account_create_success)
+SnackbarService.sendErrorMessage(MR.strings.account_create_failure)
+
+// ❌ WRONG - Hardcoded strings
+SnackbarService.sendErrorMessage("Account name is required")
+
+// ❌ WRONG - Storing errors in state
+_state.value = _state.value.copy(error = "Account name is required")
+```
+
+**Validation Rules:**
+- **Client-side validation**: Always validate required fields before submission
+- **Show specific errors**: Provide clear, actionable error messages using string resources
+- **String resources**: Always use `MR.strings.*` instead of hardcoded strings for user-facing messages
+- **Loading states**: Use `isLoading` in state for UI feedback during operations
+- **Success feedback**: Always confirm successful operations to users
+
 ### Code Quality & Linting Rules
 - **KtLint**: Automatic code formatting is enforced - run `./gradlew ktlintFormat` before committing
 - **DetektKT**: Static analysis catches bugs and code smells - run `./gradlew detekt` regularly
@@ -181,17 +209,34 @@ Modifier.size(AppTheme.dimens.icon.size.medium)
 
 ### Example Template Structure
 ```kotlin
-// State
+// State - NO error field, use SnackbarService instead
 data class TransactionPageState(
     val transactions: List<Transaction> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: String? = null
+    val isLoading: Boolean = false
 )
 
 // Intent
 sealed interface TransactionPageIntent {
     data object LoadTransactions : TransactionPageIntent
     data class Delete(val id: String) : TransactionPageIntent
+}
+
+// ViewModel - Use SnackbarService with string resources
+class TransactionPageViewModel : ViewModel() {
+    fun onIntent(intent: TransactionPageIntent) {
+        when (intent) {
+            is TransactionPageIntent.Delete -> {
+                // Validation
+                if (someCondition) {
+                    SnackbarService.sendErrorMessage(MR.strings.transaction_delete_failure)
+                    return
+                }
+
+                // Success
+                SnackbarService.sendSuccessMessage(MR.strings.transaction_delete_success)
+            }
+        }
+    }
 }
 
 // Composable

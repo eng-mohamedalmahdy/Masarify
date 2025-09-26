@@ -12,10 +12,19 @@
     <string name="onboarding_account_name_error">Account name cannot be empty</string>
     <string name="onboarding_account_balance_error">Account balance cannot be empty</string>
     <string name="onboarding_account_currency_error">Account currency cannot be empty</string>
+
+    <!-- Create/Edit Account Validation Messages -->
+    <string name="account_name_required">Account name is required</string>
+    <string name="account_currency_required">Please select a currency</string>
+    <string name="account_balance_required">Initial balance is required</string>
+    <string name="account_balance_invalid">Please enter a valid balance amount</string>
+    <string name="unknown_error">An unexpected error occurred</string>
+
     <string name="dashboard">Dashboard</string>
     <string name="transactions">Transactions</string>
     <string name="accounts">Accounts</string>
     <string name="settings">Settings</string>
+    <string name="more">More</string>
     <string name="transfer">Transfer</string>
     <string name="edit">Edit</string>
 
