@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
@@ -49,6 +50,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun BankAccountItem(
     bankAccount: UiBankAccount,
     modifier: Modifier = Modifier,
+    shape: Shape = AppTheme.shapes.medium,
     onClick: () -> Unit,
     onTransfer: () -> Unit,
     onEdit: () -> Unit,
@@ -74,13 +76,13 @@ fun BankAccountItem(
                 .border(
                     borderThicknessAnimated,
                     borderColorAnimated,
-                    AppTheme.shapes.medium,
+                    shape,
                 ).dropShadow(
-                    shape = AppTheme.shapes.medium,
+                    shape = shape,
                     shadow = Shadow(radius = AppTheme.dimens.elevation.component.card),
                 ),
         interactionSource = interactionSource,
-        shape = AppTheme.shapes.medium,
+        shape = shape,
         colors =
             CardDefaults.cardColors(
                 containerColor = accountColor,
@@ -91,9 +93,7 @@ fun BankAccountItem(
         onClick = onClick,
     ) {
         Column(
-            modifier =
-                Modifier
-                    .padding(AppTheme.dimens.spacing.padding.medium),
+            modifier = Modifier.padding(AppTheme.dimens.spacing.padding.small),
         ) {
             Row {
                 Column {
@@ -114,26 +114,36 @@ fun BankAccountItem(
                                 color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
-                            bankAccount.description?.let {
+                            if (bankAccount.description.isNullOrBlank()) {
                                 Text(
-                                    text = it,
+                                    text = bankAccount.balance + " " + bankAccount.currency.symbol,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            } else {
+                                Text(
+                                    text = bankAccount.description,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
+
                         }
                     }
-                    Text(
-                        text = bankAccount.balance + " " + bankAccount.currency.symbol,
-                        modifier =
-                            Modifier.padding(
-                                horizontal = AppTheme.dimens.spacing.padding.small,
-                                vertical = AppTheme.dimens.spacing.padding.tiny,
-                            ),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    if (bankAccount.description.isNullOrBlank().not()) {
+                        Text(
+                            text = bankAccount.balance + " " + bankAccount.currency.symbol,
+                            modifier =
+                                Modifier.padding(
+                                    horizontal = AppTheme.dimens.spacing.padding.small,
+                                    vertical = AppTheme.dimens.spacing.padding.tiny,
+                                ),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 // Action buttons - responsive to window size

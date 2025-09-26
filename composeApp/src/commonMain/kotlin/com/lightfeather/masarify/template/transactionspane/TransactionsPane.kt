@@ -9,14 +9,18 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 expect fun TransactionsPane(
+    title: String,
     filter: UiTransactionFilter = UiTransactionFilter.EMPTY,
     viewModel: TransactionsPanePageViewModel = koinViewModel(),
 )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun ThreePaneScaffoldPaneScope.TransactionsPaneAsDetail(filter: UiTransactionFilter = UiTransactionFilter.EMPTY) {
+fun ThreePaneScaffoldPaneScope.TransactionsPaneAsDetail(
+    title: String,
+    filter: UiTransactionFilter = UiTransactionFilter.EMPTY
+) {
     AnimatedPane {
-        TransactionsPane(filter = filter)
+        TransactionsPane(title, filter = filter)
     }
 }

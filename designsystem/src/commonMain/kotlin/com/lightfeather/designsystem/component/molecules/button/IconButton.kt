@@ -1,4 +1,4 @@
-package com.lightfeather.designsystem.component.molecules
+package com.lightfeather.designsystem.component.molecules.button
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -23,7 +23,7 @@ fun IconButton(
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
         ),
 ) {
-    androidx.compose.material3.IconButton(
+    IconButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,

@@ -1,4 +1,4 @@
-package com.lightfeather.designsystem.component.molecules
+package com.lightfeather.designsystem.component.molecules.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*

@@ -1,4 +1,4 @@
-package com.lightfeather.designsystem.component.molecules
+package com.lightfeather.designsystem.component.molecules.button
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,19 +8,21 @@ import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TextButton(
+fun SecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     colors: ButtonColors =
-        ButtonDefaults.textButtonColors().copy(
-            contentColor = MaterialTheme.colorScheme.primary,
+        ButtonDefaults.buttonColors().copy(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
+            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
         ),
     content: @Composable RowScope.() -> Unit,
 ) {
-    androidx.compose.material3.TextButton(
+    Button(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
@@ -32,14 +34,15 @@ fun TextButton(
 
 @Preview
 @Composable
-private fun PreviewTextButton() {
+private fun PreviewSecondaryButton() {
     AppTheme {
-        TextButton(
+        SecondaryButton(
             onClick = { },
             modifier = Modifier.padding(AppTheme.dimens.default),
             enabled = true,
+            contentPadding = PaddingValues(AppTheme.dimens.default),
             content = {
-                Text("Text Button")
+                Text("Secondary Button")
             },
         )
     }

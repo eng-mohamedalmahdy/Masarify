@@ -11,7 +11,9 @@ enum class PlatformsSlugs(
     IOS("iOS"),
     ANDROID("Android"),
     DESKTOP("JVM"),
-    WEB("WASM"),
+    WEB("WASM");
+
+    fun isMobile() = this == IOS || this == ANDROID
 }
 
 fun Platform.asSlug() = PlatformsSlugs.entries.find { it.slug == this.slug }

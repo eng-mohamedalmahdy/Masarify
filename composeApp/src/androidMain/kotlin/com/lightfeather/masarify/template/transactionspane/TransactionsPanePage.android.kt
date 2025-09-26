@@ -2,6 +2,7 @@ package com.lightfeather.masarify.template.transactionspane
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import io.github.aakira.napier.Napier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 actual fun TransactionsPane(
+    title: String,
     filter: UiTransactionFilter,
     viewModel: TransactionsPanePageViewModel,
 ) {
@@ -46,10 +48,6 @@ actual fun TransactionsPane(
 
     // Update empty state based on PagingData load state
     LaunchedEffect(transactions.loadState.refresh, transactions.itemCount) {
-        Napier.d(
-            "Transactions loaded successfully ${transactions.itemCount} load Status = ${transactions.loadState.refresh}",
-            tag = "TransactionsPane"
-        )
 
         when {
             transactions.loadState.refresh is LoadState.NotLoading -> {
@@ -64,61 +62,63 @@ actual fun TransactionsPane(
         state = pullToRefreshState,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (isEmpty && transactions.loadState.refresh is LoadState.NotLoading) {
-            // Show empty state
-            EmptyState(
-                title =
-                    stringResource(
-                        if (isFiltered) {
-                            MR.strings.empty_filtered_transactions_title
-                        } else {
-                            MR.strings.empty_transactions_title
-                        },
-                    ),
-                message =
-                    stringResource(
-                        if (isFiltered) {
-                            MR.strings.empty_filtered_transactions_message
-                        } else {
-                            MR.strings.empty_transactions_message
-                        },
-                    ),
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
-            ) {
-                items(
-                    count = transactions.itemCount,
-                    key = transactions.itemKey { it.id },
-                ) { index ->
-                    val transaction = transactions[index]
-                    transaction?.let {
-                        TransactionItem(
-                            transaction = it,
-                            onClick = { viewModel.onTransactionClick(it.id) },
-                        )
-                    }
-                }
-
-                when (transactions.loadState.append) {
-                    is LoadState.Loading -> {
-                        item {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(AppTheme.dimens.default),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                CircularProgressIndicator()
-                            }
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (isEmpty && transactions.loadState.refresh is LoadState.NotLoading) {
+                // Show empty state
+                EmptyState(
+                    title =
+                        stringResource(
+                            if (isFiltered) {
+                                MR.strings.empty_filtered_transactions_title
+                            } else {
+                                MR.strings.empty_transactions_title
+                            },
+                        ),
+                    message =
+                        stringResource(
+                            if (isFiltered) {
+                                MR.strings.empty_filtered_transactions_message
+                            } else {
+                                MR.strings.empty_transactions_message
+                            },
+                        ),
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
+                ) {
+                    items(
+                        count = transactions.itemCount,
+                        key = transactions.itemKey { it.id },
+                    ) { index ->
+                        val transaction = transactions[index]
+                        transaction?.let {
+                            TransactionItem(
+                                transaction = it,
+                                onClick = { viewModel.onTransactionClick(it.id) },
+                            )
                         }
                     }
 
-                    else -> {}
+                    when (transactions.loadState.append) {
+                        is LoadState.Loading -> {
+                            item {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(AppTheme.dimens.default),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
                 }
             }
         }

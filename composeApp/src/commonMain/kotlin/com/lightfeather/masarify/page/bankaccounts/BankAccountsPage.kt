@@ -1,12 +1,13 @@
 package com.lightfeather.masarify.page.bankaccounts
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +18,9 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -26,7 +30,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.AccountsHeader
@@ -35,7 +45,11 @@ import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.uiTransactionFilter
+import com.lightfeather.designsystem.modifier.applyIf
+import com.lightfeather.designsystem.shape.inWardTriangleCutShape
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.masarify.asSlug
+import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.template.transactionspane.TransactionsPaneAsDetail
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.flowOf
@@ -76,6 +90,7 @@ internal fun BankAccountsPageContent(
     BackHandler(navigator.canNavigateBack()) {
         coroutineScope.launch {
             navigator.navigateBack()
+            onIntent(BankAccountsPageIntent.SelectAccount(null))
         }
     }
     ListDetailPaneScaffold(
@@ -88,6 +103,7 @@ internal fun BankAccountsPageContent(
                 totalAmountInSelectedOrDefaultCurrency = state.totalAmountInSelectedOrDefaultCurrency,
                 defaultCurrency = defaultCurrency,
                 selectedCurrency = state.selectedCurrency,
+                selectedAccount = state.selectedAccount,
                 onAccountClick = {
                     coroutineScope.launch {
                         navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, it)
@@ -103,7 +119,7 @@ internal fun BankAccountsPageContent(
         },
         detailPane = {
             if (state.selectedAccount != null) {
-                TransactionsPaneAsDetail(paneFilter)
+                TransactionsPaneAsDetail(state.selectedAccount.name, paneFilter)
             } else {
                 EmptyState(
                     title = stringResource(MR.strings.no_account_selected_title),
@@ -124,6 +140,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
     totalAmountInSelectedOrDefaultCurrency: String,
     defaultCurrency: UiCurrency?,
     selectedCurrency: UiCurrency?,
+    selectedAccount: UiBankAccount?,
     onAccountClick: (UiBankAccount) -> Unit,
     onUpdateAccount: (UiBankAccount) -> Unit,
     onDeleteAccount: (UiBankAccount) -> Unit,
@@ -131,7 +148,83 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
     onTransferFromAccount: (UiBankAccount) -> Unit,
     onCurrencyClick: (UiCurrency?) -> Unit,
 ) {
-    AnimatedPane {
+    val isMobile = getPlatform().asSlug()?.isMobile() == true
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val lazyListState = rememberLazyListState()
+
+    // Calculate selected account position for line drawing
+    val selectedAccountIndex = remember(accounts, selectedAccount) {
+        if (selectedAccount != null) {
+            accounts.indexOfFirst { it.id == selectedAccount.id }
+        } else {
+            -1
+        }
+    }
+
+    AnimatedPane(
+        modifier = Modifier.applyIf(
+            isMobile.not(), Modifier.fillMaxHeight().drawWithContent {
+                // Draw the content first
+                drawContent()
+
+                // Then draw the line on top
+                val strokeWidth = 2.dp.value * density
+                val x = size.width - strokeWidth / 2
+
+                // If no account is selected, draw full line
+                if (selectedAccount == null || selectedAccountIndex == -1) {
+                    drawLine(
+                        primaryColor,
+                        Offset(x, 0f),
+                        Offset(x, size.height),
+                        strokeWidth
+                    )
+                } else {
+                    // Calculate approximate position of selected account
+                    // Account for header items (AccountsHeader + section title = 2 items)
+                    val accountItemIndex = selectedAccountIndex + 2
+                    val visibleItems = lazyListState.layoutInfo.visibleItemsInfo
+
+                    // Find the selected account item in visible items
+                    val selectedItem = visibleItems.find { it.index == accountItemIndex }
+
+                    if (selectedItem != null) {
+                        // Convert item coordinates to canvas coordinates
+                        val itemTop = selectedItem.offset.toFloat()
+                        val itemBottom = (selectedItem.offset + selectedItem.size).toFloat()
+
+                        // Draw first line: from top to start of selected account
+                        if (itemTop > 0) {
+                            drawLine(
+                                primaryColor,
+                                Offset(x, 0f),
+                                Offset(x, itemTop + 1.dp.toPx()),
+                                strokeWidth
+                            )
+                        }
+
+                        // Draw second line: from end of selected account to bottom
+                        if (itemBottom < size.height) {
+                            drawLine(
+                                primaryColor,
+                                Offset(x, itemBottom - 1.dp.toPx()),
+                                Offset(x, size.height),
+                                strokeWidth
+                            )
+                        }
+                    } else {
+                        // If selected item is not visible, draw full line
+                        drawLine(
+                            primaryColor,
+                            Offset(x, 0f),
+                            Offset(x, size.height),
+                            strokeWidth
+                        )
+                    }
+                }
+            }
+        ),
+    ) {
         if (accounts.isEmpty()) {
             EmptyState(
                 title = stringResource(MR.strings.no_accounts_title),
@@ -141,9 +234,9 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
             )
         } else {
             LazyColumn(
+                state = lazyListState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = AppTheme.dimens.large),
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
             ) {
                 // Wealth Summary Header
                 item {
@@ -179,12 +272,71 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                     items = accounts,
                     key = { it.id },
                 ) { account ->
+                    // Animate the selection state
+                    val isSelected = account == selectedAccount
+                    val animatedCutSize by animateDpAsState(
+                        targetValue = if (isSelected) AppTheme.dimens.default else 0.dp,
+                        animationSpec = tween(durationMillis = 300),
+                        label = "cutSize"
+                    )
+                    val animatedTrianglePosition by animateFloatAsState(
+                        targetValue = if (isSelected) 0.4f else 0.5f,
+                        animationSpec = tween(durationMillis = 300),
+                        label = "trianglePosition"
+                    )
+                    val animatedStrokeWidth by animateDpAsState(
+                        targetValue = if (isSelected) 4.dp else 0.dp,
+                        animationSpec = tween(durationMillis = 300),
+                        label = "strokeWidth"
+                    )
+
+                    // Create animated shape
+                    val animatedCardShape = inWardTriangleCutShape(
+                        tailSize = animatedCutSize,
+                        topSpacePercentage = animatedTrianglePosition,
+                    )
+
                     BankAccountItem(
                         account,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = AppTheme.dimens.default),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(animatedCardShape)
+                            .drawWithContent {
+                                // Draw the card content first
+                                drawContent()
+
+                                // Only draw border if selected (stroke width > 0)
+                                if (animatedStrokeWidth.value > 0f) {
+                                    // Draw the complete border with triangular connector
+                                    val strokeWidth = animatedStrokeWidth.toPx()
+                                    val cut = with(density) { animatedCutSize.toPx() }
+                                    val triangleTopY = size.height * animatedTrianglePosition
+                                    val triangleCenterY = triangleTopY + cut / 2f
+                                    val triangleBottomY = triangleTopY + cut
+
+                                    // Create a path that follows the exact same shape as the clip
+                                    val borderPath = Path().apply {
+                                        // Start from top-right
+                                        moveTo(size.width, 0f)
+                                        // Draw down to the start of the inward cut
+                                        lineTo(size.width, triangleTopY)
+                                        // Draw the inward triangular cut (pointing inward to the left)
+                                        lineTo(size.width - cut, triangleCenterY)
+                                        // Complete the triangle by going back to the right edge
+                                        lineTo(size.width, triangleBottomY)
+                                        // Draw down to bottom-right corner
+                                        lineTo(size.width, size.height)
+                                    }
+
+                                    // Draw the border path
+                                    drawPath(
+                                        path = borderPath,
+                                        color = primaryColor,
+                                        style = Stroke(width = strokeWidth)
+                                    )
+                                }
+                            },
+                        shape = RectangleShape,
                         onClick = { onAccountClick(account) },
                         onTransfer = { onTransferFromAccount(account) },
                         onEdit = { onUpdateAccount(account) },

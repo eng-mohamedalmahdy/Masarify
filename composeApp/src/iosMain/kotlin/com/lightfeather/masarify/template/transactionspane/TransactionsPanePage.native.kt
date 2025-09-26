@@ -22,13 +22,15 @@ import androidx.paging.compose.itemKey
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.listitem.TransactionItem
+import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 actual fun TransactionsPane(
-    filter: com.lightfeather.designsystem.model.UiTransactionFilter,
+    title: String,
+    filter: UiTransactionFilter,
     viewModel: TransactionsPanePageViewModel,
 ) {
     // Update the filter when it changes
