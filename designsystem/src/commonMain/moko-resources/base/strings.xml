@@ -4,10 +4,10 @@
     <string name="total_wealth">Total Wealth</string>
     <string name="accounts_count">%d Accounts</string>
     <string name="original_values">Original Values</string>
-    
+
     <!-- Account Details Header -->
     <string name="updated_time">Updated %s</string>
-    <string name="add_transaction">Add\nTransaction</string>
+    <string name="add_transaction">Add\nEntry</string>
     <string name="transfer">Transfer</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
@@ -34,7 +34,7 @@
     <string name="no_account_selected_message">Select a bank account from the list to view its transactions and details</string>
 
     <!-- Bank Accounts Page -->
-    <string name="your_accounts">Your Accounts</string>
+    <string name="your_accounts">My Accounts</string>
     <string name="no_accounts_title">No accounts yet</string>
     <string name="no_accounts_message">Add your first bank account to start tracking your finances</string>
     <string name="add_account">Add Account</string>

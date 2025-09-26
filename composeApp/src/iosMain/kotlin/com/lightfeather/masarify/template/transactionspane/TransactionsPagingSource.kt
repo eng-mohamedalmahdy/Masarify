@@ -17,8 +17,8 @@ class TransactionsPagingSource(
         const val PAGE_SIZE = 20
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> {
-        return try {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> =
+        try {
             val page = params.key ?: 0
 
             val result = getFilteredTransactionsPaged(filter, page)
@@ -40,7 +40,6 @@ class TransactionsPagingSource(
         } catch (exception: Exception) {
             LoadResult.Error(exception)
         }
-    }
 
     override fun getRefreshKey(state: PagingState<Int, Transaction>): Int? {
         // Try to find the page key of the closest page to the most recently accessed index.

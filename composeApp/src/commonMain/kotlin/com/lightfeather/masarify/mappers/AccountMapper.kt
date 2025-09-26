@@ -25,11 +25,7 @@ fun UiBankAccount.toAccount(): Account =
         logo = (image as? String) ?: "",
     )
 
-private fun formatBalance(
-    balance: Double,
-): String {
-    return "$balance"
-}
+private fun formatBalance(balance: Double): String = "$balance"
 
 private fun parseBalance(balanceString: String): Double =
     balanceString

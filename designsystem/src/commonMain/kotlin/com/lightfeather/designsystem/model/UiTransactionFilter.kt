@@ -78,15 +78,19 @@ data class UiTransactionFilter(
     /**
      * Check if this filter is empty (no criteria set)
      */
-    fun isEmpty(): Boolean = (ids.isEmpty() &&
-        accounts.isEmpty() &&
-        categories.isEmpty() &&
-        currencies.isEmpty() &&
-        transactionTypes.isEmpty() &&
-        amountRange == null &&
-        dateRange == null &&
-        textSearch.isNullOrBlank() &&
-        hasAttachments == null) || this == EMPTY
+    fun isEmpty(): Boolean =
+        (
+            ids.isEmpty() &&
+                accounts.isEmpty() &&
+                categories.isEmpty() &&
+                currencies.isEmpty() &&
+                transactionTypes.isEmpty() &&
+                amountRange == null &&
+                dateRange == null &&
+                textSearch.isNullOrBlank() &&
+                hasAttachments == null
+        ) ||
+            this == EMPTY
 
     /**
      * Get a human-readable description of the filter

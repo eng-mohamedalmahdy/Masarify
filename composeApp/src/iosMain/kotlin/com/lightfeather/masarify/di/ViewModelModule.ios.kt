@@ -9,7 +9,7 @@ import org.koin.dsl.module
 actual val frameworkViewModelModule: Module =
     module {
         factory<() -> TransactionsPagingSource> {
-            { TransactionsPagingSource(get(),get(),it.get()) }
+            { TransactionsPagingSource(get(), get(), it.get()) }
         }
 
         viewModel {

@@ -7,7 +7,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
 @Composable
-fun inWardTriangleCutShape(tailSize: Dp, topSpacePercentage: Float): Shape {
+fun inWardTriangleCutShape(
+    tailSize: Dp,
+    topSpacePercentage: Float,
+): Shape {
     val currentDensity = LocalDensity.current
 
     return GenericShape { size, _ ->

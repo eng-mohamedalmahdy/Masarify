@@ -11,7 +11,8 @@ enum class PlatformsSlugs(
     IOS("iOS"),
     ANDROID("Android"),
     DESKTOP("JVM"),
-    WEB("WASM");
+    WEB("WASM"),
+    ;
 
     fun isMobile() = this == IOS || this == ANDROID
 }

@@ -4,6 +4,7 @@ import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
 
 internal sealed interface BankAccountsPageIntent {
+    data object LoadData : BankAccountsPageIntent
     data class UpdateBankAccount(
         val account: UiBankAccount,
     ) : BankAccountsPageIntent
@@ -31,4 +32,6 @@ internal sealed interface BankAccountsPageIntent {
     data class SelectAccount(
         val account: UiBankAccount?,
     ) : BankAccountsPageIntent
+
+    data object CreateBankAccount : BankAccountsPageIntent
 }

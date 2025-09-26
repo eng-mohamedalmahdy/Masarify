@@ -1,6 +1,5 @@
 package com.lightfeather.masarify.template.transactionspane
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -55,32 +54,34 @@ actual class TransactionsPanePageViewModel(
 
     actual val isEmpty: StateFlow<Boolean> = _isEmpty.asStateFlow()
     actual val isFiltered: StateFlow<Boolean> = _isFiltered.asStateFlow()
-    val pagerFlow = _currentFilter
-        .map { filter ->
-            Pager(
-                config =
-                    PagingConfig(
-                        pageSize = PAGE_SIZE,
-                        prefetchDistance = PREFETCH_DISTANCE,
-                        initialLoadSize = INITIAL_LOAD_SIZE,
-                        enablePlaceholders = false,
-                    ),
-                pagingSourceFactory = {
-                    TransactionsPagingSource(
-                        sharedDatabase = sharedDatabase,
-                        getFilteredTransactionsPaged = getFilteredTransactionsPaged,
-                        filter = filter.toTransactionFilter(),
-                    )
-                },
-            )
-        }
+    val pagerFlow =
+        _currentFilter
+            .map { filter ->
+                Pager(
+                    config =
+                        PagingConfig(
+                            pageSize = PAGE_SIZE,
+                            prefetchDistance = PREFETCH_DISTANCE,
+                            initialLoadSize = INITIAL_LOAD_SIZE,
+                            enablePlaceholders = false,
+                        ),
+                    pagingSourceFactory = {
+                        TransactionsPagingSource(
+                            sharedDatabase = sharedDatabase,
+                            getFilteredTransactionsPaged = getFilteredTransactionsPaged,
+                            filter = filter.toTransactionFilter(),
+                        )
+                    },
+                )
+            }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val transactions: Flow<PagingData<UiTransaction>> = pagerFlow
-        .flatMapLatest { it.flow }
-        .map { pagingData ->
-            pagingData.map { transaction -> transaction.toUiTransaction() }
-        }.cachedIn(viewModelScope)
+    val transactions: Flow<PagingData<UiTransaction>> =
+        pagerFlow
+            .flatMapLatest { it.flow }
+            .map { pagingData ->
+                pagingData.map { transaction -> transaction.toUiTransaction() }
+            }.cachedIn(viewModelScope)
 
     fun refresh() {
         viewModelScope.launch {

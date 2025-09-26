@@ -9,12 +9,15 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material3.Card
@@ -34,6 +37,7 @@ import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
@@ -54,6 +58,8 @@ fun BankAccountItem(
     onClick: () -> Unit,
     onTransfer: () -> Unit,
     onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onCreateTransaction: () -> Unit,
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
     val accountColor = runCatching { Color(bankAccount.color.toColorInt()) }.getOrElse { surfaceColor }
@@ -95,64 +101,124 @@ fun BankAccountItem(
         Column(
             modifier = Modifier.padding(AppTheme.dimens.spacing.padding.small),
         ) {
-            Row {
-                Column {
-                    Row {
-                        AppImage(
-                            bankAccount.image,
-                            contentDescription = bankAccount.name,
-                            modifier = Modifier.size(AppTheme.dimens.icon.size.xxLarge),
-                            placeholder = Res.drawable.bank,
-                            errorPlaceholder = Res.drawable.bank,
-                        )
-                        Column(
-                            modifier = Modifier.padding(horizontal = AppTheme.dimens.spacing.padding.small),
-                        ) {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AppImage(
+                        bankAccount.image,
+                        contentDescription = bankAccount.name,
+                        modifier = Modifier.size(AppTheme.dimens.icon.size.xxLarge),
+                        placeholder = Res.drawable.bank,
+                        errorPlaceholder = Res.drawable.bank,
+                    )
+                    Column {
+                        Row {
                             Text(
                                 text = bankAccount.name,
-                                style = MaterialTheme.typography.headlineMedium,
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.headlineSmall,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
-                            if (bankAccount.description.isNullOrBlank()) {
-                                Text(
-                                    text = bankAccount.balance + " " + bankAccount.currency.symbol,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            } else {
-                                Text(
-                                    text = bankAccount.description,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-
+                            Text(
+                                text = bankAccount.balance + " " + bankAccount.currency.symbol,
+                                modifier =
+                                    Modifier.padding(start = AppTheme.dimens.spacing.padding.tiny),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        if (!bankAccount.description.isNullOrBlank()) {
+                            Text(
+                                text = bankAccount.description,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
-                    if (bankAccount.description.isNullOrBlank().not()) {
-                        Text(
-                            text = bankAccount.balance + " " + bankAccount.currency.symbol,
-                            modifier =
-                                Modifier.padding(
-                                    horizontal = AppTheme.dimens.spacing.padding.small,
-                                    vertical = AppTheme.dimens.spacing.padding.tiny,
-                                ),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                // Action buttons - responsive to window size
+
                 BankAccountActions(
                     onTransfer = onTransfer,
                     onEdit = onEdit,
+                    onDelete = onDelete,
+                    onCreateTransaction = onCreateTransaction,
                     windowSize = rememberAppWindowSizeClass(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = AppTheme.dimens.spacing.padding.small),
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ActionButton(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    isCompact: Boolean,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    modifier: Modifier = Modifier,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    if (isCompact) {
+        // Compact: Icon only with styled background
+        Surface(
+            onClick = onClick,
+            modifier = modifier.size(AppTheme.dimens.touchTarget.min),
+            shape = AppTheme.shapes.small,
+            color = containerColor,
+            contentColor = contentColor,
+            interactionSource = interactionSource,
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    modifier = Modifier.size(AppTheme.dimens.icon.size.medium),
+                )
+            }
+        }
+    } else {
+        // Medium/Expanded: Icon with label
+        Row(
+            modifier =
+                modifier
+                    .padding(top = AppTheme.dimens.spacing.padding.small)
+                    .clip(AppTheme.shapes.small)
+                    .clickable(
+                        onClick = onClick,
+                        interactionSource = interactionSource,
+                    ),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.small),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Surface(
+                modifier = Modifier.size(AppTheme.dimens.icon.size.large),
+                shape = AppTheme.shapes.small,
+                color = containerColor,
+                contentColor = contentColor,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(AppTheme.dimens.icon.size.medium),
+                    )
+                }
+            }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = contentColor,
+            )
         }
     }
 }
@@ -161,126 +227,51 @@ fun BankAccountItem(
 private fun BankAccountActions(
     onTransfer: () -> Unit,
     onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onCreateTransaction: () -> Unit,
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
-    val isCompact = windowSize == WindowWidthSizeClass.Compact
-    val transferInteractionSource = remember { MutableInteractionSource() }
-    val editInteractionSource = remember { MutableInteractionSource() }
-    Column(
-        modifier,
-        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.tiny),
+//    val isCompact = windowSize == WindowWidthSizeClass.Compact
+    val isCompact = false
+
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (isCompact) {
-            // Compact: Icons only with styled background
-            Surface(
-                onClick = onTransfer,
-                modifier = Modifier.size(AppTheme.dimens.touchTarget.min),
-                shape = AppTheme.shapes.small,
-                color = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                interactionSource = transferInteractionSource,
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.SyncAlt,
-                        contentDescription = "Transfer",
-                        modifier = Modifier.size(AppTheme.dimens.icon.size.medium),
-                    )
-                }
-            }
+        ActionButton(
+            icon = Icons.Default.Add,
+            label = stringResource(MR.strings.add_transaction).orEmpty(),
+            onClick = onCreateTransaction,
+            isCompact = isCompact,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
 
-            Surface(
-                onClick = onEdit,
-                modifier =
-                    Modifier.size(AppTheme.dimens.touchTarget.min).hoverable(
-                        interactionSource = editInteractionSource,
-                    ),
-                shape = AppTheme.shapes.small,
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                interactionSource = editInteractionSource,
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
-                        modifier = Modifier.size(AppTheme.dimens.icon.size.medium),
-                    )
-                }
-            }
-        } else {
-            // Medium/Expanded: Icons with labels
-            Row(
-                modifier =
-                    Modifier
-                        .clip(AppTheme.shapes.small)
-                        .clickable(
-                            onClick = { onTransfer() },
-                            interactionSource = transferInteractionSource,
-                        ).padding(AppTheme.dimens.spacing.padding.small),
-                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.small),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Surface(
-                    modifier = Modifier.size(AppTheme.dimens.icon.size.large),
-                    shape = AppTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Default.SyncAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(AppTheme.dimens.icon.size.medium),
-                        )
-                    }
-                }
-                Text(
-                    text = stringResource(MR.strings.transfer).orEmpty(),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
+        ActionButton(
+            icon = Icons.Default.SyncAlt,
+            label = stringResource(MR.strings.transfer).orEmpty(),
+            onClick = onTransfer,
+            isCompact = isCompact,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        )
 
-            Row(
-                modifier =
-                    Modifier
-                        .clip(AppTheme.shapes.small)
-                        .clickable(
-                            onClick = { onEdit() },
-                            interactionSource = editInteractionSource,
-                        ).padding(AppTheme.dimens.spacing.padding.small),
-                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.small),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Surface(
-                    modifier = Modifier.size(AppTheme.dimens.icon.size.large),
-                    shape = AppTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = null,
-                            modifier = Modifier.size(AppTheme.dimens.icon.size.medium),
-                        )
-                    }
-                }
-                Text(
-                    text = stringResource(MR.strings.edit).orEmpty(),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
+        ActionButton(
+            icon = Icons.Default.Edit,
+            label = stringResource(MR.strings.edit).orEmpty(),
+            onClick = onEdit,
+            isCompact = isCompact,
+        )
+
+        ActionButton(
+            icon = Icons.Default.Delete,
+            label = stringResource(MR.strings.delete).orEmpty(),
+            onClick = onDelete,
+            isCompact = isCompact,
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        )
     }
 }
 
@@ -297,6 +288,8 @@ private fun PreviewBankAccountItem() {
                 onClick = {},
                 onTransfer = {},
                 onEdit = {},
+                onDelete = {},
+                onCreateTransaction = {},
             )
         }
     }

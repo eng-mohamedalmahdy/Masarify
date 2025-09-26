@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,11 +26,13 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
@@ -42,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.EmptyState
+import com.lightfeather.designsystem.component.molecules.button.FloatingActionButton
 import com.lightfeather.designsystem.component.organisms.AccountsHeader
 import com.lightfeather.designsystem.component.organisms.listitem.BankAccountItem
 import com.lightfeather.designsystem.model.UiBankAccount
@@ -65,6 +70,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun BankAccountsPage(viewModel: BankAccountsPageViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
+    LaunchedEffect(Unit){
+        viewModel.onIntent(BankAccountsPageIntent.LoadData)
+    }
 
     BankAccountsPageContent(
         state = state,
@@ -109,6 +117,7 @@ internal fun BankAccountsPageContent(
                 defaultCurrency = defaultCurrency,
                 selectedCurrency = state.selectedCurrency,
                 selectedAccount = state.selectedAccount,
+                onAddAccount = { onIntent(BankAccountsPageIntent.CreateBankAccount) },
                 onAccountClick = {
                     coroutineScope.launch {
                         navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, it)
@@ -170,6 +179,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
     defaultCurrency: UiCurrency?,
     selectedCurrency: UiCurrency?,
     selectedAccount: UiBankAccount?,
+    onAddAccount: () -> Unit,
     onAccountClick: (UiBankAccount) -> Unit,
     onUpdateAccount: (UiBankAccount) -> Unit,
     onDeleteAccount: (UiBankAccount) -> Unit,
@@ -257,127 +267,136 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                 },
             ),
     ) {
-        if (accounts.isEmpty()) {
-            EmptyState(
-                title = stringResource(MR.strings.no_accounts_title),
-                message = stringResource(MR.strings.no_accounts_message),
-                icon = Icons.Outlined.AccountBalance,
-                modifier = Modifier.fillMaxSize(),
+        Box {
+            FloatingActionButton(
+                onClick = onAddAccount,
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(MR.strings.add_account),
+                modifier = Modifier.align(Alignment.BottomEnd).padding(AppTheme.dimens.default),
             )
-        } else {
-            LazyColumn(
-                state = lazyListState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = AppTheme.dimens.large),
-            ) {
-                // Wealth Summary Header
-                item {
-                    AccountsHeader(
-                        userAccountsCurrencies = userAccountsCurrencies,
-                        onCurrencyClick = onCurrencyClick,
-                        totalAmountInSelectedOrDefaultCurrency = totalAmountInSelectedOrDefaultCurrency,
-                        defaultCurrency = defaultCurrency,
-                        selectedCurrency = selectedCurrency,
-                        totalAccounts = accounts.size,
-                        shape = RectangleShape,
-                    )
-                }
 
-                // Accounts Section Header
-                item {
-                    Text(
-                        text = stringResource(MR.strings.your_accounts),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    horizontal = AppTheme.dimens.default,
-                                    vertical = AppTheme.dimens.medium,
-                                ),
-                    )
-                }
+            if (accounts.isEmpty()) {
+                EmptyState(
+                    title = stringResource(MR.strings.no_accounts_title),
+                    message = stringResource(MR.strings.no_accounts_message),
+                    icon = Icons.Outlined.AccountBalance,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else {
+                LazyColumn(
+                    state = lazyListState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = AppTheme.dimens.large),
+                ) {
+                    // Wealth Summary Header
+                    item {
+                        AccountsHeader(
+                            totalAmountInSelectedOrDefaultCurrency = totalAmountInSelectedOrDefaultCurrency,
+                            userAccountsCurrencies = userAccountsCurrencies,
+                            onCurrencyClick = onCurrencyClick,
+                            defaultCurrency = defaultCurrency,
+                            selectedCurrency = selectedCurrency,
+                            totalAccounts = accounts.size,
+                            shape = RectangleShape,
+                        )
+                    }
 
-                // Bank Account Items
-                items(
-                    items = accounts,
-                    key = { it.id },
-                ) { account ->
-                    // Animate the selection state
-                    val isSelected = account == selectedAccount
-                    val animatedCutSize by animateDpAsState(
-                        targetValue = if (isSelected) AppTheme.dimens.default else 0.dp,
-                        animationSpec = tween(durationMillis = 300),
-                        label = "cutSize",
-                    )
-                    val animatedTrianglePosition by animateFloatAsState(
-                        targetValue = if (isSelected) 0.4f else 0.5f,
-                        animationSpec = tween(durationMillis = 300),
-                        label = "trianglePosition",
-                    )
-                    val animatedStrokeWidth by animateDpAsState(
-                        targetValue = if (isSelected) 4.dp else 0.dp,
-                        animationSpec = tween(durationMillis = 300),
-                        label = "strokeWidth",
-                    )
+                    // Accounts Section Header
+                    item {
+                        Text(
+                            text = stringResource(MR.strings.your_accounts),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        horizontal = AppTheme.dimens.default,
+                                        vertical = AppTheme.dimens.medium,
+                                    ),
+                        )
+                    }
 
-                    // Create animated shape
-                    val animatedCardShape =
-                        inWardTriangleCutShape(
-                            tailSize = animatedCutSize,
-                            topSpacePercentage = animatedTrianglePosition,
+                    // Bank Account Items
+                    items(
+                        items = accounts,
+                        key = { it.id },
+                    ) { account ->
+                        // Animate the selection state
+                        val isSelected = account == selectedAccount
+                        val animatedCutSize by animateDpAsState(
+                            targetValue = if (isSelected) AppTheme.dimens.default else 0.dp,
+                            animationSpec = tween(durationMillis = 300),
+                            label = "cutSize",
+                        )
+                        val animatedTrianglePosition by animateFloatAsState(
+                            targetValue = if (isSelected) 0.4f else 0.5f,
+                            animationSpec = tween(durationMillis = 300),
+                            label = "trianglePosition",
+                        )
+                        val animatedStrokeWidth by animateDpAsState(
+                            targetValue = if (isSelected) 4.dp else 0.dp,
+                            animationSpec = tween(durationMillis = 300),
+                            label = "strokeWidth",
                         )
 
-                    BankAccountItem(
-                        account,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(animatedCardShape)
-                                .drawWithContent {
-                                    // Draw the card content first
-                                    drawContent()
+                        // Create animated shape
+                        val animatedCardShape =
+                            inWardTriangleCutShape(
+                                tailSize = animatedCutSize,
+                                topSpacePercentage = animatedTrianglePosition,
+                            )
 
-                                    // Only draw border if selected (stroke width > 0)
-                                    if (animatedStrokeWidth.value > 0f) {
-                                        // Draw the complete border with triangular connector
-                                        val strokeWidth = animatedStrokeWidth.toPx()
-                                        val cut = with(density) { animatedCutSize.toPx() }
-                                        val triangleTopY = size.height * animatedTrianglePosition
-                                        val triangleCenterY = triangleTopY + cut / 2f
-                                        val triangleBottomY = triangleTopY + cut
+                        BankAccountItem(
+                            account,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clip(animatedCardShape)
+                                    .drawWithContent {
+                                        // Draw the card content first
+                                        drawContent()
 
-                                        // Create a path that follows the exact same shape as the clip
-                                        val borderPath =
-                                            Path().apply {
-                                                // Start from top-right
-                                                moveTo(size.width, 0f)
-                                                // Draw down to the start of the inward cut
-                                                lineTo(size.width, triangleTopY)
-                                                // Draw the inward triangular cut (pointing inward to the left)
-                                                lineTo(size.width - cut, triangleCenterY)
-                                                // Complete the triangle by going back to the right edge
-                                                lineTo(size.width, triangleBottomY)
-                                                // Draw down to bottom-right corner
-                                                lineTo(size.width, size.height)
-                                            }
+                                        // Only draw border if selected (stroke width > 0)
+                                        if (animatedStrokeWidth.value > 0f) {
+                                            // Draw the complete border with triangular connector
+                                            val strokeWidth = animatedStrokeWidth.toPx()
+                                            val cut = with(density) { animatedCutSize.toPx() }
+                                            val triangleTopY = size.height * animatedTrianglePosition
+                                            val triangleCenterY = triangleTopY + cut / 2f
+                                            val triangleBottomY = triangleTopY + cut
 
-                                        // Draw the border path
-                                        drawPath(
-                                            path = borderPath,
-                                            color = primaryColor,
-                                            style = Stroke(width = strokeWidth),
-                                        )
-                                    }
-                                },
-                        shape = RectangleShape,
-                        onClick = { onAccountClick(account) },
-                        onTransfer = { onTransferFromAccount(account) },
-                        onEdit = { onUpdateAccount(account) },
-                        onDelete = { onDeleteAccount(account) },
-                        onCreateTransaction = { onCreateTransactionFromAccount(account) },
-                    )
+                                            // Create a path that follows the exact same shape as the clip
+                                            val borderPath =
+                                                Path().apply {
+                                                    // Start from top-right
+                                                    moveTo(size.width, 0f)
+                                                    // Draw down to the start of the inward cut
+                                                    lineTo(size.width, triangleTopY)
+                                                    // Draw the inward triangular cut (pointing inward to the left)
+                                                    lineTo(size.width - cut, triangleCenterY)
+                                                    // Complete the triangle by going back to the right edge
+                                                    lineTo(size.width, triangleBottomY)
+                                                    // Draw down to bottom-right corner
+                                                    lineTo(size.width, size.height)
+                                                }
+
+                                            // Draw the border path
+                                            drawPath(
+                                                path = borderPath,
+                                                color = primaryColor,
+                                                style = Stroke(width = strokeWidth),
+                                            )
+                                        }
+                                    },
+                            shape = RectangleShape,
+                            onClick = { onAccountClick(account) },
+                            onTransfer = { onTransferFromAccount(account) },
+                            onEdit = { onUpdateAccount(account) },
+                            onDelete = { onDeleteAccount(account) },
+                            onCreateTransaction = { onCreateTransactionFromAccount(account) },
+                        )
+                    }
                 }
             }
         }

@@ -18,10 +18,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 actual class TransactionsPanePageViewModel(
     private val getAllTransactionsPaged: GetAllTransactionsPaged,
@@ -47,8 +47,8 @@ actual class TransactionsPanePageViewModel(
     private val _isEmpty = MutableStateFlow(true)
     private val _isFiltered = MutableStateFlow(false)
 
-    actual  val isEmpty: StateFlow<Boolean> = _isEmpty.asStateFlow()
-    actual  val isFiltered: StateFlow<Boolean> = _isFiltered.asStateFlow()
+    actual val isEmpty: StateFlow<Boolean> = _isEmpty.asStateFlow()
+    actual val isFiltered: StateFlow<Boolean> = _isFiltered.asStateFlow()
 
     private val _pagedTransactions = MutableStateFlow(PagedData.empty<Transaction>())
 

@@ -1,11 +1,13 @@
 package com.lightfeather.designsystem.component.organisms
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
@@ -39,7 +41,7 @@ fun AccountsHeader(
         shape = shape,
     ) {
         Column(
-            modifier = Modifier.padding(AppTheme.dimens.spacing.padding.large),
+            modifier = Modifier.padding(AppTheme.dimens.spacing.padding.small),
             verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.margin.small),
         ) {
             // Header Section
@@ -82,6 +84,7 @@ fun AccountsHeader(
             }
 
             LazyRow(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.small),
             ) {
                 // Original Values Chip (always first)
