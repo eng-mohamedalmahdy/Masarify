@@ -6,6 +6,7 @@ import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
+import kotlinx.coroutines.flow.first
 
 class TransactionsPagingSource(
     private val sharedDatabase: SharedDatabase,
@@ -21,14 +22,10 @@ class TransactionsPagingSource(
             val page = params.key ?: 0
 
             val result = getFilteredTransactionsPaged(filter, page)
-            result.fold(
+            result.foldResult(
                 onSuccess = { pagedDataFlow ->
                     // For PagingSource, we need to collect the first emission
-                    var transactions: List<Transaction> = emptyList()
-                    pagedDataFlow.collect { pagedData ->
-                        transactions = pagedData.data
-                        return@collect // Take only the first emission
-                    }
+                    val transactions: List<Transaction> = pagedDataFlow.first().data
 
                     LoadResult.Page(
                         data = transactions,
@@ -37,7 +34,7 @@ class TransactionsPagingSource(
                     )
                 },
                 onFailure = { exception ->
-                    LoadResult.Error(exception)
+                    LoadResult.Error(Exception(exception.message))
                 },
             )
         } catch (exception: Exception) {

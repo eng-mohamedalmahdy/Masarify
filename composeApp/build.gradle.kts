@@ -38,6 +38,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // Fix bundle ID inference issue
+            binaryOption("bundleId", "com.lightfeather.masarify.ComposeApp")
         }
     }
 

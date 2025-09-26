@@ -8,10 +8,11 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
 
-fun InitApp() {
-    startKoin {
-    }
+fun InitApp() = startKoin {
     Napier.base(antilog = DebugAntilog())
 }
+
+
+
 
 fun MainViewController() = ComposeUIViewController { App() }

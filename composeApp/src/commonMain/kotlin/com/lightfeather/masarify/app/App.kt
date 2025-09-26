@@ -59,7 +59,6 @@ import com.lightfeather.masarify.page.onboarding.OnBoardingPage
 import com.lightfeather.masarify.page.splash.SplashPage
 import com.lightfeather.masarify.template.transactionspane.TransactionsPane
 import dev.icerock.moko.resources.desc.StringDesc
-import io.github.aakira.napier.Napier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
@@ -89,9 +88,6 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
             LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
         ) {
             AppTheme(isDarkMode) {
-                LaunchedEffect(initialDataSaved) {
-                    Napier.d("Initial Data Saved: $initialDataSaved")
-                }
 
                 val englishTopLevelRoutes =
                     listOf<AppTopLevelRoutes>(
@@ -315,6 +311,5 @@ fun isSelected(
 ) = currentDestination
     ?.hierarchy
     ?.any {
-        Napier.d("${it.route} from ${currentDestination.route}")
         it.route == route.route
-    }.also { Napier.d { "isSelected: $it" } } == true
+    } == true

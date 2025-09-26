@@ -19,15 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.listitem.TransactionItem
 import com.lightfeather.designsystem.theme.AppTheme
-import masarify.designsystem.generated.resources.Res
-import masarify.designsystem.generated.resources.empty_filtered_transactions_message
-import masarify.designsystem.generated.resources.empty_filtered_transactions_title
-import masarify.designsystem.generated.resources.empty_transactions_message
-import masarify.designsystem.generated.resources.empty_transactions_title
-import org.jetbrains.compose.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,17 +63,17 @@ actual fun TransactionsPane(
                 title =
                     stringResource(
                         if (isFiltered) {
-                            Res.string.empty_filtered_transactions_title
+                            MR.strings.empty_filtered_transactions_title
                         } else {
-                            Res.string.empty_transactions_title
+                            MR.strings.empty_transactions_title
                         },
                     ),
                 message =
                     stringResource(
                         if (isFiltered) {
-                            Res.string.empty_filtered_transactions_message
+                            MR.strings.empty_filtered_transactions_message
                         } else {
-                            Res.string.empty_transactions_message
+                            MR.strings.empty_transactions_message
                         },
                     ),
                 modifier = Modifier.fillMaxSize(),
