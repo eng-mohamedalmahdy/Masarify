@@ -237,7 +237,7 @@ private fun BankAccountActions(
 
     FlowRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         ActionButton(
             icon = Icons.Default.Add,

@@ -28,7 +28,6 @@ class DeleteCurrencyExchangeRate(
 class GetAllCurrenciesExchangeRates(
     private val repository: CurrencyExchangeRateRepository,
 ) {
-
     operator fun invoke() = repository.getAllCurrenciesExchangeRates()
 }
 

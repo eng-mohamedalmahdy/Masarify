@@ -17,5 +17,5 @@ val viewModelModule =
         viewModelOf(::OnBoardingPageViewModel)
         viewModelOf(::SplashPageViewModel)
         viewModelOf(::BankAccountsPageViewModel)
-        viewModel { CreateBankAccountPageViewModel(it.get(), get()) }
+        viewModel { CreateBankAccountPageViewModel(it.get(), get(), get(), get()) }
     }

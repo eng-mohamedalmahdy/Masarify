@@ -28,8 +28,6 @@ class BankAccountsPageViewModel(
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
     private val exchangeRates: GetAllCurrenciesExchangeRates,
 ) : ViewModel() {
-
-
     private val _state =
         MutableStateFlow(
             BankAccountsPageState(
@@ -67,24 +65,18 @@ class BankAccountsPageViewModel(
     @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     internal fun onIntent(intent: BankAccountsPageIntent) {
         when (intent) {
-
-
             is BankAccountsPageIntent.DeleteBankAccount -> {
-
             }
-
 
             is BankAccountsPageIntent.CreateTransactionInAccount -> {
             }
 
             is BankAccountsPageIntent.TransferFromAccount -> {
-
             }
 
             is BankAccountsPageIntent.SelectCurrency -> {
                 _state.value = _state.value.copy(selectedCurrency = intent.currency)
             }
-
 
             is BankAccountsPageIntent.LoadData -> {
                 loadWealthWorthListening()
@@ -105,19 +97,22 @@ class BankAccountsPageViewModel(
 
     fun loadWealthWorthListening() {
         val selectedCurrencyFlow = _state.map { it.selectedCurrency }
-        val wealthInAllCurrenciesFlow = getWealthWorthInCurrency().foldResult(
-            onSuccess = { wealthFlow -> wealthFlow },
-            onFailure = { error -> flowOf() }
-        )
-        val selectedCurrencyAndWealthFlow = selectedCurrencyFlow
-            .combine(wealthInAllCurrenciesFlow) { selectedCurrency, wealthInAllCurrencies ->
-                selectedCurrency to wealthInAllCurrencies
-            }
+        val wealthInAllCurrenciesFlow =
+            getWealthWorthInCurrency().foldResult(
+                onSuccess = { wealthFlow -> wealthFlow },
+                onFailure = { error -> flowOf() },
+            )
+        val selectedCurrencyAndWealthFlow =
+            selectedCurrencyFlow
+                .combine(wealthInAllCurrenciesFlow) { selectedCurrency, wealthInAllCurrencies ->
+                    selectedCurrency to wealthInAllCurrencies
+                }
 
-        val exchangeRates = exchangeRates().foldResult(
-            onSuccess = { exchangeRatesFlow -> exchangeRatesFlow },
-            onFailure = { error -> flowOf() }
-        )
+        val exchangeRates =
+            exchangeRates().foldResult(
+                onSuccess = { exchangeRatesFlow -> exchangeRatesFlow },
+                onFailure = { error -> flowOf() },
+            )
 
         val exchangeRatesAndPageStateFlow =
             exchangeRates.combine(selectedCurrencyFlow) { exchangeRates, state ->
@@ -129,37 +124,49 @@ class BankAccountsPageViewModel(
                 val selectedCurrencyWealth =
                     wealthInAllCurrencies.find { it.currency.toUiCurrency() == selectedCurrency }
                         ?: wealthInAllCurrencies.firstOrNull()
-                _state.value = _state.value.copy(
-                    totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString()
-                )
+                _state.value =
+                    _state.value.copy(
+                        totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString(),
+                    )
             }
         }
         viewModelScope.launch {
             exchangeRatesAndPageStateFlow.collect { (exchangeRates, selectedCurrency) ->
                 if (selectedCurrency == null) {
-                    _state.value = _state.value.copy(
-                        bankAccounts = getAllAccounts().foldResult(
-                            onSuccess = { accountsFlow -> accountsFlow.map { it.map { it.toUiBankAccount() } } },
-                            onFailure = { error -> flowOf() }
+                    _state.value =
+                        _state.value.copy(
+                            bankAccounts =
+                                getAllAccounts().foldResult(
+                                    onSuccess = { accountsFlow ->
+                                        accountsFlow.map { it.map { it.toUiBankAccount() } }
+                                    },
+                                    onFailure = { error -> flowOf() },
+                                ),
                         )
-                    )
                     return@collect
                 }
 
-                val accountsWithEquivalentAmounts = _state.value.bankAccounts.map { accountsFlow ->
-                    accountsFlow.map { account ->
-                        val selectedCurrencyExchangeRate =
-                            exchangeRates.find { it.from == account.currency && it.to == selectedCurrency }
-                        account.copy(
-                            balance = (account.balance.toDouble() * (selectedCurrencyExchangeRate?.rate
-                                ?: 1.0)).toString(),
-                            currency = selectedCurrency
-                        )
+                val accountsWithEquivalentAmounts =
+                    _state.value.bankAccounts.map { accountsFlow ->
+                        accountsFlow.map { account ->
+                            val selectedCurrencyExchangeRate =
+                                exchangeRates.find { it.from == account.currency && it.to == selectedCurrency }
+                            account.copy(
+                                balance =
+                                    (
+                                        account.balance.toDouble() * (
+                                            selectedCurrencyExchangeRate?.rate
+                                                ?: 1.0
+                                        )
+                                    ).toString(),
+                                currency = selectedCurrency,
+                            )
+                        }
                     }
-                }
-                _state.value = _state.value.copy(
-                    bankAccounts = accountsWithEquivalentAmounts
-                )
+                _state.value =
+                    _state.value.copy(
+                        bankAccounts = accountsWithEquivalentAmounts,
+                    )
             }
         }
     }

@@ -13,30 +13,29 @@ internal sealed interface BankAccountsPageIntent {
     sealed class NavigationIntent(
         open val bankAccount: UiBankAccount?,
         open val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
-
-        ) : BankAccountsPageIntent {
+    ) : BankAccountsPageIntent {
         data class AddBankAccount(
-            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>
+            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
         ) : NavigationIntent(
-            navigator = navigator,
-            bankAccount = null
-        )
+                navigator = navigator,
+                bankAccount = null,
+            )
 
         data class UpdateBankAccount(
             val account: UiBankAccount,
-            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>
+            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
         ) : NavigationIntent(
-            bankAccount = account,
-            navigator = navigator
-        )
+                bankAccount = account,
+                navigator = navigator,
+            )
 
         data class SelectAccount(
             val account: UiBankAccount,
-            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>
+            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
         ) : NavigationIntent(
-            bankAccount = account,
-            navigator = navigator
-        )
+                bankAccount = account,
+                navigator = navigator,
+            )
     }
 
     data class DeleteBankAccount(
@@ -47,7 +46,6 @@ internal sealed interface BankAccountsPageIntent {
         val account: UiBankAccount,
     ) : BankAccountsPageIntent
 
-
     data class TransferFromAccount(
         val account: UiBankAccount,
     ) : BankAccountsPageIntent
@@ -56,7 +54,5 @@ internal sealed interface BankAccountsPageIntent {
         val currency: UiCurrency?,
     ) : BankAccountsPageIntent
 
-
     data object ClearNavigation : BankAccountsPageIntent
-
 }

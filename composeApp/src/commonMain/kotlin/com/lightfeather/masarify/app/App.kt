@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,7 +20,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -35,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.lightfeather.designsystem.component.molecules.ColorPickerDialog
 import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
 import com.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
 import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
@@ -50,8 +54,8 @@ import com.lightfeather.masarify.model.AppTopLevelRoutes
 import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
-import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import com.lightfeather.masarify.navigation.routes.MoreRoute
+import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import com.lightfeather.masarify.navigation.routes.SplashRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
@@ -284,6 +288,39 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
 //                                {},
 //                                {},
 //                            )
+                            var isShowingColorPicker by remember { mutableStateOf(true) }
+                            var color by remember { mutableStateOf(Color.Blue) }
+                            if (isShowingColorPicker) {
+                                ColorPickerDialog(
+                                    initialColor = Color.Blue,
+                                    savedColors =
+                                        listOf(
+                                            "#FF0000",
+                                            "#00FF00",
+                                            "#0000FF",
+                                            "#FFFF00",
+                                            "#FF00FF",
+                                            "#00FFFF",
+                                            "#00FFFF",
+                                        ),
+                                    onColorChange = {
+                                        color = it
+                                    },
+                                    onDismiss = {
+                                        isShowingColorPicker = false
+                                    },
+                                    onConfirm = {
+                                        isShowingColorPicker = false
+                                    },
+                                    onRgbaChange = { r, g, b, a ->
+                                        color = Color(r, g, b, a.toInt())
+                                    },
+                                    onSavedColorClick = {},
+                                )
+                            }
+                            Button(onClick = { isShowingColorPicker = true }) {
+                                Text("Show Color Picker")
+                            }
                         }
                         composable<AccountsRoute> {
                             BankAccountsPage()

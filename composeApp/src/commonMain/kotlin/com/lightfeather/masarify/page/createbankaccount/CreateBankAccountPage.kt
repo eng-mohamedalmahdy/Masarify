@@ -11,19 +11,19 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun CreateBankAccountPage(
     account: UiBankAccount?,
-    viewModel: CreateBankAccountPageViewModel = koinViewModel { parametersOf(account) }
+    viewModel: CreateBankAccountPageViewModel = koinViewModel { parametersOf(account) },
 ) {
     val state by viewModel.state.collectAsState()
     CreateBankAccountPageContent(
         state = state,
-        onIntent = viewModel::onIntent
+        onIntent = viewModel::onIntent,
     )
 }
 
 @Composable
 internal fun CreateBankAccountPageContent(
     state: CreateBankAccountPageState,
-    onIntent: (CreateBankAccountPageIntent) -> Unit
+    onIntent: (CreateBankAccountPageIntent) -> Unit,
 ) {
     // TODO: Implement form UI in separate task
     // Note: initialBalance text field will be disabled when state.inEditMode = true

@@ -20,18 +20,18 @@ class CreateBankAccountPageViewModel(
     private val createAccount: CreateAccount,
     private val updateAccount: UpdateAccount,
 ) : ViewModel() {
-
-    private val _state = MutableStateFlow(
-        CreateBankAccountPageState(
-            accountId = account?.id,
-            name = account?.name ?: "",
-            description = account?.description ?: "",
-            initialBalance = account?.balance ?: "",
-            color = account?.color ?: "#FFFFFF",
-            logo = account?.image ?: "",
-            currency = account?.currency,
+    private val _state =
+        MutableStateFlow(
+            CreateBankAccountPageState(
+                accountId = account?.id,
+                name = account?.name ?: "",
+                description = account?.description ?: "",
+                initialBalance = account?.balance ?: "",
+                color = account?.color ?: "#FFFFFF",
+                logo = account?.image ?: "",
+                currency = account?.currency,
+            ),
         )
-    )
     internal val state: StateFlow<CreateBankAccountPageState> = _state
 
     internal fun onIntent(intent: CreateBankAccountPageIntent) {
@@ -65,7 +65,6 @@ class CreateBankAccountPageViewModel(
             }
 
             is CreateBankAccountPageIntent.Submit -> {
-
                 submitAccount()
             }
         }
@@ -98,15 +97,16 @@ class CreateBankAccountPageViewModel(
 
         _state.value = _state.value.copy(isLoading = true)
 
-        val resultAccount = Account(
-            id = stateSnapshot.accountId?.toInt() ?: -1,
-            name = stateSnapshot.name.trim(),
-            description = stateSnapshot.description.trim().takeIf { it.isNotEmpty() },
-            balance = balance ?: 0.0,
-            color = stateSnapshot.color,
-            logo = stateSnapshot.logo,
-            currency = stateSnapshot.currency.toCurrency()
-        )
+        val resultAccount =
+            Account(
+                id = stateSnapshot.accountId?.toInt() ?: -1,
+                name = stateSnapshot.name.trim(),
+                description = stateSnapshot.description.trim().takeIf { it.isNotEmpty() },
+                balance = balance ?: 0.0,
+                color = stateSnapshot.color,
+                logo = stateSnapshot.logo,
+                currency = stateSnapshot.currency.toCurrency(),
+            )
 
         viewModelScope.launch {
             try {
@@ -118,7 +118,7 @@ class CreateBankAccountPageViewModel(
                         },
                         onFailure = { error ->
                             SnackbarService.sendErrorMessage(MR.strings.account_update_failure)
-                        }
+                        },
                     )
                 } else {
                     createAccount.invoke(resultAccount).fold(
@@ -128,7 +128,7 @@ class CreateBankAccountPageViewModel(
                         },
                         onFailure = { error ->
                             SnackbarService.sendErrorMessage(MR.strings.account_create_failure)
-                        }
+                        },
                     )
                 }
             } catch (e: Exception) {

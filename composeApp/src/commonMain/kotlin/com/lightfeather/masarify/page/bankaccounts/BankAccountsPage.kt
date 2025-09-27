@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
@@ -126,7 +125,7 @@ internal fun BankAccountsPageContent(
                 },
                 onUpdateAccount = {
                     onIntent(
-                        BankAccountsPageIntent.NavigationIntent.UpdateBankAccount(it, navigator)
+                        BankAccountsPageIntent.NavigationIntent.UpdateBankAccount(it, navigator),
                     )
                 },
                 onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it)) },
@@ -165,7 +164,6 @@ internal fun BankAccountsPageContent(
                         },
                     )
                 }
-
 
                 null -> {
                     EmptyState(
