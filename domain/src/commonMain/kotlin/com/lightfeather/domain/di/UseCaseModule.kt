@@ -22,7 +22,9 @@ import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
 import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.domain.usecase.GetTransactionCount
 import com.lightfeather.domain.usecase.GetTransactionCountOfType
+import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import com.lightfeather.domain.usecase.SaveUserColor
 import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.domain.usecase.UpdateTransaction
@@ -102,4 +104,8 @@ val useCaseModule =
         factory<GetTransactionCountOfType<Transaction.Transfer>>(named("transfer-count")) {
             GetTransactionCountOfType(get())
         }
+
+        factory { GetUserSavedColors(get()) }
+
+        factory { SaveUserColor(get()) }
     }

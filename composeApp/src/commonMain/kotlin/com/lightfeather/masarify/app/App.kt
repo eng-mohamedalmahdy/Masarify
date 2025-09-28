@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -36,29 +34,33 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.lightfeather.designsystem.component.molecules.ColorPickerDialog
 import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
 import com.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
 import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
 import com.lightfeather.designsystem.component.organisms.AppNavigationSuite
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
+import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.masarify.PlatformsSlugs
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.di.getAppModules
 import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.model.AppTopLevelRoutes
+import com.lightfeather.masarify.navigation.NavTypeProvider
 import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
+import com.lightfeather.masarify.navigation.routes.DeleteAccountRoute
 import com.lightfeather.masarify.navigation.routes.MoreRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import com.lightfeather.masarify.navigation.routes.SplashRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
+import com.lightfeather.masarify.page.deletebankaccount.DeleteBankAccountPage
 import com.lightfeather.masarify.page.onboarding.OnBoardingPage
 import com.lightfeather.masarify.page.splash.SplashPage
 import dev.icerock.moko.resources.desc.StringDesc
@@ -287,40 +289,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
 //                                {},
 //                                {},
 //                                {},
-//                            )
-                            var isShowingColorPicker by remember { mutableStateOf(true) }
-                            var color by remember { mutableStateOf(Color.Blue) }
-                            if (isShowingColorPicker) {
-                                ColorPickerDialog(
-                                    initialColor = Color.Blue,
-                                    savedColors =
-                                        listOf(
-                                            "#FF0000",
-                                            "#00FF00",
-                                            "#0000FF",
-                                            "#FFFF00",
-                                            "#FF00FF",
-                                            "#00FFFF",
-                                            "#00FFFF",
-                                        ),
-                                    onColorChange = {
-                                        color = it
-                                    },
-                                    onDismiss = {
-                                        isShowingColorPicker = false
-                                    },
-                                    onConfirm = {
-                                        isShowingColorPicker = false
-                                    },
-                                    onRgbaChange = { r, g, b, a ->
-                                        color = Color(r, g, b, a.toInt())
-                                    },
-                                    onSavedColorClick = {},
-                                )
-                            }
-                            Button(onClick = { isShowingColorPicker = true }) {
-                                Text("Show Color Picker")
-                            }
+//
                         }
                         composable<AccountsRoute> {
                             BankAccountsPage()
@@ -330,6 +299,12 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         }
                         composable<MoreRoute> {
                             Text("Settings Page")
+                        }
+
+                        dialog<DeleteAccountRoute>(
+                            typeMap = mapOf(NavTypeProvider.provideMapEntry<Account>()),
+                        ) {
+                            DeleteBankAccountPage()
                         }
                     }
                 }

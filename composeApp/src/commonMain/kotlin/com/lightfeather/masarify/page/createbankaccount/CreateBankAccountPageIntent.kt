@@ -27,7 +27,15 @@ sealed interface CreateBankAccountPageIntent {
         val currency: UiCurrency,
     ) : CreateBankAccountPageIntent
 
+    data class AddNewCurrency(
+        val currency: UiCurrency,
+    ) : CreateBankAccountPageIntent
+
     data object NavigateBack : CreateBankAccountPageIntent
 
     data object Submit : CreateBankAccountPageIntent
+
+    data class SaveColor(
+        val color: String,
+    ) : CreateBankAccountPageIntent
 }

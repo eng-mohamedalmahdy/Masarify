@@ -38,5 +38,7 @@
     <string name="no_accounts_title">No accounts yet</string>
     <string name="no_accounts_message">Add your first bank account to start tracking your finances</string>
     <string name="add_account">Add Account</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

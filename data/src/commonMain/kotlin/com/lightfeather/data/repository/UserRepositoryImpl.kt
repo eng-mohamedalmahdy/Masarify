@@ -37,4 +37,10 @@ class UserRepositoryImpl(
     override fun setAppLanguage(appLanguage: AppLanguage) {
         preferences.appLanguage = appLanguage
     }
+
+    override fun getUserSavedColors(): List<String> = preferences.userSavedColors
+
+    override fun saveColor(color: String) {
+        preferences.userSavedColors = (listOf(color) + preferences.userSavedColors).take(10)
+    }
 }

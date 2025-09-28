@@ -20,4 +20,8 @@ interface UserRepository {
     fun toggleDynamicColors()
 
     fun setAppLanguage(appLanguage: AppLanguage)
+
+    fun getUserSavedColors(): List<String>
+
+    fun saveColor(color: String)
 }

@@ -51,8 +51,8 @@ private fun PreviewTopAppBar() {
     AppTheme {
         TopAppBar(
             title = "Preview",
-            navigationIcon = { /* TODO: Add navigation icon */ },
-            actions = { /* TODO: Add actions */ },
+            navigationIcon = { /* Navigation icon placeholder */ },
+            actions = { /* Actions placeholder */ },
         )
     }
 }

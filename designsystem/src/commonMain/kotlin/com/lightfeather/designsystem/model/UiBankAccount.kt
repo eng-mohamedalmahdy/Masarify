@@ -23,5 +23,16 @@ data class UiBankAccount(
                 color = "#FFFFFF",
                 image = null,
             )
+
+        val empty =
+            UiBankAccount(
+                id = "",
+                name = "",
+                description = null,
+                balance = "",
+                currency = UiCurrency.empty,
+                color = "",
+                image = null,
+            )
     }
 }

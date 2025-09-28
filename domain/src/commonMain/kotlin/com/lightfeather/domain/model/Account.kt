@@ -1,7 +1,10 @@
 package com.lightfeather.domain.model
 
+import kotlinx.serialization.Serializable
+
 typealias Accounts = List<Account>
 
+@Serializable
 data class Account(
     val name: String,
     val currency: Currency,

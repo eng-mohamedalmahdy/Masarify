@@ -54,5 +54,7 @@ internal sealed interface BankAccountsPageIntent {
         val currency: UiCurrency?,
     ) : BankAccountsPageIntent
 
-    data object ClearNavigation : BankAccountsPageIntent
+    data class ClearNavigation(
+        val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
+    ) : BankAccountsPageIntent
 }

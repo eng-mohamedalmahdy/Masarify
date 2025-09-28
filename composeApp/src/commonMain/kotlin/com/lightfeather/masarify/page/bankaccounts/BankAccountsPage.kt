@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -60,6 +61,7 @@ import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.page.createbankaccount.CreateBankAccountPage
 import com.lightfeather.masarify.template.transactionspane.TransactionsPaneAsDetail
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import masarify.designsystem.generated.resources.Res
@@ -102,8 +104,7 @@ internal fun BankAccountsPageContent(
     }
     BackHandler(navigator.canNavigateBack()) {
         coroutineScope.launch {
-            navigator.navigateBack()
-            onIntent(BankAccountsPageIntent.ClearNavigation)
+            onIntent(BankAccountsPageIntent.ClearNavigation(navigator))
         }
     }
     ListDetailPaneScaffold(
@@ -135,16 +136,33 @@ internal fun BankAccountsPageContent(
             )
         },
         detailPane = {
+            Napier.d("Detail pane content ${navigator.currentDestination?.contentKey}", tag = "BankAccountsPage")
             when (val intent = navigator.currentDestination?.contentKey) {
-                is BankAccountsPageIntent.NavigationIntent.AddBankAccount -> CreateBankAccountPage(null)
-                is BankAccountsPageIntent.NavigationIntent.UpdateBankAccount -> CreateBankAccountPage(intent.account)
+                is BankAccountsPageIntent.NavigationIntent.AddBankAccount -> {
+                    key("add_account") {
+                        CreateBankAccountPage(
+                            UiBankAccount.empty,
+                            onBack = { onIntent(BankAccountsPageIntent.ClearNavigation(navigator)) },
+                        )
+                    }
+                }
+
+                is BankAccountsPageIntent.NavigationIntent.UpdateBankAccount -> {
+                    key("update_account_${intent.account.id}") {
+                        CreateBankAccountPage(
+                            intent.account,
+                            onBack = { onIntent(BankAccountsPageIntent.ClearNavigation(navigator)) },
+                        )
+                    }
+                }
+
                 is BankAccountsPageIntent.NavigationIntent.SelectAccount -> {
                     TransactionsPaneAsDetail(
                         intent.bankAccount!!.name,
                         paneFilter,
                         onBackClick = {
                             coroutineScope.launch {
-                                onIntent(BankAccountsPageIntent.ClearNavigation)
+                                onIntent(BankAccountsPageIntent.ClearNavigation(navigator))
                             }
                         },
                         supportingContent = {
@@ -276,13 +294,6 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
             ),
     ) {
         Box {
-            FloatingActionButton(
-                onClick = onAddAccount,
-                imageVector = Icons.Default.Add,
-                contentDescription = stringResource(MR.strings.add_account),
-                modifier = Modifier.align(Alignment.BottomEnd).padding(AppTheme.dimens.default),
-            )
-
             if (accounts.isEmpty()) {
                 EmptyState(
                     title = stringResource(MR.strings.no_accounts_title),
@@ -407,6 +418,14 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                     }
                 }
             }
+
+            // FloatingActionButton - positioned last to be on top
+            FloatingActionButton(
+                onClick = onAddAccount,
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(MR.strings.add_account),
+                modifier = Modifier.align(Alignment.BottomEnd).padding(AppTheme.dimens.default),
+            )
         }
     }
 }

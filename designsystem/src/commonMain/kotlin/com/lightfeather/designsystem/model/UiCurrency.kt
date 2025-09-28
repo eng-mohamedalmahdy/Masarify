@@ -12,5 +12,12 @@ data class UiCurrency(
                 name = "United States Dollar",
                 symbol = "$",
             )
+
+        val empty =
+            UiCurrency(
+                id = "",
+                name = "",
+                symbol = "",
+            )
     }
 }

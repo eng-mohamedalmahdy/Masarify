@@ -2,37 +2,68 @@ package com.lightfeather.masarify.page.createbankaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.designsystem.model.UiBankAccount
+import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.usecase.CreateAccount
+import com.lightfeather.domain.usecase.CreateCurrency
+import com.lightfeather.domain.usecase.GetAllCurrencies
+import com.lightfeather.domain.usecase.GetUserSavedColors
+import com.lightfeather.domain.usecase.SaveUserColor
 import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.masarify.MR
+import com.lightfeather.masarify.MR.strings.currency
 import com.lightfeather.masarify.mappers.toCurrency
+import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class CreateBankAccountPageViewModel(
-    private val account: UiBankAccount?,
+    private val account: UiBankAccount,
     private val navigator: Navigator,
     private val createAccount: CreateAccount,
     private val updateAccount: UpdateAccount,
+    private val getAllCurrencies: GetAllCurrencies,
+    private val getUserSavedColors: GetUserSavedColors,
+    private val saveColor: SaveUserColor,
+    private val createCurrency: CreateCurrency,
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(
             CreateBankAccountPageState(
-                accountId = account?.id,
-                name = account?.name ?: "",
-                description = account?.description ?: "",
-                initialBalance = account?.balance ?: "",
-                color = account?.color ?: "#FFFFFF",
-                logo = account?.image ?: "",
-                currency = account?.currency,
+                accountId = account.id.takeIf { it.isNotEmpty() && account != UiBankAccount.empty },
+                name = account.name,
+                description = account.description.orEmpty(),
+                initialBalance = account.balance,
+                color = account.color.takeIf { it.isNotEmpty() } ?: "#FFFFFF",
+                logo = account.image.orEmpty(),
+                currency = account.currency.takeIf { it != UiCurrency.empty },
             ),
         )
     internal val state: StateFlow<CreateBankAccountPageState> = _state
+
+    init {
+        val userSavedColors = getUserSavedColors()
+        _state.value = _state.value.copy(savedColors = userSavedColors)
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            getAllCurrencies().foldSuspend(
+                onSuccess = { currencies ->
+                    currencies.map { it.map { it.toUiCurrency() } }.collect {
+                        _state.value = _state.value.copy(availableCurrencies = it)
+                    }
+                },
+                onFailure = { error ->
+                    SnackbarService.sendErrorMessage(MR.strings.currency_fetch_failure)
+                },
+            )
+        }
+    }
 
     internal fun onIntent(intent: CreateBankAccountPageIntent) {
         when (intent) {
@@ -66,6 +97,24 @@ class CreateBankAccountPageViewModel(
 
             is CreateBankAccountPageIntent.Submit -> {
                 submitAccount()
+            }
+
+            is CreateBankAccountPageIntent.AddNewCurrency -> {
+                viewModelScope.launch {
+                    createCurrency(intent.currency.toCurrency()).fold(
+                        onSuccess = { currencyId ->
+                            _state.value =
+                                _state.value.copy(currency = intent.currency.copy(id = currencyId.toString()))
+                        },
+                        onFailure = { error ->
+                            SnackbarService.sendErrorMessage(error.message)
+                        },
+                    )
+                }
+            }
+            is CreateBankAccountPageIntent.SaveColor -> {
+                saveColor(intent.color)
+                _state.value = _state.value.copy(savedColors = getUserSavedColors())
             }
         }
     }

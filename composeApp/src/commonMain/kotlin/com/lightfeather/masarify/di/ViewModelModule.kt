@@ -3,6 +3,7 @@ package com.lightfeather.masarify.di
 import com.lightfeather.masarify.app.AppMainViewModel
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPageViewModel
 import com.lightfeather.masarify.page.createbankaccount.CreateBankAccountPageViewModel
+import com.lightfeather.masarify.page.deletebankaccount.DeleteBankAccountPageViewModel
 import com.lightfeather.masarify.page.onboarding.OnBoardingPageViewModel
 import com.lightfeather.masarify.page.splash.SplashPageViewModel
 import org.koin.core.module.Module
@@ -17,5 +18,6 @@ val viewModelModule =
         viewModelOf(::OnBoardingPageViewModel)
         viewModelOf(::SplashPageViewModel)
         viewModelOf(::BankAccountsPageViewModel)
-        viewModel { CreateBankAccountPageViewModel(it.get(), get(), get(), get()) }
+        viewModelOf(::DeleteBankAccountPageViewModel)
+        viewModel { CreateBankAccountPageViewModel(it.get(), get(), get(), get(), get(), get(), get(), get()) }
     }

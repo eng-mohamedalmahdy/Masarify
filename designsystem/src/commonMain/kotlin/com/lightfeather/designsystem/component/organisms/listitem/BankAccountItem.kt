@@ -232,8 +232,7 @@ private fun BankAccountActions(
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
-//    val isCompact = windowSize == WindowWidthSizeClass.Compact
-    val isCompact = false
+    val isCompact = windowSize == WindowWidthSizeClass.Compact
 
     FlowRow(
         modifier = modifier,

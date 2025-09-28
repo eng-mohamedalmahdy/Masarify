@@ -11,6 +11,8 @@ data class CreateBankAccountPageState(
     val accountId: String? = null,
     val currency: UiCurrency? = null,
     val isLoading: Boolean = false,
+    val availableCurrencies: List<UiCurrency> = emptyList(),
+    val savedColors: List<String> = emptyList(),
 ) {
     val inEditMode: Boolean get() = accountId != null
 }

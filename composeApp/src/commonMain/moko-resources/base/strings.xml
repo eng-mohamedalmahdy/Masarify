@@ -78,4 +78,25 @@
     <string name="exchange_rate_fetch_success">Exchange rates loaded successfully</string>
     <string name="exchange_rate_fetch_failure">Failed to load exchange rates</string>
 
+    <!-- Create/Edit Bank Account Form Labels -->
+    <string name="enter_account_name">Enter account name</string>
+    <string name="description">Description</string>
+    <string name="enter_description_optional">Enter description (optional)</string>
+    <string name="initial_balance">Initial Balance</string>
+    <string name="current_balance">Current Balance</string>
+    <string name="balance_placeholder">0.00</string>
+    <string name="account_color">Account Color</string>
+    <string name="tap_to_select_color">Tap to select color</string>
+    <string name="choose_color">Choose color</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="add_new_currency">Add New Currency</string>
+    <string name="add_new_currency_description">Add new currency</string>
+    <string name="create_account">Create Account</string>
+    <string name="update_account">Update Account</string>
+
+    <!-- Delete Bank Account Dialog -->
+    <string name="delete_bank_account_dialog_title">Delete Account</string>
+    <string name="delete_bank_account_dialog_description">Are you sure you want to delete this account? This action cannot be undone and all associated transactions will be permanently removed.</string>
+    <string name="delete_bank_account_dialog_description_with_name">Are you sure you want to delete "%s" account? This action cannot be undone and all associated transactions will be permanently removed.</string>
+
 </resources>

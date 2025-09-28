@@ -1,14 +1,14 @@
-package com.lightfeather.designsystem.component.molecules
+package com.lightfeather.designsystem.component.molecules.dialog
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,13 +37,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.window.Dialog
+import com.lightfeather.designsystem.component.molecules.TextField
 import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.designsystem.util.colorToHex
+import com.lightfeather.designsystem.util.parseColor
+import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -70,41 +74,6 @@ private fun colorToHSV(color: Color): FloatArray {
     val value = max
 
     return floatArrayOf(hue, saturation, value)
-}
-
-private fun parseColor(colorString: String): Color {
-    val hex = colorString.removePrefix("#")
-    return when (hex.length) {
-        6 -> { // RGB
-            val r = hex.substring(0, 2).toInt(16) / 255f
-            val g = hex.substring(2, 4).toInt(16) / 255f
-            val b = hex.substring(4, 6).toInt(16) / 255f
-            Color(r, g, b, 1f)
-        }
-
-        8 -> { // ARGB
-            val a = hex.substring(0, 2).toInt(16) / 255f
-            val r = hex.substring(2, 4).toInt(16) / 255f
-            val g = hex.substring(4, 6).toInt(16) / 255f
-            val b = hex.substring(6, 8).toInt(16) / 255f
-            Color(r, g, b, a)
-        }
-
-        else -> Color.Gray
-    }
-}
-
-private fun colorToHex(color: Color): String {
-    val r = (color.red * 255).roundToInt()
-    val g = (color.green * 255).roundToInt()
-    val b = (color.blue * 255).roundToInt()
-
-    return buildString {
-        append("#")
-        append(r.toString(16).padStart(2, '0').uppercase())
-        append(g.toString(16).padStart(2, '0').uppercase())
-        append(b.toString(16).padStart(2, '0').uppercase())
-    }
 }
 
 @Composable
@@ -155,7 +124,7 @@ fun ColorPickerDialog(
             shape = RoundedCornerShape(AppTheme.dimens.large),
             colors =
                 CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 ),
         ) {
             Column(
@@ -193,12 +162,16 @@ fun ColorPickerDialog(
                     color = currentColor,
                     onHexChange = { hexString ->
                         handleHexColorChange(
-                            hexString, alpha, { color, hsv ->
+                            hexString,
+                            alpha,
+                            { color, hsv ->
                                 currentColor = color
                                 hue = hsv[0]
                                 saturation = hsv[1]
                                 value = hsv[2]
-                            }, onColorChange, onRgbaChange
+                            },
+                            onColorChange,
+                            onRgbaChange,
                         )
                     },
                 )
@@ -209,12 +182,17 @@ fun ColorPickerDialog(
                         savedColors = savedColors,
                         onColorClick = { colorString ->
                             handleSavedColorClick(
-                                colorString, alpha, { color, hsv ->
+                                colorString,
+                                alpha,
+                                { color, hsv ->
                                     currentColor = color
                                     hue = hsv[0]
                                     saturation = hsv[1]
                                     value = hsv[2]
-                                }, onSavedColorClick, onColorChange, onRgbaChange
+                                },
+                                onSavedColorClick,
+                                onColorChange,
+                                onRgbaChange,
                             )
                         },
                     )
@@ -264,12 +242,7 @@ private fun ColorPreviewWithHex(
             modifier =
                 Modifier
                     .size(AppTheme.dimens.huge)
-                    .clip(CircleShape)
-                    .border(
-                        AppTheme.dimens.extraSmall,
-                        MaterialTheme.colorScheme.surfaceVariant,
-                        CircleShape,
-                    ),
+                    .clip(RoundedCornerShape(AppTheme.dimens.medium)),
         ) {
             // Transparent checkerboard background
             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -296,8 +269,7 @@ private fun ColorPreviewWithHex(
                                 color = checkerColor,
                                 topLeft = Offset(xPos, yPos),
                                 size =
-                                    androidx.compose.ui.geometry
-                                        .Size(checkerSize, checkerSize),
+                                    Size(checkerSize, checkerSize),
                             )
                         }
                     }
@@ -549,8 +521,7 @@ private fun AlphaSlider(
                             color = checkerColor,
                             topLeft = Offset(x * checkerSize, y * checkerSize),
                             size =
-                                androidx.compose.ui.geometry
-                                    .Size(checkerSize, checkerSize),
+                                Size(checkerSize, checkerSize),
                         )
                     }
                 }
@@ -669,8 +640,7 @@ private fun AlphaSliderThumb(
                         color = checkerColor,
                         topLeft = Offset(x - checkerSize / 2, y - checkerSize / 2),
                         size =
-                            androidx.compose.ui.geometry
-                                .Size(checkerSize, checkerSize),
+                            Size(checkerSize, checkerSize),
                     )
                 }
             }
@@ -712,7 +682,7 @@ private fun AlphaSliderThumb(
 
         // Draw black center with current alpha
         drawCircle(
-            color = Color.Black.copy(alpha = kotlin.math.min(alpha + 0.3f, 1f)),
+            color = Color.Black.copy(alpha = min(alpha + 0.3f, 1f)),
             radius = radius * 0.25f,
             center = center,
         )
@@ -751,65 +721,26 @@ private fun SinWaveColorLayout(
     colors: List<String>,
     onColorClick: (String) -> Unit,
 ) {
-    // Create reverse pyramid layout
+    // Create simple grid layout
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall),
     ) {
         if (colors.isNotEmpty()) {
-            // Calculate rows for reverse pyramid
-            val rows =
-                when {
-                    colors.size <= 3 -> listOf(colors)
-                    colors.size <= 8 -> {
-                        val firstRowCount = minOf(5, colors.size - 3)
-                        val firstRow = colors.take(firstRowCount)
-                        val secondRow = colors.drop(firstRowCount)
-                        listOf(firstRow, secondRow)
-                    }
-                    colors.size <= 15 -> {
-                        val firstRowCount = minOf(6, colors.size - 6)
-                        val secondRowCount = minOf(4, colors.size - firstRowCount - 2)
-                        val firstRow = colors.take(firstRowCount)
-                        val secondRow = colors.drop(firstRowCount).take(secondRowCount)
-                        val thirdRow = colors.drop(firstRowCount + secondRowCount)
-                        listOf(firstRow, secondRow, thirdRow)
-                    }
-                    else -> {
-                        // For larger lists, create 4 rows with decreasing counts
-                        val firstRowCount = minOf(7, colors.size - 9)
-                        val secondRowCount = minOf(5, colors.size - firstRowCount - 4)
-                        val thirdRowCount = minOf(3, colors.size - firstRowCount - secondRowCount - 1)
-                        val firstRow = colors.take(firstRowCount)
-                        val secondRow = colors.drop(firstRowCount).take(secondRowCount)
-                        val thirdRow = colors.drop(firstRowCount + secondRowCount).take(thirdRowCount)
-                        val fourthRow = colors.drop(firstRowCount + secondRowCount + thirdRowCount)
-                        listOf(firstRow, secondRow, thirdRow, fourthRow)
-                    }
-                }
-
-            // Draw each row
-            rows.forEach { rowColors ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    rowColors.forEach { colorString ->
-                        val color = parseColor(colorString)
-                        Box(
-                            modifier =
-                                Modifier
-                                    .size(AppTheme.dimens.huge)
-                                    .clip(CircleShape)
-                                    .background(color)
-                                    .border(
-                                        AppTheme.dimens.extraSmall,
-                                        MaterialTheme.colorScheme.surfaceVariant,
-                                        CircleShape,
-                                    ).clickable { onColorClick(colorString) },
-                        )
-                    }
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(bottom = AppTheme.dimens.small),
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
+            ) {
+                colors.forEach { colorString ->
+                    val color = parseColor(colorString)
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(AppTheme.dimens.huge)
+                                .clip(RoundedCornerShape(AppTheme.dimens.medium))
+                                .background(color)
+                                .clickable { onColorClick(colorString) },
+                    )
                 }
             }
         }
@@ -822,7 +753,7 @@ private fun handleHexColorChange(
     alpha: Float,
     updateState: (Color, FloatArray) -> Unit,
     onColorChange: (Color) -> Unit,
-    onRgbaChange: (Int, Int, Int, Float) -> Unit
+    onRgbaChange: (Int, Int, Int, Float) -> Unit,
 ) {
     try {
         val newColor = parseColor(hexString)
@@ -847,7 +778,7 @@ private fun handleSavedColorClick(
     updateState: (Color, FloatArray) -> Unit,
     onSavedColorClick: (String) -> Unit,
     onColorChange: (Color) -> Unit,
-    onRgbaChange: (Int, Int, Int, Float) -> Unit
+    onRgbaChange: (Int, Int, Int, Float) -> Unit,
 ) {
     val color = parseColor(colorString)
     val colorWithAlpha = color.copy(alpha = alpha)

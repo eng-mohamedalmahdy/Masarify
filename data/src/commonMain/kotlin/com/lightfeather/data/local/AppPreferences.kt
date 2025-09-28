@@ -16,6 +16,8 @@ class AppPreferences(
         const val DARK_MODE = "darkMode"
         const val DYNAMIC_COLORS = "dynamicColors"
         const val APP_LANGUAGE = "appLanguage"
+
+        const val USER_SAVED_COLORS = "userSavedColors"
     }
 
     var userData: UserData?
@@ -33,4 +35,8 @@ class AppPreferences(
     var appLanguage: AppLanguage?
         set(value) = settings.encodeValue(APP_LANGUAGE, value)
         get() = settings.decodeValueOrNull<AppLanguage>(APP_LANGUAGE)
+
+    var userSavedColors: List<String>
+        set(value) = settings.encodeValue(USER_SAVED_COLORS, value)
+        get() = settings.decodeValueOrNull<List<String>>(USER_SAVED_COLORS) ?: emptyList()
 }

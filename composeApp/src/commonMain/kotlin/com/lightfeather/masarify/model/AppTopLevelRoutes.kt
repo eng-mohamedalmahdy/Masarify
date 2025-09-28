@@ -3,7 +3,7 @@ package com.lightfeather.masarify.model
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.lightfeather.designsystem.model.UiBottomNavigationItem
@@ -41,7 +41,7 @@ sealed class AppTopLevelRoutes(
 
     data object More : AppTopLevelRoutes(MoreRoute) {
         override val icon: ImageVector
-            get() = Icons.Default.MoreVert
+            get() = Icons.Default.MoreHoriz
         override val label: StringResource
             get() = MR.strings.more
     }

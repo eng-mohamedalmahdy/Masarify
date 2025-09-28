@@ -9,9 +9,11 @@ import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import com.lightfeather.masarify.mappers.toAccount
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.navigation.routes.DeleteAccountRoute
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,6 +68,8 @@ class BankAccountsPageViewModel(
     internal fun onIntent(intent: BankAccountsPageIntent) {
         when (intent) {
             is BankAccountsPageIntent.DeleteBankAccount -> {
+                _state.value = _state.value.copy(selectedAccount = null)
+                navigator.navigate(DeleteAccountRoute(intent.account.toAccount()))
             }
 
             is BankAccountsPageIntent.CreateTransactionInAccount -> {
@@ -82,12 +86,21 @@ class BankAccountsPageViewModel(
                 loadWealthWorthListening()
             }
 
-            BankAccountsPageIntent.ClearNavigation -> {
-                _state.value = _state.value.copy(selectedAccount = null)
+            is BankAccountsPageIntent.ClearNavigation -> {
+                viewModelScope.launch {
+                    while (intent.navigator.canNavigateBack()) {
+                        intent.navigator.navigateBack()
+                    }
+                    _state.value = _state.value.copy(selectedAccount = null)
+                }
             }
 
             is BankAccountsPageIntent.NavigationIntent -> {
                 viewModelScope.launch {
+                    while (intent.navigator.canNavigateBack()) {
+                        intent.navigator.navigateBack()
+                    }
+                    _state.value = _state.value.copy(selectedAccount = null)
                     intent.navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, intent)
                     _state.value = _state.value.copy(selectedAccount = intent.bankAccount)
                 }
@@ -157,8 +170,8 @@ class BankAccountsPageViewModel(
                                         account.balance.toDouble() * (
                                             selectedCurrencyExchangeRate?.rate
                                                 ?: 1.0
-                                        )
-                                    ).toString(),
+                                            )
+                                        ).toString(),
                                 currency = selectedCurrency,
                             )
                         }
