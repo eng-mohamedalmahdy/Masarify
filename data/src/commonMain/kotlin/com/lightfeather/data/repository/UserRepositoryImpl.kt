@@ -41,6 +41,6 @@ class UserRepositoryImpl(
     override fun getUserSavedColors(): List<String> = preferences.userSavedColors
 
     override fun saveColor(color: String) {
-        preferences.userSavedColors = (listOf(color) + preferences.userSavedColors).take(10)
+        preferences.userSavedColors = (listOf(color) + preferences.userSavedColors).toSet().take(10)
     }
 }

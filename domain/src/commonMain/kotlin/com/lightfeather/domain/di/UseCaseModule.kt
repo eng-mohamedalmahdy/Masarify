@@ -22,9 +22,13 @@ import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
 import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.domain.usecase.GetTransactionCount
 import com.lightfeather.domain.usecase.GetTransactionCountOfType
+import com.lightfeather.domain.usecase.GetUserDarkMode
+import com.lightfeather.domain.usecase.GetUserLanguage
 import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.SaveUserColor
+import com.lightfeather.domain.usecase.SetLanguage
+import com.lightfeather.domain.usecase.ToggleDarkMode
 import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.domain.usecase.UpdateTransaction
@@ -108,4 +112,11 @@ val useCaseModule =
         factory { GetUserSavedColors(get()) }
 
         factory { SaveUserColor(get()) }
+
+        factory { SetLanguage(get()) }
+        factory { GetUserLanguage(get()) }
+
+        factory { ToggleDarkMode(get()) }
+
+        factory { GetUserDarkMode(get()) }
     }

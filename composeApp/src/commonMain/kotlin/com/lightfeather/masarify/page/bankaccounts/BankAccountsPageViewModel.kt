@@ -73,9 +73,9 @@ class BankAccountsPageViewModel(
                     while (intent.navigator.canNavigateBack()) {
                         intent.navigator.navigateBack()
                     }
-                    // Clear selected account to show empty state when we return
+                    // Clear selected account to show empty state
                     _state.value = _state.value.copy(selectedAccount = null)
-                    // Navigate to delete dialog
+                    // Navigate to delete dialog (main navigation, not detail pane)
                     navigator.navigate(DeleteAccountRoute(intent.account.toAccount()))
                 }
             }

@@ -91,6 +91,7 @@ kotlin {
             implementation(libs.bundles.material3Adaptive)
             implementation(libs.jetbrains.iconsExtended)
             implementation(libs.compose.back.handler)
+            implementation(libs.okio.core)
             implementation("com.eygraber:uri-kmp:0.0.19")
         }
         androidMain.dependencies {

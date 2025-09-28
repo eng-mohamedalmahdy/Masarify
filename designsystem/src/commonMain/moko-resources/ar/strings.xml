@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="test">اختبار</string>
+    <string name="total_wealth">إجمالي الثروة</string>
+    <string name="accounts_count">%d حسابات</string>
+    <string name="original_values">القيم الأصلية</string>
+
+    <!-- Account Details Header -->
+    <string name="updated_time">آخر تحديث %s</string>
+    <string name="add_transaction">إضافة\nمعاملة</string>
+    <string name="transfer">تحويل</string>
+    <string name="edit">تعديل</string>
+    <string name="delete">حذف</string>
+    <string name="income">دخل</string>
+    <string name="expenses">مصروفات</string>
+    <string name="transactions">المعاملات</string>
+
+    <!-- DateTime Display Strings -->
+    <string name="time_just_now">الآن</string>
+    <string name="time_minutes_ago">منذ %d دقائق</string>
+    <string name="time_hours_ago">منذ %d ساعات</string>
+    <string name="time_yesterday">أمس</string>
+    <string name="time_days_ago">منذ %d أيام</string>
+    <string name="time_in_minutes">خلال %d دقائق</string>
+    <string name="time_in_hours">خلال %d ساعات</string>
+
+    <!-- Empty States -->
+    <string name="empty_transactions_title">لا توجد معاملات بعد</string>
+    <string name="empty_transactions_message">ابدأ في تتبع أموالك بإضافة أول معاملة لك</string>
+    <string name="empty_filtered_transactions_title">لا توجد معاملات مطابقة</string>
+    <string name="empty_filtered_transactions_message">حاول تعديل المرشحات للعثور على المعاملات التي تبحث عنها</string>
+    <string name="empty_state_action">إضافة معاملة</string>
+    <string name="no_account_selected_title">لم يتم اختيار حساب</string>
+    <string name="no_account_selected_message">اختر حساب مصرفي من القائمة لعرض معاملاته وتفاصيله</string>
+
+    <!-- Bank Accounts Page -->
+    <string name="your_accounts">حساباتي</string>
+    <string name="no_accounts_title">لا توجد حسابات بعد</string>
+    <string name="no_accounts_message">أضف حسابك المصرفي الأول لبدء تتبع أموالك</string>
+    <string name="add_account">إضافة حساب</string>
+    <string name="yes">نعم</string>
+    <string name="cancel">إلغاء</string>
+
+    <!-- More Page -->
+    <string name="more">المزيد</string>
+    <string name="more_description">الإعدادات والإدارة وخيارات الدعم</string>
+    <string name="select_option">اختر خياراً</string>
+    <string name="select_option_message">اختر خياراً من القائمة لعرض التفاصيل</string>
+
+    <!-- Settings Section -->
+    <string name="settings">الإعدادات</string>
+    <string name="dark_theme">المظهر الداكن</string>
+    <string name="dark_theme_description">التبديل بين المظهر الفاتح والداكن</string>
+    <string name="dark_theme_enabled">تم تفعيل المظهر الداكن</string>
+    <string name="dark_theme_disabled">تم إلغاء تفعيل المظهر الداكن</string>
+    <string name="language">اللغة</string>
+    <string name="language_description">تغيير لغة التطبيق</string>
+    <string name="language_changed">تم تغيير اللغة بنجاح</string>
+
+    <!-- Management Section -->
+    <string name="management">الإدارة</string>
+    <string name="category_management">إدارة الفئات</string>
+    <string name="category_management_description">إدارة فئات الدخل والمصروفات</string>
+    <string name="category_management_coming_soon">ميزة إدارة الفئات قريباً</string>
+    <string name="currency_management">إدارة العملات</string>
+    <string name="currency_management_description">إدارة العملات المدعومة</string>
+    <string name="currency_management_coming_soon">ميزة إدارة العملات قريباً</string>
+    <string name="currency_changed">تم تحديث تفضيل العملة</string>
+
+    <!-- Support Section -->
+    <string name="support">الدعم</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="privacy_policy_description">عرض سياسة الخصوصية الخاصة بنا</string>
+    <string name="privacy_policy_content">خصوصيتك مهمة بالنسبة لنا. نحن نجمع البيانات الضرورية فقط لتوفير أفضل تجربة.</string>
+    <string name="contact_us">اتصل بنا</string>
+    <string name="contact_us_description">احصل على المساعدة أو أرسل ملاحظاتك</string>
+    <string name="contact_us_content">تحتاج مساعدة؟ اتصل بفريق الدعم على support@masarify.com</string>
+    <string name="rate_us">قيمنا</string>
+    <string name="rate_us_description">قيم التطبيق في متجر التطبيقات</string>
+    <string name="rate_us_content">أحببت استخدام مصاريفي؟ يرجى تقييمنا في متجر التطبيقات!</string>
+    <string name="coming_soon">قريباً</string>
+
+</resources>

@@ -37,6 +37,7 @@ detekt = "1.23.8"
 kotlinx-datetime = "0.7.1"
 androidx-paging = "3.4.0-alpha04"
 material3 = "1.9.0-beta06"
+okio = "3.16.0"
 [libraries]
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -78,13 +79,16 @@ navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-co
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
-compose-window-sizes = { module = "org.jetbrains.compose.material3:material3-window-size-class" , version.ref = "material3" }
+compose-window-sizes = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "material3" }
 material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "composeAdaptive" }
 material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "composeAdaptive" }
 material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "composeAdaptive" }
 material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3" }
 material3-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
-compose-back-handler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "composeMultiplatform"}
+compose-back-handler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "composeMultiplatform" }
+okio-core = { module = "com.squareup.okio:okio", version.ref = "okio" }
+okio-node = { module = "com.squareup.okio:okio-nodefilesystem", version.ref = "okio" }
+
 # Code Quality Tools
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
@@ -100,6 +104,11 @@ koinCommon = [
     "koin-core",
     "koin-compose",
     "koin-composeVM"
+]
+
+okio = [
+    "okio-core",
+    "okio-node"
 ]
 
 multiplatformSettings = [

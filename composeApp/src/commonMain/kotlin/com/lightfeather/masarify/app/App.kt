@@ -21,6 +21,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -61,6 +62,7 @@ import com.lightfeather.masarify.navigation.routes.SplashRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
 import com.lightfeather.masarify.page.deletebankaccount.DeleteBankAccountPage
+import com.lightfeather.masarify.page.more.MorePage
 import com.lightfeather.masarify.page.onboarding.OnBoardingPage
 import com.lightfeather.masarify.page.splash.SplashPage
 import dev.icerock.moko.resources.desc.StringDesc
@@ -82,7 +84,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
         val isDarkMode by mainViewModel.darkTheme.collectAsState(false)
         val dynamicColor by mainViewModel.dynamicColor.collectAsState(false)
         val appLanguage by mainViewModel.currentLanguage.collectAsState(AppLanguage.English)
-        val initialDataSaved by mainViewModel.initialDataSaved.collectAsState(false)
+
         LaunchedEffect(appLanguage) {
             StringDesc.localeType = StringDesc.LocaleType.Custom(appLanguage.code)
         }
@@ -91,6 +93,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
         }
         CompositionLocalProvider(
             LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
+            LocalAppMainViewModel provides mainViewModel
         ) {
             AppTheme(isDarkMode) {
                 val englishTopLevelRoutes =
@@ -107,7 +110,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         AppTopLevelRoutes.Accounts,
                         AppTopLevelRoutes.More,
                     )
-                val topLevelRoutes = if (appLanguage.isRtl) arabicTopLevelRoutes.reversed() else englishTopLevelRoutes
+                val topLevelRoutes = englishTopLevelRoutes
                 val adaptiveInfo = currentWindowAdaptiveInfo()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination by remember(
@@ -298,7 +301,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                             Text("Transactions Page")
                         }
                         composable<MoreRoute> {
-                            Text("Settings Page")
+                            MorePage()
                         }
 
                         dialog<DeleteAccountRoute>(
@@ -312,6 +315,10 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
             }
         }
     }
+}
+
+val LocalAppMainViewModel = staticCompositionLocalOf<AppMainViewModel>{
+    error("No ViewModel provided")
 }
 
 fun isSelected(

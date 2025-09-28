@@ -79,6 +79,101 @@ Masarify is a Kotlin Multiplatform project targeting Android, iOS, Web (WASM), a
 - ViewModels: Process intents and emit state via Flow
 - UI: Stateless composables that receive state and intent handlers
 
+**List-Detail Adaptive Pattern (CRITICAL - Always Follow):**
+For pages with adaptive navigation (phone/tablet support), use Material3's `ListDetailPaneScaffold`:
+
+**Required Components:**
+1. **State**: Include `selectedItem` and related detail state
+2. **Intent**: NavigationIntent sealed class with `ThreePaneScaffoldNavigator` parameter
+3. **ViewModel**: Handle navigation lifecycle and clear state on back navigation
+4. **UI**: Separate `ListPane` and `DetailPane` composables with `AnimatedPane` wrapper
+
+**Implementation Pattern:**
+```kotlin
+// State - Include selected item for detail pane
+data class FeaturePageState(
+    val items: Flow<List<Item>>,
+    val selectedItem: Item? = null,
+    val selectedDetailType: DetailType? = null,
+)
+
+// Intent - NavigationIntent for detail pane navigation
+sealed interface FeaturePageIntent {
+    sealed class NavigationIntent(
+        open val item: Item?,
+        open val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
+    ) : FeaturePageIntent
+
+    data class ClearNavigation(
+        val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
+    ) : FeaturePageIntent
+}
+
+// ViewModel - Handle navigation state management
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+internal fun onIntent(intent: FeaturePageIntent) {
+    when (intent) {
+        is FeaturePageIntent.ClearNavigation -> {
+            viewModelScope.launch {
+                while (intent.navigator.canNavigateBack()) {
+                    intent.navigator.navigateBack()
+                }
+                _state.value = _state.value.copy(selectedItem = null)
+            }
+        }
+        is FeaturePageIntent.NavigationIntent -> {
+            viewModelScope.launch {
+                // Clear existing navigation
+                while (intent.navigator.canNavigateBack()) {
+                    intent.navigator.navigateBack()
+                }
+                _state.value = _state.value.copy(selectedItem = null)
+                // Navigate to detail
+                intent.navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, intent)
+                _state.value = _state.value.copy(selectedItem = intent.item)
+            }
+        }
+    }
+}
+
+// UI - Use ListDetailPaneScaffold with proper back handling
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+internal fun FeaturePageContent(state: State, onIntent: (Intent) -> Unit) {
+    val navigator = rememberListDetailPaneScaffoldNavigator<NavigationIntent>()
+
+    BackHandler(navigator.canNavigateBack()) {
+        coroutineScope.launch {
+            onIntent(FeaturePageIntent.ClearNavigation(navigator))
+        }
+    }
+
+    ListDetailPaneScaffold(
+        directive = navigator.scaffoldDirective,
+        value = navigator.scaffoldValue,
+        listPane = { ListPaneContent(...) },
+        detailPane = {
+            when (val destination = navigator.currentDestination?.contentKey) {
+                is NavigationIntent.SpecificDetail -> {
+                    key("detail_${destination.item.id}") {
+                        DetailPaneContent(...)
+                    }
+                }
+                null -> EmptyState(...)
+            }
+        }
+    )
+}
+```
+
+**Critical Rules:**
+- **Always use `key()` for detail pane content** to ensure proper recomposition
+- **Clear navigation state first** before setting new navigation in ViewModel
+- **Handle back navigation** with `BackHandler` and `ClearNavigation` intent
+- **Use `AnimatedPane` wrapper** for list pane content
+- **Include `selectedItem` in state** for visual feedback and detail pane content
+- **Reference**: See `BankAccountsPage.kt` for complete implementation example
+
 **Platform Targets:**
 - `commonMain`: Shared code across all platforms
 - `androidMain`: Android-specific implementations
