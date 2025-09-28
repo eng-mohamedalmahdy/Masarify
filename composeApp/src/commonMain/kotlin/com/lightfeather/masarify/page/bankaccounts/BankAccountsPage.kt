@@ -61,7 +61,6 @@ import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.page.createbankaccount.CreateBankAccountPage
 import com.lightfeather.masarify.template.transactionspane.TransactionsPaneAsDetail
 import dev.icerock.moko.resources.compose.stringResource
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import masarify.designsystem.generated.resources.Res
@@ -129,14 +128,13 @@ internal fun BankAccountsPageContent(
                         BankAccountsPageIntent.NavigationIntent.UpdateBankAccount(it, navigator),
                     )
                 },
-                onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it)) },
+                onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it, navigator)) },
                 onCreateTransactionFromAccount = { onIntent(BankAccountsPageIntent.CreateTransactionInAccount(it)) },
                 onTransferFromAccount = { onIntent(BankAccountsPageIntent.TransferFromAccount(it)) },
                 onCurrencyClick = { onIntent(BankAccountsPageIntent.SelectCurrency(it)) },
             )
         },
         detailPane = {
-            Napier.d("Detail pane content ${navigator.currentDestination?.contentKey}", tag = "BankAccountsPage")
             when (val intent = navigator.currentDestination?.contentKey) {
                 is BankAccountsPageIntent.NavigationIntent.AddBankAccount -> {
                     key("add_account") {

@@ -40,6 +40,7 @@ internal sealed interface BankAccountsPageIntent {
 
     data class DeleteBankAccount(
         val account: UiBankAccount,
+        val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
     ) : BankAccountsPageIntent
 
     data class CreateTransactionInAccount(

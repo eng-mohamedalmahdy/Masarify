@@ -68,8 +68,16 @@ class BankAccountsPageViewModel(
     internal fun onIntent(intent: BankAccountsPageIntent) {
         when (intent) {
             is BankAccountsPageIntent.DeleteBankAccount -> {
-                _state.value = _state.value.copy(selectedAccount = null)
-                navigator.navigate(DeleteAccountRoute(intent.account.toAccount()))
+                viewModelScope.launch {
+                    // Clear any existing navigation in the detail pane first
+                    while (intent.navigator.canNavigateBack()) {
+                        intent.navigator.navigateBack()
+                    }
+                    // Clear selected account to show empty state when we return
+                    _state.value = _state.value.copy(selectedAccount = null)
+                    // Navigate to delete dialog
+                    navigator.navigate(DeleteAccountRoute(intent.account.toAccount()))
+                }
             }
 
             is BankAccountsPageIntent.CreateTransactionInAccount -> {
@@ -170,8 +178,8 @@ class BankAccountsPageViewModel(
                                         account.balance.toDouble() * (
                                             selectedCurrencyExchangeRate?.rate
                                                 ?: 1.0
-                                            )
-                                        ).toString(),
+                                        )
+                                    ).toString(),
                                 currency = selectedCurrency,
                             )
                         }
