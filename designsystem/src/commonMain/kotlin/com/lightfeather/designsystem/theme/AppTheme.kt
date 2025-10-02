@@ -48,9 +48,9 @@ object AppTheme {
 
         // Background & Surface
         val backgroundLight = Color(0xFFFFFFFF) // White
-        val backgroundDark = Color(0xFF121212) // Dark background
+        val backgroundDark = Color(0xFF282828) // Dark background
         val surfaceLight = Color(0xFFFDFDFC) // Off-white, softer than pure white
-        val surfaceDark = Color(0xFF1C1C1C) // Dark neutral
+        val surfaceDark = Color(0xFF282828) // Dark neutral
         val surfaceVariantLight = Color(0xFFE6E1D5) // Warm grey with beige tone
         val surfaceVariantDark = Color(0xFF49453D) // Muted warm charcoal
 

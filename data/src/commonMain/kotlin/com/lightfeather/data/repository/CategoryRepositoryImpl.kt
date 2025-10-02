@@ -4,10 +4,12 @@ import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
+import com.lightfeather.data.remote.getImagesIcons
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.error.AppError
 import com.lightfeather.domain.repository.CategoryRepository
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -17,6 +19,7 @@ import lightfeather.masarify.database.V_categories
 class
 CategoryRepositoryImpl(
     private val database: SharedDatabase,
+    private val httpClient: HttpClient,
 ) : CategoryRepository {
     override suspend fun createCategory(category: Category): DomainResult<Int> =
         try {
@@ -63,7 +66,7 @@ CategoryRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error deleting category"))
         }
 
-    override suspend fun getAllCategories(): DomainResult<Flow<List<Category>>> =
+    override  fun getAllCategories(): DomainResult<Flow<List<Category>>> =
         try {
             val categoriesFlow: Flow<List<Category>> =
                 flow {
@@ -92,11 +95,17 @@ CategoryRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting category"))
         }
 
-    override fun getAllCategoryIcons(): DomainResult<Flow<List<Any>>> {
-        // This method might require external resources or a predefined list of icons
-        // For now, returning an empty list as this would typically be implemented differently
-        return DomainResult.Success(flow { emit(emptyList<Any>()) })
-    }
+    override fun getAllCategoryIcons(): DomainResult<Flow<List<Any>>> =
+        try {
+            val iconsFlow: Flow<List<Any>> =
+                flow {
+                    val response = getImagesIcons(httpClient)
+                    emit(response.data)
+                }
+            DomainResult.Success(iconsFlow)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error fetching category icons"))
+        }
 
     private fun lightfeather.masarify.database.Categories.toDomain(): Category =
         Category(

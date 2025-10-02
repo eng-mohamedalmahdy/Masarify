@@ -3,7 +3,6 @@ package com.lightfeather.domain.usecase
 import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.domain.repository.UserRepository
 
-
 class ToggleDarkMode(
     private val repository: UserRepository,
 ) {

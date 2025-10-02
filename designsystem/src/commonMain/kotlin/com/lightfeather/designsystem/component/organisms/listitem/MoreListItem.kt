@@ -1,10 +1,11 @@
-package com.lightfeather.designsystem.component.molecules
+package com.lightfeather.designsystem.component.organisms.listitem
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
+import com.lightfeather.designsystem.component.atoms.Switch
+import com.lightfeather.designsystem.component.molecules.AppDropMenu
+import com.lightfeather.designsystem.component.molecules.AppImage
+import com.lightfeather.designsystem.component.molecules.button.AppSegmentedButton
+import com.lightfeather.designsystem.component.molecules.button.SegmentedButton
 import com.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -95,7 +101,7 @@ fun MoreListItemWithSwitch(
             },
         textColor = textColor,
         trailingContent = {
-            com.lightfeather.designsystem.component.atoms.Switch(
+            Switch(
                 checked = checked,
                 onCheckedChange = null, // Handled by row click
                 enabled = enabled,
@@ -135,6 +141,55 @@ fun <T> MoreListItemWithDropdown(
             )
         },
     )
+}
+
+// Convenience function for MoreListItem with SegmentedButton
+@Composable
+fun MoreListItemWithSegmentedButton(
+    text: String,
+    image: Any?,
+    segmentedItems: List<SegmentedButton.Item>,
+    selectedValue: String?,
+    onSelectionChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+) {
+    Row(
+        modifier =
+            modifier.padding(
+                horizontal = AppTheme.dimens.spacing.padding.medium,
+                vertical = AppTheme.dimens.spacing.padding.small,
+            ),
+        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.medium),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        // Image/Icon
+        AppImage(
+            model = image,
+            contentDescription = contentDescription,
+            modifier = Modifier.size(AppTheme.dimens.icon.size.large),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+        )
+
+        // Text
+        Text(
+            text = text,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyLarge,
+            color = textColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        // Segmented Button
+        AppSegmentedButton(
+            items = segmentedItems,
+            selectedValue = selectedValue,
+            onSelectionChanged = onSelectionChanged,
+            modifier = Modifier.fillMaxWidth().padding(start = AppTheme.dimens.spacing.padding.small),
+        )
+    }
 }
 
 @Preview
@@ -187,6 +242,29 @@ private fun PreviewMoreListItemWithDropdown() {
                 items = listOf("English", "Arabic", "French"),
                 onItemSelected = {},
                 contentRow = { item -> Text(text = item) },
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewMoreListItemWithSegmentedButton() {
+    AppTheme {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            MoreListItemWithSegmentedButton(
+                text = "View Type",
+                image = Icons.Default.ChevronRight,
+                segmentedItems =
+                    listOf(
+                        SegmentedButton.Item("List", "list"),
+                        SegmentedButton.Item("Grid", "grid"),
+                    ),
+                selectedValue = "list",
+                onSelectionChanged = {},
             )
         }
     }

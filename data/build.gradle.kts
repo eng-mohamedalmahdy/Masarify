@@ -93,6 +93,7 @@ kotlin {
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.bundles.multiplatformSettings)
                 implementation(libs.napier)
+                implementation(libs.bundles.ktor)
             }
         }
 
@@ -106,6 +107,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.android)
                 implementation(libs.koin.android)
+                implementation(libs.ktor.client.cio)
             }
         }
 
@@ -119,6 +121,7 @@ kotlin {
 
         iosMain {
             dependencies {
+                implementation(libs.ktor.client.darwin)
             }
         }
         nativeMain {
@@ -130,6 +133,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(libs.sqldelight.sqlite)
+                implementation(libs.ktor.client.cio)
             }
         }
 
@@ -140,6 +144,7 @@ kotlin {
                 implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqldelight.get()))
                 implementation(devNpm("copy-webpack-plugin", libs.versions.webPackPlugin.get()))
                 implementation("org.jetbrains.kotlinx:kotlinx-browser:0.3.1") // or latest
+                implementation(libs.ktor.client.js)
             }
         }
     }

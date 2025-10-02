@@ -1,6 +1,5 @@
 package com.lightfeather.masarify.page.more
 
-import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.domain.model.AppLanguage
 
 internal data class MorePageState(
@@ -12,7 +11,6 @@ internal data class MorePageState(
 )
 
 internal sealed class MoreDetailItem {
-
     data object CurrencyManagement : MoreDetailItem()
 
     data object CategoryManagement : MoreDetailItem()

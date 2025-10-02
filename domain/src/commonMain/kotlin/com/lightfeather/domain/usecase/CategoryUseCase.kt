@@ -30,7 +30,7 @@ class GetCategoryById(
 class GetAllCategories(
     private val categoryRepository: CategoryRepository,
 ) {
-    suspend operator fun invoke() = categoryRepository.getAllCategories()
+     operator fun invoke() = categoryRepository.getAllCategories()
 }
 
 class GetAllCategoryIcons(

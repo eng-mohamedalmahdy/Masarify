@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.ContactMail
@@ -20,7 +18,6 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -41,10 +38,12 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
-import com.lightfeather.designsystem.component.molecules.MoreListItem
-import com.lightfeather.designsystem.component.molecules.MoreListItemWithDropdown
-import com.lightfeather.designsystem.component.molecules.MoreListItemWithSwitch
+import com.lightfeather.designsystem.component.molecules.button.SegmentedButton
+import com.lightfeather.designsystem.component.organisms.listitem.MoreListItem
+import com.lightfeather.designsystem.component.organisms.listitem.MoreListItemWithSegmentedButton
+import com.lightfeather.designsystem.component.organisms.listitem.MoreListItemWithSwitch
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.masarify.app.LocalAppMainViewModel
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.launch
@@ -100,9 +99,7 @@ internal fun MorePageContent(
                     }
                 },
                 onCategoryManagementClick = {
-                    coroutineScope.launch {
-                        onIntent(MorePageIntent.NavigationIntent.SelectCategoryManagementDetail(navigator))
-                    }
+                    onIntent(MorePageIntent.NavigateToCategoryManagement)
                 },
                 onPrivacyPolicyClick = {
                     coroutineScope.launch {
@@ -127,14 +124,6 @@ internal fun MorePageContent(
                 is MorePageIntent.NavigationIntent.SelectCurrencyManagementDetail -> {
                     key("currency_detail") {
                         CurrencyManagementDetailPane(
-                            onBack = { onIntent(MorePageIntent.ClearNavigation(navigator)) },
-                        )
-                    }
-                }
-
-                is MorePageIntent.NavigationIntent.SelectCategoryManagementDetail -> {
-                    key("category_detail") {
-                        CategoryManagementDetailPane(
                             onBack = { onIntent(MorePageIntent.ClearNavigation(navigator)) },
                         )
                     }
@@ -182,7 +171,7 @@ internal fun MorePageContent(
 private fun ThreePaneScaffoldPaneScope.MoreListPane(
     state: MorePageState,
     onDarkThemeToggle: (Boolean) -> Unit,
-    onLanguageSelected: (com.lightfeather.domain.model.AppLanguage) -> Unit,
+    onLanguageSelected: (AppLanguage) -> Unit,
     onCurrencyManagementClick: () -> Unit,
     onCategoryManagementClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
@@ -209,11 +198,6 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                     Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
-                    Text(
-                        text = stringResource(MR.strings.more_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
                 }
             }
 
@@ -233,14 +217,20 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
             }
 
             item {
-                MoreListItemWithDropdown(
-                    text = stringResource(MR.strings.language),
+                MoreListItemWithSegmentedButton(
+                    text = "",
                     image = Icons.Default.Language,
-                    selectedValue = state.selectedLanguage.languageName,
-                    items = state.availableLanguages,
-                    onItemSelected = onLanguageSelected,
-                    contentRow = { language ->
-                        Text(text = language.languageName)
+                    segmentedItems =
+                        state.availableLanguages.map { language ->
+                            SegmentedButton.Item(
+                                text = language.languageName,
+                                value = language.code,
+                            )
+                        },
+                    selectedValue = state.selectedLanguage.code,
+                    onSelectionChanged = { selectedCode ->
+                        val selectedLanguage = AppLanguage.fromCode(selectedCode)
+                        onLanguageSelected(selectedLanguage)
                     },
                     contentDescription = stringResource(MR.strings.language_description),
                 )
@@ -323,9 +313,7 @@ private fun SectionHeader(text: String) {
 
 // Detail Pane Composables
 @Composable
-private fun CurrencyManagementDetailPane(
-    onBack: () -> Unit,
-) {
+private fun CurrencyManagementDetailPane(onBack: () -> Unit) {
     DetailPaneWrapper(
         title = stringResource(MR.strings.currency_management),
         onBack = onBack,
@@ -334,21 +322,6 @@ private fun CurrencyManagementDetailPane(
             title = stringResource(MR.strings.coming_soon),
             message = stringResource(MR.strings.currency_management_coming_soon),
             icon = Icons.Default.CurrencyExchange,
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
-}
-
-@Composable
-private fun CategoryManagementDetailPane(onBack: () -> Unit) {
-    DetailPaneWrapper(
-        title = stringResource(MR.strings.category_management),
-        onBack = onBack,
-    ) {
-        EmptyState(
-            title = stringResource(MR.strings.coming_soon),
-            message = stringResource(MR.strings.category_management_coming_soon),
-            icon = Icons.Default.Category,
             modifier = Modifier.fillMaxSize(),
         )
     }
@@ -437,10 +410,11 @@ fun MorePagePreview() {
                 MorePageState(
                     isDarkTheme = false,
                     selectedLanguage = com.lightfeather.domain.model.AppLanguage.English,
-                    availableLanguages = listOf(
-                        com.lightfeather.domain.model.AppLanguage.English,
-                        com.lightfeather.domain.model.AppLanguage.Arabic,
-                    ),
+                    availableLanguages =
+                        listOf(
+                            com.lightfeather.domain.model.AppLanguage.English,
+                            com.lightfeather.domain.model.AppLanguage.Arabic,
+                        ),
                 ),
             onIntent = {},
         )

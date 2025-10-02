@@ -46,6 +46,7 @@ import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.Category
 import com.lightfeather.masarify.PlatformsSlugs
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.di.getAppModules
@@ -54,14 +55,18 @@ import com.lightfeather.masarify.model.AppTopLevelRoutes
 import com.lightfeather.masarify.navigation.NavTypeProvider
 import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
+import com.lightfeather.masarify.navigation.routes.CategoriesRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import com.lightfeather.masarify.navigation.routes.DeleteAccountRoute
+import com.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
 import com.lightfeather.masarify.navigation.routes.MoreRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import com.lightfeather.masarify.navigation.routes.SplashRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
+import com.lightfeather.masarify.page.categories.CategoriesPage
 import com.lightfeather.masarify.page.deletebankaccount.DeleteBankAccountPage
+import com.lightfeather.masarify.page.deletecategory.DeleteCategoryPage
 import com.lightfeather.masarify.page.more.MorePage
 import com.lightfeather.masarify.page.onboarding.OnBoardingPage
 import com.lightfeather.masarify.page.splash.SplashPage
@@ -93,7 +98,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
         }
         CompositionLocalProvider(
             LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
-            LocalAppMainViewModel provides mainViewModel
+            LocalAppMainViewModel provides mainViewModel,
         ) {
             AppTheme(isDarkMode) {
                 val englishTopLevelRoutes =
@@ -250,9 +255,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                                         alpha = 0.7f,
                                                     ),
                                                 selectedTextColor =
-                                                    if (navSuiteType ==
-                                                        NavigationSuiteType.NavigationDrawer
-                                                    ) {
+                                                    if (navSuiteType == NavigationSuiteType.NavigationDrawer) {
                                                         MaterialTheme.colorScheme.primary
                                                     } else {
                                                         MaterialTheme.colorScheme.onPrimary
@@ -265,7 +268,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                                     },
                                                 selectedContainerColor = MaterialTheme.colorScheme.surface,
                                                 unselectedContainerColor = Color.Transparent,
-                                                indicatorColor = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+                                                indicatorColor = MaterialTheme.colorScheme.onPrimary,
                                             ),
                                     )
                                 }
@@ -303,11 +306,20 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         composable<MoreRoute> {
                             MorePage()
                         }
+                        composable<CategoriesRoute> {
+                            CategoriesPage()
+                        }
 
                         dialog<DeleteAccountRoute>(
                             typeMap = mapOf(NavTypeProvider.provideMapEntry<Account>()),
                         ) {
                             DeleteBankAccountPage()
+                        }
+
+                        dialog<DeleteCategoryRoute>(
+                            typeMap = mapOf(NavTypeProvider.provideMapEntry<Category>()),
+                        ) {
+                            DeleteCategoryPage()
                         }
                     }
                 }
@@ -317,9 +329,10 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
     }
 }
 
-val LocalAppMainViewModel = staticCompositionLocalOf<AppMainViewModel>{
-    error("No ViewModel provided")
-}
+val LocalAppMainViewModel =
+    staticCompositionLocalOf<AppMainViewModel> {
+        error("No ViewModel provided")
+    }
 
 fun isSelected(
     route: Route,

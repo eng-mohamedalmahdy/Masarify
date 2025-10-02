@@ -7,7 +7,6 @@ import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import com.lightfeather.domain.model.AppLanguage
 
 internal sealed interface MorePageIntent {
-
     data object LoadData : MorePageIntent
 
     sealed class NavigationIntent(
@@ -18,13 +17,6 @@ internal sealed interface MorePageIntent {
             override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
         ) : NavigationIntent(
                 detailItem = MoreDetailItem.CurrencyManagement,
-                navigator = navigator,
-            )
-
-        data class SelectCategoryManagementDetail(
-            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
-        ) : NavigationIntent(
-                detailItem = MoreDetailItem.CategoryManagement,
                 navigator = navigator,
             )
 
@@ -61,4 +53,6 @@ internal sealed interface MorePageIntent {
     data class ClearNavigation(
         val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
     ) : MorePageIntent
+
+    data object NavigateToCategoryManagement : MorePageIntent
 }

@@ -141,7 +141,7 @@ internal fun BankAccountsPageContent(
                 "Detail pane - currentDestination: $currentDestination, selectedAccount: ${state.selectedAccount?.name}",
                 tag = "BankAccountsPage",
             )
-            if (state.selectedAccount == null) {
+            if (state.selectedAccount == null && navigator.currentDestination?.contentKey == null) {
                 EmptyState(
                     title = stringResource(MR.strings.no_account_selected_title),
                     message = stringResource(MR.strings.no_account_selected_message),
