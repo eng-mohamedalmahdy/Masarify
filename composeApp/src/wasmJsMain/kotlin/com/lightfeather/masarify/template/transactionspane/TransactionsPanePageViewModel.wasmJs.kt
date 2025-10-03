@@ -9,9 +9,7 @@ import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.PagedData
 import com.lightfeather.domain.model.transaction.Transaction
-import com.lightfeather.domain.usecase.GetAllTransactionsPaged
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
-import com.lightfeather.domain.usecase.GetTransactionCount
 import com.lightfeather.masarify.mappers.toTransactionFilter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,9 +22,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 actual class TransactionsPanePageViewModel(
-    private val getAllTransactionsPaged: GetAllTransactionsPaged,
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
-    private val getTransactionCount: GetTransactionCount,
 ) : ViewModel() {
     private val _transactions = MutableStateFlow<List<UiTransaction>>(emptyList())
     val transactions: StateFlow<List<UiTransaction>> = _transactions.asStateFlow()
@@ -84,7 +80,7 @@ actual class TransactionsPanePageViewModel(
     }
 
     fun onTransactionClick(transactionId: String) {
-        // Handle transaction selection
+        transactionId
     }
 
     actual fun updateFilter(filter: UiTransactionFilter) {

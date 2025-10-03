@@ -9,6 +9,8 @@ import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.transaction.Transaction
 import lightfeather.masarify.database.V_transactions
 
+// Complex mapper with multiple transaction type transformations
+@Suppress("CyclomaticComplexMethod")
 fun List<V_transactions>.toDomainTransactions(): List<Transaction> =
     this
         .groupBy { it.transactionId }

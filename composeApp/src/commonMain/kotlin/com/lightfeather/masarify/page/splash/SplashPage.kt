@@ -12,17 +12,12 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SplashPage(viewModel: SplashPageViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
 
-    SplashPageContent(
-        state = state,
-        onIntent = viewModel::onIntent,
-    )
+    SplashPageContent()
 }
 
 @Composable
-internal fun SplashPageContent(
-    state: SplashPageState,
-    onIntent: (SplashPageIntent) -> Unit,
-) {
+internal fun SplashPageContent() {
+
     Text("Splash Page")
 }
 
@@ -30,9 +25,6 @@ internal fun SplashPageContent(
 @Composable
 fun SplashScreenPreview() {
     AppTheme {
-        SplashPageContent(
-            state = SplashPageState(),
-            onIntent = {},
-        )
+        SplashPageContent()
     }
 }

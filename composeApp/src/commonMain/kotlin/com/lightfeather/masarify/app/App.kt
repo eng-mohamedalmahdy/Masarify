@@ -20,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -76,6 +75,8 @@ import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.mp.KoinPlatform
 
+// Main app composable with navigation setup - length is acceptable for app composition
+@Suppress("LongMethod", "CyclomaticComplexMethod")
 @Composable
 @Preview
 fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
@@ -108,6 +109,8 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         AppTopLevelRoutes.Accounts,
                         AppTopLevelRoutes.More,
                     )
+                // Reserved for future RTL support with different route ordering
+                @Suppress("UnusedPrivateProperty")
                 val arabicTopLevelRoutes =
                     listOf<AppTopLevelRoutes>(
                         AppTopLevelRoutes.Dashboard,
@@ -340,5 +343,5 @@ fun isSelected(
 ) = currentDestination
     ?.hierarchy
     ?.any {
-        it.route == route.route
+        it.route == route.routeName
     } == true

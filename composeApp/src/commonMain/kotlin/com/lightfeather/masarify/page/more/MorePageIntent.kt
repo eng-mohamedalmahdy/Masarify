@@ -40,6 +40,13 @@ internal sealed interface MorePageIntent {
                 detailItem = MoreDetailItem.RateUs,
                 navigator = navigator,
             )
+
+        data class SelectCategoryManagementDetail(
+            override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
+        ) : NavigationIntent(
+                detailItem = MoreDetailItem.CategoryManagement,
+                navigator = navigator,
+            )
     }
 
     data class ToggleDarkTheme(
@@ -53,6 +60,4 @@ internal sealed interface MorePageIntent {
     data class ClearNavigation(
         val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
     ) : MorePageIntent
-
-    data object NavigateToCategoryManagement : MorePageIntent
 }

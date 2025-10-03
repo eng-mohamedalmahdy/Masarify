@@ -14,10 +14,10 @@ import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.SaveUserColor
 import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.masarify.MR
-import com.lightfeather.masarify.MR.strings.currency
 import com.lightfeather.masarify.mappers.toCurrency
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
+import dev.icerock.moko.resources.StringResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -123,24 +123,9 @@ class CreateBankAccountPageViewModel(
         val stateSnapshot = _state.value
 
         // Validation
-        if (stateSnapshot.name.isBlank()) {
-            SnackbarService.sendErrorMessage(MR.strings.account_name_required)
-            return
-        }
-
-        if (stateSnapshot.currency == null) {
-            SnackbarService.sendErrorMessage(MR.strings.account_currency_required)
-            return
-        }
-
-        if (!stateSnapshot.inEditMode && stateSnapshot.initialBalance.isBlank()) {
-            SnackbarService.sendErrorMessage(MR.strings.account_balance_required)
-            return
-        }
-
-        val balance = stateSnapshot.initialBalance.toDoubleOrNull()
-        if (!stateSnapshot.inEditMode && balance == null) {
-            SnackbarService.sendErrorMessage(MR.strings.account_balance_invalid)
+        val validationError = validateAccountInput(stateSnapshot)
+        if (validationError != null) {
+            SnackbarService.sendErrorMessage(validationError)
             return
         }
 
@@ -151,12 +136,14 @@ class CreateBankAccountPageViewModel(
                 id = stateSnapshot.accountId?.toInt() ?: -1,
                 name = stateSnapshot.name.trim(),
                 description = stateSnapshot.description.trim().takeIf { it.isNotEmpty() },
-                balance = balance ?: 0.0,
+                balance = stateSnapshot.initialBalance.toDoubleOrNull() ?: 0.0,
                 color = stateSnapshot.color,
                 logo = stateSnapshot.logo,
-                currency = stateSnapshot.currency.toCurrency(),
+                currency = stateSnapshot.currency!!.toCurrency(),
             )
 
+        // Generic catch for unexpected errors - user feedback via SnackbarService
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         viewModelScope.launch {
             try {
                 if (stateSnapshot.inEditMode) {
@@ -186,5 +173,13 @@ class CreateBankAccountPageViewModel(
                 _state.value = _state.value.copy(isLoading = false)
             }
         }
+    }
+
+    private fun validateAccountInput(state: CreateBankAccountPageState): StringResource? = when {
+        state.name.isBlank() -> MR.strings.account_name_required
+        state.currency == null -> MR.strings.account_currency_required
+        !state.inEditMode && state.initialBalance.isBlank() -> MR.strings.account_balance_required
+        !state.inEditMode && state.initialBalance.toDoubleOrNull() == null -> MR.strings.account_balance_invalid
+        else -> null
     }
 }

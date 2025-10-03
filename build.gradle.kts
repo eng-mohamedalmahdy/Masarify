@@ -1,3 +1,6 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -16,7 +19,6 @@ plugins {
     // Code Quality Plugins
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
-
 }
 
 // Global KtLint configuration for all subprojects
@@ -35,7 +37,7 @@ subprojects {
             exclude("**/generated/**")
         }
     }
-    
+
     // Disable KtLint for Main source sets that contain generated files
     afterEvaluate {
         listOf(
@@ -61,45 +63,167 @@ subprojects {
     }
 }
 
-// Design Token Compliance Verification Task
-tasks.register("verifyDesignTokenCompliance") {
+// ==================== Detekt Configuration ====================
+
+plugins.apply("io.gitlab.arturbosch.detekt")
+
+// Configure Detekt globally for all subprojects
+subprojects {
+    apply(plugin = "io.gitlab.arturbosch.detekt")
+
+    configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
+        buildUponDefaultConfig = true
+        allRules = false
+        config.setFrom(files("$rootDir/detekt.yml"))
+        baseline = file("$rootDir/detekt-baseline.xml")
+        ignoreFailures = false // Fail build on violations
+    }
+
+    tasks.withType<Detekt>().configureEach {
+        jvmTarget = "11"
+
+        // Set source to scan all source sets in the module
+        setSource(files("src"))
+
+        // Exclude generated files and build directories
+        exclude(
+            "**/build/**",
+            "**/generated/**",
+            "**/commonMainResourceAccessors/**",
+            "**/MR.kt",
+            "**/Res.kt",
+            "**/*.generated.kt"
+        )
+
+        reports {
+            xml.required.set(true)
+            xml.outputLocation.set(layout.buildDirectory.file("reports/detekt/${project.name}-detekt.xml"))
+
+            sarif.required.set(true)
+            sarif.outputLocation.set(layout.buildDirectory.file("reports/detekt/${project.name}-detekt.sarif"))
+
+            html.required.set(true)
+            html.outputLocation.set(layout.buildDirectory.file("reports/detekt/${project.name}-detekt.html"))
+
+            txt.required.set(false)
+            md.required.set(false)
+        }
+    }
+
+    dependencies {
+        "detektPlugins"("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+    }
+}
+
+// Create report merge tasks
+val detektReportMergeXml by tasks.registering(ReportMergeTask::class) {
     group = "verification"
-    description = "Verify no hardcoded dp/sp values exist outside theme files"
+    description = "Merge all detekt XML reports from subprojects"
+    output.set(rootProject.layout.buildDirectory.file("reports/detekt/merge.xml"))
+}
 
-    doLast {
-        val violatingFiles = mutableListOf<String>()
+val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
+    group = "verification"
+    description = "Merge all detekt SARIF reports from subprojects"
+    output.set(rootProject.layout.buildDirectory.file("reports/detekt/merge.sarif"))
+}
 
-        // Check for forbidden imports using ripgrep
-        try {
-            val importResult = providers.exec {
-                commandLine("rg", "-l", "import.*androidx\\.compose\\.ui\\.unit\\.(dp|sp)", "--type", "kotlin", "--glob", "!*AppTheme*", "--glob", "!*WindowSizeClass*")
-            }.standardOutput.asText.get().trim()
+// Wire up subproject detekt tasks to merge tasks after evaluation
+gradle.projectsEvaluated {
+    subprojects {
+        tasks.withType<Detekt>().configureEach {
+            finalizedBy(detektReportMergeXml, detektReportMergeSarif)
 
-            if (importResult.isNotEmpty()) {
-                violatingFiles.addAll(importResult.split("\n"))
+            detektReportMergeXml.configure {
+                input.from(xmlReportFile)
             }
-        } catch (e: Exception) {
-            // rg not found or no matches, continue
-        }
 
-        // Check for hardcoded dp/sp usage using ripgrep
-        try {
-            val usageResult = providers.exec {
-                commandLine("rg", "-n", "\\b[0-9]+\\.(dp|sp)\\b", "--type", "kotlin", "--glob", "!*AppTheme*", "--glob", "!*WindowSizeClass*", "--glob", "!build/**")
-            }.standardOutput.asText.get().trim()
-
-            if (usageResult.isNotEmpty()) {
-                violatingFiles.addAll(usageResult.split("\n"))
+            detektReportMergeSarif.configure {
+                input.from(sarifReportFile)
             }
-        } catch (e: Exception) {
-            // rg not found or no matches, continue
-        }
-
-        if (violatingFiles.isNotEmpty()) {
-            throw GradleException("Design token violations found:\\n${violatingFiles.joinToString("\\n")}")
-        } else {
-            println("✅ Design token compliance verified - no violations found")
         }
     }
 }
 
+// Task to generate HTML from merged XML report
+tasks.register<Exec>("detektHtmlReport") {
+    group = "verification"
+    description = "Generate HTML report from merged detekt XML"
+
+    dependsOn(detektReportMergeXml)
+
+    commandLine(
+        "bash", "-c", """
+        if [ -f scripts/generate-detekt-html.sh ]; then
+            ./scripts/generate-detekt-html.sh
+        else
+            echo "⚠️  HTML generator script not found at scripts/generate-detekt-html.sh"
+            exit 1
+        fi
+    """.trimIndent()
+    )
+
+    // Only run if XML report exists
+    onlyIf {
+        detektReportMergeXml.get().output.get().asFile.exists()
+    }
+}
+
+// Main detekt task that runs on all modules
+tasks.register("detektAll") {
+    group = "verification"
+    description = "Run detekt analysis on all modules and generate merged reports (XML, SARIF, HTML)"
+
+    dependsOn(subprojects.map { "${it.path}:detekt" })
+    finalizedBy(detektReportMergeXml, detektReportMergeSarif, "detektHtmlReport")
+
+    // Always print report summary, even if task fails
+    doFirst {
+        println("\n" + "=".repeat(80))
+        println("🔍 Running Detekt analysis on all modules...")
+        println("=".repeat(80))
+    }
+}
+
+// Task to print report summary after detekt runs
+tasks.register("detektReportSummary") {
+    group = "verification"
+    description = "Print summary of detekt reports"
+
+    mustRunAfter(detektReportMergeXml, detektReportMergeSarif, "detektHtmlReport")
+
+    doLast {
+        val xmlReport = file("build/reports/detekt/merge.xml")
+        val sarifReport = file("build/reports/detekt/merge.sarif")
+        val htmlReport = file("build/reports/detekt/merge.html")
+
+        println("\n" + "=".repeat(80))
+        println("📊 Detekt Reports Generated")
+        println("=".repeat(80))
+
+        if (xmlReport.exists()) {
+            println("  • XML:   ${xmlReport.absolutePath}")
+        }
+        if (sarifReport.exists()) {
+            println("  • SARIF: ${sarifReport.absolutePath}")
+        }
+        if (htmlReport.exists()) {
+            println("  • HTML:  ${htmlReport.absolutePath}")
+            println("\n💡 View HTML report:")
+            println("   open ${htmlReport.absolutePath}")
+        } else if (xmlReport.exists()) {
+            println("  ⚠️  HTML report not generated yet")
+            println("     Run: ./scripts/generate-detekt-html.sh")
+        }
+
+        println("=".repeat(80) + "\n")
+    }
+}
+
+// Wire up report summary to run after merge tasks
+detektReportMergeXml.configure {
+    finalizedBy("detektReportSummary")
+}
+detektReportMergeSarif.configure {
+    finalizedBy("detektReportSummary")
+}

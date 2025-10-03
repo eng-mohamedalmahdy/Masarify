@@ -45,6 +45,7 @@ import com.lightfeather.designsystem.component.organisms.listitem.MoreListItemWi
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.masarify.app.LocalAppMainViewModel
+import com.lightfeather.masarify.page.categories.CategoriesPage
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -99,7 +100,9 @@ internal fun MorePageContent(
                     }
                 },
                 onCategoryManagementClick = {
-                    onIntent(MorePageIntent.NavigateToCategoryManagement)
+                    coroutineScope.launch {
+                        onIntent(MorePageIntent.NavigationIntent.SelectCategoryManagementDetail(navigator))
+                    }
                 },
                 onPrivacyPolicyClick = {
                     coroutineScope.launch {
@@ -120,36 +123,34 @@ internal fun MorePageContent(
         },
         detailPane = {
             val currentDestination = navigator.currentDestination?.contentKey
-            when (val intent = currentDestination) {
+            when (currentDestination) {
                 is MorePageIntent.NavigationIntent.SelectCurrencyManagementDetail -> {
                     key("currency_detail") {
-                        CurrencyManagementDetailPane(
-                            onBack = { onIntent(MorePageIntent.ClearNavigation(navigator)) },
-                        )
+                        CurrencyManagementDetailPane()
                     }
                 }
 
                 is MorePageIntent.NavigationIntent.SelectPrivacyPolicyDetail -> {
                     key("privacy_detail") {
-                        PrivacyPolicyDetailPane(
-                            onBack = { onIntent(MorePageIntent.ClearNavigation(navigator)) },
-                        )
+                        PrivacyPolicyDetailPane()
                     }
                 }
 
                 is MorePageIntent.NavigationIntent.SelectContactUsDetail -> {
                     key("contact_detail") {
-                        ContactUsDetailPane(
-                            onBack = { onIntent(MorePageIntent.ClearNavigation(navigator)) },
-                        )
+                        ContactUsDetailPane()
                     }
                 }
 
                 is MorePageIntent.NavigationIntent.SelectRateUsDetail -> {
                     key("rate_detail") {
-                        RateUsDetailPane(
-                            onBack = { onIntent(MorePageIntent.ClearNavigation(navigator)) },
-                        )
+                        RateUsDetailPane()
+                    }
+                }
+
+                is MorePageIntent.NavigationIntent.SelectCategoryManagementDetail -> {
+                    key("category_detail") {
+                        CategoryManagementDetailPane()
                     }
                 }
 
@@ -158,7 +159,7 @@ internal fun MorePageContent(
                         title = stringResource(MR.strings.select_option),
                         message = stringResource(MR.strings.select_option_message),
                         icon = Icons.Outlined.Settings,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }
@@ -313,10 +314,9 @@ private fun SectionHeader(text: String) {
 
 // Detail Pane Composables
 @Composable
-private fun CurrencyManagementDetailPane(onBack: () -> Unit) {
+private fun CurrencyManagementDetailPane() {
     DetailPaneWrapper(
         title = stringResource(MR.strings.currency_management),
-        onBack = onBack,
     ) {
         EmptyState(
             title = stringResource(MR.strings.coming_soon),
@@ -328,25 +328,23 @@ private fun CurrencyManagementDetailPane(onBack: () -> Unit) {
 }
 
 @Composable
-private fun PrivacyPolicyDetailPane(onBack: () -> Unit) {
+private fun PrivacyPolicyDetailPane() {
     DetailPaneWrapper(
         title = stringResource(MR.strings.privacy_policy),
-        onBack = onBack,
     ) {
         EmptyState(
             title = stringResource(MR.strings.privacy_policy),
             message = stringResource(MR.strings.privacy_policy_content),
             icon = Icons.Default.PrivacyTip,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
 
 @Composable
-private fun ContactUsDetailPane(onBack: () -> Unit) {
+private fun ContactUsDetailPane() {
     DetailPaneWrapper(
         title = stringResource(MR.strings.contact_us),
-        onBack = onBack,
     ) {
         EmptyState(
             title = stringResource(MR.strings.contact_us),
@@ -358,10 +356,9 @@ private fun ContactUsDetailPane(onBack: () -> Unit) {
 }
 
 @Composable
-private fun RateUsDetailPane(onBack: () -> Unit) {
+private fun RateUsDetailPane() {
     DetailPaneWrapper(
         title = stringResource(MR.strings.rate_us),
-        onBack = onBack,
     ) {
         EmptyState(
             title = stringResource(MR.strings.rate_us),
@@ -373,9 +370,13 @@ private fun RateUsDetailPane(onBack: () -> Unit) {
 }
 
 @Composable
+private fun CategoryManagementDetailPane() {
+    CategoriesPage()
+}
+
+@Composable
 private fun DetailPaneWrapper(
     title: String,
-    onBack: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     Column(

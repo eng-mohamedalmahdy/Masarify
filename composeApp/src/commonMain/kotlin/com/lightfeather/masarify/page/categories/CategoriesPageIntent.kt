@@ -4,24 +4,24 @@ package com.lightfeather.masarify.page.categories
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
-import com.lightfeather.domain.model.Category
+import com.lightfeather.designsystem.model.UiCategory
 
 internal sealed interface CategoriesPageIntent {
     data object LoadData : CategoriesPageIntent
 
     sealed class NavigationIntent(
-        open val category: Category?,
+        open val category: UiCategory,
         open val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
     ) : CategoriesPageIntent {
         data class AddCategory(
             override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
         ) : NavigationIntent(
                 navigator = navigator,
-                category = null,
+                category = UiCategory.empty,
             )
 
         data class UpdateCategory(
-            val selectedCategory: Category,
+            val selectedCategory: UiCategory,
             override val navigator: ThreePaneScaffoldNavigator<NavigationIntent>,
         ) : NavigationIntent(
                 category = selectedCategory,
@@ -30,7 +30,7 @@ internal sealed interface CategoriesPageIntent {
     }
 
     data class DeleteCategory(
-        val category: Category,
+        val category: UiCategory,
     ) : CategoriesPageIntent
 
     data class ClearNavigation(

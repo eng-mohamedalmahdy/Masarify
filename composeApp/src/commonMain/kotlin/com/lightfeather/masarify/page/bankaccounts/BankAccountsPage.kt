@@ -42,7 +42,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
+import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.EmptyState
@@ -55,7 +55,6 @@ import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.uiTransactionFilter
 import com.lightfeather.designsystem.modifier.applyIf
 import com.lightfeather.designsystem.shape.inWardTriangleCutShape
-import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.page.createbankaccount.CreateBankAccountPage
@@ -138,7 +137,8 @@ internal fun BankAccountsPageContent(
         detailPane = {
             val currentDestination = navigator.currentDestination?.contentKey
             Napier.d(
-                "Detail pane - currentDestination: $currentDestination, selectedAccount: ${state.selectedAccount?.name}",
+                "Detail pane - currentDestination: $currentDestination, " +
+                    "selectedAccount: ${state.selectedAccount?.name}",
                 tag = "BankAccountsPage",
             )
             if (state.selectedAccount == null && navigator.currentDestination?.contentKey == null) {
@@ -209,6 +209,8 @@ internal fun BankAccountsPageContent(
     )
 }
 
+// Composable UI function with complex layout - length is acceptable for UI composition
+@Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun ThreePaneScaffoldPaneScope.AccountsListPane(
@@ -249,7 +251,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                     drawContent()
 
                     // Then draw the line on top
-                    val strokeWidth = 2.dp.value * density
+                    val strokeWidth = AppTheme.dimens.hairline.value * density
                     val x = size.width - strokeWidth / 2
 
                     // If no account is selected, draw full line
@@ -279,7 +281,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                                 drawLine(
                                     primaryColor,
                                     Offset(x, 0f),
-                                    Offset(x, itemTop + 1.dp.toPx()),
+                                    Offset(x, itemTop + AppTheme.dimens.hairline.toPx()),
                                     strokeWidth,
                                 )
                             }
@@ -288,7 +290,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                             if (itemBottom < size.height) {
                                 drawLine(
                                     primaryColor,
-                                    Offset(x, itemBottom - 1.dp.toPx()),
+                                    Offset(x, itemBottom - AppTheme.dimens.hairline.toPx()),
                                     Offset(x, size.height),
                                     strokeWidth,
                                 )
@@ -357,7 +359,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                         // Animate the selection state
                         val isSelected = account == selectedAccount
                         val animatedCutSize by animateDpAsState(
-                            targetValue = if (isSelected) AppTheme.dimens.default else 0.dp,
+                            targetValue = if (isSelected) AppTheme.dimens.default else AppTheme.dimens.none,
                             animationSpec = tween(durationMillis = 300),
                             label = "cutSize",
                         )
@@ -367,7 +369,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
                             label = "trianglePosition",
                         )
                         val animatedStrokeWidth by animateDpAsState(
-                            targetValue = if (isSelected) 4.dp else 0.dp,
+                            targetValue = if (isSelected) AppTheme.dimens.small else AppTheme.dimens.none,
                             animationSpec = tween(durationMillis = 300),
                             label = "strokeWidth",
                         )

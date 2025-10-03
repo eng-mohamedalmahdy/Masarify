@@ -1,4 +1,3 @@
-import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -12,9 +11,8 @@ plugins {
     alias(libs.plugins.composeHotReload)
     id("dev.icerock.mobile.multiplatform-resources")
 
-    // Code Quality
+    // Code Quality - ktlint only (detekt is applied globally from root)
     alias(libs.plugins.ktlint)
-    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -153,52 +151,8 @@ dependencies {
 // KtLint Configuration (inherits from root)
 // Global configuration is applied via subprojects block in root build.gradle.kts
 
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config.setFrom(rootProject.file("detekt.yml"))
-    baseline = rootProject.file("detekt-baseline.xml")
-    ignoreFailures = false
+// Detekt configuration is managed in root build.gradle.kts via subprojects block
 
-    // Optional: be explicit about what source roots you expect detekt to analyze
-    // (useful for KMP modules)
-    source =
-        files(
-            "src/commonMain/kotlin",
-            "src/androidMain/kotlin",
-            "src/jvmMain/kotlin",
-            "src/iosMain/kotlin",
-        )
-}
-
-tasks.withType<Detekt>().configureEach {
-    // TASK-LEVEL excludes use glob patterns (not regex). This is the crucial part.
-    exclude("**/build/**", "**/generated/**", "**/commonMainResourceAccessors/**")
-
-    // Optional: show what files will be analyzed (use --info to see logger output)
-    doFirst {
-        val ktFiles =
-            source.files
-                .flatMap { root ->
-                    root.walkTopDown().filter { it.isFile && (it.extension == "kt" || it.extension == "kts") }.toList()
-                }.filterNot {
-                    it.absolutePath.contains("${project.buildDir.path}")
-                } // attempt to filter build dir copies
-
-        logger.lifecycle("Detekt will analyze ${ktFiles.size} Kotlin files (showing first 100):")
-        ktFiles.take(100).forEach { logger.lifecycle("  - ${it.absolutePath}") }
-    }
-
-    // reports (keep as you already had)
-    reports {
-        html.required.set(true)
-        html.outputLocation.set(layout.buildDirectory.file("reports/detekt/detekt.html"))
-    }
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
-}
 multiplatformResources {
     resourcesPackage.set(moduleName) // required
 }

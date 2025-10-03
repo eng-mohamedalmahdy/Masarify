@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 data class DeleteAccountRoute(
     val account: Account,
 ) : Route() {
-    override val route: String = "com.lightfeather.masarify.navigation.routes.DeleteAccountRoute"
+    override val routeName: String = "com.lightfeather.masarify.navigation.routes.DeleteAccountRoute"
 }

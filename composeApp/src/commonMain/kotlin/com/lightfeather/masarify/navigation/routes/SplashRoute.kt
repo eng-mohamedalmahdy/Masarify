@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object SplashRoute : Route() {
-    override val route: String = "splash"
+    override val routeName: String = "splash"
 }

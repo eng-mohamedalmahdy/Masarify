@@ -83,7 +83,9 @@ data class TransactionFilter(
 
     /**
      * Apply this filter to a transaction
+     * Complex filter matching logic with multiple criteria
      */
+    @Suppress("CyclomaticComplexMethod")
     @OptIn(ExperimentalTime::class)
     fun matches(transaction: Transaction): Boolean {
         if (isEmpty()) return true

@@ -18,6 +18,8 @@ import lightfeather.masarify.database.V_accounts
 class AccountRepositoryImpl(
     private val database: SharedDatabase,
 ) : AccountRepository {
+    // DomainResult pattern requires catching all exceptions for proper error handling
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun createAccount(account: Account): DomainResult<Int> =
         try {
             val result =
@@ -40,6 +42,7 @@ class AccountRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error creating account"))
         }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun updateAccount(account: Account): DomainResult<Boolean> =
         try {
             val result =
@@ -57,6 +60,7 @@ class AccountRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error updating account"))
         }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun deleteAccount(account: Account): DomainResult<Boolean> =
         try {
             val result = database { it.bankAccountsQueries.deleteAccount(account.id.toLong()) }
@@ -65,6 +69,7 @@ class AccountRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error deleting account"))
         }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun getAccountById(id: Int): DomainResult<Account> =
         try {
             val account =
@@ -76,6 +81,7 @@ class AccountRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting account"))
         }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getAccounts(): DomainResult<Flow<List<Account>>> =
         try {
             val accountsFlow: Flow<List<Account>> =

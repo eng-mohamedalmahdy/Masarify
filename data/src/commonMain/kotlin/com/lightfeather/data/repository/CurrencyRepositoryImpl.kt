@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.map
 import lightfeather.masarify.database.V_currencies
 import kotlin.math.sign
 
+// DomainResult pattern requires catching all exceptions for proper error handling
+@Suppress("TooGenericExceptionCaught")
 class CurrencyRepositoryImpl(
     private val database: SharedDatabase,
 ) : CurrencyRepository {

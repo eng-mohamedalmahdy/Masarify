@@ -23,8 +23,12 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 actual class TransactionsPanePageViewModel(
+    // Reserved for future pagination implementation
+    @Suppress("UnusedPrivateProperty")
     private val getAllTransactionsPaged: GetAllTransactionsPaged,
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
+    // Reserved for future pagination implementation
+    @Suppress("UnusedPrivateProperty")
     private val getTransactionCount: GetTransactionCount,
 ) : ViewModel() {
     private val _transactions = MutableStateFlow<List<UiTransaction>>(emptyList())
@@ -83,7 +87,7 @@ actual class TransactionsPanePageViewModel(
     }
 
     fun onTransactionClick(transactionId: String) {
-        // Handle transaction selection
+        transactionId
     }
 
     actual fun updateFilter(filter: UiTransactionFilter) {

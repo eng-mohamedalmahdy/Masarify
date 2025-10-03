@@ -35,7 +35,7 @@ class CurrencyExchangeRateRepositoryImpl(
             if (rowId > 0) {
                 rowId
             } else {
-                throw Exception("Failed to insert currency exchange rate")
+               -1
             }
         }
 
@@ -64,11 +64,7 @@ class CurrencyExchangeRateRepositoryImpl(
                         from_currency_id = rate.from.id.toLong(),
                         to_currency_id = rate.to.id.toLong(),
                     )
-                if (result > 0) {
-                    true
-                } else {
-                    throw Exception("Failed to delete currency exchange rate")
-                }
+                result > 0
             }
         }
 

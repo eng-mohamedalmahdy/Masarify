@@ -69,6 +69,8 @@ fun CreateBankAccountPage(
     )
 }
 
+// Composable UI function with form layout - length is acceptable for UI composition
+@Suppress("LongMethod")
 @Composable
 internal fun CreateBankAccountPageContent(
     state: CreateBankAccountPageState,

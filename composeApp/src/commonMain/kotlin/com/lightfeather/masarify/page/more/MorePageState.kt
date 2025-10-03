@@ -13,11 +13,11 @@ internal data class MorePageState(
 internal sealed class MoreDetailItem {
     data object CurrencyManagement : MoreDetailItem()
 
-    data object CategoryManagement : MoreDetailItem()
-
     data object PrivacyPolicy : MoreDetailItem()
 
     data object ContactUs : MoreDetailItem()
 
     data object RateUs : MoreDetailItem()
+
+    data object CategoryManagement : MoreDetailItem()
 }

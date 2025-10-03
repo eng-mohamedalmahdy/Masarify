@@ -9,6 +9,8 @@ import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import kotlinx.coroutines.flow.first
 
 class TransactionsPagingSource(
+    // Reserved for future direct database access optimization
+    @Suppress("UnusedPrivateProperty")
     private val sharedDatabase: SharedDatabase,
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
     private val filter: TransactionFilter,
@@ -17,6 +19,8 @@ class TransactionsPagingSource(
         const val PAGE_SIZE = 20
     }
 
+    // Paging library requires catching all exceptions to return LoadResult.Error
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> =
         try {
             val page = params.key ?: 0

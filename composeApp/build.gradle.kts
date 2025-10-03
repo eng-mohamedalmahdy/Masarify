@@ -14,9 +14,8 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     id("dev.icerock.mobile.multiplatform-resources")
 
-    // Code Quality
+    // Code Quality - ktlint only (detekt is applied globally from root)
     alias(libs.plugins.ktlint)
-    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -217,18 +216,6 @@ ktlint {
     }
 }
 
-// DetektKT Configuration
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config.setFrom("$rootDir/detekt.yml")
-    baseline = file("$rootDir/detekt-baseline.xml")
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
-}
-
 // Disable KtLint for generated files by disabling specific problematic tasks
 afterEvaluate {
     // Disable source sets that contain generated code
@@ -254,4 +241,11 @@ afterEvaluate {
             }
         }
     }
+}
+
+
+// Make all run tasks depend on code quality checks
+tasks.matching { it.name.contains("run", true) }.configureEach {
+    dependsOn(":detektAll")
+    mustRunAfter("ktlintCheck")
 }

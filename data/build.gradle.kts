@@ -10,9 +10,8 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlinSerialization)
 
-    // Code Quality
+    // Code Quality - ktlint only (detekt is applied globally from root)
     alias(libs.plugins.ktlint)
-    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -200,14 +199,4 @@ tasks.named<Copy>("wasmJsProcessResources") {
 // KtLint Configuration (inherits from root)
 // Global configuration is applied via subprojects block in root build.gradle.kts
 
-// DetektKT Configuration
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config.setFrom("$rootDir/detekt.yml")
-    baseline = file("$rootDir/detekt-baseline.xml")
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
-}
+// Detekt configuration is managed in root build.gradle.kts via subprojects block

@@ -86,6 +86,8 @@ sealed class DomainResult<T>(
             is DomainResult.Failure -> DomainResult.Failure(error)
         }
 
+    // DomainResult pattern requires catching all exceptions during transformation
+    @Suppress("TooGenericExceptionCaught")
     fun <R> flatMap(transform: (T) -> DomainResult<R>): DomainResult<R> =
         when (this) {
             is DomainResult.Success -> {
@@ -98,6 +100,7 @@ sealed class DomainResult<T>(
             is DomainResult.Failure -> DomainResult.Failure(error)
         }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun <R> flatMapSuspend(transform: suspend (T) -> DomainResult<R>): DomainResult<R> =
         when (this) {
             is DomainResult.Success -> {

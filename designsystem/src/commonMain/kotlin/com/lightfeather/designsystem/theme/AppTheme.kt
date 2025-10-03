@@ -282,6 +282,7 @@ object AppTheme {
 
     object dimens {
         // Core Spacing - Base design tokens
+        val none = 0.dp
         val hairline = 1.dp
         val extraSmall = 2.dp
         val small = 4.dp

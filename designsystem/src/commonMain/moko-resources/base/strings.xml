@@ -79,5 +79,6 @@
     <string name="rate_us_description">Rate the app in your app store</string>
     <string name="rate_us_content">Love using Masarify? Please rate us in the app store!</string>
     <string name="coming_soon">Coming Soon</string>
+    <string name="delete_category">Delete Category</string>
 
 </resources>

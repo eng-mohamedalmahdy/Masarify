@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import lightfeather.masarify.database.V_categories
 
+// DomainResult pattern requires catching all exceptions for proper error handling
+@Suppress("TooGenericExceptionCaught")
 class
 CategoryRepositoryImpl(
     private val database: SharedDatabase,
@@ -66,7 +68,7 @@ CategoryRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error deleting category"))
         }
 
-    override  fun getAllCategories(): DomainResult<Flow<List<Category>>> =
+    override fun getAllCategories(): DomainResult<Flow<List<Category>>> =
         try {
             val categoriesFlow: Flow<List<Category>> =
                 flow {

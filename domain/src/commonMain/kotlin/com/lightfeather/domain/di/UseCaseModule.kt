@@ -6,6 +6,7 @@ import com.lightfeather.domain.usecase.CreateCategory
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.CreateTransaction
 import com.lightfeather.domain.usecase.DeleteAccount
+import com.lightfeather.domain.usecase.DeleteCategory
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
@@ -30,6 +31,7 @@ import com.lightfeather.domain.usecase.SaveUserColor
 import com.lightfeather.domain.usecase.SetLanguage
 import com.lightfeather.domain.usecase.ToggleDarkMode
 import com.lightfeather.domain.usecase.UpdateAccount
+import com.lightfeather.domain.usecase.UpdateCategory
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.domain.usecase.UpsertUserData
@@ -119,4 +121,7 @@ val useCaseModule =
         factory { ToggleDarkMode(get()) }
 
         factory { GetUserDarkMode(get()) }
+
+        factory { DeleteCategory(get()) }
+        factory { UpdateCategory(get()) }
     }

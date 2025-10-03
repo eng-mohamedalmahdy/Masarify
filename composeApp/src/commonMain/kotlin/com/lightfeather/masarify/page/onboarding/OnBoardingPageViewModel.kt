@@ -48,17 +48,11 @@ class OnBoardingPageViewModel(
 
             OnBoardingPageIntent.Submit -> {
                 val stateSnapshot = _state.value
-                if (stateSnapshot.userNameError != null) {
-                    SnackbarService.sendErrorMessage(stateSnapshot.userNameError)
-                    return
-                } else if (stateSnapshot.accountNameError != null) {
-                    SnackbarService.sendErrorMessage(stateSnapshot.accountNameError)
-                    return
-                } else if (stateSnapshot.currencyNameError != null) {
-                    SnackbarService.sendErrorMessage(stateSnapshot.currencyNameError)
-                    return
-                } else if (stateSnapshot.balanceError != null) {
-                    SnackbarService.sendErrorMessage(stateSnapshot.balanceError)
+                val validationError = stateSnapshot.userNameError ?: stateSnapshot.accountNameError
+                    ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
+
+                if (validationError != null) {
+                    SnackbarService.sendErrorMessage(validationError)
                     return
                 }
 

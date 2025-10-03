@@ -124,4 +124,27 @@
     <string name="delete_category_dialog_description">Are you sure you want to delete this category? This action cannot be undone.</string>
     <string name="delete_category_dialog_description_with_name">Are you sure you want to delete "%s" category? This action cannot be undone.</string>
 
+    <!-- Add/Edit Category Form -->
+    <string name="category_name">Category Name</string>
+    <string name="enter_category_name">Enter category name</string>
+    <string name="enter_category_description">Enter category description</string>
+    <string name="description_optional">Description (Optional)</string>
+    <string name="color">Color</string>
+    <string name="icon">Icon</string>
+    <string name="select_color">Select color</string>
+    <string name="preview">Preview</string>
+    <string name="save">Save</string>
+    <string name="category_name_required">Category name is required</string>
+    <string name="category_icon_required">Category icon is required</string>
+    <string name="failed_to_load_icons">Failed to load icons</string>
+    <string name="no_icons_available">No Icons Available</string>
+    <string name="no_icons_message">Unable to load category icons at this time</string>
+    <string name="category_created_success">Category created successfully</string>
+    <string name="category_updated_success">Category updated successfully</string>
+    <string name="custom_icon_url">Custom Icon URL (Optional)</string>
+    <string name="enter_custom_icon_url">Enter custom icon URL</string>
+    <string name="recent_colors">Recent Colors</string>
+    <string name="no_recent_colors">No recent colors yet</string>
+    <string name="tap_color_to_select">Tap a color to select</string>
+
 </resources>

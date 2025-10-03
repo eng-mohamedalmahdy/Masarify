@@ -730,6 +730,7 @@ private fun SinWaveColorLayout(
             FlowRow(
                 modifier = Modifier.fillMaxWidth().padding(bottom = AppTheme.dimens.small),
                 horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
+                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.default),
             ) {
                 colors.forEach { colorString ->
                     val color = parseColor(colorString)

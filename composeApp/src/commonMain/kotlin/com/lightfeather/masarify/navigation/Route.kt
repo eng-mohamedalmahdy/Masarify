@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 abstract class Route {
-    abstract val route: String
+    abstract val routeName: String
 }

@@ -33,9 +33,15 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 actual class TransactionsPanePageViewModel(
+    // Reserved for future pagination implementation
+    @Suppress("UnusedPrivateProperty")
     getAllTransactionsPaged: GetAllTransactionsPaged,
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
+    // Reserved for future pagination implementation
+    @Suppress("UnusedPrivateProperty")
     getTransactionCount: GetTransactionCount,
+    // Reserved for future pagination implementation
+    @Suppress("UnusedPrivateProperty")
     private val transactionsPagingSourceFactory: () -> TransactionsPagingSource,
     private val sharedDatabase: com.lightfeather.data.local.database.drivers.SharedDatabase,
 ) : ViewModel() {
@@ -96,7 +102,7 @@ actual class TransactionsPanePageViewModel(
     }
 
     fun onTransactionClick(transactionId: String) {
-        // Handle transaction selection
+     transactionId
     }
 
     actual fun updateFilter(filter: UiTransactionFilter) {

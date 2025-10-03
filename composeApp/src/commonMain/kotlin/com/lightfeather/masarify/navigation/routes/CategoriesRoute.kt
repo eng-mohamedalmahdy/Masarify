@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object CategoriesRoute : Route() {
-    override val route: String = "com.lightfeather.masarify.navigation.routes.CategoriesRoute"
+    override val routeName: String = "com.lightfeather.masarify.navigation.routes.CategoriesRoute"
 }
