@@ -1,7 +1,5 @@
 package com.lightfeather.masarify.page.bankaccounts
 
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
@@ -64,15 +62,10 @@ class BankAccountsPageViewModel(
         )
     internal val state: StateFlow<BankAccountsPageState> = _state
 
-    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     internal fun onIntent(intent: BankAccountsPageIntent) {
         when (intent) {
             is BankAccountsPageIntent.DeleteBankAccount -> {
                 viewModelScope.launch {
-                    // Clear any existing navigation in the detail pane first
-                    while (intent.navigator.canNavigateBack()) {
-                        intent.navigator.navigateBack()
-                    }
                     // Clear selected account to show empty state
                     _state.value = _state.value.copy(selectedAccount = null)
                     // Navigate to delete dialog (main navigation, not detail pane)
@@ -95,23 +88,19 @@ class BankAccountsPageViewModel(
             }
 
             is BankAccountsPageIntent.ClearNavigation -> {
-                viewModelScope.launch {
-                    while (intent.navigator.canNavigateBack()) {
-                        intent.navigator.navigateBack()
-                    }
-                    _state.value = _state.value.copy(selectedAccount = null)
-                }
+                _state.value = _state.value.copy(selectedAccount = null)
             }
 
-            is BankAccountsPageIntent.NavigationIntent -> {
-                viewModelScope.launch {
-                    while (intent.navigator.canNavigateBack()) {
-                        intent.navigator.navigateBack()
-                    }
-                    _state.value = _state.value.copy(selectedAccount = null)
-                    intent.navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, intent)
-                    _state.value = _state.value.copy(selectedAccount = intent.bankAccount)
-                }
+            is BankAccountsPageIntent.NavigationIntent.AddBankAccount -> {
+                _state.value = _state.value.copy(selectedAccount = null)
+            }
+
+            is BankAccountsPageIntent.NavigationIntent.UpdateBankAccount -> {
+                _state.value = _state.value.copy(selectedAccount = intent.account)
+            }
+
+            is BankAccountsPageIntent.NavigationIntent.SelectAccount -> {
+                _state.value = _state.value.copy(selectedAccount = intent.account)
             }
         }
     }

@@ -68,10 +68,11 @@ class AddEditCategoryPageViewModel(
             }
 
             is AddEditCategoryPageIntent.SelectIcon -> {
-                _state.value = _state.value.copy(
-                    selectedIcon = intent.icon,
-                    customIconUrl = "",
-                )
+                _state.value =
+                    _state.value.copy(
+                        selectedIcon = intent.icon,
+                        customIconUrl = "",
+                    )
             }
 
             is AddEditCategoryPageIntent.ToggleColorPicker -> {
@@ -137,8 +138,9 @@ class AddEditCategoryPageViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
-            val iconValue = currentState.customIconUrl.takeIf { it.isNotBlank() }
-                ?: currentState.selectedIcon.toString()
+            val iconValue =
+                currentState.customIconUrl.takeIf { it.isNotBlank() }
+                    ?: currentState.selectedIcon.toString()
 
             val category =
                 Category(

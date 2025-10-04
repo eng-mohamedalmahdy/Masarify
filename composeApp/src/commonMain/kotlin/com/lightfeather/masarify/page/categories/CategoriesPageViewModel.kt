@@ -1,10 +1,7 @@
 package com.lightfeather.masarify.page.categories
 
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.masarify.mappers.toCategory
 import com.lightfeather.masarify.mappers.toUiCategory
@@ -33,7 +30,6 @@ class CategoriesPageViewModel(
         )
     internal val state: StateFlow<CategoriesPageState> = _state
 
-    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     internal fun onIntent(intent: CategoriesPageIntent) {
         when (intent) {
             is CategoriesPageIntent.LoadData -> {
@@ -47,25 +43,19 @@ class CategoriesPageViewModel(
             }
 
             is CategoriesPageIntent.ClearNavigation -> {
-                viewModelScope.launch {
-                    Napier.d("ClearNavigation called", tag = "CategoriesPage")
-                    while (intent.navigator.canNavigateBack()) {
-                        intent.navigator.navigateBack()
-                    }
-                    _state.value = _state.value.copy(selectedCategory = null)
-                    Napier.d("After clear: selectedCategory = null", tag = "CategoriesPage")
-                }
+                Napier.d("ClearNavigation called", tag = "CategoriesPage")
+                _state.value = _state.value.copy(selectedCategory = null)
+                Napier.d("After clear: selectedCategory = null", tag = "CategoriesPage")
             }
 
-            is CategoriesPageIntent.NavigationIntent -> {
-                viewModelScope.launch {
-                    while (intent.navigator.canNavigateBack()) {
-                        intent.navigator.navigateBack()
-                    }
-                    _state.value = _state.value.copy(selectedCategory = UiCategory.empty)
-                    intent.navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, intent)
-                    _state.value = _state.value.copy(selectedCategory = intent.category)
-                }
+            is CategoriesPageIntent.NavigationIntent.AddCategory -> {
+                Napier.d("AddCategory called", tag = "CategoriesPage")
+                _state.value = _state.value.copy(selectedCategory = intent.category)
+            }
+
+            is CategoriesPageIntent.NavigationIntent.UpdateCategory -> {
+                Napier.d("UpdateCategory called for ${intent.selectedCategory.name}", tag = "CategoriesPage")
+                _state.value = _state.value.copy(selectedCategory = intent.selectedCategory)
             }
         }
     }

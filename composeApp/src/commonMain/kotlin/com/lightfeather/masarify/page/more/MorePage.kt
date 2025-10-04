@@ -46,10 +46,21 @@ import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.masarify.app.LocalAppMainViewModel
 import com.lightfeather.masarify.page.categories.CategoriesPage
+import com.lightfeather.masarify.page.currencies.CurrenciesPage
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+
+internal enum class MoreNavDestination(
+    val id: String,
+) {
+    CURRENCY_MANAGEMENT("currency_management"),
+    CATEGORY_MANAGEMENT("category_management"),
+    PRIVACY_POLICY("privacy_policy"),
+    CONTACT_US("contact_us"),
+    RATE_US("rate_us"),
+}
 
 @Composable
 fun MorePage(viewModel: MorePageViewModel = koinViewModel()) {
@@ -71,12 +82,13 @@ internal fun MorePageContent(
     onIntent: (MorePageIntent) -> Unit,
 ) {
     val appMainViewModel = LocalAppMainViewModel.current
-    val navigator = rememberListDetailPaneScaffoldNavigator<MorePageIntent.NavigationIntent>()
+    val navigator = rememberListDetailPaneScaffoldNavigator<String>()
     val coroutineScope = rememberCoroutineScope()
 
     BackHandler(navigator.canNavigateBack()) {
         coroutineScope.launch {
-            onIntent(MorePageIntent.ClearNavigation(navigator))
+            navigator.navigateBack()
+            onIntent(MorePageIntent.ClearNavigation)
         }
     }
 
@@ -96,27 +108,47 @@ internal fun MorePageContent(
                 },
                 onCurrencyManagementClick = {
                     coroutineScope.launch {
-                        onIntent(MorePageIntent.NavigationIntent.SelectCurrencyManagementDetail(navigator))
+                        onIntent(MorePageIntent.NavigationIntent.SelectCurrencyManagementDetail)
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            MoreNavDestination.CURRENCY_MANAGEMENT.id,
+                        )
                     }
                 },
                 onCategoryManagementClick = {
                     coroutineScope.launch {
-                        onIntent(MorePageIntent.NavigationIntent.SelectCategoryManagementDetail(navigator))
+                        onIntent(MorePageIntent.NavigationIntent.SelectCategoryManagementDetail)
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            MoreNavDestination.CATEGORY_MANAGEMENT.id,
+                        )
                     }
                 },
                 onPrivacyPolicyClick = {
                     coroutineScope.launch {
-                        onIntent(MorePageIntent.NavigationIntent.SelectPrivacyPolicyDetail(navigator))
+                        onIntent(MorePageIntent.NavigationIntent.SelectPrivacyPolicyDetail)
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            MoreNavDestination.PRIVACY_POLICY.id,
+                        )
                     }
                 },
                 onContactUsClick = {
                     coroutineScope.launch {
-                        onIntent(MorePageIntent.NavigationIntent.SelectContactUsDetail(navigator))
+                        onIntent(MorePageIntent.NavigationIntent.SelectContactUsDetail)
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            MoreNavDestination.CONTACT_US.id,
+                        )
                     }
                 },
                 onRateUsClick = {
                     coroutineScope.launch {
-                        onIntent(MorePageIntent.NavigationIntent.SelectRateUsDetail(navigator))
+                        onIntent(MorePageIntent.NavigationIntent.SelectRateUsDetail)
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            MoreNavDestination.RATE_US.id,
+                        )
                     }
                 },
             )
@@ -124,42 +156,42 @@ internal fun MorePageContent(
         detailPane = {
             val currentDestination = navigator.currentDestination?.contentKey
             when (currentDestination) {
-                is MorePageIntent.NavigationIntent.SelectCurrencyManagementDetail -> {
+                MoreNavDestination.CURRENCY_MANAGEMENT.id -> {
                     key("currency_detail") {
                         CurrencyManagementDetailPane()
                     }
                 }
 
-                is MorePageIntent.NavigationIntent.SelectPrivacyPolicyDetail -> {
+                MoreNavDestination.PRIVACY_POLICY.id -> {
                     key("privacy_detail") {
                         PrivacyPolicyDetailPane()
                     }
                 }
 
-                is MorePageIntent.NavigationIntent.SelectContactUsDetail -> {
+                MoreNavDestination.CONTACT_US.id -> {
                     key("contact_detail") {
                         ContactUsDetailPane()
                     }
                 }
 
-                is MorePageIntent.NavigationIntent.SelectRateUsDetail -> {
+                MoreNavDestination.RATE_US.id -> {
                     key("rate_detail") {
                         RateUsDetailPane()
                     }
                 }
 
-                is MorePageIntent.NavigationIntent.SelectCategoryManagementDetail -> {
+                MoreNavDestination.CATEGORY_MANAGEMENT.id -> {
                     key("category_detail") {
                         CategoryManagementDetailPane()
                     }
                 }
 
-                null -> {
+                else -> {
                     EmptyState(
                         title = stringResource(MR.strings.select_option),
                         message = stringResource(MR.strings.select_option_message),
                         icon = Icons.Outlined.Settings,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
             }
@@ -312,19 +344,9 @@ private fun SectionHeader(text: String) {
     )
 }
 
-// Detail Pane Composables
 @Composable
 private fun CurrencyManagementDetailPane() {
-    DetailPaneWrapper(
-        title = stringResource(MR.strings.currency_management),
-    ) {
-        EmptyState(
-            title = stringResource(MR.strings.coming_soon),
-            message = stringResource(MR.strings.currency_management_coming_soon),
-            icon = Icons.Default.CurrencyExchange,
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
+    CurrenciesPage()
 }
 
 @Composable
@@ -336,7 +358,7 @@ private fun PrivacyPolicyDetailPane() {
             title = stringResource(MR.strings.privacy_policy),
             message = stringResource(MR.strings.privacy_policy_content),
             icon = Icons.Default.PrivacyTip,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

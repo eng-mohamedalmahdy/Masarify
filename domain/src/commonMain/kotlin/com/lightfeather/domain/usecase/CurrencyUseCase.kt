@@ -15,13 +15,17 @@ class CreateCurrency(
         currencyRepository.createCurrency(currency).mapSuspend { currencyId ->
             currencyRepository.getAllCurrencies().foldSuspend(
                 onSuccess = { currencies ->
-                    currencies.first().forEach {
+                    currencies.first().dropLast(1).forEach {
+                        print("Currencies: $it")
                         exchangeRateRepository.createCurrencyExchangeRate(
                             CurrencyExchangeRate(
                                 it,
                                 currency.copy(id = currencyId),
                                 1.0,
                             ),
+                        ).fold(
+                            onSuccess = { println("Exchange rate created: $it") },
+                            onFailure = { println("Exchange rate creation failed: $it") }
                         )
                         exchangeRateRepository.createCurrencyExchangeRate(
                             CurrencyExchangeRate(
@@ -29,6 +33,9 @@ class CreateCurrency(
                                 it,
                                 1.0,
                             ),
+                        ).fold(
+                            onSuccess = { println("Exchange rate rev created: $it") },
+                            onFailure = { println("Exchange rate rev creation failed: $it") }
                         )
                     }
                 },

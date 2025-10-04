@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
@@ -42,7 +43,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.EmptyState
@@ -55,6 +55,7 @@ import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.uiTransactionFilter
 import com.lightfeather.designsystem.modifier.applyIf
 import com.lightfeather.designsystem.shape.inWardTriangleCutShape
+import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.page.createbankaccount.CreateBankAccountPage
@@ -67,6 +68,23 @@ import masarify.designsystem.generated.resources.Res
 import masarify.designsystem.generated.resources.bank
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+
+internal enum class BankAccountNavDestination(
+    val id: String?,
+) {
+    ADD_ACCOUNT(null),
+    UPDATE_ACCOUNT(null),
+    VIEW_ACCOUNT(null),
+    ;
+
+    companion object {
+        const val ADD_ACCOUNT_KEY = "add_account"
+
+        fun updateAccount(accountId: String) = "update_account_$accountId"
+
+        fun viewAccount(accountId: String) = "view_account_$accountId"
+    }
+}
 
 @Composable
 fun BankAccountsPage(viewModel: BankAccountsPageViewModel = koinViewModel()) {
@@ -81,13 +99,15 @@ fun BankAccountsPage(viewModel: BankAccountsPageViewModel = koinViewModel()) {
     )
 }
 
+// Composable UI function with navigation and detail pane management - length is acceptable for UI composition
+@Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 internal fun BankAccountsPageContent(
     state: BankAccountsPageState,
     onIntent: (BankAccountsPageIntent) -> Unit,
 ) {
-    val navigator = rememberListDetailPaneScaffoldNavigator<BankAccountsPageIntent.NavigationIntent>()
+    val navigator = rememberListDetailPaneScaffoldNavigator<String>()
     val coroutineScope = rememberCoroutineScope()
     val accounts by state.bankAccounts.collectAsState(emptyList())
     val userAccountsCurrencies by state.userAccountsCurrencies.collectAsState(emptyList())
@@ -103,7 +123,8 @@ internal fun BankAccountsPageContent(
     }
     BackHandler(navigator.canNavigateBack()) {
         coroutineScope.launch {
-            onIntent(BankAccountsPageIntent.ClearNavigation(navigator))
+            navigator.navigateBack()
+            onIntent(BankAccountsPageIntent.ClearNavigation)
         }
     }
     ListDetailPaneScaffold(
@@ -117,18 +138,34 @@ internal fun BankAccountsPageContent(
                 defaultCurrency = defaultCurrency,
                 selectedCurrency = state.selectedCurrency,
                 selectedAccount = state.selectedAccount,
-                onAddAccount = { onIntent(BankAccountsPageIntent.NavigationIntent.AddBankAccount(navigator)) },
+                onAddAccount = {
+                    onIntent(BankAccountsPageIntent.NavigationIntent.AddBankAccount)
+                    coroutineScope.launch {
+                        navigator.navigateTo(
+                            ListDetailPaneScaffoldRole.Detail,
+                            BankAccountNavDestination.ADD_ACCOUNT_KEY,
+                        )
+                    }
+                },
                 onAccountClick = {
                     coroutineScope.launch {
-                        onIntent(BankAccountsPageIntent.NavigationIntent.SelectAccount(it, navigator))
+                        onIntent(BankAccountsPageIntent.NavigationIntent.SelectAccount(it))
+                        navigator.navigateTo(
+                            ListDetailPaneScaffoldRole.Detail,
+                            BankAccountNavDestination.viewAccount(it.id),
+                        )
                     }
                 },
                 onUpdateAccount = {
-                    onIntent(
-                        BankAccountsPageIntent.NavigationIntent.UpdateBankAccount(it, navigator),
-                    )
+                    onIntent(BankAccountsPageIntent.NavigationIntent.UpdateBankAccount(it))
+                    coroutineScope.launch {
+                        navigator.navigateTo(
+                            ListDetailPaneScaffoldRole.Detail,
+                            BankAccountNavDestination.updateAccount(it.id),
+                        )
+                    }
                 },
-                onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it, navigator)) },
+                onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it)) },
                 onCreateTransactionFromAccount = { onIntent(BankAccountsPageIntent.CreateTransactionInAccount(it)) },
                 onTransferFromAccount = { onIntent(BankAccountsPageIntent.TransferFromAccount(it)) },
                 onCurrencyClick = { onIntent(BankAccountsPageIntent.SelectCurrency(it)) },
@@ -141,61 +178,36 @@ internal fun BankAccountsPageContent(
                     "selectedAccount: ${state.selectedAccount?.name}",
                 tag = "BankAccountsPage",
             )
-            if (state.selectedAccount == null && navigator.currentDestination?.contentKey == null) {
-                EmptyState(
-                    title = stringResource(MR.strings.no_account_selected_title),
-                    message = stringResource(MR.strings.no_account_selected_message),
-                    icon = Icons.Outlined.AccountBalance,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
-                when (val intent = currentDestination) {
-                    is BankAccountsPageIntent.NavigationIntent.AddBankAccount -> {
-                        key("add_account") {
-                            CreateBankAccountPage(
-                                UiBankAccount.empty,
-                                onBack = { onIntent(BankAccountsPageIntent.ClearNavigation(navigator)) },
-                            )
-                        }
-                    }
-
-                    is BankAccountsPageIntent.NavigationIntent.UpdateBankAccount -> {
-                        key("update_account_${intent.account.id}") {
-                            CreateBankAccountPage(
-                                intent.account,
-                                onBack = { onIntent(BankAccountsPageIntent.ClearNavigation(navigator)) },
-                            )
-                        }
-                    }
-
-                    is BankAccountsPageIntent.NavigationIntent.SelectAccount -> {
-                        TransactionsPaneAsDetail(
-                            intent.bankAccount!!.name,
-                            paneFilter,
-                            onBackClick = {
+            when {
+                currentDestination == BankAccountNavDestination.ADD_ACCOUNT_KEY -> {
+                    key("add_account") {
+                        CreateBankAccountPage(
+                            UiBankAccount.empty,
+                            onBack = {
                                 coroutineScope.launch {
-                                    onIntent(BankAccountsPageIntent.ClearNavigation(navigator))
+                                    navigator.navigateBack()
+                                    onIntent(BankAccountsPageIntent.ClearNavigation)
                                 }
-                            },
-                            supportingContent = {
-                                AppImage(
-                                    intent.bankAccount.image,
-                                    contentDescription = intent.bankAccount.name,
-                                    modifier =
-                                        Modifier
-                                            .padding(AppTheme.dimens.spacing.padding.tiny)
-                                            .background(
-                                                MaterialTheme.colorScheme.surfaceVariant,
-                                                MaterialTheme.shapes.extraSmall,
-                                            ).size(AppTheme.dimens.icon.size.medium),
-                                    placeholder = Res.drawable.bank,
-                                    errorPlaceholder = Res.drawable.bank,
-                                )
                             },
                         )
                     }
+                }
 
-                    null -> {
+                currentDestination?.startsWith("update_account_") == true -> {
+                    val account = state.selectedAccount
+                    if (account != null) {
+                        key("update_account_${account.id}") {
+                            CreateBankAccountPage(
+                                account,
+                                onBack = {
+                                    coroutineScope.launch {
+                                        navigator.navigateBack()
+                                        onIntent(BankAccountsPageIntent.ClearNavigation)
+                                    }
+                                },
+                            )
+                        }
+                    } else {
                         EmptyState(
                             title = stringResource(MR.strings.no_account_selected_title),
                             message = stringResource(MR.strings.no_account_selected_message),
@@ -203,6 +215,55 @@ internal fun BankAccountsPageContent(
                             modifier = Modifier.fillMaxSize(),
                         )
                     }
+                }
+
+                currentDestination?.startsWith("view_account_") == true -> {
+                    val account = state.selectedAccount
+                    if (account != null) {
+                        key("view_account_${account.id}") {
+                            TransactionsPaneAsDetail(
+                                account.name,
+                                paneFilter,
+                                onBackClick = {
+                                    coroutineScope.launch {
+                                        navigator.navigateBack()
+                                        onIntent(BankAccountsPageIntent.ClearNavigation)
+                                    }
+                                },
+                                supportingContent = {
+                                    AppImage(
+                                        account.image,
+                                        contentDescription = account.name,
+                                        modifier =
+                                            Modifier
+                                                .padding(AppTheme.dimens.spacing.padding.tiny)
+                                                .background(
+                                                    MaterialTheme.colorScheme.surfaceVariant,
+                                                    MaterialTheme.shapes.extraSmall,
+                                                ).size(AppTheme.dimens.icon.size.medium),
+                                        placeholder = Res.drawable.bank,
+                                        errorPlaceholder = Res.drawable.bank,
+                                    )
+                                },
+                            )
+                        }
+                    } else {
+                        EmptyState(
+                            title = stringResource(MR.strings.no_account_selected_title),
+                            message = stringResource(MR.strings.no_account_selected_message),
+                            icon = Icons.Outlined.AccountBalance,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                }
+
+                else -> {
+                    EmptyState(
+                        title = stringResource(MR.strings.no_account_selected_title),
+                        message = stringResource(MR.strings.no_account_selected_message),
+                        icon = Icons.Outlined.AccountBalance,
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
             }
         },

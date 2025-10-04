@@ -7,6 +7,7 @@ import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.CreateTransaction
 import com.lightfeather.domain.usecase.DeleteAccount
 import com.lightfeather.domain.usecase.DeleteCategory
+import com.lightfeather.domain.usecase.DeleteCurrency
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
@@ -16,6 +17,7 @@ import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.domain.usecase.GetAllTransactions
 import com.lightfeather.domain.usecase.GetAllTransactionsOfTypePaged
 import com.lightfeather.domain.usecase.GetAllTransactionsPaged
+import com.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
 import com.lightfeather.domain.usecase.GetFilteredTransactionCount
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import com.lightfeather.domain.usecase.GetTotalExpenseOfCurrency
@@ -32,6 +34,7 @@ import com.lightfeather.domain.usecase.SetLanguage
 import com.lightfeather.domain.usecase.ToggleDarkMode
 import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.domain.usecase.UpdateCategory
+import com.lightfeather.domain.usecase.UpdateCurrency
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.domain.usecase.UpsertUserData
@@ -124,4 +127,7 @@ val useCaseModule =
 
         factory { DeleteCategory(get()) }
         factory { UpdateCategory(get()) }
+        factory { UpdateCurrency(get()) }
+        factory { DeleteCurrency(get()) }
+        factory { GetExchangeRatesOfCurrency(get()) }
     }

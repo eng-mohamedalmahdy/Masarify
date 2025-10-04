@@ -109,6 +109,7 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                         AppTopLevelRoutes.Accounts,
                         AppTopLevelRoutes.More,
                     )
+
                 // Reserved for future RTL support with different route ordering
                 @Suppress("UnusedPrivateProperty")
                 val arabicTopLevelRoutes =

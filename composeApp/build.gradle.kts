@@ -243,7 +243,6 @@ afterEvaluate {
     }
 }
 
-
 // Make all run tasks depend on code quality checks
 tasks.matching { it.name.contains("run", true) }.configureEach {
     dependsOn(":detektAll")

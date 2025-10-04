@@ -147,4 +147,46 @@
     <string name="no_recent_colors">No recent colors yet</string>
     <string name="tap_color_to_select">Tap a color to select</string>
 
+    <!-- Currencies Page -->
+    <string name="currencies">Currencies</string>
+    <string name="currencies_subtitle">Manage currencies and exchange rates</string>
+    <string name="add_currency">Add Currency</string>
+    <string name="edit_currency">Edit Currency</string>
+    <string name="base_currency">Base Currency</string>
+    <string name="select_base_currency">Select base currency</string>
+    <string name="exchange_rates">Exchange Rates</string>
+    <string name="edit_rates">Edit Rates</string>
+    <string name="save_rates">Save Rates</string>
+    <string name="cancel_edit">Cancel</string>
+    <string name="no_currencies_title">No Currencies Yet</string>
+    <string name="no_currencies_message">Start by adding your first currency</string>
+    <string name="no_exchange_rates_title">No Exchange Rates</string>
+    <string name="no_exchange_rates_message">Select a base currency to view exchange rates</string>
+    <string name="update_inverse_rate">Also update inverse rate?</string>
+
+    <!-- Currency Dialog -->
+    <string name="add_currency_dialog_title">Add Currency</string>
+    <string name="edit_currency_dialog_title">Edit Currency</string>
+    <string name="currency_name">Currency Name</string>
+    <string name="enter_currency_name">Enter currency name</string>
+    <string name="currency_symbol">Currency Symbol</string>
+    <string name="enter_currency_symbol">Enter currency symbol</string>
+    <string name="currency_name_required">Currency name is required</string>
+    <string name="currency_symbol_required">Currency symbol is required</string>
+
+    <!-- Delete Currency Dialog -->
+    <string name="delete_currency_dialog_title">Delete Currency</string>
+    <string name="delete_currency_dialog_description">Are you sure you want to delete this currency? This action cannot be undone.</string>
+    <string name="delete_currency_dialog_description_with_name">Are you sure you want to delete "%s"? This action cannot be undone.</string>
+
+    <!-- Exchange Rate Messages -->
+    <string name="exchange_rates_updated">Exchange rates updated successfully</string>
+    <string name="exchange_rates_update_failed">Failed to update exchange rates</string>
+    <string name="currency_created_success">Currency created successfully</string>
+    <string name="currency_create_failed">Failed to create currency</string>
+    <string name="currency_updated_success">Currency updated successfully</string>
+    <string name="currency_update_failed">Failed to update currency</string>
+    <string name="currency_deleted_success">Currency deleted successfully</string>
+    <string name="currency_delete_failed">Failed to delete currency</string>
+
 </resources>

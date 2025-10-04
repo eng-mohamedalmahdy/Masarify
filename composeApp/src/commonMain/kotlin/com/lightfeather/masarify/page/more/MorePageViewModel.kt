@@ -1,7 +1,5 @@
 package com.lightfeather.masarify.page.more
 
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.designsystem.MR
@@ -20,7 +18,6 @@ class MorePageViewModel(
     private val _state = MutableStateFlow(MorePageState())
     internal val state: StateFlow<MorePageState> = _state
 
-    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     internal fun onIntent(intent: MorePageIntent) {
         when (intent) {
             is MorePageIntent.LoadData -> {
@@ -46,23 +43,27 @@ class MorePageViewModel(
             }
 
             is MorePageIntent.ClearNavigation -> {
-                viewModelScope.launch {
-                    while (intent.navigator.canNavigateBack()) {
-                        intent.navigator.navigateBack()
-                    }
-                    _state.value = _state.value.copy(selectedDetailItem = null)
-                }
+                _state.value = _state.value.copy(selectedDetailItem = null)
             }
 
-            is MorePageIntent.NavigationIntent -> {
-                viewModelScope.launch {
-                    while (intent.navigator.canNavigateBack()) {
-                        intent.navigator.navigateBack()
-                    }
-                    _state.value = _state.value.copy(selectedDetailItem = null)
-                    intent.navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, intent)
-                    _state.value = _state.value.copy(selectedDetailItem = intent.detailItem)
-                }
+            is MorePageIntent.NavigationIntent.SelectCurrencyManagementDetail -> {
+                _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.CurrencyManagement)
+            }
+
+            is MorePageIntent.NavigationIntent.SelectPrivacyPolicyDetail -> {
+                _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.PrivacyPolicy)
+            }
+
+            is MorePageIntent.NavigationIntent.SelectContactUsDetail -> {
+                _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.ContactUs)
+            }
+
+            is MorePageIntent.NavigationIntent.SelectRateUsDetail -> {
+                _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.RateUs)
+            }
+
+            is MorePageIntent.NavigationIntent.SelectCategoryManagementDetail -> {
+                _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.CategoryManagement)
             }
         }
     }

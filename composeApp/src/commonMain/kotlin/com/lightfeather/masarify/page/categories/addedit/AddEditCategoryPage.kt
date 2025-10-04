@@ -79,7 +79,7 @@ internal fun AddEditCategoryPageContent(
             modifier
                 .fillMaxSize()
                 .padding(AppTheme.dimens.spacing.padding.medium),
-        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.tiny)
+        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.tiny),
     ) {
         // Header
         Text(
@@ -231,8 +231,9 @@ private fun ColorPickerWithIcons(
                             shape = AppTheme.shapes.small,
                             colors =
                                 CardDefaults.cardColors(
-                                    containerColor = runCatching { Color(state.selectedColor.toColorInt()) }
-                                        .getOrElse { MaterialTheme.colorScheme.primary },
+                                    containerColor =
+                                        runCatching { Color(state.selectedColor.toColorInt()) }
+                                            .getOrElse { MaterialTheme.colorScheme.primary },
                                 ),
                             modifier = Modifier.fillMaxSize(),
                         ) {}

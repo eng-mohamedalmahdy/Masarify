@@ -17,7 +17,6 @@ fun SplashPage(viewModel: SplashPageViewModel = koinViewModel()) {
 
 @Composable
 internal fun SplashPageContent() {
-
     Text("Splash Page")
 }
 

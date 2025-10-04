@@ -26,7 +26,7 @@ class CurrencyExchangeRateRepositoryImpl(
                     currencyExchangeRateQueries.transactionWithResult {
                         currencyExchangeRateQueries.insertExchangeRate(
                             from_currency_id = rate.from.id.toLong(),
-                            to_currency_id = rate.from.id.toLong(),
+                            to_currency_id = rate.to.id.toLong(),
                             rate = rate.rate,
                         )
                         currencyExchangeRateQueries.selectLastInsertedRowId().awaitAsOne()
@@ -35,7 +35,7 @@ class CurrencyExchangeRateRepositoryImpl(
             if (rowId > 0) {
                 rowId
             } else {
-               -1
+                -1
             }
         }
 
@@ -45,7 +45,7 @@ class CurrencyExchangeRateRepositoryImpl(
                 db.transaction {
                     val queries = db.currencyExchangeRateQueries
                     rates.flatten().forEach { rate ->
-                        queries.insertExchangeRate(
+                        queries.updateByFrom(
                             from_currency_id = rate.from.id.toLong(),
                             to_currency_id = rate.to.id.toLong(),
                             rate = rate.rate,

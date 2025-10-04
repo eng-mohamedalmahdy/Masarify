@@ -46,6 +46,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+internal enum class CategoryNavDestination(
+    val id: String?,
+) {
+    ADD_CATEGORY(null),
+    UPDATE_CATEGORY(null),
+    ;
+
+    companion object {
+        const val ADD_CATEGORY_KEY = "add_category"
+
+        fun updateCategory(categoryId: String) = "update_category_$categoryId"
+    }
+}
+
 @Composable
 fun CategoriesPage(viewModel: CategoriesPageViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
@@ -65,13 +79,14 @@ internal fun CategoriesPageContent(
     state: CategoriesPageState,
     onIntent: (CategoriesPageIntent) -> Unit,
 ) {
-    val navigator = rememberListDetailPaneScaffoldNavigator<CategoriesPageIntent.NavigationIntent>()
+    val navigator = rememberListDetailPaneScaffoldNavigator<String>()
     val coroutineScope = rememberCoroutineScope()
     val categories by state.categories.collectAsState(emptyList())
 
     BackHandler(navigator.canNavigateBack()) {
         coroutineScope.launch {
-            onIntent(CategoriesPageIntent.ClearNavigation(navigator))
+            navigator.navigateBack()
+            onIntent(CategoriesPageIntent.ClearNavigation)
         }
     }
 
@@ -84,12 +99,20 @@ internal fun CategoriesPageContent(
                 selectedCategory = state.selectedCategory,
                 onAddCategory = {
                     coroutineScope.launch {
-                        onIntent(CategoriesPageIntent.NavigationIntent.AddCategory(navigator))
+                        onIntent(CategoriesPageIntent.NavigationIntent.AddCategory())
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            CategoryNavDestination.ADD_CATEGORY_KEY,
+                        )
                     }
                 },
                 onCategoryClick = {
                     coroutineScope.launch {
-                        onIntent(CategoriesPageIntent.NavigationIntent.UpdateCategory(it, navigator))
+                        onIntent(CategoriesPageIntent.NavigationIntent.UpdateCategory(it))
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            CategoryNavDestination.updateCategory(it.id),
+                        )
                     }
                 },
                 onDeleteCategory = { onIntent(CategoriesPageIntent.DeleteCategory(it)) },
@@ -102,49 +125,58 @@ internal fun CategoriesPageContent(
                     "selectedCategory: ${state.selectedCategory?.name}",
                 tag = "CategoriesPage",
             )
-            if (state.selectedCategory == null || state.selectedCategory == UiCategory.empty) {
-                EmptyState(
-                    title = stringResource(MR.strings.no_category_selected_title),
-                    message = stringResource(MR.strings.no_category_selected_message),
-                    icon = Icons.Outlined.Category,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
-                when (val intent = currentDestination) {
-                    is CategoriesPageIntent.NavigationIntent.AddCategory -> {
-                        key("add_category") {
-                            val vm = koinViewModel<AddEditCategoryPageViewModel>(
+            when {
+                currentDestination == CategoryNavDestination.ADD_CATEGORY_KEY -> {
+                    key("add_category") {
+                        val vm =
+                            koinViewModel<AddEditCategoryPageViewModel>(
                                 key = "add_category",
                                 parameters = {
                                     parametersOf(
-                                        { onIntent(CategoriesPageIntent.ClearNavigation(navigator)) },
-                                        intent.category
+                                        {
+                                            coroutineScope.launch {
+                                                navigator.navigateBack()
+                                                onIntent(CategoriesPageIntent.ClearNavigation)
+                                            }
+                                        },
+                                        UiCategory.empty,
                                     )
-                                }
+                                },
                             )
+                        AddEditCategoryPane(vm)
+                    }
+                }
+
+                currentDestination?.startsWith("update_category_") == true -> {
+                    val category = state.selectedCategory
+                    if (category != null && category != UiCategory.empty) {
+                        Napier.d(
+                            "Rendering UpdateCategory - ${category.name} (${category.id})",
+                            tag = "CategoriesPage",
+                        )
+                        key("edit_category_${category.id}") {
+                            Napier.d(
+                                "Inside key() - form for: ${category.name} (${category.id})",
+                                tag = "CategoriesPage",
+                            )
+                            val vm =
+                                koinViewModel<AddEditCategoryPageViewModel>(
+                                    key = "edit_category_${category.id}",
+                                    parameters = {
+                                        parametersOf(
+                                            {
+                                                coroutineScope.launch {
+                                                    navigator.navigateBack()
+                                                    onIntent(CategoriesPageIntent.ClearNavigation)
+                                                }
+                                            },
+                                            category,
+                                        )
+                                    },
+                                )
                             AddEditCategoryPane(vm)
                         }
-                    }
-
-                    is CategoriesPageIntent.NavigationIntent.UpdateCategory -> {
-                        val cat = intent.selectedCategory
-                        Napier.d("Rendering UpdateCategory - ${cat.name} (${cat.id})", tag = "CategoriesPage")
-                        key("edit_category_${cat.id}") {
-                            Napier.d("Inside key() - form for: ${cat.name} (${cat.id})", tag = "CategoriesPage")
-                            val vm = koinViewModel<AddEditCategoryPageViewModel>(
-                                key = "edit_category_${cat.id}",
-                                parameters = {
-                                    parametersOf(
-                                        { onIntent(CategoriesPageIntent.ClearNavigation(navigator)) },
-                                        intent.category
-                                    )
-                                }
-                            )
-                            AddEditCategoryPane(vm)
-                        }
-                    }
-
-                    null -> {
+                    } else {
                         EmptyState(
                             title = stringResource(MR.strings.no_category_selected_title),
                             message = stringResource(MR.strings.no_category_selected_message),
@@ -152,6 +184,15 @@ internal fun CategoriesPageContent(
                             modifier = Modifier.fillMaxSize(),
                         )
                     }
+                }
+
+                else -> {
+                    EmptyState(
+                        title = stringResource(MR.strings.no_category_selected_title),
+                        message = stringResource(MR.strings.no_category_selected_message),
+                        icon = Icons.Outlined.Category,
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
             }
         },

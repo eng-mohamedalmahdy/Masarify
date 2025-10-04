@@ -13,6 +13,7 @@ import kotlin.time.ExperimentalTime
 object TransactionFilterExamples {
     // Sample data for demonstrations
     private val usdCurrency = Currency("USD", "$", 1)
+
     // Reserved for multi-currency filter examples
     @Suppress("UnusedPrivateProperty")
     private val eurCurrency = Currency("EUR", "€", 2)

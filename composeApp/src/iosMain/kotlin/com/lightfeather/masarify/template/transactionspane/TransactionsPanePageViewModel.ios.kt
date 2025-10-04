@@ -102,7 +102,7 @@ actual class TransactionsPanePageViewModel(
     }
 
     fun onTransactionClick(transactionId: String) {
-       transactionId
+        transactionId
     }
 
     actual fun updateFilter(filter: UiTransactionFilter) {

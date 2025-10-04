@@ -11,7 +11,7 @@ interface CategoryRepository {
 
     suspend fun deleteCategory(category: Category): DomainResult<Boolean>
 
-     fun getAllCategories(): DomainResult<Flow<List<Category>>>
+    fun getAllCategories(): DomainResult<Flow<List<Category>>>
 
     suspend fun getCategoryById(id: Int): DomainResult<Category>
 

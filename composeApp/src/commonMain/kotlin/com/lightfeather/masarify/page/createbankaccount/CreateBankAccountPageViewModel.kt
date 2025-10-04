@@ -175,11 +175,12 @@ class CreateBankAccountPageViewModel(
         }
     }
 
-    private fun validateAccountInput(state: CreateBankAccountPageState): StringResource? = when {
-        state.name.isBlank() -> MR.strings.account_name_required
-        state.currency == null -> MR.strings.account_currency_required
-        !state.inEditMode && state.initialBalance.isBlank() -> MR.strings.account_balance_required
-        !state.inEditMode && state.initialBalance.toDoubleOrNull() == null -> MR.strings.account_balance_invalid
-        else -> null
-    }
+    private fun validateAccountInput(state: CreateBankAccountPageState): StringResource? =
+        when {
+            state.name.isBlank() -> MR.strings.account_name_required
+            state.currency == null -> MR.strings.account_currency_required
+            !state.inEditMode && state.initialBalance.isBlank() -> MR.strings.account_balance_required
+            !state.inEditMode && state.initialBalance.toDoubleOrNull() == null -> MR.strings.account_balance_invalid
+            else -> null
+        }
 }
