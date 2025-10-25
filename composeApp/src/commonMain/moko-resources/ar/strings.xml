@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
+    <string name="app_name">مصاريفي</string>
+
     <string name="my_string">نص التوطين الافتراضي</string>
     <string name="onboarding_title">مرحباً بك في مصاريفي</string>
     <string name="app_slogan">تتبع بذكاء، أنفق بحكمة.</string>

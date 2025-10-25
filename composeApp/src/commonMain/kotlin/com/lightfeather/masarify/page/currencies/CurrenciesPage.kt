@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.CurrencyExchange
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,10 +39,12 @@ import com.lightfeather.designsystem.component.molecules.AppDropMenu
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.molecules.TextField
 import com.lightfeather.designsystem.component.molecules.button.FloatingActionButton
+import com.lightfeather.designsystem.component.molecules.dialog.AppAlertDialog
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiCurrencyExchangeRate
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.MR
+import com.lightfeather.masarify.MR.strings.currency
 import dev.icerock.moko.resources.compose.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -161,12 +164,16 @@ internal fun CurrenciesPageContent(
     }
 
     if (state.showDeleteDialog && state.deletingCurrency != null) {
-        DeleteCurrencyDialog(
-            currency = state.deletingCurrency,
-            onDismiss = { onIntent(CurrenciesPageIntent.HideDialogs) },
+        AppAlertDialog(
+            onDismissRequest = { onIntent(CurrenciesPageIntent.HideDialogs) },
+            title = stringResource(MR.strings.delete_currency_dialog_title),
+            message = stringResource(
+                MR.strings.delete_currency_dialog_description_with_name,
+                state.deletingCurrency.name
+            ),
             onConfirm = {
                 onIntent(CurrenciesPageIntent.DeleteCurrency(state.deletingCurrency))
-            },
+            }
         )
     }
 }
@@ -366,6 +373,9 @@ private fun ExchangeRateItem(
 
     Card(
         modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
     ) {
         if (isEditMode) {
             // Edit Mode - Vertical Layout

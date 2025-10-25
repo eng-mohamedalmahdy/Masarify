@@ -29,7 +29,7 @@ object NavTypeProvider {
             override fun get(
                 bundle: SavedState,
                 key: String,
-            ): T? = bundle.read { getString(key)?.let { Json.decodeFromString(serializer<T>(), it) } }
+            ): T? = bundle.read { getStringOrNull(key)?.let { Json.decodeFromString(serializer<T>(), it) } }
 
             override fun parseValue(value: String): T = Json.decodeFromString(serializer<T>(), UriCodec.decode(value))
 
