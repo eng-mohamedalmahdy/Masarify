@@ -6,6 +6,5 @@ import kotlinx.coroutines.flow.emptyFlow
 
 internal data class CategoriesPageState(
     val categories: Flow<List<UiCategory>> = emptyFlow(),
-    val selectedCategory: UiCategory? = null,
     val isLoading: Boolean = false,
 )

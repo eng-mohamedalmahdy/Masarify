@@ -167,13 +167,14 @@ internal fun CurrenciesPageContent(
         AppAlertDialog(
             onDismissRequest = { onIntent(CurrenciesPageIntent.HideDialogs) },
             title = stringResource(MR.strings.delete_currency_dialog_title),
-            message = stringResource(
-                MR.strings.delete_currency_dialog_description_with_name,
-                state.deletingCurrency.name
-            ),
+            message =
+                stringResource(
+                    MR.strings.delete_currency_dialog_description_with_name,
+                    state.deletingCurrency.name,
+                ),
             onConfirm = {
                 onIntent(CurrenciesPageIntent.DeleteCurrency(state.deletingCurrency))
-            }
+            },
         )
     }
 }
@@ -302,23 +303,28 @@ private fun ExchangeRatesSection(
                                         updatedRatesMap[inverseRateId] = inverseRate.copy(rate = 1.0 / newRate)
                                     } else {
                                         // Create inverse rate if it doesn't exist
-                                        updatedRatesMap[inverseRateId] = UiCurrencyExchangeRate(
-                                            id = inverseRateId,
-                                            fromCurrency = originalRate.toCurrency,
-                                            toCurrency = originalRate.fromCurrency,
-                                            rate = 1.0 / newRate
-                                        )
+                                        updatedRatesMap[inverseRateId] =
+                                            UiCurrencyExchangeRate(
+                                                id = inverseRateId,
+                                                fromCurrency = originalRate.toCurrency,
+                                                toCurrency = originalRate.fromCurrency,
+                                                rate = 1.0 / newRate,
+                                            )
                                     }
                                 }
                             }
                         }
 
                         // Build final list: edited rates + unchanged rates, excluding self-referential rates
-                        val finalRates = (exchangeRates.map { rate ->
-                            updatedRatesMap[rate.id] ?: rate
-                        } + updatedRatesMap.values.filter { newRate ->
-                            exchangeRates.none { it.id == newRate.id }
-                        }).filter { it.fromCurrency.id != it.toCurrency.id }
+                        val finalRates =
+                            (
+                                exchangeRates.map { rate ->
+                                    updatedRatesMap[rate.id] ?: rate
+                                } +
+                                    updatedRatesMap.values.filter { newRate ->
+                                        exchangeRates.none { it.id == newRate.id }
+                                    }
+                            ).filter { it.fromCurrency.id != it.toCurrency.id }
 
                         onSaveRates(finalRates)
                     }) {
@@ -373,9 +379,10 @@ private fun ExchangeRateItem(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
     ) {
         if (isEditMode) {
             // Edit Mode - Vertical Layout

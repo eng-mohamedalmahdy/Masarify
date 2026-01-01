@@ -20,29 +20,22 @@ import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.navigation3.runtime.NavKey
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.EmptyState
@@ -51,43 +44,30 @@ import com.lightfeather.designsystem.component.organisms.AccountsHeader
 import com.lightfeather.designsystem.component.organisms.listitem.BankAccountItem
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
-import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.uiTransactionFilter
 import com.lightfeather.designsystem.modifier.applyIf
 import com.lightfeather.designsystem.shape.inWardTriangleCutShape
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.getPlatform
+import com.lightfeather.masarify.navigation.Display
+import com.lightfeather.masarify.navigation.LocalNavigator
+import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.navigation.PreviewNavigator
 import com.lightfeather.masarify.page.createbankaccount.CreateBankAccountPage
-import com.lightfeather.masarify.template.transactionspane.TransactionsPaneAsDetail
+import com.lightfeather.masarify.template.transactionspane.TransactionsPane
 import dev.icerock.moko.resources.compose.stringResource
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import masarify.designsystem.generated.resources.Res
 import masarify.designsystem.generated.resources.bank
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
-internal enum class BankAccountNavDestination(
-    val id: String?,
-) {
-    ADD_ACCOUNT(null),
-    UPDATE_ACCOUNT(null),
-    VIEW_ACCOUNT(null),
-    ;
-
-    companion object {
-        const val ADD_ACCOUNT_KEY = "add_account"
-
-        fun updateAccount(accountId: String) = "update_account_$accountId"
-
-        fun viewAccount(accountId: String) = "view_account_$accountId"
-    }
-}
-
 @Composable
-fun BankAccountsPage(viewModel: BankAccountsPageViewModel = koinViewModel()) {
+fun BankAccountsPage(
+    viewModel: BankAccountsPageViewModel = koinViewModel(),
+    navigator: Navigator = LocalNavigator.current,
+) {
     val state by viewModel.state.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.onIntent(BankAccountsPageIntent.LoadData)
@@ -96,41 +76,53 @@ fun BankAccountsPage(viewModel: BankAccountsPageViewModel = koinViewModel()) {
     BankAccountsPageContent(
         state = state,
         onIntent = viewModel::onIntent,
+        navigator = navigator,
     )
 }
 
 // Composable UI function with navigation and detail pane management - length is acceptable for UI composition
 @Suppress("LongMethod")
-@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun BankAccountsPageContent(
     state: BankAccountsPageState,
     onIntent: (BankAccountsPageIntent) -> Unit,
+    navigator: Navigator,
 ) {
-    val navigator = rememberListDetailPaneScaffoldNavigator<String>()
-    val coroutineScope = rememberCoroutineScope()
+    // Create scoped list-detail navigator
+    val listDetailNav = navigator.forListDetail(BankAccountsList)
+
+    // Create list-detail scene strategy for adaptive layout
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
+
+    // Collect state flows
     val accounts by state.bankAccounts.collectAsState(emptyList())
     val userAccountsCurrencies by state.userAccountsCurrencies.collectAsState(emptyList())
     val defaultCurrency by state.defaultCurrency.collectAsState(null)
-    val paneFilter by remember(state.selectedAccount) {
-        derivedStateOf {
-            if (state.selectedAccount != null) {
-                uiTransactionFilter { accountIn(state.selectedAccount) }
-            } else {
-                UiTransactionFilter.EMPTY
-            }
-        }
+
+    // Helper to find account by ID
+    val findAccount: (String) -> UiBankAccount? = { accountId ->
+        accounts.find { it.id == accountId }
     }
-    BackHandler(navigator.canNavigateBack()) {
-        coroutineScope.launch {
-            navigator.navigateBack()
-            onIntent(BankAccountsPageIntent.ClearNavigation)
-        }
-    }
-    ListDetailPaneScaffold(
-        directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
-        listPane = {
+
+    listDetailNav.Display(
+        sceneStrategy = listDetailStrategy,
+        modifier = Modifier,
+    ) {
+        // List pane entry
+        entry<BankAccountsList>(
+            metadata =
+                ListDetailSceneStrategy.listPane(
+                    detailPlaceholder = {
+                        EmptyState(
+                            title = stringResource(MR.strings.no_account_selected_title),
+                            message = stringResource(MR.strings.no_account_selected_message),
+                            icon = Icons.Outlined.AccountBalance,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    },
+                ),
+        ) {
             AccountsListPane(
                 accounts = accounts,
                 userAccountsCurrencies = userAccountsCurrencies,
@@ -139,142 +131,100 @@ internal fun BankAccountsPageContent(
                 selectedCurrency = state.selectedCurrency,
                 selectedAccount = state.selectedAccount,
                 onAddAccount = {
-                    onIntent(BankAccountsPageIntent.NavigationIntent.AddBankAccount)
-                    coroutineScope.launch {
-                        navigator.navigateTo(
-                            ListDetailPaneScaffoldRole.Detail,
-                            BankAccountNavDestination.ADD_ACCOUNT_KEY,
-                        )
-                    }
+                    listDetailNav.navigateToDetail(AddBankAccount)
                 },
                 onAccountClick = {
-                    coroutineScope.launch {
-                        onIntent(BankAccountsPageIntent.NavigationIntent.SelectAccount(it))
-                        navigator.navigateTo(
-                            ListDetailPaneScaffoldRole.Detail,
-                            BankAccountNavDestination.viewAccount(it.id),
-                        )
-                    }
+                    listDetailNav.navigateToDetail(ViewBankAccount(it.id))
+                    onIntent(BankAccountsPageIntent.SelectAccount(it))
                 },
                 onUpdateAccount = {
-                    onIntent(BankAccountsPageIntent.NavigationIntent.UpdateBankAccount(it))
-                    coroutineScope.launch {
-                        navigator.navigateTo(
-                            ListDetailPaneScaffoldRole.Detail,
-                            BankAccountNavDestination.updateAccount(it.id),
-                        )
-                    }
+                    listDetailNav.navigateToDetail(UpdateBankAccount(it.id))
+                    onIntent(BankAccountsPageIntent.SelectAccount(it))
                 },
                 onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it)) },
-                onCreateTransactionFromAccount = { onIntent(BankAccountsPageIntent.CreateTransactionInAccount(it)) },
-                onTransferFromAccount = { onIntent(BankAccountsPageIntent.TransferFromAccount(it)) },
+                onCreateTransactionFromAccount = {
+                    onIntent(BankAccountsPageIntent.CreateTransactionInAccount(it))
+                },
+                onTransferFromAccount = {
+                    onIntent(BankAccountsPageIntent.TransferFromAccount(it))
+                },
                 onCurrencyClick = { onIntent(BankAccountsPageIntent.SelectCurrency(it)) },
             )
-        },
-        detailPane = {
-            val currentDestination = navigator.currentDestination?.contentKey
-            Napier.d(
-                "Detail pane - currentDestination: $currentDestination, " +
-                    "selectedAccount: ${state.selectedAccount?.name}",
-                tag = "BankAccountsPage",
+        }
+
+        // Add account detail pane
+        entry<AddBankAccount>(
+            metadata = ListDetailSceneStrategy.detailPane(),
+        ) {
+            CreateBankAccountPage(
+                account = UiBankAccount.empty,
+                onBack = { listDetailNav.back() },
             )
-            when {
-                currentDestination == BankAccountNavDestination.ADD_ACCOUNT_KEY -> {
-                    key("add_account") {
-                        CreateBankAccountPage(
-                            UiBankAccount.empty,
-                            onBack = {
-                                coroutineScope.launch {
-                                    navigator.navigateBack()
-                                    onIntent(BankAccountsPageIntent.ClearNavigation)
-                                }
-                            },
-                        )
-                    }
-                }
+        }
 
-                currentDestination?.startsWith("update_account_") == true -> {
-                    val account = state.selectedAccount
-                    if (account != null) {
-                        key("update_account_${account.id}") {
-                            CreateBankAccountPage(
-                                account,
-                                onBack = {
-                                    coroutineScope.launch {
-                                        navigator.navigateBack()
-                                        onIntent(BankAccountsPageIntent.ClearNavigation)
-                                    }
-                                },
-                            )
-                        }
-                    } else {
-                        EmptyState(
-                            title = stringResource(MR.strings.no_account_selected_title),
-                            message = stringResource(MR.strings.no_account_selected_message),
-                            icon = Icons.Outlined.AccountBalance,
-                            modifier = Modifier.fillMaxSize(),
+        // View account detail pane
+        entry<ViewBankAccount>(
+            metadata = ListDetailSceneStrategy.detailPane(),
+        ) { navKey ->
+            val account = findAccount(navKey.accountId)
+            if (account != null) {
+                val paneFilter = uiTransactionFilter { accountIn(account) }
+                TransactionsPane(
+                    title = account.name,
+                    filter = paneFilter,
+                    onBackClick = { listDetailNav.back() },
+                    topBarSupportingContent = {
+                        AppImage(
+                            account.image,
+                            contentDescription = account.name,
+                            modifier =
+                                Modifier
+                                    .padding(AppTheme.dimens.spacing.padding.tiny)
+                                    .background(
+                                        MaterialTheme.colorScheme.surfaceVariant,
+                                        MaterialTheme.shapes.extraSmall,
+                                    ).size(AppTheme.dimens.icon.size.medium),
+                            placeholder = Res.drawable.bank,
+                            errorPlaceholder = Res.drawable.bank,
                         )
-                    }
-                }
-
-                currentDestination?.startsWith("view_account_") == true -> {
-                    val account = state.selectedAccount
-                    if (account != null) {
-                        key("view_account_${account.id}") {
-                            TransactionsPaneAsDetail(
-                                account.name,
-                                paneFilter,
-                                onBackClick = {
-                                    coroutineScope.launch {
-                                        navigator.navigateBack()
-                                        onIntent(BankAccountsPageIntent.ClearNavigation)
-                                    }
-                                },
-                                supportingContent = {
-                                    AppImage(
-                                        account.image,
-                                        contentDescription = account.name,
-                                        modifier =
-                                            Modifier
-                                                .padding(AppTheme.dimens.spacing.padding.tiny)
-                                                .background(
-                                                    MaterialTheme.colorScheme.surfaceVariant,
-                                                    MaterialTheme.shapes.extraSmall,
-                                                ).size(AppTheme.dimens.icon.size.medium),
-                                        placeholder = Res.drawable.bank,
-                                        errorPlaceholder = Res.drawable.bank,
-                                    )
-                                },
-                            )
-                        }
-                    } else {
-                        EmptyState(
-                            title = stringResource(MR.strings.no_account_selected_title),
-                            message = stringResource(MR.strings.no_account_selected_message),
-                            icon = Icons.Outlined.AccountBalance,
-                            modifier = Modifier.fillMaxSize(),
-                        )
-                    }
-                }
-
-                else -> {
-                    EmptyState(
-                        title = stringResource(MR.strings.no_account_selected_title),
-                        message = stringResource(MR.strings.no_account_selected_message),
-                        icon = Icons.Outlined.AccountBalance,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
+                    },
+                )
+            } else {
+                EmptyState(
+                    title = stringResource(MR.strings.no_account_selected_title),
+                    message = stringResource(MR.strings.no_account_selected_message),
+                    icon = Icons.Outlined.AccountBalance,
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
-        },
-    )
+        }
+
+        // Update account detail pane
+        entry<UpdateBankAccount>(
+            metadata = ListDetailSceneStrategy.detailPane(),
+        ) { navKey ->
+            val account = findAccount(navKey.accountId)
+            if (account != null) {
+                CreateBankAccountPage(
+                    account = account,
+                    onBack = { listDetailNav.back() },
+                )
+            } else {
+                EmptyState(
+                    title = stringResource(MR.strings.no_account_selected_title),
+                    message = stringResource(MR.strings.no_account_selected_message),
+                    icon = Icons.Outlined.AccountBalance,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
+    }
 }
 
 // Composable UI function with complex layout - length is acceptable for UI composition
 @Suppress("LongMethod")
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ThreePaneScaffoldPaneScope.AccountsListPane(
+private fun AccountsListPane(
     accounts: List<UiBankAccount>,
     userAccountsCurrencies: List<UiCurrency>,
     totalAmountInSelectedOrDefaultCurrency: String,
@@ -303,7 +253,7 @@ private fun ThreePaneScaffoldPaneScope.AccountsListPane(
             }
         }
 
-    AnimatedPane(
+    Box(
         modifier =
             Modifier.applyIf(
                 isMobile.not(),
@@ -518,6 +468,7 @@ fun BankAccountsScreenPreview() {
                     flowOf(UiCurrency.dummy),
                 ),
             onIntent = {},
+            navigator = PreviewNavigator,
         )
     }
 }

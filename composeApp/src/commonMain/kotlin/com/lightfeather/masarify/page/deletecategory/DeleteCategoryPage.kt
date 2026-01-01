@@ -8,9 +8,11 @@ import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun DeleteCategoryPage(viewModel: DeleteCategoryPageViewModel = koinViewModel()) {
+fun DeleteCategoryPage(category: Category) {
+    val viewModel: DeleteCategoryPageViewModel = koinViewModel { parametersOf(category) }
     val toBeDeletedCategory = viewModel.category
     DeleteCategoryPageContent(
         toBeDeletedCategory = toBeDeletedCategory,

@@ -66,8 +66,6 @@ class BankAccountsPageViewModel(
         when (intent) {
             is BankAccountsPageIntent.DeleteBankAccount -> {
                 viewModelScope.launch {
-                    // Clear selected account to show empty state
-                    _state.value = _state.value.copy(selectedAccount = null)
                     // Navigate to delete dialog (main navigation, not detail pane)
                     navigator.navigate(DeleteAccountRoute(intent.account.toAccount()))
                 }
@@ -87,19 +85,7 @@ class BankAccountsPageViewModel(
                 loadWealthWorthListening()
             }
 
-            is BankAccountsPageIntent.ClearNavigation -> {
-                _state.value = _state.value.copy(selectedAccount = null)
-            }
-
-            is BankAccountsPageIntent.NavigationIntent.AddBankAccount -> {
-                _state.value = _state.value.copy(selectedAccount = null)
-            }
-
-            is BankAccountsPageIntent.NavigationIntent.UpdateBankAccount -> {
-                _state.value = _state.value.copy(selectedAccount = intent.account)
-            }
-
-            is BankAccountsPageIntent.NavigationIntent.SelectAccount -> {
+            is BankAccountsPageIntent.SelectAccount -> {
                 _state.value = _state.value.copy(selectedAccount = intent.account)
             }
         }
@@ -167,8 +153,8 @@ class BankAccountsPageViewModel(
                                         account.balance.toDouble() * (
                                             selectedCurrencyExchangeRate?.rate
                                                 ?: 1.0
-                                        )
-                                    ).toString(),
+                                            )
+                                        ).toString(),
                                 currency = selectedCurrency,
                             )
                         }

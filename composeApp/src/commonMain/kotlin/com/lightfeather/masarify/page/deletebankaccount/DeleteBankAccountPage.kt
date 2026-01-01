@@ -4,13 +4,16 @@ import androidx.compose.runtime.Composable
 import com.lightfeather.designsystem.component.molecules.dialog.AppAlertDialog
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.domain.model.Account
 import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun DeleteBankAccountPage(viewModel: DeleteBankAccountPageViewModel = koinViewModel()) {
+fun DeleteBankAccountPage(account: Account) {
+    val viewModel: DeleteBankAccountPageViewModel = koinViewModel { parametersOf(account) }
     val toBeDeletedBankAccount = viewModel.uiAccount
     DeleteBankAccountPageContent(
         toBeDeletedBankAccount = toBeDeletedBankAccount,

@@ -26,16 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.dialog
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
 import com.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
@@ -43,16 +34,17 @@ import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
 import com.lightfeather.designsystem.component.organisms.AppNavigationSuite
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
-import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.AppLanguage
-import com.lightfeather.domain.model.Category
 import com.lightfeather.masarify.PlatformsSlugs
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.di.getAppModules
 import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.model.AppTopLevelRoutes
-import com.lightfeather.masarify.navigation.NavTypeProvider
-import com.lightfeather.masarify.navigation.Route
+import com.lightfeather.masarify.navigation.Display
+import com.lightfeather.masarify.navigation.LocalNavigator
+import com.lightfeather.masarify.navigation.NavigationRegistry
+import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.navigation.NavigatorImpl
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.CategoriesRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
@@ -79,11 +71,22 @@ import org.koin.mp.KoinPlatform
 @Suppress("LongMethod", "CyclomaticComplexMethod")
 @Composable
 @Preview
-fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
-    val navController = rememberNavController()
+fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
+    // Create nav back stack with initial route
+    val navBackStack =
+        rememberNavBackStack(
+            configuration = NavigationRegistry.savedStateConfiguration,
+            SplashRoute,
+        )
+    val navigator = remember(navBackStack) { NavigatorImpl(navBackStack) }
+
+    LaunchedEffect(navigator) {
+        onBackStackReady(navigator)
+    }
+
     KoinContext(
         KoinPlatform.getKoin().apply {
-            loadModules(getAppModules(navController))
+            loadModules(getAppModules(navigator))
         },
     ) {
         val mainViewModel = koinViewModel<AppMainViewModel>()
@@ -94,12 +97,10 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
         LaunchedEffect(appLanguage) {
             StringDesc.localeType = StringDesc.LocaleType.Custom(appLanguage.code)
         }
-        LaunchedEffect(navController) {
-            onNavHostReady(navController)
-        }
         CompositionLocalProvider(
             LocalLayoutDirection provides if (appLanguage.isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
             LocalAppMainViewModel provides mainViewModel,
+            LocalNavigator provides navigator,
         ) {
             AppTheme(isDarkMode) {
                 val englishTopLevelRoutes =
@@ -121,23 +122,37 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                     )
                 val topLevelRoutes = englishTopLevelRoutes
                 val adaptiveInfo = currentWindowAdaptiveInfo()
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination by remember(
-                    navBackStackEntry,
-                ) { derivedStateOf { navBackStackEntry?.destination } }
+                val currentRoute by remember {
+                    derivedStateOf {
+                        navigator.backStack.lastOrNull()?.let { entry ->
+                            // Extract route from entry string representation
+                            val entryStr = entry.toString()
+                            when {
+                                entryStr.contains("SplashRoute") -> SplashRoute
+                                entryStr.contains("DashboardRoute") -> DashboardRoute
+                                entryStr.contains("AccountsRoute") -> AccountsRoute
+                                entryStr.contains("TransactionsRoute") -> TransactionsRoute
+                                entryStr.contains("MoreRoute") -> MoreRoute
+                                entryStr.contains("CategoriesRoute") -> CategoriesRoute
+                                entryStr.contains("OnBoardingRoute") -> OnBoardingRoute
+                                else -> null
+                            }
+                        }
+                    }
+                }
 
-                val navSuiteType by remember(navBackStackEntry) {
+                val navSuiteType by remember(currentRoute) {
                     derivedStateOf {
                         with(adaptiveInfo) {
                             if (topLevelRoutes.any { topLevelRoute ->
-                                    currentDestination?.hasRoute(topLevelRoute.route::class) == true
+                                    currentRoute?.routeName == topLevelRoute.route.routeName
                                 }
                             ) {
                                 when (getPlatform().asSlug()) {
                                     PlatformsSlugs.WEB if (
                                         adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
                                             WindowWidthSizeClass.EXPANDED
-                                    ) -> {
+                                        ) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
@@ -205,12 +220,9 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                 ),
                             content = {
                                 topLevelRoutes.forEach { item ->
-                                    val isSelected by remember(currentDestination) {
+                                    val isSelected by remember(currentRoute) {
                                         derivedStateOf {
-                                            isSelected(
-                                                item.route,
-                                                currentDestination,
-                                            )
+                                            currentRoute?.routeName == item.route.routeName
                                         }
                                     }
                                     item(
@@ -230,25 +242,14 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                                         selected = isSelected,
                                         onClick = {
                                             if (topLevelRoutes.any { topLevelRoute ->
-                                                    currentDestination!!.hasRoute(topLevelRoute.route::class)
+                                                    currentRoute?.routeName == topLevelRoute.route.routeName
                                                 }
                                             ) {
-                                                navController.navigate(item.route) {
-                                                    popUpTo(0) { inclusive = true }
-                                                }
+                                                // Already on a top level route, clear back stack and navigate
+                                                navigator.navigateAndClearBackStack(item.route)
                                             } else {
-                                                navController.navigate(item.route) {
-                                                    popUpTo(
-                                                        navController.graph
-                                                            .findStartDestination()
-                                                            .route
-                                                            .orEmpty(),
-                                                    ) {
-                                                        saveState = true
-                                                    }
-                                                    launchSingleTop = true
-                                                    restoreState = true
-                                                }
+                                                // Not on a top level route, just navigate
+                                                navigator.navigate(item.route)
                                             }
                                         },
                                         colors =
@@ -281,49 +282,34 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
                     },
                     layoutType = navSuiteType,
                 ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = SplashRoute,
-                        modifier = Modifier,
-                    ) {
-                        composable<SplashRoute> {
+                    navigator.Display(modifier = Modifier) {
+                        entry<SplashRoute> {
                             SplashPage()
                         }
-                        composable<OnBoardingRoute> {
+                        entry<OnBoardingRoute> {
                             OnBoardingPage()
                         }
-                        composable<DashboardRoute> {
-//                            BankAccountItem(
-//                                UiBankAccount.dummy,
-//                                Modifier.padding(AppTheme.dimens.medium).fillMaxWidth(),
-//                                {},
-//                                {},
-//                                {},
-//
+                        entry<DashboardRoute> {
+                            // Dashboard placeholder
+                            Text("Dashboard Page - Coming Soon")
                         }
-                        composable<AccountsRoute> {
+                        entry<AccountsRoute> {
                             BankAccountsPage()
                         }
-                        composable<TransactionsRoute> {
+                        entry<TransactionsRoute> {
                             Text("Transactions Page")
                         }
-                        composable<MoreRoute> {
+                        entry<MoreRoute> {
                             MorePage()
                         }
-                        composable<CategoriesRoute> {
+                        entry<CategoriesRoute> {
                             CategoriesPage()
                         }
-
-                        dialog<DeleteAccountRoute>(
-                            typeMap = mapOf(NavTypeProvider.provideMapEntry<Account>()),
-                        ) {
-                            DeleteBankAccountPage()
+                        entry<DeleteAccountRoute> { route ->
+                            DeleteBankAccountPage(account = route.account)
                         }
-
-                        dialog<DeleteCategoryRoute>(
-                            typeMap = mapOf(NavTypeProvider.provideMapEntry<Category>()),
-                        ) {
-                            DeleteCategoryPage()
+                        entry<DeleteCategoryRoute> { route ->
+                            DeleteCategoryPage(category = route.category)
                         }
                     }
                 }
@@ -337,12 +323,3 @@ val LocalAppMainViewModel =
     staticCompositionLocalOf<AppMainViewModel> {
         error("No ViewModel provided")
     }
-
-fun isSelected(
-    route: Route,
-    currentDestination: NavDestination?,
-) = currentDestination
-    ?.hierarchy
-    ?.any {
-        it.route == route.routeName
-    } == true

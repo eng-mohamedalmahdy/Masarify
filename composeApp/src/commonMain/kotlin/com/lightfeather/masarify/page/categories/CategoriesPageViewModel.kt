@@ -7,7 +7,6 @@ import com.lightfeather.masarify.mappers.toCategory
 import com.lightfeather.masarify.mappers.toUiCategory
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -40,22 +39,6 @@ class CategoriesPageViewModel(
                 viewModelScope.launch {
                     navigator.navigate(DeleteCategoryRoute(intent.category.toCategory()))
                 }
-            }
-
-            is CategoriesPageIntent.ClearNavigation -> {
-                Napier.d("ClearNavigation called", tag = "CategoriesPage")
-                _state.value = _state.value.copy(selectedCategory = null)
-                Napier.d("After clear: selectedCategory = null", tag = "CategoriesPage")
-            }
-
-            is CategoriesPageIntent.NavigationIntent.AddCategory -> {
-                Napier.d("AddCategory called", tag = "CategoriesPage")
-                _state.value = _state.value.copy(selectedCategory = intent.category)
-            }
-
-            is CategoriesPageIntent.NavigationIntent.UpdateCategory -> {
-                Napier.d("UpdateCategory called for ${intent.selectedCategory.name}", tag = "CategoriesPage")
-                _state.value = _state.value.copy(selectedCategory = intent.selectedCategory)
             }
         }
     }

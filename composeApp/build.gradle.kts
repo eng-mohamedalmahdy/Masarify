@@ -80,7 +80,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.compose.window.sizes)
-            implementation(libs.navigation.compose)
+            implementation(libs.bundles.navigation3)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.lifecycle.runtimeCompose)
