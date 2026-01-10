@@ -17,3 +17,4 @@ shared/shared.podspec
 .kotlin
 /gradle/wrapper/
 /node_modules/
+*.lock
