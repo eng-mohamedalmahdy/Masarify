@@ -61,4 +61,13 @@ data class PagedData<T>(
                 totalItems = 0L,
             )
     }
+
+    fun <R> map(transform: (T) -> R): PagedData<R> {
+        return create(
+            data = data.map { transform(it) },
+            page = page,
+            pageSize = pageSize,
+            totalItems = totalItems
+        )
+    }
 }

@@ -3,23 +3,27 @@ package com.lightfeather.masarify.page.bankaccounts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.layout.AdaptStrategy
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldDefaults
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
@@ -37,10 +41,11 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.navigation3.runtime.NavKey
 import com.lightfeather.designsystem.MR
-import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.molecules.button.FloatingActionButton
 import com.lightfeather.designsystem.component.organisms.AccountsHeader
+import com.lightfeather.designsystem.component.organisms.TransactionDetailView
+import com.lightfeather.designsystem.component.organisms.dialog.AddEditTransactionDialog
 import com.lightfeather.designsystem.component.organisms.listitem.BankAccountItem
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
@@ -50,16 +55,17 @@ import com.lightfeather.designsystem.shape.inWardTriangleCutShape
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.getPlatform
+import com.lightfeather.masarify.mappers.toTransaction
+import com.lightfeather.masarify.mappers.toUiTransaction
 import com.lightfeather.masarify.navigation.Display
 import com.lightfeather.masarify.navigation.LocalNavigator
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.PreviewNavigator
 import com.lightfeather.masarify.page.createbankaccount.CreateBankAccountPage
+import com.lightfeather.masarify.page.transactions.ViewTransaction
 import com.lightfeather.masarify.template.transactionspane.TransactionsPane
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.flowOf
-import masarify.designsystem.generated.resources.Res
-import masarify.designsystem.generated.resources.bank
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -93,7 +99,14 @@ internal fun BankAccountsPageContent(
     val listDetailNav = navigator.forListDetail(BankAccountsList)
 
     // Create list-detail scene strategy for adaptive layout
-    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(
+        directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo(true)),
+        adaptStrategies = ListDetailPaneScaffoldDefaults.adaptStrategies(
+            detailPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Primary),
+            listPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Secondary),
+            extraPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Tertiary)
+        )
+    )
 
     // Collect state flows
     val accounts by state.bankAccounts.collectAsState(emptyList())
@@ -166,28 +179,23 @@ internal fun BankAccountsPageContent(
         entry<ViewBankAccount>(
             metadata = ListDetailSceneStrategy.detailPane(),
         ) { navKey ->
+
             val account = findAccount(navKey.accountId)
+
             if (account != null) {
-                val paneFilter = uiTransactionFilter { accountIn(account) }
+                // Show account-specific transactions using TransactionsPane
+                val accountFilter =
+                    uiTransactionFilter {
+                        accountIn(account)
+                    }
                 TransactionsPane(
-                    title = account.name,
-                    filter = paneFilter,
+                    title = "${account.name} - ${stringResource(MR.strings.transactions)}",
+                    filter = accountFilter,
                     onBackClick = { listDetailNav.back() },
-                    topBarSupportingContent = {
-                        AppImage(
-                            account.image,
-                            contentDescription = account.name,
-                            modifier =
-                                Modifier
-                                    .padding(AppTheme.dimens.spacing.padding.tiny)
-                                    .background(
-                                        MaterialTheme.colorScheme.surfaceVariant,
-                                        MaterialTheme.shapes.extraSmall,
-                                    ).size(AppTheme.dimens.icon.size.medium),
-                            placeholder = Res.drawable.bank,
-                            errorPlaceholder = Res.drawable.bank,
-                        )
+                    onTransactionClick = { transaction ->
+                        listDetailNav.navigateToDetail(ViewTransaction(transaction.toTransaction()))
                     },
+                    topBarSupportingContent = {},
                 )
             } else {
                 EmptyState(
@@ -198,7 +206,26 @@ internal fun BankAccountsPageContent(
                 )
             }
         }
-
+        entry<ViewTransaction>(
+            metadata = ListDetailSceneStrategy.extraPane(),
+        ) { navKey ->
+            val transaction = navKey.transaction?.toUiTransaction()
+            if (transaction != null) {
+                TransactionDetailView(
+                    transaction = transaction,
+                    onEdit = { onIntent(BankAccountsPageIntent.UpdateTransaction(transaction)) },
+                    onDelete = { onIntent(BankAccountsPageIntent.DeleteTransaction(transaction)) },
+                    onDuplicate = { onIntent(BankAccountsPageIntent.DuplicateTransaction(transaction)) },
+                )
+            } else {
+                EmptyState(
+                    title = stringResource(MR.strings.no_transaction_selected_title),
+                    message = stringResource(MR.strings.no_transaction_selected_message),
+                    icon = Icons.Outlined.Receipt,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
         // Update account detail pane
         entry<UpdateBankAccount>(
             metadata = ListDetailSceneStrategy.detailPane(),
@@ -218,6 +245,16 @@ internal fun BankAccountsPageContent(
                 )
             }
         }
+    }
+    // Add/Edit Transaction Dialog
+    if (state.showAddEditDialog) {
+        AddEditTransactionDialog(
+            transaction = state.underProcessTransaction,
+            accounts = accounts,
+            categories = state.categories,
+            onDismiss = { onIntent(BankAccountsPageIntent.CancelUpdateTransaction) },
+            onSave = { onIntent(BankAccountsPageIntent.CancelUpdateTransaction) },
+        )
     }
 }
 

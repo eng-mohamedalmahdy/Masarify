@@ -14,10 +14,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.TextField
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable

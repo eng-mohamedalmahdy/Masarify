@@ -13,9 +13,9 @@ androidx-testExt = "1.2.1"
 composeHotReload = "1.0.0-beta04"
 composeMultiplatform = "1.10.0-rc02"
 junit = "4.13.2"
-kotlin = "2.2.0"
+kotlin = "2.2.20"
 kotlinx-coroutines = "1.10.2"
-kotlinStdlib = "2.2.0"
+kotlinStdlib = "2.2.20"
 runner = "1.7.0"
 core = "1.7.0"
 kotlinxSerialization = "1.9.0"
@@ -28,7 +28,7 @@ materialKolor = "3.0.1"
 uiTooling = "1.9.0"
 iconsExtended = "1.7.3"
 multiplatformSettings = "1.3.0"
-resources = "0.25.0"
+resources = "0.25.2"
 navigation3 = "1.0.0-alpha06"
 coilCompose = "3.0.1"
 napier = "2.7.1"
@@ -164,6 +164,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+mokoResources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "resources" }
 
 # Code Quality Plugins
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.2" }

@@ -1,6 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
@@ -12,10 +11,15 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
-    id("dev.icerock.mobile.multiplatform-resources")
+    alias(libs.plugins.mokoResources)
 
     // Code Quality - ktlint only (detekt is applied globally from root)
     alias(libs.plugins.ktlint)
+}
+
+composeCompiler {
+    // Disable experimental features that may not be supported
+    enableStrongSkippingMode.set(false)
 }
 
 kotlin {
@@ -44,9 +48,7 @@ kotlin {
 
     jvm()
 
-    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        outputModuleName.set("composeApp")
         browser {
             val rootDirPath = project.rootDir.path
             val projectDirPath = project.projectDir.path

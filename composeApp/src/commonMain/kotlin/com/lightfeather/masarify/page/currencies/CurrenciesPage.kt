@@ -35,6 +35,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import com.lightfeather.designsystem.MR
+import com.lightfeather.designsystem.MR.strings.currency
 import com.lightfeather.designsystem.component.molecules.AppDropMenu
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.molecules.TextField
@@ -43,8 +45,6 @@ import com.lightfeather.designsystem.component.molecules.dialog.AppAlertDialog
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiCurrencyExchangeRate
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.masarify.MR
-import com.lightfeather.masarify.MR.strings.currency
 import dev.icerock.moko.resources.compose.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

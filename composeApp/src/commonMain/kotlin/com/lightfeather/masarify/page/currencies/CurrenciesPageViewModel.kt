@@ -2,6 +2,7 @@ package com.lightfeather.masarify.page.currencies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiCurrencyExchangeRate
@@ -12,7 +13,6 @@ import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
 import com.lightfeather.domain.usecase.UpdateCurrency
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
-import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.mappers.toCurrency
 import com.lightfeather.masarify.mappers.toCurrencyExchangeRate
 import com.lightfeather.masarify.mappers.toUiCurrency

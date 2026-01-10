@@ -1,11 +1,12 @@
 package com.lightfeather.masarify.page.more
 
 import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.AppLanguages
 
 internal data class MorePageState(
     val isDarkTheme: Boolean = false,
-    val selectedLanguage: AppLanguage = AppLanguage.English,
-    val availableLanguages: List<AppLanguage> = listOf(AppLanguage.English, AppLanguage.Arabic),
+    val selectedLanguage: AppLanguage = AppLanguages.English,
+    val availableLanguages: List<AppLanguage> = listOf(AppLanguages.English, AppLanguages.Arabic),
     val selectedDetailItem: MoreDetailItem? = null,
     val isLoading: Boolean = false,
 )

@@ -81,4 +81,304 @@
     <string name="coming_soon">Coming Soon</string>
     <string name="delete_category">Delete Category</string>
 
+    <!-- Common Actions -->
+    <string name="apply">Apply</string>
+    <string name="clear">Clear</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="save">Save</string>
+    <string name="submit">Submit</string>
+
+    <!-- App Strings (Moved from composeApp) -->
+    <string name="app_name">Masarify</string>
+    <string name="app_slogan">Track smart, spend wiser.</string>
+    <string name="my_string">My default localization string</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Welcome To Masarify</string>
+    <string name="user_name">User Name</string>
+    <string name="account_name">Account Name</string>
+    <string name="balance">Balance</string>
+    <string name="currency">Currency</string>
+    <string name="onboarding_user_name_error">User name cannot be empty</string>
+    <string name="onboarding_account_name_error">Account name cannot be empty</string>
+    <string name="onboarding_account_balance_error">Account balance cannot be empty</string>
+    <string name="onboarding_account_currency_error">Account currency cannot be empty</string>
+
+    <!-- Navigation -->
+    <string name="dashboard">Dashboard</string>
+    <string name="accounts">Accounts</string>
+
+    <!-- Create/Edit Account Validation Messages -->
+    <string name="account_name_required">Account name is required</string>
+    <string name="account_currency_required">Please select a currency</string>
+    <string name="account_balance_required">Initial balance is required</string>
+    <string name="account_balance_invalid">Please enter a valid balance amount</string>
+    <string name="unknown_error">An unexpected error occurred</string>
+
+    <!-- Account CRUD Messages -->
+    <string name="account_create_success">Account created successfully</string>
+    <string name="account_create_failure">Failed to create account</string>
+    <string name="account_update_success">Account updated successfully</string>
+    <string name="account_update_failure">Failed to update account</string>
+    <string name="account_delete_success">Account deleted successfully</string>
+    <string name="account_delete_failure">Failed to delete account</string>
+    <string name="account_fetch_success">Accounts loaded successfully</string>
+    <string name="account_fetch_failure">Failed to load accounts</string>
+
+    <!-- Transaction CRUD Messages -->
+    <string name="transaction_create_success">Transaction created successfully</string>
+    <string name="transaction_create_failure">Failed to create transaction</string>
+    <string name="transaction_update_success">Transaction updated successfully</string>
+    <string name="transaction_update_failure">Failed to update transaction</string>
+    <string name="transaction_delete_success">Transaction deleted successfully</string>
+    <string name="transaction_delete_failure">Failed to delete transaction</string>
+    <string name="transaction_fetch_success">Transactions loaded successfully</string>
+    <string name="transaction_fetch_failure">Failed to load transactions</string>
+
+    <!-- Category CRUD Messages -->
+    <string name="category_create_success">Category created successfully</string>
+    <string name="category_create_failure">Failed to create category</string>
+    <string name="category_update_success">Category updated successfully</string>
+    <string name="category_update_failure">Failed to update category</string>
+    <string name="category_delete_success">Category deleted successfully</string>
+    <string name="category_delete_failure">Failed to delete category</string>
+    <string name="category_fetch_success">Categories loaded successfully</string>
+    <string name="category_fetch_failure">Failed to load categories</string>
+
+    <!-- Currency CRUD Messages -->
+    <string name="currency_create_success">Currency created successfully</string>
+    <string name="currency_create_failure">Failed to create currency</string>
+    <string name="currency_update_success">Currency updated successfully</string>
+    <string name="currency_update_failure">Failed to update currency</string>
+    <string name="currency_delete_success">Currency deleted successfully</string>
+    <string name="currency_delete_failure">Failed to delete currency</string>
+    <string name="currency_fetch_success">Currencies loaded successfully</string>
+    <string name="currency_fetch_failure">Failed to load currencies</string>
+
+    <!-- Exchange Rate CRUD Messages -->
+    <string name="exchange_rate_create_success">Exchange rate created successfully</string>
+    <string name="exchange_rate_create_failure">Failed to create exchange rate</string>
+    <string name="exchange_rate_update_success">Exchange rate updated successfully</string>
+    <string name="exchange_rate_update_failure">Failed to update exchange rate</string>
+    <string name="exchange_rate_delete_success">Exchange rate deleted successfully</string>
+    <string name="exchange_rate_delete_failure">Failed to delete exchange rate</string>
+    <string name="exchange_rate_fetch_success">Exchange rates loaded successfully</string>
+    <string name="exchange_rate_fetch_failure">Failed to load exchange rates</string>
+
+    <!-- Create/Edit Bank Account Form Labels -->
+    <string name="enter_account_name">Enter account name</string>
+    <string name="description">Description</string>
+    <string name="enter_description_optional">Enter description (optional)</string>
+    <string name="initial_balance">Initial Balance</string>
+    <string name="current_balance">Current Balance</string>
+    <string name="balance_placeholder">0.00</string>
+    <string name="account_color">Account Color</string>
+    <string name="tap_to_select_color">Tap to select color</string>
+    <string name="choose_color">Choose color</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="add_new_currency">Add New Currency</string>
+    <string name="add_new_currency_description">Add new currency</string>
+    <string name="create_account">Create Account</string>
+    <string name="update_account">Update Account</string>
+
+    <!-- Delete Bank Account Dialog -->
+    <string name="delete_bank_account_dialog_title">Delete Account</string>
+    <string name="delete_bank_account_dialog_description">Are you sure you want to delete this account? This action cannot be undone and all associated transactions will be permanently removed.</string>
+    <string name="delete_bank_account_dialog_description_with_name">Are you sure you want to delete "%s" account? This action cannot be undone and all associated transactions will be permanently removed.</string>
+
+    <!-- Categories Page -->
+    <string name="categories">Categories</string>
+    <string name="categories_subtitle">Manage your income and expense categories</string>
+    <string name="add_category">Add Category</string>
+    <string name="edit_category">Edit Category</string>
+    <string name="no_categories_title">No Categories Yet</string>
+    <string name="no_categories_message">Start by adding your first category to organize your transactions</string>
+    <string name="no_category_selected_title">No Category Selected</string>
+    <string name="no_category_selected_message">Select a category to view or edit its details</string>
+    <string name="add_edit_category_coming_soon">Category editing feature coming soon</string>
+
+    <!-- Delete Category Dialog -->
+    <string name="delete_category_dialog_title">Delete Category</string>
+    <string name="delete_category_dialog_description">Are you sure you want to delete this category? This action cannot be undone.</string>
+    <string name="delete_category_dialog_description_with_name">Are you sure you want to delete "%s" category? This action cannot be undone.</string>
+
+    <!-- Add/Edit Category Form -->
+    <string name="category_name">Category Name</string>
+    <string name="enter_category_name">Enter category name</string>
+    <string name="enter_category_description">Enter category description</string>
+    <string name="description_optional">Description (Optional)</string>
+    <string name="color">Color</string>
+    <string name="icon">Icon</string>
+    <string name="select_color">Select color</string>
+    <string name="preview">Preview</string>
+    <string name="category_name_required">Category name is required</string>
+    <string name="category_icon_required">Category icon is required</string>
+    <string name="failed_to_load_icons">Failed to load icons</string>
+    <string name="no_icons_available">No Icons Available</string>
+    <string name="no_icons_message">Unable to load category icons at this time</string>
+    <string name="category_created_success">Category created successfully</string>
+    <string name="category_updated_success">Category updated successfully</string>
+    <string name="custom_icon_url">Custom Icon URL (Optional)</string>
+    <string name="enter_custom_icon_url">Enter custom icon URL</string>
+    <string name="recent_colors">Recent Colors</string>
+    <string name="no_recent_colors">No recent colors yet</string>
+    <string name="tap_color_to_select">Tap a color to select</string>
+
+    <!-- Currencies Page -->
+    <string name="currencies">Currencies</string>
+    <string name="currencies_subtitle">Manage currencies and exchange rates</string>
+    <string name="add_currency">Add Currency</string>
+    <string name="edit_currency">Edit Currency</string>
+    <string name="base_currency">Base Currency</string>
+    <string name="select_base_currency">Select base currency</string>
+    <string name="exchange_rates">Exchange Rates</string>
+    <string name="edit_rates">Edit Rates</string>
+    <string name="save_rates">Save Rates</string>
+    <string name="cancel_edit">Cancel</string>
+    <string name="no_currencies_title">No Currencies Yet</string>
+    <string name="no_currencies_message">Start by adding your first currency</string>
+    <string name="no_exchange_rates_title">No Exchange Rates</string>
+    <string name="no_exchange_rates_message">Select a base currency to view exchange rates</string>
+    <string name="update_inverse_rate">Also update inverse rate?</string>
+
+    <!-- Currency Dialog -->
+    <string name="add_currency_dialog_title">Add Currency</string>
+    <string name="edit_currency_dialog_title">Edit Currency</string>
+    <string name="currency_name">Currency Name</string>
+    <string name="enter_currency_name">Enter currency name</string>
+    <string name="currency_symbol">Currency Symbol</string>
+    <string name="enter_currency_symbol">Enter currency symbol</string>
+    <string name="currency_name_required">Currency name is required</string>
+    <string name="currency_symbol_required">Currency symbol is required</string>
+
+    <!-- Delete Currency Dialog -->
+    <string name="delete_currency_dialog_title">Delete Currency</string>
+    <string name="delete_currency_dialog_description">Are you sure you want to delete this currency? This action cannot be undone.</string>
+    <string name="delete_currency_dialog_description_with_name">Are you sure you want to delete "%s"? This action cannot be undone.</string>
+
+    <!-- Exchange Rate Messages -->
+    <string name="exchange_rates_updated">Exchange rates updated successfully</string>
+    <string name="exchange_rates_update_failed">Failed to update exchange rates</string>
+    <string name="currency_created_success">Currency created successfully</string>
+    <string name="currency_create_failed">Failed to create currency</string>
+    <string name="currency_updated_success">Currency updated successfully</string>
+    <string name="currency_update_failed">Failed to update currency</string>
+    <string name="currency_deleted_success">Currency deleted successfully</string>
+    <string name="currency_delete_failed">Failed to delete currency</string>
+
+    <!-- Transactions Page -->
+    <string name="transactions_title">Transactions</string>
+    <string name="transactions_subtitle">Track your income, expenses, and transfers</string>
+    <string name="add_transaction">Add Transaction</string>
+    <string name="edit_transaction">Edit Transaction</string>
+    <string name="delete_transaction">Delete Transaction</string>
+    <string name="duplicate_transaction">Duplicate Transaction</string>
+    <string name="filter_transactions">Filter Transactions</string>
+    <string name="no_transactions_title">No Transactions Yet</string>
+    <string name="no_transactions_message">Start tracking your finances by adding your first transaction</string>
+    <string name="no_filtered_transactions_title">No Matching Transactions</string>
+    <string name="no_filtered_transactions_message">Try adjusting your filters</string>
+    <string name="no_transaction_selected_title">No Transaction Selected</string>
+    <string name="no_transaction_selected_message">Select a transaction to view its details</string>
+
+    <!-- Transaction Types -->
+    <string name="expense">Expense</string>
+
+    <!-- Transaction Form -->
+    <string name="transaction_name">Transaction Name</string>
+    <string name="enter_transaction_name">Enter transaction name</string>
+    <string name="transaction_amount">Amount</string>
+    <string name="enter_amount">Enter amount</string>
+    <string name="transaction_date">Date</string>
+    <string name="transaction_time">Time</string>
+    <string name="transaction_description">Description (Optional)</string>
+    <string name="enter_transaction_description">Enter description</string>
+    <string name="source_account">Source Account</string>
+    <string name="target_account">Target Account</string>
+    <string name="from_account">From Account</string>
+    <string name="to_account">To Account</string>
+    <string name="transfer_fee">Transfer Fee</string>
+    <string name="enter_transfer_fee">Enter transfer fee</string>
+    <string name="select_category">Select Category</string>
+    <string name="select_categories">Select Categories</string>
+    <string name="income_source">Income Source</string>
+    <string name="expense_categories">Expense Categories</string>
+    <string name="attachments">Attachments</string>
+    <string name="add_attachment">Add Attachment</string>
+    <string name="remove_attachment">Remove Attachment</string>
+
+    <!-- Filter Dialog -->
+    <string name="advanced_filters">Advanced Filters</string>
+    <string name="filter_by_account">Filter by Account</string>
+    <string name="filter_by_category">Filter by Category</string>
+    <string name="filter_by_currency">Filter by Currency</string>
+    <string name="filter_by_type">Filter by Type</string>
+    <string name="filter_by_amount">Filter by Amount</string>
+    <string name="filter_by_date">Filter by Date</string>
+    <string name="filter_text_search">Search Transactions</string>
+    <string name="filter_attachments">Attachments</string>
+    <string name="filter_logic">Filter Logic</string>
+    <string name="save_filter">Save Filter</string>
+    <string name="saved_filters">Saved Filter</string>
+    <string name="clear_filters">Clear All</string>
+    <string name="apply_filters">Apply</string>
+    <string name="active_filters_count">%d Active Filters</string>
+    <string name="active_filter_singular">1 Active Filter</string>
+    <string name="amount_min">Minimum Amount</string>
+    <string name="amount_max">Maximum Amount</string>
+    <string name="date_from">From Date</string>
+    <string name="date_to">To Date</string>
+    <string name="with_attachments">With Attachments</string>
+    <string name="without_attachments">Without Attachments</string>
+    <string name="any_attachment">Any</string>
+    <string name="all_conditions">All conditions (AND)</string>
+    <string name="any_condition">Any condition (OR)</string>
+    <string name="filter_name">Filter Name</string>
+    <string name="enter_filter_name">Enter filter name</string>
+    <string name="delete_saved_filter">Delete Saved Filter</string>
+    <string name="saved_filter_deleted">Filter deleted successfully</string>
+    <string name="filter_saved_success">Filter saved successfully</string>
+    <string name="filter_save_failed">Failed to save filter</string>
+
+    <!-- Pagination -->
+    <string name="page_info">Page %d of %d</string>
+    <string name="total_transactions_count">%d transactions</string>
+    <string name="total_transaction_singular">1 transaction</string>
+    <string name="page_size">Items per page</string>
+    <string name="next_page">Next Page</string>
+    <string name="previous_page">Previous Page</string>
+    <string name="first_page">First Page</string>
+    <string name="last_page">Last Page</string>
+
+    <!-- Transaction Validation -->
+    <string name="transaction_name_required">Transaction name is required</string>
+    <string name="transaction_amount_required">Amount is required</string>
+    <string name="transaction_amount_invalid">Please enter a valid amount</string>
+    <string name="transaction_amount_positive">Amount must be greater than zero</string>
+    <string name="transaction_account_required">Please select an account</string>
+    <string name="transaction_category_required">Please select at least one category</string>
+    <string name="transaction_source_required">Please select an income source</string>
+    <string name="transfer_accounts_same">Source and target accounts must be different</string>
+    <string name="insufficient_balance">Insufficient balance for this transaction</string>
+    <string name="transfer_fee_invalid">Transfer fee must be a valid number</string>
+    <string name="transaction_date_required">Please select a date</string>
+
+    <!-- Transaction Detail -->
+    <string name="transaction_details">Transaction Details</string>
+    <string name="transaction_id">Transaction ID</string>
+    <string name="transaction_type">Type</string>
+    <string name="old_balance">Old Balance</string>
+    <string name="new_balance">New Balance</string>
+    <string name="balance_impact">Balance Impact</string>
+    <string name="receiver_account">Receiver Account</string>
+    <string name="receiver_old_balance">Receiver Old Balance</string>
+    <string name="receiver_new_balance">Receiver New Balance</string>
+    <string name="created_at">Created At</string>
+    <string name="updated_at">Updated At</string>
+
+    <!-- Delete Transaction Dialog -->
+    <string name="delete_transaction_dialog_title">Delete Transaction</string>
+    <string name="delete_transaction_dialog_description">Are you sure you want to delete this transaction? This action cannot be undone.</string>
+    <string name="delete_transaction_dialog_description_with_name">Are you sure you want to delete "%s"? This action cannot be undone.</string>
+
 </resources>

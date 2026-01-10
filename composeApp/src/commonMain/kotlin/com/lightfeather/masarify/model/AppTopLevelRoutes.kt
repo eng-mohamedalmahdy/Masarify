@@ -6,8 +6,8 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.model.UiBottomNavigationItem
-import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
@@ -25,7 +25,7 @@ sealed class AppTopLevelRoutes(
             get() = MR.strings.dashboard
     }
 
-    data object Transactions : AppTopLevelRoutes(TransactionsRoute) {
+    data object Transactions : AppTopLevelRoutes(TransactionsRoute()) {
         override val icon: ImageVector
             get() = Icons.Default.Payment
         override val label: StringResource

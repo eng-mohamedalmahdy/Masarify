@@ -3,7 +3,9 @@ package com.lightfeather.domain.model.transaction
 import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.Attachment
 import com.lightfeather.domain.model.Category
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class Transaction(
     open val id: Int,
     open val name: String,

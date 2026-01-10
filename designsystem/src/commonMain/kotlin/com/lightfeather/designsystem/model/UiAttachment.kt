@@ -19,12 +19,4 @@ data class UiAttachment(
 
         return true
     }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + name.hashCode()
-        result = 31 * result + mimeType.hashCode()
-        result = 31 * result + fileContent.contentHashCode()
-        return result
-    }
 }

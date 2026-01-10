@@ -3,15 +3,22 @@ package com.lightfeather.masarify.page.bankaccounts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
+import com.lightfeather.designsystem.MR
+import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
+import com.lightfeather.designsystem.model.UiTransactionType
+import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.mappers.toAccount
+import com.lightfeather.masarify.mappers.toTransaction
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DeleteAccountRoute
+import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +34,10 @@ class BankAccountsPageViewModel(
     private val getAllCurrencies: GetAllCurrencies,
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
     private val exchangeRates: GetAllCurrenciesExchangeRates,
-) : ViewModel() {
+    private val deleteTransaction: DeleteTransaction,
+    private val updateTransaction: UpdateTransaction,
+
+    ) : ViewModel() {
     private val _state =
         MutableStateFlow(
             BankAccountsPageState(
@@ -72,9 +82,28 @@ class BankAccountsPageViewModel(
             }
 
             is BankAccountsPageIntent.CreateTransactionInAccount -> {
+                viewModelScope.launch {
+                    // Navigate to transactions page with add dialog open and account locked
+                    navigator.navigate(
+                        TransactionsRoute(
+                            openAddDialog = true,
+                            fromAccountId = intent.account.id,
+                        ),
+                    )
+                }
             }
 
             is BankAccountsPageIntent.TransferFromAccount -> {
+                viewModelScope.launch {
+                    // Navigate to transactions page with transfer dialog open and from-account locked
+                    navigator.navigate(
+                        TransactionsRoute(
+                            openAddDialog = true,
+                            transactionType = UiTransactionType.TRANSFER,
+                            fromAccountId = intent.account.id,
+                        ),
+                    )
+                }
             }
 
             is BankAccountsPageIntent.SelectCurrency -> {
@@ -88,6 +117,54 @@ class BankAccountsPageViewModel(
             is BankAccountsPageIntent.SelectAccount -> {
                 _state.value = _state.value.copy(selectedAccount = intent.account)
             }
+
+            BankAccountsPageIntent.CancelDeleteTransaction -> {
+                _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
+            }
+
+            BankAccountsPageIntent.CancelUpdateTransaction -> {
+                _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
+            }
+
+            BankAccountsPageIntent.ConfirmDeleteTransaction -> {
+                viewModelScope.launch {
+                    deleteTransaction(_state.value.underProcessTransaction!!.id.toLong()).fold(
+                        onSuccess = {
+                            _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
+                            SnackbarService.sendSuccessMessage(MR.strings.transaction_delete_success)
+                        },
+                        onFailure = {
+                            _state.value = _state.value.copy(showAddEditDialog = false)
+                            SnackbarService.sendErrorMessage(MR.strings.transaction_delete_failure)
+                        }
+                    )
+                }
+            }
+
+            BankAccountsPageIntent.ConfirmUpdateTransaction -> {
+                viewModelScope.launch {
+                    updateTransaction(_state.value.underProcessTransaction!!.toTransaction()).fold(
+                        onSuccess = {
+                            _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
+                            SnackbarService.sendSuccessMessage(MR.strings.transaction_update_success)
+                        },
+                        onFailure = {
+                            _state.value = _state.value.copy(showAddEditDialog = false)
+                            SnackbarService.sendErrorMessage(MR.strings.transaction_update_failure)
+                        }
+                    )
+                }
+            }
+
+            is BankAccountsPageIntent.DeleteTransaction -> {
+                _state.value = _state.value.copy(underProcessTransaction = intent.transaction, showAddEditDialog = true)
+            }
+
+            is BankAccountsPageIntent.UpdateTransaction -> {
+                _state.value = _state.value.copy(underProcessTransaction = intent.transaction, showAddEditDialog = true)
+            }
+
+            is BankAccountsPageIntent.DuplicateTransaction -> TODO()
         }
     }
 
@@ -148,21 +225,13 @@ class BankAccountsPageViewModel(
                             val selectedCurrencyExchangeRate =
                                 exchangeRates.find { it.from == account.currency && it.to == selectedCurrency }
                             account.copy(
-                                balance =
-                                    (
-                                        account.balance.toDouble() * (
-                                            selectedCurrencyExchangeRate?.rate
-                                                ?: 1.0
-                                            )
-                                        ).toString(),
+                                balance = (account.balance.toDouble() * (selectedCurrencyExchangeRate?.rate
+                                    ?: 1.0)).toString(),
                                 currency = selectedCurrency,
                             )
                         }
                     }
-                _state.value =
-                    _state.value.copy(
-                        bankAccounts = accountsWithEquivalentAmounts,
-                    )
+                _state.value = _state.value.copy(bankAccounts = accountsWithEquivalentAmounts)
             }
         }
     }

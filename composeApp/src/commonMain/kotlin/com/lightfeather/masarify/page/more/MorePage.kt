@@ -44,6 +44,7 @@ import com.lightfeather.designsystem.component.organisms.listitem.MoreListItemWi
 import com.lightfeather.designsystem.component.organisms.listitem.MoreListItemWithSwitch
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.AppLanguages
 import com.lightfeather.masarify.app.LocalAppMainViewModel
 import com.lightfeather.masarify.page.categories.CategoriesPage
 import com.lightfeather.masarify.page.currencies.CurrenciesPage
@@ -262,7 +263,7 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
                         },
                     selectedValue = state.selectedLanguage.code,
                     onSelectionChanged = { selectedCode ->
-                        val selectedLanguage = AppLanguage.fromCode(selectedCode)
+                        val selectedLanguage = AppLanguages.fromCode(selectedCode)
                         onLanguageSelected(selectedLanguage)
                     },
                     contentDescription = stringResource(MR.strings.language_description),
@@ -432,11 +433,11 @@ fun MorePagePreview() {
             state =
                 MorePageState(
                     isDarkTheme = false,
-                    selectedLanguage = com.lightfeather.domain.model.AppLanguage.English,
+                    selectedLanguage = com.lightfeather.domain.model.AppLanguages.English,
                     availableLanguages =
                         listOf(
-                            com.lightfeather.domain.model.AppLanguage.English,
-                            com.lightfeather.domain.model.AppLanguage.Arabic,
+                            com.lightfeather.domain.model.AppLanguages.English,
+                            com.lightfeather.domain.model.AppLanguages.Arabic,
                         ),
                 ),
             onIntent = {},

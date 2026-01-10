@@ -1,11 +1,11 @@
 package com.lightfeather.masarify.page.deletebankaccount
 
 import androidx.compose.runtime.Composable
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.dialog.AppAlertDialog
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.Account
-import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel

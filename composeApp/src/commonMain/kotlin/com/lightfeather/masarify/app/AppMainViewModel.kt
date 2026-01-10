@@ -3,6 +3,7 @@ package com.lightfeather.masarify.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.AppLanguages
 import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.masarify.navigation.Navigator
@@ -46,7 +47,7 @@ class AppMainViewModel(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = false,
             )
-    private val _currentLanguage = MutableStateFlow<AppLanguage>(AppLanguage.English)
+    private val _currentLanguage = MutableStateFlow<AppLanguage>(AppLanguages.English)
 
     val initialDataSaved: Flow<Boolean> =
         getAllAccounts()
@@ -65,11 +66,11 @@ class AppMainViewModel(
         _currentLanguage
             .onStart {
                 val language = userDataRepository.getAppLanguage()
-                _currentLanguage.value = language ?: AppLanguage.English
+                _currentLanguage.value = language ?: AppLanguages.English
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = AppLanguage.English,
+                initialValue = AppLanguages.English,
             )
 
     fun toggleDarkTheme() {

@@ -17,6 +17,8 @@ import com.lightfeather.masarify.page.bankaccounts.UpdateBankAccount
 import com.lightfeather.masarify.page.bankaccounts.ViewBankAccount
 import com.lightfeather.masarify.page.categories.AddEditCategory
 import com.lightfeather.masarify.page.categories.CategoriesList
+import com.lightfeather.masarify.page.transactions.TransactionsList
+import com.lightfeather.masarify.page.transactions.ViewTransaction
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
@@ -56,6 +58,8 @@ object NavigationRegistry {
                 // Categories list-detail routes
                 subclass(CategoriesList::class, CategoriesList.serializer())
                 subclass(AddEditCategory::class, AddEditCategory.serializer())
+                subclass(TransactionsList::class, TransactionsList.serializer())
+                subclass(ViewTransaction::class, ViewTransaction.serializer())
             }
         }
 

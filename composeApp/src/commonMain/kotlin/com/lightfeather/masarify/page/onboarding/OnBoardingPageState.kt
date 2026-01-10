@@ -1,6 +1,6 @@
 package com.lightfeather.masarify.page.onboarding
 
-import com.lightfeather.masarify.MR
+import com.lightfeather.designsystem.MR
 import dev.icerock.moko.resources.StringResource
 
 internal data class OnBoardingPageState(

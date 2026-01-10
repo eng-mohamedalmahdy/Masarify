@@ -12,6 +12,7 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 /**
@@ -74,9 +75,10 @@ fun LocalDateTime.Companion.now(): LocalDateTime = LocalDateTime(2024, 9, 13, 14
  */
 @Composable
 fun LocalDateTime.toDisplayableString(): String {
-    val now = LocalDateTime.now()
-    val thisInstant = this.toInstant()
-    val nowInstant = now.toInstant()
+    val timeZone = TimeZone.currentSystemDefault()
+    val now = Clock.System.now().toLocalDateTime(timeZone)
+    val thisInstant = this.toInstant(timeZone)
+    val nowInstant = now.toInstant(timeZone)
 
     // Calculate time difference in milliseconds for basic comparison
     val millisDiff = nowInstant.toEpochMilliseconds() - thisInstant.toEpochMilliseconds()
@@ -133,7 +135,7 @@ fun LocalDateTime.toDisplayableString(): String {
  * Check if this LocalDateTime is today
  */
 fun LocalDateTime.isToday(): Boolean {
-    val now = LocalDateTime.now()
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     return this.date == now.date
 }
 
@@ -141,10 +143,11 @@ fun LocalDateTime.isToday(): Boolean {
  * Check if this LocalDateTime is yesterday
  */
 fun LocalDateTime.isYesterday(): Boolean {
-    val now = LocalDateTime.now()
-    val nowMillis = now.toInstant().toEpochMilliseconds()
-    val thisMillis = this.toInstant().toEpochMilliseconds()
-    val diffDays = (nowMillis - thisMillis) / (24 * 60 * 60 * 1000)
+    val now = Clock.System.now()
+    val nowMillis = now.toEpochMilliseconds()
+    val thisMillis = this.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+    val millisecondsPerDay = 24L * 60L * 60L * 1000L
+    val diffDays = (nowMillis - thisMillis) / millisecondsPerDay
     return diffDays == 1L
 }
 

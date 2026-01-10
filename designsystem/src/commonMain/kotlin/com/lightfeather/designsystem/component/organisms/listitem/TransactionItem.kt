@@ -66,13 +66,12 @@ fun TransactionItem(
                 AppImage(
                     model = transaction.category.image,
                     contentDescription = transaction.category.name,
-                    modifier = Modifier.size(AppTheme.dimens.icon.size.large),
                     contentScale = ContentScale.Crop,
                     placeholder = Res.drawable.bank,
                 )
             }
 
-            // Transaction details (description, category, time)
+            // Transaction details (name, category/accounts, time)
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall),
@@ -83,7 +82,7 @@ fun TransactionItem(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = transaction.description,
+                        text = transaction.name,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -108,12 +107,19 @@ fun TransactionItem(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom,
                 ) {
+                    // For transfer, show both accounts; otherwise show category
                     Text(
-                        text = transaction.category.name,
+                        text =
+                            if (transaction.isTransfer && transaction.receiverAccount != null) {
+                                "${transaction.account.name} → ${transaction.receiverAccount.name}"
+                            } else {
+                                transaction.account.name
+                            },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
 
                     Text(
@@ -151,8 +157,9 @@ private fun PreviewTransactionItem() {
             TransactionItem(
                 transaction =
                     UiTransaction.dummy.copy(
+                        name = "Coffee Shop",
                         amount = "-$25.00",
-                        description = "Coffee Shop",
+                        description = "Morning coffee",
                         hasAttachment = true,
                     ),
             )
@@ -160,17 +167,24 @@ private fun PreviewTransactionItem() {
             TransactionItem(
                 transaction =
                     UiTransaction.dummy.copy(
+                        name = "Salary Payment",
                         amount = "+$500.00",
-                        description = "Salary Payment",
+                        description = "Monthly salary",
+                        type = UiTransactionType.INCOME,
                         hasAttachment = false,
                     ),
             )
 
             TransactionItem(
+                transaction = UiTransaction.dummyTransfer,
+            )
+
+            TransactionItem(
                 transaction =
                     UiTransaction.dummy.copy(
+                        name = "Grocery Shopping",
                         amount = "$120.50",
-                        description = "Grocery Store - Weekly Shopping",
+                        description = "Weekly shopping",
                         hasAttachment = false,
                     ),
             )

@@ -27,11 +27,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.TextField
 import com.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import masarify.composeapp.generated.resources.Res
 import masarify.composeapp.generated.resources.bg

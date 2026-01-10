@@ -79,5 +79,6 @@
     <string name="rate_us_description">قيم التطبيق في متجر التطبيقات</string>
     <string name="rate_us_content">أحببت استخدام مصاريفي؟ يرجى تقييمنا في متجر التطبيقات!</string>
     <string name="coming_soon">قريباً</string>
+    <string name="advanced_filters">ترشحيات متقدمة</string>
 
 </resources>

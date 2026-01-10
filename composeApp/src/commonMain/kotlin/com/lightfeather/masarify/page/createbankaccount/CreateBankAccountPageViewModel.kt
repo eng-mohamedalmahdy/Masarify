@@ -3,6 +3,7 @@ package com.lightfeather.masarify.page.createbankaccount
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
@@ -13,7 +14,6 @@ import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.SaveUserColor
 import com.lightfeather.domain.usecase.UpdateAccount
-import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.mappers.toCurrency
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator

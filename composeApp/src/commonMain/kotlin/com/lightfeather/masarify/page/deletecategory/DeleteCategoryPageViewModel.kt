@@ -2,10 +2,10 @@ package com.lightfeather.masarify.page.deletecategory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.usecase.DeleteCategory
-import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.navigation.Navigator
 import kotlinx.coroutines.launch
 

@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.molecules.TextField
@@ -47,7 +48,6 @@ import com.lightfeather.designsystem.theme.rememberAppWindowSizeClass
 import com.lightfeather.designsystem.util.colorToHex
 import com.lightfeather.designsystem.util.parseColor
 import com.lightfeather.designsystem.util.toColorInt
-import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.lightfeather.designsystem.MR as DSMR

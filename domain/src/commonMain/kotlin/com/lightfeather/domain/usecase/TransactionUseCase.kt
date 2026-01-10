@@ -25,8 +25,8 @@ class UpdateTransaction(
 class DeleteTransaction(
     private val transactionRepository: TransactionRepository,
 ) {
-    suspend operator fun invoke(transaction: Transaction): DomainResult<Boolean> =
-        transactionRepository.deleteTransaction(transaction)
+    suspend operator fun invoke(transactionId: Long): DomainResult<Boolean> =
+        transactionRepository.deleteTransaction(transactionId)
 }
 
 class GetTransactionById<T : Transaction>(

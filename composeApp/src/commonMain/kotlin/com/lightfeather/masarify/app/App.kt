@@ -3,6 +3,7 @@ package com.lightfeather.masarify.app
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,7 @@ import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
 import com.lightfeather.designsystem.component.organisms.AppNavigationSuite
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
-import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.AppLanguages
 import com.lightfeather.masarify.PlatformsSlugs
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.di.getAppModules
@@ -61,13 +62,16 @@ import com.lightfeather.masarify.page.deletecategory.DeleteCategoryPage
 import com.lightfeather.masarify.page.more.MorePage
 import com.lightfeather.masarify.page.onboarding.OnBoardingPage
 import com.lightfeather.masarify.page.splash.SplashPage
+import com.lightfeather.masarify.page.transactions.TransactionsPage
 import dev.icerock.moko.resources.desc.StringDesc
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.mp.KoinPlatform
+import kotlin.time.ExperimentalTime
 
 // Main app composable with navigation setup - length is acceptable for app composition
+@OptIn(ExperimentalTime::class)
 @Suppress("LongMethod", "CyclomaticComplexMethod")
 @Composable
 @Preview
@@ -92,7 +96,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
         val mainViewModel = koinViewModel<AppMainViewModel>()
         val isDarkMode by mainViewModel.darkTheme.collectAsState(false)
         val dynamicColor by mainViewModel.dynamicColor.collectAsState(false)
-        val appLanguage by mainViewModel.currentLanguage.collectAsState(AppLanguage.English)
+        val appLanguage by mainViewModel.currentLanguage.collectAsState(AppLanguages.English)
 
         LaunchedEffect(appLanguage) {
             StringDesc.localeType = StringDesc.LocaleType.Custom(appLanguage.code)
@@ -120,7 +124,6 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                         AppTopLevelRoutes.Accounts,
                         AppTopLevelRoutes.More,
                     )
-                val topLevelRoutes = englishTopLevelRoutes
                 val adaptiveInfo = currentWindowAdaptiveInfo()
                 val currentRoute by remember {
                     derivedStateOf {
@@ -131,7 +134,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                 entryStr.contains("SplashRoute") -> SplashRoute
                                 entryStr.contains("DashboardRoute") -> DashboardRoute
                                 entryStr.contains("AccountsRoute") -> AccountsRoute
-                                entryStr.contains("TransactionsRoute") -> TransactionsRoute
+                                entryStr.contains("TransactionsRoute") -> TransactionsRoute()
                                 entryStr.contains("MoreRoute") -> MoreRoute
                                 entryStr.contains("CategoriesRoute") -> CategoriesRoute
                                 entryStr.contains("OnBoardingRoute") -> OnBoardingRoute
@@ -144,7 +147,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                 val navSuiteType by remember(currentRoute) {
                     derivedStateOf {
                         with(adaptiveInfo) {
-                            if (topLevelRoutes.any { topLevelRoute ->
+                            if (englishTopLevelRoutes.any { topLevelRoute ->
                                     currentRoute?.routeName == topLevelRoute.route.routeName
                                 }
                             ) {
@@ -219,7 +222,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                         },
                                 ),
                             content = {
-                                topLevelRoutes.forEach { item ->
+                                englishTopLevelRoutes.forEach { item ->
                                     val isSelected by remember(currentRoute) {
                                         derivedStateOf {
                                             currentRoute?.routeName == item.route.routeName
@@ -241,7 +244,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                         },
                                         selected = isSelected,
                                         onClick = {
-                                            if (topLevelRoutes.any { topLevelRoute ->
+                                            if (englishTopLevelRoutes.any { topLevelRoute ->
                                                     currentRoute?.routeName == topLevelRoute.route.routeName
                                                 }
                                             ) {
@@ -282,7 +285,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                     },
                     layoutType = navSuiteType,
                 ) {
-                    navigator.Display(modifier = Modifier) {
+                    navigator.Display(modifier = Modifier.safeDrawingPadding()) {
                         entry<SplashRoute> {
                             SplashPage()
                         }
@@ -296,8 +299,12 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                         entry<AccountsRoute> {
                             BankAccountsPage()
                         }
-                        entry<TransactionsRoute> {
-                            Text("Transactions Page")
+                        entry<TransactionsRoute> { route ->
+                            TransactionsPage(
+                                openAddDialog = route.openAddDialog,
+                                transactionType = route.transactionType,
+                                fromAccountId = route.fromAccountId,
+                            )
                         }
                         entry<MoreRoute> {
                             MorePage()

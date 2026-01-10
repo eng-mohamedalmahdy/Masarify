@@ -1,23 +1,13 @@
 package com.lightfeather.masarify.di
 
-import com.lightfeather.masarify.template.transactionspane.TransactionsPagingSource
-import com.lightfeather.masarify.template.transactionspane.TransactionsPanePageViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import com.lightfeather.masarify.template.transactionspane.TransactionsPaneViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 actual val frameworkViewModelModule =
     module {
-        factory<() -> TransactionsPagingSource> {
-            { TransactionsPagingSource(get(), get(), it.get()) }
-        }
+        // TransactionsPanePageViewModel removed - pane is now stateless
+        // Paging data source is created in TransactionsPageViewModel
 
-        viewModel {
-            TransactionsPanePageViewModel(
-                getAllTransactionsPaged = get(),
-                getFilteredTransactionsPaged = get(),
-                getTransactionCount = get(),
-                transactionsPagingSourceFactory = get(),
-                sharedDatabase = get(),
-            )
-        }
+        viewModel { TransactionsPaneViewModel(it.get(), get()) }
     }

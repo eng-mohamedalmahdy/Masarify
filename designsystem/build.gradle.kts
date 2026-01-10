@@ -8,11 +8,15 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
-    id("dev.icerock.mobile.multiplatform-resources")
+    alias(libs.plugins.mokoResources)
 
     // Code Quality - ktlint only (detekt is applied globally from root)
     alias(libs.plugins.ktlint)
+}
+
+composeCompiler {
+    // Disable experimental features that may not be supported
+    enableStrongSkippingMode.set(false)
 }
 
 kotlin {

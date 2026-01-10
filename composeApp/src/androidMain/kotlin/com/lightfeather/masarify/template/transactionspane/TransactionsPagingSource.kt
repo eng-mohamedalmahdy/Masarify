@@ -2,7 +2,6 @@ package com.lightfeather.masarify.template.transactionspane
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
@@ -10,8 +9,6 @@ import kotlinx.coroutines.flow.first
 
 class TransactionsPagingSource(
     // Reserved for future direct database access optimization
-    @Suppress("UnusedPrivateProperty")
-    private val sharedDatabase: SharedDatabase,
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
     private val filter: TransactionFilter,
 ) : PagingSource<Int, Transaction>() {

@@ -1,14 +1,15 @@
 package com.lightfeather.masarify.navigation
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.ui.NavDisplay
 
 /**
@@ -44,7 +45,7 @@ fun Navigator.Display(
 ) {
     @Suppress("UNCHECKED_CAST")
     NavDisplay(
-        backStack = backStack as androidx.navigation3.runtime.NavBackStack<NavKey>,
+        backStack = backStack as NavBackStack<NavKey>,
         onBack = onBack,
         modifier = modifier,
         entryProvider = entryProvider(builder = content),
@@ -67,12 +68,12 @@ fun Navigator.Display(
 fun ListDetailNavigator.Display(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = { back() },
-    sceneStrategy: ListDetailSceneStrategy<NavKey> = rememberListDetailSceneStrategy(),
+    sceneStrategy: SceneStrategy<NavKey> = rememberListDetailSceneStrategy(),
     content: EntryProviderScope<NavKey>.() -> Unit,
 ) {
     @Suppress("UNCHECKED_CAST")
     NavDisplay(
-        backStack = backStack as androidx.navigation3.runtime.NavBackStack<NavKey>,
+        backStack = backStack as NavBackStack<NavKey>,
         onBack = onBack,
         sceneStrategy = sceneStrategy,
         modifier = modifier,

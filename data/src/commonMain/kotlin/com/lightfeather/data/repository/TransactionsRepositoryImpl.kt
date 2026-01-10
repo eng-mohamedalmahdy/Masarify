@@ -28,6 +28,12 @@ class TransactionsRepositoryImpl(
 
     override suspend fun createTransaction(transaction: Transaction): DomainResult<Int> =
         runCatchingDomainResultSuspend {
+            val transactionCategories =
+                when (transaction) {
+                    is Transaction.Expense -> transaction.categories
+                    is Transaction.Income -> listOf(transaction.source)
+                    is Transaction.Transfer -> listOf(Category.Transfer)
+                }
             sharedDatabase {
                 val transactionsQueries = it.transactionsQueries
                 transactionsQueries.transactionWithResult {
@@ -39,15 +45,23 @@ class TransactionsRepositoryImpl(
                         timestamp = transaction.timestamp,
                         account_id = transaction.account.id.toLong(),
                     )
-                    transactionsQueries.selectLastInsertedRowId().awaitAsOne().toInt()
+                    val transactionId = transactionsQueries.selectLastInsertedRowId().awaitAsOne()
+
+                    transactionCategories.forEach { category ->
+                        transactionsQueries.insertTransactionCategory(
+                            transaction_id = transactionId,
+                            category_id = category.id.toLong(),
+                        )
+                    }
+                    transactionId.toInt()
                 }
             }
         }
 
-    override suspend fun deleteTransaction(transaction: Transaction): DomainResult<Boolean> =
+    override suspend fun deleteTransaction(transactionId: Long): DomainResult<Boolean> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
-                it.transactionsQueries.deleteTransaction(transaction.id.toLong())
+                it.transactionsQueries.deleteTransaction(transactionId)
             }
             true
         }

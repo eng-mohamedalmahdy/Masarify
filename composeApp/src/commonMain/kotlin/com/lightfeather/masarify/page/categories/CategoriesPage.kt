@@ -25,12 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation3.runtime.NavKey
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.molecules.button.FloatingActionButton
 import com.lightfeather.designsystem.component.organisms.listitem.CategoryListItem
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.theme.AppTheme
-import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.navigation.Display
 import com.lightfeather.masarify.navigation.LocalNavigator
 import com.lightfeather.masarify.navigation.Navigator

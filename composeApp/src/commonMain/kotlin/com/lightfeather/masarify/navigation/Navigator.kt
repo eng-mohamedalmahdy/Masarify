@@ -40,9 +40,13 @@ object PreviewNavigator : Navigator {
         get() = throw UnsupportedOperationException("Navigator not available in Preview")
 
     override fun navigate(route: Route) {}
+
     override fun navigateAndClearBackStack(route: Route) {}
+
     override fun navigateUp() {}
+
     override fun popBackStack() {}
+
     override fun canNavigateBack(): Boolean = false
 
     @Composable
@@ -58,7 +62,10 @@ object PreviewListDetailNavigator : ListDetailNavigator {
         get() = throw UnsupportedOperationException("ListDetailNavigator not available in Preview")
 
     override fun navigateToDetail(key: NavKey) {}
+
     override fun navigateToList() {}
+
     override fun canNavigateBack(): Boolean = false
+
     override fun back() {}
 }

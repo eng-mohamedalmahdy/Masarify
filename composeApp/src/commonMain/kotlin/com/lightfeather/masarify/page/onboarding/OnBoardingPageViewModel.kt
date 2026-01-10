@@ -3,6 +3,7 @@ package com.lightfeather.masarify.page.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.domain.model.Account
 import com.lightfeather.domain.model.Currency
@@ -11,7 +12,6 @@ import com.lightfeather.domain.model.UserData
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.UpsertUserData
-import com.lightfeather.masarify.MR
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import kotlinx.coroutines.Dispatchers

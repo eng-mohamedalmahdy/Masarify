@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppDropMenu
 import com.lightfeather.designsystem.component.molecules.TextField
 import com.lightfeather.designsystem.component.molecules.button.PrimaryButton
@@ -46,7 +47,6 @@ import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.colorToHex
 import com.lightfeather.designsystem.util.parseColor
-import com.lightfeather.masarify.MR
 import dev.icerock.moko.resources.compose.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf

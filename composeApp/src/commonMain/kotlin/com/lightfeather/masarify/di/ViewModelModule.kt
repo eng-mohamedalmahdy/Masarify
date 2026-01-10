@@ -11,6 +11,7 @@ import com.lightfeather.masarify.page.deletecategory.DeleteCategoryPageViewModel
 import com.lightfeather.masarify.page.more.MorePageViewModel
 import com.lightfeather.masarify.page.onboarding.OnBoardingPageViewModel
 import com.lightfeather.masarify.page.splash.SplashPageViewModel
+import com.lightfeather.masarify.page.transactions.TransactionsPageViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -27,6 +28,19 @@ val viewModelModule =
         viewModelOf(::CategoriesPageViewModel)
         viewModelOf(::CurrenciesPageViewModel)
         viewModelOf(::DeleteCategoryPageViewModel)
+        viewModel {
+            TransactionsPageViewModel(
+                getAccountsUseCase = get(),
+                categoriesUseCase = get(),
+                getCurrenciesUseCase = get(),
+                getFilteredTransactionsPaged = get(),
+                getFilteredTransactionCount = get(),
+                createTransactionUseCase = get(),
+                updateTransactionUseCase = get(),
+                deleteTransactionUseCase = get(),
+                sharedDatabase = getOrNull(), // Only available on Android/iOS
+            )
+        }
         viewModel { AddEditCategoryPageViewModel(get(), get(), get(), get(), get(), it.get(), it.get()) }
         viewModel { MorePageViewModel(get(), get()) }
         viewModel { CreateBankAccountPageViewModel(it.get(), get(), get(), get(), get(), get(), get(), get()) }

@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 interface TransactionRepository {
     suspend fun createTransaction(transaction: Transaction): DomainResult<Int>
 
-    suspend fun deleteTransaction(transaction: Transaction): DomainResult<Boolean>
+    suspend fun deleteTransaction(transactionId: Long): DomainResult<Boolean>
 
     suspend fun <T : Transaction> getAllTransactionsOfType(type: KClass<T>): DomainResult<Flow<List<T>>>
 
