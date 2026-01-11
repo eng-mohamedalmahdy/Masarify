@@ -22,6 +22,7 @@ expect fun TransactionsPane(
     title: String,
     filter: UiTransactionFilter?,
     viewModel: TransactionsPaneViewModel = koinViewModel(parameters = { parametersOf(filter?.toTransactionFilter()) }),
+    onAddClick: () -> Unit,
     onBackClick: () -> Unit,
     onTransactionClick: (UiTransaction) -> Unit,
     topBarSupportingContent: @Composable () -> Unit = {},

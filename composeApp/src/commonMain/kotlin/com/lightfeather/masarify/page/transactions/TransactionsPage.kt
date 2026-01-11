@@ -140,6 +140,9 @@ internal fun TransactionsPageContent(
                             listDetailNav.navigateToDetail(ViewTransaction(transaction.toTransaction()))
                         }
                     },
+                    onAddClick = {
+                        onIntent(TransactionsPageIntent.ShowAddDialog)
+                    },
                     topBarSupportingContent = {
                         Column {
                             Row(

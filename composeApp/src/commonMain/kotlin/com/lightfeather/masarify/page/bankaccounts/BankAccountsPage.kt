@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -118,131 +119,136 @@ internal fun BankAccountsPageContent(
         accounts.find { it.id == accountId }
     }
 
-    listDetailNav.Display(
-        sceneStrategy = listDetailStrategy,
-        modifier = Modifier,
-    ) {
-        // List pane entry
-        entry<BankAccountsList>(
-            metadata =
-                ListDetailSceneStrategy.listPane(
-                    detailPlaceholder = {
-                        EmptyState(
-                            title = stringResource(MR.strings.no_account_selected_title),
-                            message = stringResource(MR.strings.no_account_selected_message),
-                            icon = Icons.Outlined.AccountBalance,
-                            modifier = Modifier.fillMaxSize(),
-                        )
-                    },
-                ),
+    key(state) {
+        listDetailNav.Display(
+            sceneStrategy = listDetailStrategy,
+            modifier = Modifier,
         ) {
-            AccountsListPane(
-                accounts = accounts,
-                userAccountsCurrencies = userAccountsCurrencies,
-                totalAmountInSelectedOrDefaultCurrency = state.totalAmountInSelectedOrDefaultCurrency,
-                defaultCurrency = defaultCurrency,
-                selectedCurrency = state.selectedCurrency,
-                selectedAccount = state.selectedAccount,
-                onAddAccount = {
-                    listDetailNav.navigateToDetail(AddBankAccount)
-                },
-                onAccountClick = {
-                    listDetailNav.navigateToDetail(ViewBankAccount(it.id))
-                    onIntent(BankAccountsPageIntent.SelectAccount(it))
-                },
-                onUpdateAccount = {
-                    listDetailNav.navigateToDetail(UpdateBankAccount(it.id))
-                    onIntent(BankAccountsPageIntent.SelectAccount(it))
-                },
-                onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it)) },
-                onCreateTransactionFromAccount = {
-                    onIntent(BankAccountsPageIntent.CreateTransactionInAccount(it))
-                },
-                onTransferFromAccount = {
-                    onIntent(BankAccountsPageIntent.TransferFromAccount(it))
-                },
-                onCurrencyClick = { onIntent(BankAccountsPageIntent.SelectCurrency(it)) },
-            )
-        }
-
-        // Add account detail pane
-        entry<AddBankAccount>(
-            metadata = ListDetailSceneStrategy.detailPane(),
-        ) {
-            CreateBankAccountPage(
-                account = UiBankAccount.empty,
-                onBack = { listDetailNav.back() },
-            )
-        }
-
-        // View account detail pane
-        entry<ViewBankAccount>(
-            metadata = ListDetailSceneStrategy.detailPane(),
-        ) { navKey ->
-
-            val account = findAccount(navKey.accountId)
-
-            if (account != null) {
-                // Show account-specific transactions using TransactionsPane
-                val accountFilter =
-                    uiTransactionFilter {
-                        accountIn(account)
-                    }
-                TransactionsPane(
-                    title = "${account.name} - ${stringResource(MR.strings.transactions)}",
-                    filter = accountFilter,
-                    onBackClick = { listDetailNav.back() },
-                    onTransactionClick = { transaction ->
-                        listDetailNav.navigateToDetail(ViewTransaction(transaction.toTransaction()))
+            // List pane entry
+            entry<BankAccountsList>(
+                metadata =
+                    ListDetailSceneStrategy.listPane(
+                        detailPlaceholder = {
+                            EmptyState(
+                                title = stringResource(MR.strings.no_account_selected_title),
+                                message = stringResource(MR.strings.no_account_selected_message),
+                                icon = Icons.Outlined.AccountBalance,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        },
+                    ),
+            ) {
+                AccountsListPane(
+                    accounts = accounts,
+                    userAccountsCurrencies = userAccountsCurrencies,
+                    totalAmountInSelectedOrDefaultCurrency = state.totalAmountInSelectedOrDefaultCurrency,
+                    defaultCurrency = defaultCurrency,
+                    selectedCurrency = state.selectedCurrency,
+                    selectedAccount = state.selectedAccount,
+                    onAddAccount = {
+                        listDetailNav.navigateToDetail(AddBankAccount)
                     },
-                    topBarSupportingContent = {},
-                )
-            } else {
-                EmptyState(
-                    title = stringResource(MR.strings.no_account_selected_title),
-                    message = stringResource(MR.strings.no_account_selected_message),
-                    icon = Icons.Outlined.AccountBalance,
-                    modifier = Modifier.fillMaxSize(),
+                    onAccountClick = {
+                        listDetailNav.navigateToDetail(ViewBankAccount(it.id))
+                        onIntent(BankAccountsPageIntent.SelectAccount(it))
+                    },
+                    onUpdateAccount = {
+                        listDetailNav.navigateToDetail(UpdateBankAccount(it.id))
+                        onIntent(BankAccountsPageIntent.SelectAccount(it))
+                    },
+                    onDeleteAccount = { onIntent(BankAccountsPageIntent.DeleteBankAccount(it)) },
+                    onCreateTransactionFromAccount = {
+                        onIntent(BankAccountsPageIntent.CreateTransactionInAccount(it))
+                    },
+                    onTransferFromAccount = {
+                        onIntent(BankAccountsPageIntent.TransferFromAccount(it))
+                    },
+                    onCurrencyClick = { onIntent(BankAccountsPageIntent.SelectCurrency(it)) },
                 )
             }
-        }
-        entry<ViewTransaction>(
-            metadata = ListDetailSceneStrategy.extraPane(),
-        ) { navKey ->
-            val transaction = navKey.transaction?.toUiTransaction()
-            if (transaction != null) {
-                TransactionDetailView(
-                    transaction = transaction,
-                    onEdit = { onIntent(BankAccountsPageIntent.UpdateTransaction(transaction)) },
-                    onDelete = { onIntent(BankAccountsPageIntent.DeleteTransaction(transaction)) },
-                    onDuplicate = { onIntent(BankAccountsPageIntent.DuplicateTransaction(transaction)) },
-                )
-            } else {
-                EmptyState(
-                    title = stringResource(MR.strings.no_transaction_selected_title),
-                    message = stringResource(MR.strings.no_transaction_selected_message),
-                    icon = Icons.Outlined.Receipt,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
-        }
-        // Update account detail pane
-        entry<UpdateBankAccount>(
-            metadata = ListDetailSceneStrategy.detailPane(),
-        ) { navKey ->
-            val account = findAccount(navKey.accountId)
-            if (account != null) {
+
+            // Add account detail pane
+            entry<AddBankAccount>(
+                metadata = ListDetailSceneStrategy.detailPane(),
+            ) {
                 CreateBankAccountPage(
-                    account = account,
+                    account = UiBankAccount.empty,
                     onBack = { listDetailNav.back() },
                 )
-            } else {
-                EmptyState(
-                    title = stringResource(MR.strings.no_account_selected_title),
-                    message = stringResource(MR.strings.no_account_selected_message),
-                    icon = Icons.Outlined.AccountBalance,
-                    modifier = Modifier.fillMaxSize(),
-                )
+            }
+
+            // View account detail pane
+            entry<ViewBankAccount>(
+                metadata = ListDetailSceneStrategy.detailPane(),
+            ) { navKey ->
+
+                val account = findAccount(navKey.accountId)
+
+                if (account != null) {
+                    // Show account-specific transactions using TransactionsPane
+                    val accountFilter =
+                        uiTransactionFilter {
+                            accountIn(account)
+                        }
+                    TransactionsPane(
+                        title = "${account.name} - ${stringResource(MR.strings.transactions)}",
+                        filter = accountFilter,
+                        onBackClick = { listDetailNav.back() },
+                        onTransactionClick = { transaction ->
+                            listDetailNav.navigateToDetail(ViewTransaction(transaction.toTransaction()))
+                        },
+                        onAddClick = {
+                            onIntent(BankAccountsPageIntent.CreateTransactionInAccount(account))
+                        },
+                        topBarSupportingContent = {},
+                    )
+                } else {
+                    EmptyState(
+                        title = stringResource(MR.strings.no_account_selected_title),
+                        message = stringResource(MR.strings.no_account_selected_message),
+                        icon = Icons.Outlined.AccountBalance,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
+            entry<ViewTransaction>(
+                metadata = ListDetailSceneStrategy.extraPane(),
+            ) { navKey ->
+                val transaction = navKey.transaction?.toUiTransaction()
+                if (transaction != null) {
+                    TransactionDetailView(
+                        transaction = transaction,
+                        onEdit = { onIntent(BankAccountsPageIntent.UpdateTransaction(transaction)) },
+                        onDelete = { onIntent(BankAccountsPageIntent.DeleteTransaction(transaction)) },
+                        onDuplicate = { onIntent(BankAccountsPageIntent.DuplicateTransaction(transaction)) },
+                    )
+                } else {
+                    EmptyState(
+                        title = stringResource(MR.strings.no_transaction_selected_title),
+                        message = stringResource(MR.strings.no_transaction_selected_message),
+                        icon = Icons.Outlined.Receipt,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
+            // Update account detail pane
+            entry<UpdateBankAccount>(
+                metadata = ListDetailSceneStrategy.detailPane(),
+            ) { navKey ->
+                val account = findAccount(navKey.accountId)
+                if (account != null) {
+                    CreateBankAccountPage(
+                        account = account,
+                        onBack = { listDetailNav.back() },
+                    )
+                } else {
+                    EmptyState(
+                        title = stringResource(MR.strings.no_account_selected_title),
+                        message = stringResource(MR.strings.no_account_selected_message),
+                        icon = Icons.Outlined.AccountBalance,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
     }
@@ -432,45 +438,45 @@ private fun AccountsListPane(
                         BankAccountItem(
                             account,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clip(animatedCardShape)
-                                    .drawWithContent {
-                                        // Draw the card content first
-                                        drawContent()
+                                Modifier.applyIf(
+                                    isMobile.not(), Modifier.fillMaxWidth()
+                                        .clip(animatedCardShape)
+                                        .drawWithContent {
+                                            // Draw the card content first
+                                            drawContent()
 
-                                        // Only draw border if selected (stroke width > 0)
-                                        if (animatedStrokeWidth.value > 0f) {
-                                            // Draw the complete border with triangular connector
-                                            val strokeWidth = animatedStrokeWidth.toPx()
-                                            val cut = with(density) { animatedCutSize.toPx() }
-                                            val triangleTopY = size.height * animatedTrianglePosition
-                                            val triangleCenterY = triangleTopY + cut / 2f
-                                            val triangleBottomY = triangleTopY + cut
+                                            // Only draw border if selected (stroke width > 0)
+                                            if (animatedStrokeWidth.value > 0f) {
+                                                // Draw the complete border with triangular connector
+                                                val strokeWidth = animatedStrokeWidth.toPx()
+                                                val cut = with(density) { animatedCutSize.toPx() }
+                                                val triangleTopY = size.height * animatedTrianglePosition
+                                                val triangleCenterY = triangleTopY + cut / 2f
+                                                val triangleBottomY = triangleTopY + cut
 
-                                            // Create a path that follows the exact same shape as the clip
-                                            val borderPath =
-                                                Path().apply {
-                                                    // Start from top-right
-                                                    moveTo(size.width, 0f)
-                                                    // Draw down to the start of the inward cut
-                                                    lineTo(size.width, triangleTopY)
-                                                    // Draw the inward triangular cut (pointing inward to the left)
-                                                    lineTo(size.width - cut, triangleCenterY)
-                                                    // Complete the triangle by going back to the right edge
-                                                    lineTo(size.width, triangleBottomY)
-                                                    // Draw down to bottom-right corner
-                                                    lineTo(size.width, size.height)
-                                                }
+                                                // Create a path that follows the exact same shape as the clip
+                                                val borderPath =
+                                                    Path().apply {
+                                                        // Start from top-right
+                                                        moveTo(size.width, 0f)
+                                                        // Draw down to the start of the inward cut
+                                                        lineTo(size.width, triangleTopY)
+                                                        // Draw the inward triangular cut (pointing inward to the left)
+                                                        lineTo(size.width - cut, triangleCenterY)
+                                                        // Complete the triangle by going back to the right edge
+                                                        lineTo(size.width, triangleBottomY)
+                                                        // Draw down to bottom-right corner
+                                                        lineTo(size.width, size.height)
+                                                    }
 
-                                            // Draw the border path
-                                            drawPath(
-                                                path = borderPath,
-                                                color = primaryColor,
-                                                style = Stroke(width = strokeWidth),
-                                            )
-                                        }
-                                    },
+                                                // Draw the border path
+                                                drawPath(
+                                                    path = borderPath,
+                                                    color = primaryColor,
+                                                    style = Stroke(width = strokeWidth),
+                                                )
+                                            }
+                                        }),
                             shape = RectangleShape,
                             onClick = { onAccountClick(account) },
                             onTransfer = { onTransferFromAccount(account) },

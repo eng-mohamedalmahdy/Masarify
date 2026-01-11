@@ -36,6 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationEventHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppDropMenu
 import com.lightfeather.designsystem.component.molecules.TextField
@@ -62,10 +65,20 @@ fun CreateBankAccountPage(
     onBack: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
+
+    val navigationState = rememberNavigationEventState(NavigationEventInfo.None)
+
+    NavigationEventHandler(navigationState) {
+        viewModel.resetState()
+        onBack()
+    }
     CreateBankAccountPageContent(
         state = state,
         onIntent = viewModel::onIntent,
-        onBack = onBack,
+        onBack = {
+            viewModel.resetState()
+            onBack()
+        },
     )
 }
 

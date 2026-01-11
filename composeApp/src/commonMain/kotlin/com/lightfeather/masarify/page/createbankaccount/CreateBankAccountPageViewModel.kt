@@ -112,6 +112,7 @@ class CreateBankAccountPageViewModel(
                     )
                 }
             }
+
             is CreateBankAccountPageIntent.SaveColor -> {
                 saveColor(intent.color)
                 _state.value = _state.value.copy(savedColors = getUserSavedColors())
@@ -150,6 +151,8 @@ class CreateBankAccountPageViewModel(
                     updateAccount.invoke(resultAccount).fold(
                         onSuccess = {
                             SnackbarService.sendSuccessMessage(MR.strings.account_update_success)
+                            resetState()
+                            resetState()
                             navigator.navigateUp()
                         },
                         onFailure = { error ->
@@ -160,6 +163,7 @@ class CreateBankAccountPageViewModel(
                     createAccount.invoke(resultAccount).fold(
                         onSuccess = {
                             SnackbarService.sendSuccessMessage(MR.strings.account_create_success)
+                            resetState()
                             navigator.navigateUp()
                         },
                         onFailure = { error ->
@@ -183,4 +187,8 @@ class CreateBankAccountPageViewModel(
             !state.inEditMode && state.initialBalance.toDoubleOrNull() == null -> MR.strings.account_balance_invalid
             else -> null
         }
+
+    fun resetState() {
+        _state.value = CreateBankAccountPageState()
+    }
 }
