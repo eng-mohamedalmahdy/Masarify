@@ -168,6 +168,7 @@ class AddEditCategoryPageViewModel(
                             MR.strings.category_created_success
                         },
                     )
+                    _state.value = AddEditCategoryPageState()
                     onBackCallback()
                 },
                 onFailure = { error ->
