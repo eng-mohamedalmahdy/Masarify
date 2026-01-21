@@ -15,23 +15,18 @@ import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.domain.usecase.GetAllCurrencies
-import com.lightfeather.domain.usecase.GetFilteredTransactionCount
-import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.mappers.toAccount
 import com.lightfeather.masarify.mappers.toCategory
 import com.lightfeather.masarify.mappers.toDomainTransaction
-import com.lightfeather.masarify.mappers.toTransactionFilter
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCategory
 import com.lightfeather.masarify.mappers.toUiCurrency
-import com.lightfeather.masarify.mappers.toUiTransaction
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toInstant
@@ -49,28 +44,13 @@ class TransactionsPageViewModel(
     private val getAccountsUseCase: GetAllAccounts,
     private val categoriesUseCase: GetAllCategories,
     private val getCurrenciesUseCase: GetAllCurrencies,
-    private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
-    private val getFilteredTransactionCount: GetFilteredTransactionCount,
     private val createTransactionUseCase: CreateTransaction,
     private val updateTransactionUseCase: UpdateTransaction,
     private val deleteTransactionUseCase: DeleteTransaction,
-    private val sharedDatabase: Any? = null, // SharedDatabase for Android/iOS paging
 ) : ViewModel() {
     private val _transactions = MutableStateFlow<List<UiTransaction>>(emptyList())
     private val _state = MutableStateFlow(TransactionsPageState(transactions = _transactions))
     val state: StateFlow<TransactionsPageState> = _state.asStateFlow()
-
-    /**
-     * Create paging data source for Android/iOS platforms
-     * Returns null for JVM/WasmJS which use manual pagination
-     */
-    val pagingDataSource: Any? =
-        sharedDatabase?.let {
-            com.lightfeather.masarify.template.transactionspane.TransactionsPagingData(
-                getFilteredTransactionsPaged = getFilteredTransactionsPaged,
-                sharedDatabase = it,
-            )
-        }
 
     /**
      * Handle user intents
@@ -140,9 +120,6 @@ class TransactionsPageViewModel(
                     SnackbarService.sendErrorMessage(MR.strings.currency_fetch_failure)
                 },
             )
-
-            // Load transactions with current filter and pagination
-            loadTransactionsWithFilter()
         }
     }
 
@@ -152,7 +129,6 @@ class TransactionsPageViewModel(
 
     private fun updateFilter(filter: UiTransactionFilter) {
         _state.update { it.copy(filter = filter, currentPage = 0) }
-        loadTransactionsWithFilter()
     }
 
     @OptIn(ExperimentalTime::class)
@@ -212,7 +188,6 @@ class TransactionsPageViewModel(
 
     private fun changePage(page: Int) {
         _state.update { it.copy(currentPage = page) }
-        loadTransactionsWithFilter()
     }
 
     private fun changePageSize(size: PageSize) {
@@ -222,7 +197,6 @@ class TransactionsPageViewModel(
                 currentPage = 0,
             )
         }
-        loadTransactionsWithFilter()
     }
 
     private fun nextPage() {
@@ -319,7 +293,6 @@ class TransactionsPageViewModel(
                                 lockedFromAccount = null,
                             )
                         }
-                        loadTransactionsWithFilter()
                     },
                     onFailure = { error ->
                         SnackbarService.sendErrorMessage(MR.strings.transaction_create_failure)
@@ -355,7 +328,6 @@ class TransactionsPageViewModel(
                                     lockedFromAccount = null,
                                 )
                             }
-                            loadTransactionsWithFilter()
                         } else {
                             SnackbarService.sendErrorMessage(MR.strings.transaction_update_failure)
                             _state.update { it.copy(isLoading = false) }
@@ -462,7 +434,6 @@ class TransactionsPageViewModel(
                                     selectedTransaction = null,
                                 )
                             }
-                            loadTransactionsWithFilter()
                         } else {
                             SnackbarService.sendErrorMessage(MR.strings.transaction_delete_failure)
                             _state.update { it.copy(isLoading = false) }
@@ -487,46 +458,6 @@ class TransactionsPageViewModel(
             it.copy(
                 showAddEditDialog = true,
                 editingTransaction = transaction.copy(id = ""),
-            )
-        }
-    }
-
-    private fun loadTransactionsWithFilter() {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-
-            // Convert UI filter to domain filter
-            val domainFilter = _state.value.filter.toTransactionFilter()
-            val currentPage = _state.value.currentPage
-
-            // Get filtered transaction count
-            getFilteredTransactionCount(domainFilter).fold(
-                onSuccess = { count ->
-                    _state.update { it.copy(totalCount = count) }
-                },
-                onFailure = { error ->
-                    SnackbarService.sendErrorMessage(MR.strings.transaction_fetch_failure)
-                    _state.update { it.copy(isLoading = false) }
-                    return@fold
-                },
-            )
-
-            // Get paginated filtered transactions
-            getFilteredTransactionsPaged(domainFilter, currentPage).foldSuspend(
-                onSuccess = { pagedDataFlow ->
-                    // Take only first emission to prevent collection leak
-                    pagedDataFlow.take(1).collect { pagedData ->
-                        val uiTransactions = pagedData.data.map { it.toUiTransaction() }
-                        println("loadTransactionsWithFilter: Loaded ${uiTransactions.size} transactions")
-                        // Emit to transactions Flow
-                        _transactions.value = uiTransactions
-                        _state.update { it.copy(isLoading = false) }
-                    }
-                },
-                onFailure = { error ->
-                    SnackbarService.sendErrorMessage(MR.strings.transaction_fetch_failure)
-                    _state.update { it.copy(isLoading = false) }
-                },
             )
         }
     }

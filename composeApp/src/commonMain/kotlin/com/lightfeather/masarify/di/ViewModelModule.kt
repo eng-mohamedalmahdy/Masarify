@@ -33,12 +33,9 @@ val viewModelModule =
                 getAccountsUseCase = get(),
                 categoriesUseCase = get(),
                 getCurrenciesUseCase = get(),
-                getFilteredTransactionsPaged = get(),
-                getFilteredTransactionCount = get(),
                 createTransactionUseCase = get(),
                 updateTransactionUseCase = get(),
                 deleteTransactionUseCase = get(),
-                sharedDatabase = getOrNull(), // Only available on Android/iOS
             )
         }
         viewModel { AddEditCategoryPageViewModel(get(), get(), get(), get(), get(), it.get(), it.get()) }
