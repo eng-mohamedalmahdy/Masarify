@@ -10,7 +10,7 @@ actual val frameworkViewModelModule: Module =
         viewModel {
             TransactionsPaneViewModel(
                 filter = it.get(),
-                getFilteredTransactions = get()
+                getFilteredTransactions = get(),
             )
         }
     }

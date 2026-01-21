@@ -38,8 +38,7 @@ class BankAccountsPageViewModel(
     private val exchangeRates: GetAllCurrenciesExchangeRates,
     private val deleteTransaction: DeleteTransaction,
     private val updateTransaction: UpdateTransaction,
-
-    ) : ViewModel() {
+) : ViewModel() {
     private val _state =
         MutableStateFlow(
             BankAccountsPageState(
@@ -130,7 +129,11 @@ class BankAccountsPageViewModel(
 
             BankAccountsPageIntent.ConfirmDeleteTransaction -> {
                 viewModelScope.launch {
-                    deleteTransaction(_state.value.underProcessTransaction!!.id.toLong()).fold(
+                    deleteTransaction(
+                        _state.value.underProcessTransaction!!
+                            .id
+                            .toLong(),
+                    ).fold(
                         onSuccess = {
                             _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
                             SnackbarService.sendSuccessMessage(MR.strings.transaction_delete_success)
@@ -138,7 +141,7 @@ class BankAccountsPageViewModel(
                         onFailure = {
                             _state.value = _state.value.copy(showAddEditDialog = false)
                             SnackbarService.sendErrorMessage(MR.strings.transaction_delete_failure)
-                        }
+                        },
                     )
                 }
             }
@@ -153,7 +156,7 @@ class BankAccountsPageViewModel(
                         onFailure = {
                             _state.value = _state.value.copy(showAddEditDialog = false)
                             SnackbarService.sendErrorMessage(MR.strings.transaction_update_failure)
-                        }
+                        },
                     )
                 }
             }
@@ -174,34 +177,39 @@ class BankAccountsPageViewModel(
         val selectedCurrencyFlow = _state.map { it.selectedCurrency }
 
         // 1. Get the Raw Accounts Flow (Source of Truth)
-        val rawAccountsFlow = getAllAccounts().foldResult(
-            onSuccess = { it },
-            onFailure = { flowOf(emptyList()) }
-        )
+        val rawAccountsFlow =
+            getAllAccounts().foldResult(
+                onSuccess = { it },
+                onFailure = { flowOf(emptyList()) },
+            )
 
         // 2. Get the Wealth/Total flow
-        val wealthInAllCurrenciesFlow = getWealthWorthInCurrency().foldResult(
-            onSuccess = { it },
-            onFailure = { flowOf(emptyList()) }
-        )
+        val wealthInAllCurrenciesFlow =
+            getWealthWorthInCurrency().foldResult(
+                onSuccess = { it },
+                onFailure = { flowOf(emptyList()) },
+            )
 
         // 3. Get Exchange Rates
-        val exchangeRatesFlow = exchangeRates().foldResult(
-            onSuccess = { it },
-            onFailure = { flowOf(emptyList()) }
-        )
+        val exchangeRatesFlow =
+            exchangeRates().foldResult(
+                onSuccess = { it },
+                onFailure = { flowOf(emptyList()) },
+            )
 
         // Total Amount Calculation
         viewModelScope.launch(Dispatchers.IoDispatcher) {
             combine(selectedCurrencyFlow, wealthInAllCurrenciesFlow) { selected, wealth ->
                 selected to wealth
             }.collect { (selectedCurrency, wealthList) ->
-                val selectedCurrencyWealth = wealthList.find { it.currency.toUiCurrency() == selectedCurrency }
-                    ?: wealthList.firstOrNull()
+                val selectedCurrencyWealth =
+                    wealthList.find { it.currency.toUiCurrency() == selectedCurrency }
+                        ?: wealthList.firstOrNull()
 
-                _state.value = _state.value.copy(
-                    totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString()
-                )
+                _state.value =
+                    _state.value.copy(
+                        totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString(),
+                    )
             }
         }
 
@@ -211,25 +219,26 @@ class BankAccountsPageViewModel(
                 Triple(accounts, selectedCurrency, rates)
             }.distinctUntilChanged().collectLatest { (accounts, selectedCurrency, rates) ->
 
-                val mappedAccounts = if (selectedCurrency == null) {
-                    // If no currency selected, just show original balances
-                    accounts.map { it.toUiBankAccount() }
-                } else {
-                    // Convert ALWAYS from the original account balance
-                    accounts.map { account ->
-                        val uiAccount = account.toUiBankAccount()
-                        val rateEntry =
-                            rates.find {
-                                it.from.id.toString() == uiAccount.currency.id &&
-                                    it.to.id.toString() == selectedCurrency.id
-                            }
+                val mappedAccounts =
+                    if (selectedCurrency == null) {
+                        // If no currency selected, just show original balances
+                        accounts.map { it.toUiBankAccount() }
+                    } else {
+                        // Convert ALWAYS from the original account balance
+                        accounts.map { account ->
+                            val uiAccount = account.toUiBankAccount()
+                            val rateEntry =
+                                rates.find {
+                                    it.from.id.toString() == uiAccount.currency.id &&
+                                        it.to.id.toString() == selectedCurrency.id
+                                }
 
-                        uiAccount.copy(
-                            balance = (uiAccount.balance.toDouble() * (rateEntry?.rate ?: 1.0)).toString(),
-                            currency = selectedCurrency
-                        )
+                            uiAccount.copy(
+                                balance = (uiAccount.balance.toDouble() * (rateEntry?.rate ?: 1.0)).toString(),
+                                currency = selectedCurrency,
+                            )
+                        }
                     }
-                }
 
                 // Update the state with a fresh Flow of the calculated list
                 _state.value = _state.value.copy(bankAccounts = flowOf(mappedAccounts))

@@ -111,7 +111,6 @@ internal fun TransactionsPageContent(
             sceneStrategy = listDetailStrategy,
             modifier = Modifier,
         ) {
-
             // List pane entry
             entry<TransactionsList>(
                 metadata =
@@ -132,7 +131,6 @@ internal fun TransactionsPageContent(
                 TransactionsPane(
                     title = stringResource(MR.strings.transactions_title),
                     filter = state.filter,
-
                     onBackClick = { listDetailNav.back() },
                     onTransactionClick = { transaction ->
                         val transaction = findTransaction(transaction.id)

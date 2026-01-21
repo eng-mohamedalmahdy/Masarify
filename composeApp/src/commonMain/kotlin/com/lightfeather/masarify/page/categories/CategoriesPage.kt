@@ -122,7 +122,9 @@ internal fun CategoriesPageContent(
                     key = "edit_category_${navKey.categoryId}",
                     parameters = {
                         parametersOf(
-                            { listDetailNav.back() },
+                            {
+                                listDetailNav.back()
+                            },
                             category,
                         )
                     },

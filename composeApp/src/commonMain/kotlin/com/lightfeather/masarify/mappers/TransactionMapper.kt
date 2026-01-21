@@ -46,9 +46,7 @@ fun Transaction.toUiTransaction(): UiTransaction {
 }
 
 @OptIn(ExperimentalTime::class)
-fun UiTransaction.toTransactionIncome(
-    attachments: List<Attachment> = emptyList(),
-): Transaction.Income =
+fun UiTransaction.toTransactionIncome(attachments: List<Attachment> = emptyList()): Transaction.Income =
     Transaction.Income(
         id = id.toIntOrNull() ?: -1,
         name = description,
@@ -61,9 +59,7 @@ fun UiTransaction.toTransactionIncome(
     )
 
 @OptIn(ExperimentalTime::class)
-fun UiTransaction.toTransactionExpense(
-    attachments: List<Attachment> = emptyList(),
-): Transaction.Expense =
+fun UiTransaction.toTransactionExpense(attachments: List<Attachment> = emptyList()): Transaction.Expense =
     Transaction.Expense(
         id = id.toIntOrNull() ?: -1,
         name = description,
@@ -89,11 +85,12 @@ fun UiTransaction.toTransactionTransfer(attachments: List<Attachment> = emptyLis
         attachments = attachments,
     )
 
-fun UiTransaction.toTransaction() = when (type) {
-    UiTransactionType.EXPENSE -> toTransactionExpense()
-    UiTransactionType.INCOME -> toTransactionIncome()
-    UiTransactionType.TRANSFER -> toTransactionTransfer()
-}
+fun UiTransaction.toTransaction() =
+    when (type) {
+        UiTransactionType.EXPENSE -> toTransactionExpense()
+        UiTransactionType.INCOME -> toTransactionIncome()
+        UiTransactionType.TRANSFER -> toTransactionTransfer()
+    }
 
 private fun parseAmount(amountString: String): Double =
     amountString

@@ -100,14 +100,16 @@ internal fun BankAccountsPageContent(
     val listDetailNav = navigator.forListDetail(BankAccountsList)
 
     // Create list-detail scene strategy for adaptive layout
-    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(
-        directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo(true)),
-        adaptStrategies = ListDetailPaneScaffoldDefaults.adaptStrategies(
-            detailPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Primary),
-            listPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Secondary),
-            extraPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Tertiary)
+    val listDetailStrategy =
+        rememberListDetailSceneStrategy<NavKey>(
+            directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo(true)),
+            adaptStrategies =
+                ListDetailPaneScaffoldDefaults.adaptStrategies(
+                    detailPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Primary),
+                    listPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Secondary),
+                    extraPaneAdaptStrategy = AdaptStrategy.Reflow(ThreePaneScaffoldRole.Tertiary),
+                ),
         )
-    )
 
     // Collect state flows
     val accounts by state.bankAccounts.collectAsState(emptyList())
@@ -439,7 +441,9 @@ private fun AccountsListPane(
                             account,
                             modifier =
                                 Modifier.applyIf(
-                                    isMobile.not(), Modifier.fillMaxWidth()
+                                    isMobile.not(),
+                                    Modifier
+                                        .fillMaxWidth()
                                         .clip(animatedCardShape)
                                         .drawWithContent {
                                             // Draw the card content first
@@ -476,7 +480,8 @@ private fun AccountsListPane(
                                                     style = Stroke(width = strokeWidth),
                                                 )
                                             }
-                                        }),
+                                        },
+                                ),
                             shape = RectangleShape,
                             onClick = { onAccountClick(account) },
                             onTransfer = { onTransferFromAccount(account) },

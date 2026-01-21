@@ -85,6 +85,7 @@ class AddEditCategoryPageViewModel(
 
             is AddEditCategoryPageIntent.Cancel -> {
                 onBackCallback()
+                _state.value = AddEditCategoryPageState()
             }
 
             is AddEditCategoryPageIntent.SaveRecentColor -> {

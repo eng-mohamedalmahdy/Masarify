@@ -37,12 +37,10 @@ actual fun TransactionsPane(
     val isFiltered = filter != null && !filter.isEmpty()
 
     Box {
-
         // Supporting content (title, filter button) provided by parent
         topBarSupportingContent()
 
         when {
-
             isEmpty && !isLoading -> {
                 EmptyState(
                     title =

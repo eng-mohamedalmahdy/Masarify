@@ -1,10 +1,16 @@
 package com.lightfeather.masarify.di
 
+import com.lightfeather.masarify.template.transactionspane.TransactionsPaneViewModel
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 actual val frameworkViewModelModule: Module =
     module {
-        // TransactionsPanePageViewModel removed - pane is now stateless
-        // All state and logic is managed by TransactionsPageViewModel
+        viewModel {
+            TransactionsPaneViewModel(
+                filter = it.get(),
+                getFilteredTransactions = get(),
+            )
+        }
     }

@@ -7,21 +7,43 @@ import com.lightfeather.designsystem.model.UiTransaction
 internal sealed interface BankAccountsPageIntent {
     data object LoadData : BankAccountsPageIntent
 
-    data class DeleteBankAccount(val account: UiBankAccount) : BankAccountsPageIntent
+    data class DeleteBankAccount(
+        val account: UiBankAccount,
+    ) : BankAccountsPageIntent
 
-    data class CreateTransactionInAccount(val account: UiBankAccount) : BankAccountsPageIntent
+    data class CreateTransactionInAccount(
+        val account: UiBankAccount,
+    ) : BankAccountsPageIntent
 
-    data class TransferFromAccount(val account: UiBankAccount) : BankAccountsPageIntent
+    data class TransferFromAccount(
+        val account: UiBankAccount,
+    ) : BankAccountsPageIntent
 
-    data class SelectCurrency(val currency: UiCurrency?) : BankAccountsPageIntent
+    data class SelectCurrency(
+        val currency: UiCurrency?,
+    ) : BankAccountsPageIntent
 
-    data class SelectAccount(val account: UiBankAccount) : BankAccountsPageIntent
+    data class SelectAccount(
+        val account: UiBankAccount,
+    ) : BankAccountsPageIntent
 
-    data class UpdateTransaction(val transaction: UiTransaction) : BankAccountsPageIntent
-    data class DeleteTransaction(val transaction: UiTransaction) : BankAccountsPageIntent
-    data class DuplicateTransaction(val transaction: UiTransaction) : BankAccountsPageIntent
+    data class UpdateTransaction(
+        val transaction: UiTransaction,
+    ) : BankAccountsPageIntent
+
+    data class DeleteTransaction(
+        val transaction: UiTransaction,
+    ) : BankAccountsPageIntent
+
+    data class DuplicateTransaction(
+        val transaction: UiTransaction,
+    ) : BankAccountsPageIntent
+
     data object ConfirmDeleteTransaction : BankAccountsPageIntent
+
     data object CancelDeleteTransaction : BankAccountsPageIntent
+
     data object ConfirmUpdateTransaction : BankAccountsPageIntent
+
     data object CancelUpdateTransaction : BankAccountsPageIntent
 }

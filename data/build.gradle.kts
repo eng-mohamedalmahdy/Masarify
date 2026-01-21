@@ -105,6 +105,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.sqldelight.android)
+                implementation(libs.sqldelight.paging3.extensions)
                 implementation(libs.koin.android)
                 implementation(libs.ktor.client.cio)
             }
@@ -126,6 +127,7 @@ kotlin {
         nativeMain {
             dependencies {
                 implementation(libs.sqldelight.native)
+                implementation(libs.sqldelight.paging3.extensions)
             }
         }
 

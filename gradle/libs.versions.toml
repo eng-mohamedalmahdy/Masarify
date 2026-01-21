@@ -7,23 +7,23 @@ androidx-activity = "1.10.1"
 androidx-appcompat = "1.7.1"
 androidx-core = "1.16.0"
 androidx-espresso = "3.6.1"
-androidx-lifecycle = "2.9.1"
-androidx-lifecycle-navigation3 = "2.10.0-alpha06"
+androidx-lifecycle = "2.9.6"
+androidx-lifecycle-navigation3 = "2.10.0-alpha07"
 androidx-testExt = "1.2.1"
-composeHotReload = "1.0.0-beta04"
-composeMultiplatform = "1.10.0-rc02"
+composeHotReload = "1.0.0"
+composeMultiplatform = "1.10.0"
 junit = "4.13.2"
-kotlin = "2.2.20"
+kotlin = "2.3.0"
 kotlinx-coroutines = "1.10.2"
-kotlinStdlib = "2.2.20"
+kotlinStdlib = "2.3.0"
 runner = "1.7.0"
 core = "1.7.0"
 kotlinxSerialization = "1.9.0"
 coroutines = "1.10.2"
-sqldelight = "2.1.0"
+sqldelight = "2.2.1"
 sqlJs = "1.8.0"
 webPackPlugin = "9.1.0"
-koin = "4.0.0"
+koin = "4.1.1"
 materialKolor = "3.0.1"
 uiTooling = "1.9.0"
 iconsExtended = "1.7.3"
@@ -66,6 +66,7 @@ sqldelight-webworker-driver = { module = "app.cash.sqldelight:web-worker-driver"
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-sqlite-dialect = { module = "app.cash.sqldelight:sqlite-3-18-dialect", version.ref = "sqldelight" }
 sqldelight-sqlite-json = { module = "app.cash.sqldelight:sqlite-json-module", version.ref = "sqldelight" }
+sqldelight-paging3-extensions = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-composeVM = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
@@ -167,5 +168,5 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 mokoResources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "resources" }
 
 # Code Quality Plugins
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.2" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "14.0.1" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

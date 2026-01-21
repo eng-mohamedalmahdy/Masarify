@@ -2,21 +2,51 @@ package com.lightfeather.masarify.template.transactionspane
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.lightfeather.data.local.database.drivers.SharedDatabase
+import com.lightfeather.data.util.IoDispatcher
+import com.lightfeather.domain.model.PagedData
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
+/**
+ * PagingSource that supports realtime database updates.
+ * When the database changes, it invalidates itself to trigger a refresh.
+ */
 class TransactionsPagingSource(
-    // Reserved for future direct database access optimization
-    @Suppress("UnusedPrivateProperty")
-    private val sharedDatabase: SharedDatabase,
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
     private val filter: TransactionFilter,
 ) : PagingSource<Int, Transaction>() {
     companion object {
         const val PAGE_SIZE = 20
+    }
+
+    private val scope = CoroutineScope(Dispatchers.IoDispatcher + Job())
+    private var observerJob: Job? = null
+
+    init {
+        // Observe the first page for database changes to trigger invalidation
+        observerJob =
+            scope.launch {
+                val result = getFilteredTransactionsPaged(filter, 0)
+                result.foldResult(
+                    onSuccess = { pagedDataFlow ->
+                        var previousData: PagedData<Transaction>? = null
+                        pagedDataFlow.collect { pagedData ->
+                            // Invalidate if data changed (excluding first emission)
+                            if (previousData != null && previousData != pagedData) {
+                                invalidate()
+                            }
+                            previousData = pagedData
+                        }
+                    },
+                    onFailure = { /* Ignore errors in observer */ },
+                )
+            }
     }
 
     // Paging library requires catching all exceptions to return LoadResult.Error
@@ -28,13 +58,13 @@ class TransactionsPagingSource(
             val result = getFilteredTransactionsPaged(filter, page)
             result.foldResult(
                 onSuccess = { pagedDataFlow ->
-                    // For PagingSource, we need to collect the first emission
-                    val transactions: List<Transaction> = pagedDataFlow.first().data
+                    // Get current data snapshot for this page
+                    val pagedData = pagedDataFlow.first()
 
                     LoadResult.Page(
-                        data = transactions,
+                        data = pagedData.data,
                         prevKey = if (page == 0) null else page - 1,
-                        nextKey = if (transactions.size < PAGE_SIZE) null else page + 1,
+                        nextKey = if (!pagedData.hasNextPage) null else page + 1,
                     )
                 },
                 onFailure = { exception ->
@@ -53,4 +83,6 @@ class TransactionsPagingSource(
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
+
+    override val jumpingSupported: Boolean = true
 }

@@ -155,7 +155,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                     PlatformsSlugs.WEB if (
                                         adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
                                             WindowWidthSizeClass.EXPANDED
-                                        ) -> {
+                                    ) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
