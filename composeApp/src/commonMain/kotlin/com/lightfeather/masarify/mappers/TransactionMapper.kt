@@ -26,7 +26,7 @@ fun Transaction.toUiTransaction(): UiTransaction {
     val category =
         when (this) {
             is Transaction.Income -> source.toUiCategory()
-            is Transaction.Expense -> categories.first().toUiCategory()
+            is Transaction.Expense -> categories.firstOrNull()?.toUiCategory() ?: UiCategory.empty
             is Transaction.Transfer -> UiCategory.empty
         }
 
