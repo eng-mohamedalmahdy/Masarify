@@ -9,6 +9,8 @@ data class Category(
     val description: String?,
     val color: String,
     val icon: String,
+    val isDefault: Boolean = false,
+    val resourceKey: String? = null,
 ) {
     companion object {
         val Transfer =
@@ -18,6 +20,8 @@ data class Category(
                 "Transfer Money From Account to Another",
                 "#FFBF00",
                 "https://img.icons8.com/pastel-glyph/512/transfer-money.png",
+                isDefault = true,
+                resourceKey = "category_transfer",
             )
     }
 }

@@ -4,6 +4,7 @@ import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.async.coroutines.awaitAsOne
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.model.Attachment
+import com.lightfeather.domain.model.AttachmentEntityType
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.runCatchingDomainResultSuspend
 import com.lightfeather.domain.repository.AttachmentRepository
@@ -20,7 +21,8 @@ class AttachmentRepositoryImpl(
             sharedDatabase {
                 val queries = it.attachmentsQueries
                 queries.insertAttachment(
-                    transaction_id = attachment.transactionId.toLong(),
+                    entity_type = attachment.entityType.value,
+                    entity_id = attachment.entityId.toLong(),
                     name = attachment.fileName,
                     data = attachment.fileContent,
                     mime_type = attachment.mimeType,
@@ -37,16 +39,24 @@ class AttachmentRepositoryImpl(
             true
         }
 
-    override suspend fun getAttachmentsByTransactionId(transactionId: Int): DomainResult<List<Attachment>> =
+    override suspend fun getAttachmentsByEntity(
+        entityType: AttachmentEntityType,
+        entityId: Int,
+    ): DomainResult<List<Attachment>> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
                 it.attachmentsQueries
-                    .getAttachmentsByTransactionId(transactionId.toLong())
-                    .awaitAsList()
+                    .getAttachmentsByEntity(
+                        entity_type = entityType.value,
+                        entity_id = entityId.toLong(),
+                    ).awaitAsList()
                     .map { row ->
                         Attachment(
                             id = row.attachmentId.toInt(),
-                            transactionId = row.transactionId.toInt(),
+                            entityType =
+                                AttachmentEntityType.fromValue(row.entityType.orEmpty())
+                                    ?: AttachmentEntityType.TRANSACTION,
+                            entityId = row.entityId.toInt(),
                             fileName = row.attachmentName.orEmpty(),
                             mimeType = row.attachmentMimeType.orEmpty(),
                             fileContent = row.attachmentData ?: byteArrayOf(),
@@ -55,10 +65,16 @@ class AttachmentRepositoryImpl(
             }
         }
 
-    override suspend fun deleteAttachmentsByTransactionId(transactionId: Int): DomainResult<Boolean> =
+    override suspend fun deleteAttachmentsByEntity(
+        entityType: AttachmentEntityType,
+        entityId: Int,
+    ): DomainResult<Boolean> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
-                it.attachmentsQueries.deleteAttachmentsByTransactionId(transactionId.toLong())
+                it.attachmentsQueries.deleteAttachmentsByEntity(
+                    entity_type = entityType.value,
+                    entity_id = entityId.toLong(),
+                )
             }
             true
         }

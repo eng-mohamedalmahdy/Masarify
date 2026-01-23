@@ -230,7 +230,11 @@ fun TransactionDetailView(
         // Category
         DetailItem(
             label = if (transaction.type == UiTransactionType.INCOME) "Income Source" else "Category",
-            value = transaction.categories.firstOrNull()?.name.orEmpty(),
+            value =
+                transaction.categories
+                    .firstOrNull()
+                    ?.name
+                    .orEmpty(),
             icon = {
                 AppImage(
                     model = transaction.categories.firstOrNull()?.image,
@@ -239,7 +243,14 @@ fun TransactionDetailView(
                         Modifier
                             .size(AppTheme.dimens.icon.size.medium)
                             .clip(CircleShape)
-                            .background(Color(transaction.categories.firstOrNull()?.color?.toColorInt() ?: 0xFF0000)),
+                            .background(
+                                Color(
+                                    transaction.categories
+                                        .firstOrNull()
+                                        ?.color
+                                        ?.toColorInt() ?: 0xFF0000,
+                                ),
+                            ),
                     placeholder = Res.drawable.bank,
                 )
             },

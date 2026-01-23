@@ -30,6 +30,7 @@ import com.lightfeather.domain.usecase.GetUserLanguage
 import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.SaveUserColor
+import com.lightfeather.domain.usecase.SeedDefaultCategories
 import com.lightfeather.domain.usecase.SetLanguage
 import com.lightfeather.domain.usecase.ToggleDarkMode
 import com.lightfeather.domain.usecase.UpdateAccount
@@ -78,6 +79,7 @@ val useCaseModule =
 
         factory { GetAllCategoryIcons(get()) }
         factory { CreateCategory(get()) }
+        factory { SeedDefaultCategories(get()) }
         factory { CreateAccount(get()) }
         factory { GetAllCurrencies(get()) }
         factory { GetAllCurrenciesExchangeRates(get()) }

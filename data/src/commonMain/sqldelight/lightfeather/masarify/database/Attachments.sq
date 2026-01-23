@@ -1,18 +1,21 @@
 CREATE TABLE  IF NOT EXISTS  attachments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT ,
-    transaction_id INTEGER NOT NULL,
+    entity_type TEXT NOT NULL,
+    entity_id INTEGER NOT NULL,
     data BLOB NOT NULL,
     mime_type TEXT NOT NULL
 );
 
 insertAttachment:
-INSERT INTO attachments (transaction_id, name, data, mime_type)
-VALUES (:transaction_id, :name, :data, :mime_type);
+INSERT INTO attachments (entity_type, entity_id, name, data, mime_type)
+VALUES (:entity_type, :entity_id, :name, :data, :mime_type);
 
 updateAttachment:
 UPDATE attachments
-SET transaction_id = :transaction_id,
+SET entity_type = :entity_type,
+    entity_id = :entity_id,
+    name = :name,
     data = :data,
     mime_type = :mime_type
 WHERE id = :id;
@@ -28,7 +31,11 @@ WHERE attachmentId = :id;
 
 getAttachmentsByTransactionId:
 SELECT * FROM v_attachments
-WHERE transactionId = :transaction_id;
+WHERE entityType = 'transaction' AND entityId = :transaction_id;
+
+getAttachmentsByEntity:
+SELECT * FROM v_attachments
+WHERE entityType = :entity_type AND entityId = :entity_id;
 
 
 deleteAttachmentById:
@@ -37,14 +44,23 @@ WHERE id = :id;
 
 deleteAttachmentsByTransactionId:
 DELETE FROM attachments
-WHERE transaction_id = :transaction_id;
+WHERE entity_type = 'transaction' AND entity_id = :transaction_id;
+
+deleteAttachmentsByEntity:
+DELETE FROM attachments
+WHERE entity_type = :entity_type AND entity_id = :entity_id;
 
 
 
 countAttachmentsByTransactionId:
 SELECT COUNT(*)
 FROM attachments
-WHERE transaction_id = :transaction_id;
+WHERE entity_type = 'transaction' AND entity_id = :transaction_id;
+
+countAttachmentsByEntity:
+SELECT COUNT(*)
+FROM attachments
+WHERE entity_type = :entity_type AND entity_id = :entity_id;
 
 selectLastInsertedAttachmentId:
 SELECT last_insert_rowid();

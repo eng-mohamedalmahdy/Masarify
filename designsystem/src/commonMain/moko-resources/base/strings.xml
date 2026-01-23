@@ -382,4 +382,45 @@
     <string name="delete_transaction_dialog_description">Are you sure you want to delete this transaction? This action cannot be undone.</string>
     <string name="delete_transaction_dialog_description_with_name">Are you sure you want to delete "%s"? This action cannot be undone.</string>
 
+    <!-- Default Category Names and Descriptions -->
+    <!-- Transfer Category -->
+    <string name="category_transfer">Transfer</string>
+    <string name="category_transfer_desc">Transfer money from one account to another</string>
+
+    <!-- Income Categories -->
+    <string name="category_salary">Salary</string>
+    <string name="category_salary_desc">Monthly salary and wages</string>
+    <string name="category_freelance">Freelance</string>
+    <string name="category_freelance_desc">Freelance work and gigs</string>
+    <string name="category_investments">Investments</string>
+    <string name="category_investments_desc">Returns from investments and dividends</string>
+    <string name="category_gift">Gift</string>
+    <string name="category_gift_desc">Gifts and monetary presents received</string>
+
+    <!-- Expense Categories -->
+    <string name="category_groceries">Groceries</string>
+    <string name="category_groceries_desc">Food and household items</string>
+    <string name="category_transportation">Transportation</string>
+    <string name="category_transportation_desc">Fuel, public transport, and vehicle maintenance</string>
+    <string name="category_utilities">Utilities</string>
+    <string name="category_utilities_desc">Electricity, water, gas, and internet bills</string>
+    <string name="category_dining">Dining Out</string>
+    <string name="category_dining_desc">Restaurants, cafes, and food delivery</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_entertainment_desc">Movies, concerts, games, and leisure activities</string>
+    <string name="category_healthcare">Healthcare</string>
+    <string name="category_healthcare_desc">Medical expenses, pharmacy, and health insurance</string>
+    <string name="category_education">Education</string>
+    <string name="category_education_desc">Tuition, courses, books, and educational materials</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_shopping_desc">Clothing, electronics, and personal items</string>
+    <string name="category_subscriptions">Subscriptions</string>
+    <string name="category_subscriptions_desc">Streaming services, memberships, and recurring fees</string>
+    <string name="category_rent">Rent</string>
+    <string name="category_rent_desc">Monthly rent and housing payments</string>
+    <string name="category_insurance">Insurance</string>
+    <string name="category_insurance_desc">Life, health, car, and property insurance</string>
+    <string name="category_other">Other</string>
+    <string name="category_other_desc">Miscellaneous expenses</string>
+
 </resources>

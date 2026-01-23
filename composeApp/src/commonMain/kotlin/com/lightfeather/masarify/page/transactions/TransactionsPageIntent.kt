@@ -4,6 +4,7 @@ import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionDat
 import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.SavedFilter
 import com.lightfeather.designsystem.model.UiAttachment
+import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionFilter
@@ -98,5 +99,10 @@ sealed interface TransactionsPageIntent {
 
     data class LoadAttachments(
         val transactionId: String,
+    ) : TransactionsPageIntent
+
+    // Currency Selection
+    data class SelectCurrency(
+        val currency: UiCurrency?,
     ) : TransactionsPageIntent
 }

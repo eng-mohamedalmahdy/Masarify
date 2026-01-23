@@ -6,6 +6,8 @@ data class UiCategory(
     val description: String? = null,
     val image: Any,
     val color: String,
+    val isDefault: Boolean = false,
+    val resourceKey: String? = null,
 ) {
     companion object {
         val dummy =
@@ -15,6 +17,8 @@ data class UiCategory(
                 description = "Morning coffee and beverages",
                 image = "",
                 color = "#4CAF50",
+                isDefault = false,
+                resourceKey = null,
             )
 
         val empty =
@@ -24,6 +28,8 @@ data class UiCategory(
                 description = null,
                 image = "",
                 color = "#000000",
+                isDefault = false,
+                resourceKey = null,
             )
     }
 }

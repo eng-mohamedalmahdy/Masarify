@@ -170,9 +170,9 @@ class BankAccountsPageViewModel(
                 }
             }
 
-            BankAccountsPageIntent.ConfirmUpdateTransaction -> {
+            is BankAccountsPageIntent.ConfirmUpdateTransaction -> {
                 viewModelScope.launch {
-                    updateTransaction(_state.value.underProcessTransaction!!.toDomainTransaction()).fold(
+                    updateTransaction(intent.transactionDate.toDomainTransaction()).fold(
                         onSuccess = {
                             _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
                             SnackbarService.sendSuccessMessage(MR.strings.transaction_update_success)

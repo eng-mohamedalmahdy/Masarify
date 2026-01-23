@@ -6,6 +6,7 @@ import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.domain.model.AppLanguages
 import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.GetAllAccounts
+import com.lightfeather.domain.usecase.SeedDefaultCategories
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import io.github.aakira.napier.Napier
@@ -23,7 +24,24 @@ class AppMainViewModel(
     private val navigator: Navigator,
     private val userDataRepository: UserRepository,
     private val getAllAccounts: GetAllAccounts,
+    private val seedDefaultCategories: SeedDefaultCategories,
 ) : ViewModel() {
+    init {
+        // Seed default categories on app startup
+        viewModelScope.launch {
+            seedDefaultCategories().fold(
+                onSuccess = { success ->
+                    if (success) {
+                        Napier.d("Default categories seeded successfully")
+                    }
+                },
+                onFailure = { error ->
+                    Napier.e("Failed to seed default categories: $error")
+                },
+            )
+        }
+    }
+
     private val _darkTheme = MutableStateFlow(false)
     val darkTheme =
         _darkTheme

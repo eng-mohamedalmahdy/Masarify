@@ -39,7 +39,10 @@ class TransactionsRepositoryImpl(
             val transactionId =
                 sharedDatabase {
                     val transactionsQueries = it.transactionsQueries
+                    val bankAccountsQueries = it.bankAccountsQueries
+
                     transactionsQueries.transactionWithResult {
+                        // Insert transaction
                         transactionsQueries.insertTransaction(
                             type = transaction.toDbTransactionType().dbValue,
                             name = transaction.name,
@@ -50,21 +53,61 @@ class TransactionsRepositoryImpl(
                         )
                         val id = transactionsQueries.selectLastInsertedRowId().awaitAsOne()
 
+                        // Insert transaction categories
                         transactionCategories.forEach { category ->
                             transactionsQueries.insertTransactionCategory(
                                 transaction_id = id,
                                 category_id = category.id.toLong(),
                             )
                         }
+
+                        // Update account balance(s) based on transaction type
+                        when (transaction) {
+                            is Transaction.Income -> {
+                                // Increase account balance by amount
+                                val newBalance = transaction.accountNewBalance
+                                bankAccountsQueries.updateAccountBalance(
+                                    balance = newBalance,
+                                    id = transaction.account.id.toLong(),
+                                )
+                            }
+                            is Transaction.Expense -> {
+                                // Decrease account balance by amount
+                                val newBalance = transaction.accountNewBalance
+                                bankAccountsQueries.updateAccountBalance(
+                                    balance = newBalance,
+                                    id = transaction.account.id.toLong(),
+                                )
+                            }
+                            is Transaction.Transfer -> {
+                                // Decrease source account by amount + fee
+                                val sourceNewBalance = transaction.accountNewBalance
+                                bankAccountsQueries.updateAccountBalance(
+                                    balance = sourceNewBalance,
+                                    id = transaction.account.id.toLong(),
+                                )
+                                // Increase receiver account by amount
+                                val receiverNewBalance = transaction.receiverAccountNewBalance
+                                bankAccountsQueries.updateAccountBalance(
+                                    balance = receiverNewBalance,
+                                    id = transaction.receiverAccount.id.toLong(),
+                                )
+                            }
+                        }
+
+                        // Insert attachments
+                        transaction.attachments.forEach { attachment ->
+                            val attachmentWithId =
+                                attachment.copy(
+                                    entityType = com.lightfeather.domain.model.AttachmentEntityType.TRANSACTION,
+                                    entityId = id.toInt(),
+                                )
+                            attachmentRepository.createAttachment(attachmentWithId)
+                        }
+
                         id.toInt()
                     }
                 }
-
-            // Insert attachments
-            transaction.attachments.forEach { attachment ->
-                val attachmentWithId = attachment.copy(transactionId = transactionId)
-                attachmentRepository.createAttachment(attachmentWithId)
-            }
 
             transactionId
         }
@@ -72,9 +115,67 @@ class TransactionsRepositoryImpl(
     override suspend fun deleteTransaction(transactionId: Long): DomainResult<Boolean> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
-                it.transactionsQueries.deleteTransaction(transactionId)
+                val transactionsQueries = it.transactionsQueries
+                val bankAccountsQueries = it.bankAccountsQueries
+
+                transactionsQueries.transactionWithResult {
+                    // Get transaction to reverse its effect
+                    val transactionRows = transactionsQueries.getTransactionById(transactionId).awaitAsList()
+                    val transaction =
+                        transactionRows.toDomainTransactions().firstOrNull()
+                            ?: error("Transaction not found: $transactionId")
+
+                    // Reverse transaction's effect on account balance(s)
+                    when (transaction) {
+                        is Transaction.Income -> {
+                            // Reverse income: decrease account balance
+                            val reversedBalance = transaction.accountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = reversedBalance,
+                                id = transaction.account.id.toLong(),
+                            )
+                        }
+                        is Transaction.Expense -> {
+                            // Reverse expense: increase account balance
+                            val reversedBalance = transaction.accountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = reversedBalance,
+                                id = transaction.account.id.toLong(),
+                            )
+                        }
+                        is Transaction.Transfer -> {
+                            // Reverse transfer: increase source account, decrease receiver account
+                            val sourceReversedBalance = transaction.accountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = sourceReversedBalance,
+                                id = transaction.account.id.toLong(),
+                            )
+                            val receiverReversedBalance = transaction.receiverAccountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = receiverReversedBalance,
+                                id = transaction.receiverAccount.id.toLong(),
+                            )
+                        }
+                    }
+
+                    // Delete attachments
+                    when (val result = attachmentRepository.getAttachmentsByTransactionId(transaction.id)) {
+                        is DomainResult.Success -> {
+                            result.data.forEach { attachment ->
+                                attachmentRepository.deleteAttachment(attachment.id)
+                            }
+                        }
+                        is DomainResult.Failure -> {
+                            // No attachments to delete or error fetching them
+                        }
+                    }
+
+                    // Delete transaction
+                    transactionsQueries.deleteTransaction(transactionId)
+
+                    true
+                }
             }
-            true
         }
 
     override suspend fun <T : Transaction> getAllTransactionsOfType(type: KClass<T>): DomainResult<Flow<List<T>>> =
@@ -157,39 +258,125 @@ class TransactionsRepositoryImpl(
     override suspend fun updateTransaction(newTransaction: Transaction): DomainResult<Boolean> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
-                it.transactionsQueries.updateTransaction(
-                    id = newTransaction.id.toLong(),
-                    type = newTransaction.toDbTransactionType().dbValue,
-                    name = newTransaction.name,
-                    description = newTransaction.description,
-                    amount = newTransaction.amount,
-                    timestamp = newTransaction.timestamp,
-                    account_id = newTransaction.account.id.toLong(),
-                )
+                val transactionsQueries = it.transactionsQueries
+                val bankAccountsQueries = it.bankAccountsQueries
+
+                transactionsQueries.transactionWithResult {
+                    // Get old transaction to reverse its effect
+                    val oldTransactionRows =
+                        transactionsQueries
+                            .getTransactionById(newTransaction.id.toLong())
+                            .awaitAsList()
+                    val oldTransaction =
+                        oldTransactionRows.toDomainTransactions().firstOrNull()
+                            ?: error("Transaction not found: ${newTransaction.id}")
+
+                    // Reverse old transaction's effect on account balance(s)
+                    when (oldTransaction) {
+                        is Transaction.Income -> {
+                            // Reverse: decrease account balance by old amount
+                            val reversedBalance = oldTransaction.accountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = reversedBalance,
+                                id = oldTransaction.account.id.toLong(),
+                            )
+                        }
+                        is Transaction.Expense -> {
+                            // Reverse: increase account balance by old amount
+                            val reversedBalance = oldTransaction.accountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = reversedBalance,
+                                id = oldTransaction.account.id.toLong(),
+                            )
+                        }
+                        is Transaction.Transfer -> {
+                            // Reverse: increase source account, decrease receiver account
+                            val sourceReversedBalance = oldTransaction.accountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = sourceReversedBalance,
+                                id = oldTransaction.account.id.toLong(),
+                            )
+                            val receiverReversedBalance = oldTransaction.receiverAccountOldBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = receiverReversedBalance,
+                                id = oldTransaction.receiverAccount.id.toLong(),
+                            )
+                        }
+                    }
+
+                    // Update transaction
+                    transactionsQueries.updateTransaction(
+                        id = newTransaction.id.toLong(),
+                        type = newTransaction.toDbTransactionType().dbValue,
+                        name = newTransaction.name,
+                        description = newTransaction.description,
+                        amount = newTransaction.amount,
+                        timestamp = newTransaction.timestamp,
+                        account_id = newTransaction.account.id.toLong(),
+                    )
+
+                    // Apply new transaction's effect on account balance(s)
+                    when (newTransaction) {
+                        is Transaction.Income -> {
+                            // Increase account balance by new amount
+                            val newBalance = newTransaction.accountNewBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = newBalance,
+                                id = newTransaction.account.id.toLong(),
+                            )
+                        }
+                        is Transaction.Expense -> {
+                            // Decrease account balance by new amount
+                            val newBalance = newTransaction.accountNewBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = newBalance,
+                                id = newTransaction.account.id.toLong(),
+                            )
+                        }
+                        is Transaction.Transfer -> {
+                            // Decrease source account by amount + fee
+                            val sourceNewBalance = newTransaction.accountNewBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = sourceNewBalance,
+                                id = newTransaction.account.id.toLong(),
+                            )
+                            // Increase receiver account by amount
+                            val receiverNewBalance = newTransaction.receiverAccountNewBalance
+                            bankAccountsQueries.updateAccountBalance(
+                                balance = receiverNewBalance,
+                                id = newTransaction.receiverAccount.id.toLong(),
+                            )
+                        }
+                    }
+
+                    // Get existing attachments
+                    val existingAttachments =
+                        when (val result = attachmentRepository.getAttachmentsByTransactionId(newTransaction.id)) {
+                            is DomainResult.Success -> result.data
+                            is DomainResult.Failure -> emptyList()
+                        }
+
+                    // Delete attachments that are no longer in the transaction
+                    val newAttachmentIds = newTransaction.attachments.map { it.id }.toSet()
+                    existingAttachments
+                        .filter { it.id !in newAttachmentIds }
+                        .forEach { attachmentRepository.deleteAttachment(it.id) }
+
+                    // Add new attachments (those with id = -1)
+                    newTransaction.attachments
+                        .filter { it.id < 0 }
+                        .forEach { attachment ->
+                            val attachmentWithId =
+                                attachment.copy(
+                                    entityType = com.lightfeather.domain.model.AttachmentEntityType.TRANSACTION,
+                                    entityId = newTransaction.id,
+                                )
+                            attachmentRepository.createAttachment(attachmentWithId)
+                        }
+
+                    true
+                }
             }
-
-            // Get existing attachments
-            val existingAttachments =
-                when (val result = attachmentRepository.getAttachmentsByTransactionId(newTransaction.id)) {
-                    is DomainResult.Success -> result.data
-                    is DomainResult.Failure -> emptyList()
-                }
-
-            // Delete attachments that are no longer in the transaction
-            val newAttachmentIds = newTransaction.attachments.map { it.id }.toSet()
-            existingAttachments
-                .filter { it.id !in newAttachmentIds }
-                .forEach { attachmentRepository.deleteAttachment(it.id) }
-
-            // Add new attachments (those with id = -1)
-            newTransaction.attachments
-                .filter { it.id < 0 }
-                .forEach { attachment ->
-                    val attachmentWithId = attachment.copy(transactionId = newTransaction.id)
-                    attachmentRepository.createAttachment(attachmentWithId)
-                }
-
-            true
         }
 
     override suspend fun <T : Transaction> getTotalTransactionsOfTypeAndCurrency(

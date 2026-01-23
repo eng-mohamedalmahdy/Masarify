@@ -36,6 +36,11 @@ data class TransactionsPageState(
     val accounts: Flow<List<UiBankAccount>> = emptyFlow(),
     val categories: Flow<List<UiCategory>> = emptyFlow(),
     val currencies: Flow<List<UiCurrency>> = emptyFlow(),
+    // Wealth header state
+    val userAccountsCurrencies: Flow<List<UiCurrency>> = emptyFlow(),
+    val defaultCurrency: Flow<UiCurrency?> = emptyFlow(),
+    val selectedCurrency: UiCurrency? = null,
+    val totalAmountInSelectedOrDefaultCurrency: String = "0.0",
     // Attachment state
     val selectedAttachments: List<UiAttachment> = emptyList(),
     val transactionAttachments: Map<String, List<UiAttachment>> = emptyMap(),

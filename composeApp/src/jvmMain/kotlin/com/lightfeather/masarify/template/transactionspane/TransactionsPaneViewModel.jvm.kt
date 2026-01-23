@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 actual class TransactionsPaneViewModel(
-    private val filter: TransactionFilter,
+    initialFilter: TransactionFilter,
     private val getFilteredTransactions: GetFilteredTransactionsPaged,
 ) : ViewModel() {
     val transactions: MutableStateFlow<PagedData<UiTransaction>> = MutableStateFlow(PagedData.empty())
@@ -28,26 +28,40 @@ actual class TransactionsPaneViewModel(
     private val _currentPage = MutableStateFlow(0)
     val currentPage: StateFlow<Int> = _currentPage
 
+    // Reactive filter state
+    private val _filterFlow = MutableStateFlow(initialFilter)
+
+    /**
+     * Update the filter and reset to first page
+     * Reloads data with new filter
+     */
+    actual fun updateFilter(filter: TransactionFilter) {
+        _filterFlow.value = filter
+        _currentPage.value = 0 // Reset to first page when filter changes
+    }
+
     init {
-        // Realtime update: Use flatMapLatest to switch to new Flow when page changes
+        // Realtime update: Use flatMapLatest to switch to new Flow when page OR filter changes
         // The inner Flow emits new data whenever the database changes
         viewModelScope.launch(Dispatchers.IoDispatcher) {
             _currentPage
                 .flatMapLatest { page ->
-                    // Get transactions Flow for the current page
-                    val transactionsResult = getFilteredTransactions(filter, page)
-                    transactionsResult.foldResult(
-                        onSuccess = { pagedDataFlow ->
-                            pagedDataFlow.map { pagedData ->
-                                pagedData.map { it.toUiTransaction() }
-                            }
-                        },
-                        onFailure = {
-                            Napier.d { "Error fetching transactions: $it" }
-                            SnackbarService.sendErrorMessage(MR.strings.unknown_error)
-                            emptyFlow()
-                        },
-                    )
+                    _filterFlow.flatMapLatest { currentFilter ->
+                        // Get transactions Flow for the current page and filter
+                        val transactionsResult = getFilteredTransactions(currentFilter, page)
+                        transactionsResult.foldResult(
+                            onSuccess = { pagedDataFlow ->
+                                pagedDataFlow.map { pagedData ->
+                                    pagedData.map { it.toUiTransaction() }
+                                }
+                            },
+                            onFailure = {
+                                Napier.d { "Error fetching transactions: $it" }
+                                SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+                                emptyFlow()
+                            },
+                        )
+                    }
                 }.collect(transactions)
         }
     }

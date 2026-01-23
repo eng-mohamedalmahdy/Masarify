@@ -44,15 +44,17 @@ fun Transaction.toUiTransactionDetails(): UiTransactionDetails {
         attachments = attachments.map { it.toUiAttachment() },
         account = account.toUiBankAccount(),
         receiverAccount =
-            if (this is Transaction.Transfer)
+            if (this is Transaction.Transfer) {
                 receiverAccount.toUiBankAccount()
-            else
-                null,
+            } else {
+                null
+            },
         transferFee =
-            if (this is Transaction.Transfer)
+            if (this is Transaction.Transfer) {
                 fee.toString()
-            else
-                "",
+            } else {
+                ""
+            },
     )
 }
 
@@ -89,7 +91,7 @@ fun Transaction.toUiTransaction(): UiTransaction {
 
 fun UiTransactionDetails.toDomainTransaction(): Transaction {
     val account = account.toAccount()
-    val attachments = attachments.map { it.toAttachment(transactionId = id.toInt()) }
+    val attachments = attachments.map { it.toTransactionAttachment(transactionId = id.toInt()) }
     val amountValue = amount.toDouble()
     val timestampMillis =
         dateTime
@@ -199,7 +201,7 @@ fun UiTransactionData.toDomainTransaction(): Transaction {
     val parsedAmount = parseAmount(amount)
     val domainAccount = account.toAccount()
     val transactionId = id?.toIntOrNull() ?: -1
-    val domainAttachments = attachments.map { it.toAttachment(transactionId) }
+    val domainAttachments = attachments.map { it.toTransactionAttachment(transactionId) }
 
     return when (type) {
         UiTransactionType.INCOME -> {

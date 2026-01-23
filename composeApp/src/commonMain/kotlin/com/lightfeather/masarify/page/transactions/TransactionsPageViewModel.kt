@@ -2,12 +2,14 @@ package com.lightfeather.masarify.page.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
 import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.SavedFilter
 import com.lightfeather.designsystem.model.UiAttachment
+import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionFilter
@@ -18,6 +20,8 @@ import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.domain.usecase.GetAllCurrencies
+import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
+import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.framework.FileKitHelper
 import com.lightfeather.masarify.mappers.toAccount
@@ -35,12 +39,18 @@ import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.mimeType
 import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
@@ -60,9 +70,41 @@ class TransactionsPageViewModel(
     private val updateTransactionUseCase: UpdateTransaction,
     private val deleteTransactionUseCase: DeleteTransaction,
     private val attachmentRepository: AttachmentRepository,
+    private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
+    private val exchangeRates: GetAllCurrenciesExchangeRates,
 ) : ViewModel() {
     private val _transactions = MutableStateFlow<List<UiTransaction>>(emptyList())
-    private val _state = MutableStateFlow(TransactionsPageState(transactions = _transactions))
+    private val _state =
+        MutableStateFlow(
+            TransactionsPageState(
+                transactions = _transactions,
+                accounts =
+                    getAccountsUseCase().foldResult(
+                        onSuccess = { accountsFlow ->
+                            accountsFlow.map { accounts ->
+                                accounts.map { account -> account.toUiBankAccount() }
+                            }
+                        },
+                        onFailure = { error -> flowOf() },
+                    ),
+                userAccountsCurrencies =
+                    getCurrenciesUseCase().foldResult(
+                        onSuccess = { currencies ->
+                            currencies.map { currencies ->
+                                currencies.map { currency -> currency.toUiCurrency() }
+                            }
+                        },
+                        onFailure = { error -> flowOf() },
+                    ),
+                defaultCurrency =
+                    getCurrenciesUseCase().foldResult(
+                        onSuccess = { currencies ->
+                            currencies.map { currencies -> currencies.firstOrNull()?.toUiCurrency() }
+                        },
+                        onFailure = { error -> flowOf(null) },
+                    ),
+            ),
+        )
     val state: StateFlow<TransactionsPageState> = _state.asStateFlow()
 
     /**
@@ -96,6 +138,7 @@ class TransactionsPageViewModel(
             is TransactionsPageIntent.PickImages -> pickImages()
             is TransactionsPageIntent.DeleteAttachment -> deleteAttachment(intent.attachment)
             is TransactionsPageIntent.LoadAttachments -> loadAttachments(intent.transactionId)
+            is TransactionsPageIntent.SelectCurrency -> selectCurrency(intent.currency)
         }
     }
 
@@ -103,7 +146,7 @@ class TransactionsPageViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            // Load reference data: accounts, categories, currencies
+            // Load reference data: categories, currencies
             categoriesUseCase().fold(
                 onSuccess = { categoriesFlow ->
                     _state.update {
@@ -112,17 +155,6 @@ class TransactionsPageViewModel(
                 },
                 onFailure = { error ->
                     SnackbarService.sendErrorMessage(MR.strings.category_fetch_failure)
-                },
-            )
-
-            getAccountsUseCase().fold(
-                onSuccess = { accountsFlow ->
-                    _state.update {
-                        it.copy(accounts = accountsFlow.map { list -> list.map { acc -> acc.toUiBankAccount() } })
-                    }
-                },
-                onFailure = { error ->
-                    SnackbarService.sendErrorMessage(MR.strings.account_fetch_failure)
                 },
             )
 
@@ -136,6 +168,9 @@ class TransactionsPageViewModel(
                     SnackbarService.sendErrorMessage(MR.strings.currency_fetch_failure)
                 },
             )
+
+            // Load wealth worth listening (this will handle accounts loading with currency conversion)
+            loadWealthWorthListening()
         }
     }
 
@@ -426,9 +461,8 @@ class TransactionsPageViewModel(
                                 amount = transaction.amount.toDoubleOrNull() ?: 0.0,
                                 timestamp =
                                     transaction.dateTime
-                                        .toInstant(
-                                            kotlinx.datetime.TimeZone.currentSystemDefault(),
-                                        ).toEpochMilliseconds(),
+                                        .toInstant(TimeZone.currentSystemDefault())
+                                        .toEpochMilliseconds(),
                                 account = domainAccount,
                                 categories = listOfNotNull(domainCategory),
                                 attachments = emptyList(),
@@ -574,6 +608,89 @@ class TransactionsPageViewModel(
                     Napier.e("Error loading attachments for transaction $transactionId $error")
                 },
             )
+        }
+    }
+
+    /**
+     * Select currency for wealth calculation
+     */
+    private fun selectCurrency(currency: UiCurrency?) {
+        _state.update { it.copy(selectedCurrency = currency) }
+    }
+
+    /**
+     * Load wealth worth listening to currency changes
+     */
+    fun loadWealthWorthListening() {
+        val selectedCurrencyFlow = _state.map { it.selectedCurrency }
+
+        // 1. Get the Raw Accounts Flow (Source of Truth)
+        val rawAccountsFlow =
+            getAccountsUseCase().foldResult(
+                onSuccess = { it },
+                onFailure = { flowOf(emptyList()) },
+            )
+
+        // 2. Get the Wealth/Total flow
+        val wealthInAllCurrenciesFlow =
+            getWealthWorthInCurrency().foldResult(
+                onSuccess = { it },
+                onFailure = { flowOf(emptyList()) },
+            )
+
+        // 3. Get Exchange Rates
+        val exchangeRatesFlow =
+            exchangeRates().foldResult(
+                onSuccess = { it },
+                onFailure = { flowOf(emptyList()) },
+            )
+
+        // Total Amount Calculation
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            combine(selectedCurrencyFlow, wealthInAllCurrenciesFlow) { selected, wealth ->
+                selected to wealth
+            }.collect { (selectedCurrency, wealthList) ->
+                val selectedCurrencyWealth =
+                    wealthList.find { it.currency.toUiCurrency() == selectedCurrency }
+                        ?: wealthList.firstOrNull()
+
+                _state.value =
+                    _state.value.copy(
+                        totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString(),
+                    )
+            }
+        }
+
+        // Bank Accounts List Calculation (convert balances based on selected currency)
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            combine(rawAccountsFlow, selectedCurrencyFlow, exchangeRatesFlow) { accounts, selectedCurrency, rates ->
+                Triple(accounts, selectedCurrency, rates)
+            }.distinctUntilChanged().collectLatest { (accounts, selectedCurrency, rates) ->
+
+                val mappedAccounts =
+                    if (selectedCurrency == null) {
+                        // If no currency selected, just show original balances
+                        accounts.map { it.toUiBankAccount() }
+                    } else {
+                        // Convert ALWAYS from the original account balance
+                        accounts.map { account ->
+                            val uiAccount = account.toUiBankAccount()
+                            val rateEntry =
+                                rates.find {
+                                    it.from.id.toString() == uiAccount.currency.id &&
+                                        it.to.id.toString() == selectedCurrency.id
+                                }
+
+                            uiAccount.copy(
+                                balance = (uiAccount.balance.toDouble() * (rateEntry?.rate ?: 1.0)).toString(),
+                                currency = selectedCurrency,
+                            )
+                        }
+                    }
+
+                // Update the state with a fresh Flow of the calculated list
+                _state.value = _state.value.copy(accounts = flowOf(mappedAccounts))
+            }
         }
     }
 }

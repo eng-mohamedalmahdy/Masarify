@@ -34,6 +34,8 @@ CategoryRepositoryImpl(
                             description = category.description ?: "",
                             color = category.color,
                             icon = category.icon,
+                            is_default = if (category.isDefault) 1L else 0L,
+                            resource_key = category.resourceKey,
                         )
                         categoriesQueries.selectLastInsertedRowId().awaitAsOne()
                     }
@@ -43,8 +45,15 @@ CategoryRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error creating category"))
         }
 
-    override suspend fun updateCategory(category: Category): DomainResult<Boolean> =
-        try {
+    override suspend fun updateCategory(category: Category): DomainResult<Boolean> {
+        return try {
+            // Prevent editing default categories
+            if (category.isDefault) {
+                return DomainResult.Failure(
+                    AppError.InternalError("Cannot edit default categories"),
+                )
+            }
+
             val result =
                 database {
                     it.categoriesQueries.updateById(
@@ -52,6 +61,8 @@ CategoryRepositoryImpl(
                         description = category.description ?: "",
                         color = category.color,
                         icon = category.icon,
+                        is_default = if (category.isDefault) 1L else 0L,
+                        resource_key = category.resourceKey,
                         id = category.id.toLong(),
                     )
                 }
@@ -59,14 +70,23 @@ CategoryRepositoryImpl(
         } catch (e: Exception) {
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error updating category"))
         }
+    }
 
-    override suspend fun deleteCategory(category: Category): DomainResult<Boolean> =
-        try {
+    override suspend fun deleteCategory(category: Category): DomainResult<Boolean> {
+        return try {
+            // Prevent deleting default categories
+            if (category.isDefault) {
+                return DomainResult.Failure(
+                    AppError.InternalError("Cannot delete default categories"),
+                )
+            }
+
             val result = database { it.categoriesQueries.deleteById(category.id.toLong()) }
             DomainResult.Success(result > 0)
         } catch (e: Exception) {
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error deleting category"))
         }
+    }
 
     override fun getAllCategories(): DomainResult<Flow<List<Category>>> =
         try {
@@ -116,6 +136,8 @@ CategoryRepositoryImpl(
             description = description,
             color = color,
             icon = icon,
+            isDefault = is_default == 1L,
+            resourceKey = resource_key,
         )
 
     private fun V_categories.toDomain(): Category =
@@ -125,5 +147,7 @@ CategoryRepositoryImpl(
             description = categoryDescription,
             color = categoryColor,
             icon = categoryIcon,
+            isDefault = categoryIsDefault == 1L,
+            resourceKey = categoryResourceKey,
         )
 }

@@ -3,19 +3,23 @@ CREATE TABLE  IF NOT EXISTS  categories(
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     color TEXT NOT NULL,
-    icon TEXT NOT NULL
+    icon TEXT NOT NULL,
+    is_default INTEGER NOT NULL DEFAULT 0,
+    resource_key TEXT
 );
 
 insertCategory:
-INSERT INTO categories (name, description, color, icon)
-VALUES (:name, :description, :color, :icon);
+INSERT INTO categories (name, description, color, icon, is_default, resource_key)
+VALUES (:name, :description, :color, :icon, :is_default, :resource_key);
 
 updateById:
 UPDATE categories
 SET name        = :name,
     description = :description,
     color       = :color,
-    icon        = :icon
+    icon        = :icon,
+    is_default  = :is_default,
+    resource_key = :resource_key
 WHERE id = :id;
 
 deleteById:

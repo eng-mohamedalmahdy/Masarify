@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.model.UiCategory
+import com.lightfeather.designsystem.model.getLocalizedDescription
+import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.designsystem.util.toColorInt
@@ -93,14 +95,14 @@ fun CategoryListItem(
                         .padding(horizontal = AppTheme.dimens.spacing.padding.medium),
             ) {
                 Text(
-                    text = category.name,
+                    text = category.getLocalizedName(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 if (!category.description.isNullOrBlank()) {
                     Text(
-                        text = category.description.orEmpty(),
+                        text = category.getLocalizedDescription().orEmpty(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

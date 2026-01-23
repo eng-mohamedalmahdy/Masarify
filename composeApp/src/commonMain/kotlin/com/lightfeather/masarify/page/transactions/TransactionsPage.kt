@@ -27,10 +27,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation3.runtime.NavKey
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
+import com.lightfeather.designsystem.component.organisms.AccountsHeader
 import com.lightfeather.designsystem.component.organisms.TransactionDetailView
 import com.lightfeather.designsystem.component.organisms.dialog.AddEditTransactionDialog
 import com.lightfeather.designsystem.component.organisms.dialog.AdvancedFilterDialog
@@ -41,7 +43,6 @@ import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.mappers.toTransaction
-import com.lightfeather.masarify.mappers.toUiTransaction
 import com.lightfeather.masarify.mappers.toUiTransactionDetails
 import com.lightfeather.masarify.navigation.Display
 import com.lightfeather.masarify.navigation.LocalNavigator
@@ -103,13 +104,17 @@ internal fun TransactionsPageContent(
     val accounts by state.accounts.collectAsState(emptyList())
     val categories by state.categories.collectAsState(emptyList())
     val currencies by state.currencies.collectAsState(emptyList())
+    val userAccountsCurrencies by state.userAccountsCurrencies.collectAsState(emptyList())
+    val defaultCurrency by state.defaultCurrency.collectAsState(null)
 
     // Helper to find transaction by ID
     val findTransaction: (String) -> UiTransaction? = { transactionId ->
         transactions.find { it.id == transactionId }
     }
 
-    key(state.filter) {
+    // Key the whole Display on changing inputs that the navigation entry otherwise caches out.
+    // This forces recomposition so the AccountsHeader updates and chips become responsive.
+    key(state.filter, state.selectedCurrency, state.totalAmountInSelectedOrDefaultCurrency) {
         listDetailNav.Display(
             sceneStrategy = listDetailStrategy,
             modifier = Modifier,
@@ -146,6 +151,19 @@ internal fun TransactionsPageContent(
                     },
                     topBarSupportingContent = {
                         Column {
+                            // Accounts Header - Wealth Summary
+                            AccountsHeader(
+                                totalAmountInSelectedOrDefaultCurrency = state.totalAmountInSelectedOrDefaultCurrency,
+                                userAccountsCurrencies = userAccountsCurrencies,
+                                onCurrencyClick = { onIntent(TransactionsPageIntent.SelectCurrency(it)) },
+                                defaultCurrency = defaultCurrency,
+                                selectedCurrency = state.selectedCurrency,
+                                totalAccounts = accounts.size,
+                                shape = RectangleShape,
+                            )
+
+                            Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,

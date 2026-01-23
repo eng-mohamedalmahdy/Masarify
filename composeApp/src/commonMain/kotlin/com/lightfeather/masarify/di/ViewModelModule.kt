@@ -48,6 +48,8 @@ val viewModelModule =
                 updateTransactionUseCase = get(),
                 deleteTransactionUseCase = get(),
                 attachmentRepository = get(),
+                getWealthWorthInCurrency = get(),
+                exchangeRates = get(),
             )
         }
         viewModel { AddEditCategoryPageViewModel(get(), get(), get(), get(), get(), it.get(), it.get()) }

@@ -34,6 +34,17 @@ actual fun TransactionsPane(
     onTransactionClick: (UiTransaction) -> Unit,
     topBarSupportingContent: @Composable () -> Unit,
 ) {
+    // Update filter when it changes
+    androidx.compose.runtime.LaunchedEffect(filter) {
+        val domainFilter =
+            filter?.let {
+                com.lightfeather.masarify.mappers
+                    .toTransactionFilter(it)
+            }
+                ?: com.lightfeather.domain.model.transaction.TransactionFilter.EMPTY
+        viewModel.updateFilter(domainFilter)
+    }
+
     val transactions by viewModel.transactions.collectAsState()
     val currentPage by viewModel.currentPage.collectAsState()
 

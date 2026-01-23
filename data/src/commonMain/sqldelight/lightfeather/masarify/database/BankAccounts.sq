@@ -20,6 +20,11 @@ SET balance = :balance,
     logo    = :logo
 WHERE id = :id;
 
+updateAccountBalance:
+UPDATE bank_accounts
+SET balance = :balance
+WHERE id = :id;
+
 deleteAccount:
 DELETE FROM bank_accounts
 WHERE id = :id;

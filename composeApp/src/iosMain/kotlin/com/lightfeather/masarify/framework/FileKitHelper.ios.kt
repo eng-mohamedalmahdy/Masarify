@@ -14,10 +14,9 @@ internal actual suspend fun compressImagePlatform(
     maxSizeBytes: Int,
     maxWidth: Int,
     maxHeight: Int,
-): ByteArray {
-    return FileKit.compressImage(
+): ByteArray =
+    FileKit.compressImage(
         bytes = bytes,
         maxWidth = maxWidth,
-        maxHeight = maxHeight
+        maxHeight = maxHeight,
     )
-}

@@ -55,10 +55,11 @@ fun List<V_transactions>.toDomainTransactions(): List<Transaction> =
                     .map {
                         Attachment(
                             id = it.attachmentId!!.toInt(),
+                            entityType = com.lightfeather.domain.model.AttachmentEntityType.TRANSACTION,
+                            entityId = first.transactionId.toInt(),
                             fileName = it.attachmentName.orEmpty(),
                             mimeType = it.attachmentMimeType.orEmpty(),
                             fileContent = it.attachmentData ?: byteArrayOf(),
-                            transactionId = first.transactionId.toInt(),
                         )
                     }.distinctBy { it.id }
 

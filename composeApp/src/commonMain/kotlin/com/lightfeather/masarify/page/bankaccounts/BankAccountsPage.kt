@@ -264,7 +264,9 @@ internal fun BankAccountsPageContent(
             categories = state.categories,
             attachments = state.selectedAttachments,
             onDismiss = { onIntent(BankAccountsPageIntent.CancelUpdateTransaction) },
-            onSave = { onIntent(BankAccountsPageIntent.ConfirmUpdateTransaction) },
+            onSave = {
+                onIntent(BankAccountsPageIntent.ConfirmUpdateTransaction(it))
+            },
             onPickImages = { onIntent(BankAccountsPageIntent.PickImages) },
             onDeleteAttachment = { attachment ->
                 onIntent(BankAccountsPageIntent.DeleteAttachment(attachment))

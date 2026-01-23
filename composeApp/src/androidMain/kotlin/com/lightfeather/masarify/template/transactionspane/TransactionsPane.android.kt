@@ -20,6 +20,7 @@ import com.lightfeather.designsystem.component.organisms.listitem.TransactionIte
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.masarify.mappers.toTransactionFilter
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -32,6 +33,14 @@ actual fun TransactionsPane(
     onTransactionClick: (UiTransaction) -> Unit,
     topBarSupportingContent: @Composable (() -> Unit),
 ) {
+    // Update filter when it changes
+    androidx.compose.runtime.LaunchedEffect(filter) {
+        val domainFilter =
+            filter?.toTransactionFilter()
+                ?: com.lightfeather.domain.model.transaction.TransactionFilter.EMPTY
+        viewModel.updateFilter(domainFilter)
+    }
+
     val transactions = viewModel.transactions.collectAsLazyPagingItems()
 
     val isEmpty = transactions.itemCount == 0

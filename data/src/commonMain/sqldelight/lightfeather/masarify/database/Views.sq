@@ -62,14 +62,16 @@ SELECT
     cat.name                 AS categoryName,
     cat.description          AS categoryDescription,
     cat.color                AS categoryColor,
-    cat.icon                 AS categoryIcon
+    cat.icon                 AS categoryIcon,
+    cat.is_default           AS categoryIsDefault,
+    cat.resource_key         AS categoryResourceKey
 
 FROM transactions t
 JOIN bank_accounts a ON t.account_id = a.id
 JOIN currencies c ON a.currency = c.id
 LEFT JOIN bank_accounts ra ON t.receiver_account_id = ra.id
 LEFT JOIN currencies rc ON ra.currency = rc.id
-LEFT JOIN attachments ath ON ath.transaction_id = t.id
+LEFT JOIN attachments ath ON ath.entity_type = 'transaction' AND ath.entity_id = t.id
 LEFT JOIN transaction_categories tc ON tc.transaction_id = t.id
 LEFT JOIN categories cat ON tc.category_id = cat.id;
 
@@ -94,7 +96,8 @@ JOIN currencies c ON a.currency = c.id;
 CREATE VIEW IF NOT EXISTS  v_attachments AS
 SELECT
     id          AS attachmentId,
-    transaction_id AS transactionId,
+    entity_type AS entityType,
+    entity_id   AS entityId,
     name        AS attachmentName,
     mime_type   AS attachmentMimeType,
     data        AS attachmentData
@@ -107,7 +110,9 @@ SELECT
     name        AS categoryName,
     description AS categoryDescription,
     color       AS categoryColor,
-    icon        AS categoryIcon
+    icon        AS categoryIcon,
+    is_default  AS categoryIsDefault,
+    resource_key AS categoryResourceKey
 FROM categories;
 
 
@@ -126,7 +131,9 @@ SELECT
     c.categoryName,
     c.categoryDescription,
     c.categoryColor,
-    c.categoryIcon
+    c.categoryIcon,
+    c.categoryIsDefault,
+    c.categoryResourceKey
 FROM transaction_categories tc
 JOIN v_categories c ON c.categoryId = tc.category_id;
 

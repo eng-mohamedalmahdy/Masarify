@@ -21,37 +21,52 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 actual class TransactionsPaneViewModel(
-    private val filter: TransactionFilter,
+    initialFilter: TransactionFilter,
     private val getFilteredTransactions: GetFilteredTransactionsPaged,
 ) : ViewModel() {
     val transactions: MutableStateFlow<PagedData<UiTransaction>> = MutableStateFlow(PagedData.empty())
     private val _currentPage = MutableStateFlow(0)
     val currentPage: StateFlow<Int> = _currentPage
 
-    init {
-        Napier.d { "TransactionsPaneViewModel initialized with filter: $filter" }
+    // Reactive filter state
+    private val filterFlow = MutableStateFlow(initialFilter)
 
-        // Realtime update: Use flatMapLatest to switch to new Flow when page changes
+    /**
+     * Update the filter and reset to first page
+     * Reloads data with new filter
+     */
+    actual fun updateFilter(filter: TransactionFilter) {
+        Napier.d { "Filter updated: $filter" }
+        filterFlow.value = filter
+        _currentPage.value = 0 // Reset to first page when filter changes
+    }
+
+    init {
+        Napier.d { "TransactionsPaneViewModel initialized with filter: $initialFilter" }
+
+        // Realtime update: Use flatMapLatest to switch to new Flow when page OR filter changes
         viewModelScope.launch(Dispatchers.IoDispatcher) {
             _currentPage
                 .flatMapLatest { page ->
-                    Napier.d { "Fetching transactions for page: $page" }
+                    filterFlow.flatMapLatest { currentFilter ->
+                        Napier.d { "Fetching transactions for page: $page with filter: $currentFilter" }
 
-                    val transactionsResult = getFilteredTransactions(filter, page)
-                    transactionsResult.foldResult(
-                        onSuccess = { pagedDataFlow ->
-                            Napier.d { "Successfully got Flow<PagedData> for page: $page" }
-                            pagedDataFlow.map { pagedData ->
-                                Napier.d { "Mapping ${pagedData.data.size} transactions to UI models" }
-                                pagedData.map { it.toUiTransaction() }
-                            }
-                        },
-                        onFailure = { error ->
-                            Napier.e { "Error fetching transactions for page $page" }
-                            SnackbarService.sendErrorMessage(MR.strings.unknown_error)
-                            emptyFlow()
-                        },
-                    )
+                        val transactionsResult = getFilteredTransactions(currentFilter, page)
+                        transactionsResult.foldResult(
+                            onSuccess = { pagedDataFlow ->
+                                Napier.d { "Successfully got Flow<PagedData> for page: $page" }
+                                pagedDataFlow.map { pagedData ->
+                                    Napier.d { "Mapping ${pagedData.data.size} transactions to UI models" }
+                                    pagedData.map { it.toUiTransaction() }
+                                }
+                            },
+                            onFailure = { error ->
+                                Napier.e { "Error fetching transactions for page $page" }
+                                SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+                                emptyFlow()
+                            },
+                        )
+                    }
                 }.collect { value ->
                     withContext(Dispatchers.Main) {
                         Napier.d {

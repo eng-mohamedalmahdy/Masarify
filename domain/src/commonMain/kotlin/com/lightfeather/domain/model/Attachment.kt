@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Attachment(
     val id: Int,
-    val transactionId: Int,
+    val entityType: AttachmentEntityType,
+    val entityId: Int,
     val mimeType: String,
     val fileName: String,
     val fileContent: ByteArray,
@@ -17,7 +18,8 @@ data class Attachment(
         other as Attachment
 
         if (id != other.id) return false
-        if (transactionId != other.transactionId) return false
+        if (entityType != other.entityType) return false
+        if (entityId != other.entityId) return false
         if (mimeType != other.mimeType) return false
         if (fileName != other.fileName) return false
         if (!fileContent.contentEquals(other.fileContent)) return false
@@ -27,7 +29,8 @@ data class Attachment(
 
     override fun hashCode(): Int {
         var result = id
-        result = 31 * result + transactionId
+        result = 31 * result + entityType.hashCode()
+        result = 31 * result + entityId
         result = 31 * result + mimeType.hashCode()
         result = 31 * result + fileName.hashCode()
         result = 31 * result + fileContent.contentHashCode()

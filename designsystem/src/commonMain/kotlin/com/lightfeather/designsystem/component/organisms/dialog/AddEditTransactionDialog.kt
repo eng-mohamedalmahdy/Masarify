@@ -46,6 +46,7 @@ import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
+import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -246,7 +247,6 @@ fun AddEditTransactionDialog(
                             ) {
                                 items(
                                     items = attachments,
-                                    key = { it.id },
                                 ) { attachment ->
                                     ImageThumbnail(
                                         imageBytes = attachment.fileContent,
@@ -407,7 +407,7 @@ private fun ExpenseFields(
         onExpandedChange = { categoryExpanded = it },
     ) {
         OutlinedTextField(
-            value = selectedCategory?.name ?: "",
+            value = selectedCategory?.getLocalizedName().orEmpty(),
             onValueChange = {},
             readOnly = true,
             label = { Text("Category") },
@@ -428,7 +428,7 @@ private fun ExpenseFields(
         ) {
             categories.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text(category.name) },
+                    text = { Text(category.getLocalizedName()) },
                     onClick = {
                         onCategorySelected(category)
                         categoryExpanded = false
@@ -495,7 +495,7 @@ private fun IncomeFields(
         onExpandedChange = { sourceExpanded = it },
     ) {
         OutlinedTextField(
-            value = selectedCategory?.name ?: "",
+            value = selectedCategory?.getLocalizedName() ?: "",
             onValueChange = {},
             readOnly = true,
             label = { Text("Income Source") },

@@ -81,4 +81,45 @@
     <string name="coming_soon">قريباً</string>
     <string name="advanced_filters">ترشحيات متقدمة</string>
 
+    <!-- Default Category Names and Descriptions (Arabic) -->
+    <!-- Transfer Category -->
+    <string name="category_transfer">تحويل</string>
+    <string name="category_transfer_desc">تحويل الأموال من حساب إلى آخر</string>
+
+    <!-- Income Categories -->
+    <string name="category_salary">راتب</string>
+    <string name="category_salary_desc">الراتب الشهري والأجور</string>
+    <string name="category_freelance">عمل حر</string>
+    <string name="category_freelance_desc">الأعمال الحرة والمشاريع الجانبية</string>
+    <string name="category_investments">استثمارات</string>
+    <string name="category_investments_desc">عوائد الاستثمارات والأرباح</string>
+    <string name="category_gift">هدية</string>
+    <string name="category_gift_desc">الهدايا والعطايا المالية المستلمة</string>
+
+    <!-- Expense Categories -->
+    <string name="category_groceries">بقالة</string>
+    <string name="category_groceries_desc">الطعام والمواد المنزلية</string>
+    <string name="category_transportation">مواصلات</string>
+    <string name="category_transportation_desc">الوقود، النقل العام، وصيانة المركبات</string>
+    <string name="category_utilities">خدمات</string>
+    <string name="category_utilities_desc">فواتير الكهرباء، الماء، الغاز، والإنترنت</string>
+    <string name="category_dining">مطاعم</string>
+    <string name="category_dining_desc">المطاعم، المقاهي، وتوصيل الطعام</string>
+    <string name="category_entertainment">ترفيه</string>
+    <string name="category_entertainment_desc">السينما، الحفلات، الألعاب، وأنشطة الترفيه</string>
+    <string name="category_healthcare">رعاية صحية</string>
+    <string name="category_healthcare_desc">المصاريف الطبية، الصيدلية، والتأمين الصحي</string>
+    <string name="category_education">تعليم</string>
+    <string name="category_education_desc">الرسوم الدراسية، الدورات، الكتب، والمواد التعليمية</string>
+    <string name="category_shopping">تسوق</string>
+    <string name="category_shopping_desc">الملابس، الإلكترونيات، والمنتجات الشخصية</string>
+    <string name="category_subscriptions">اشتراكات</string>
+    <string name="category_subscriptions_desc">خدمات البث، العضويات، والرسوم المتكررة</string>
+    <string name="category_rent">إيجار</string>
+    <string name="category_rent_desc">الإيجار الشهري ومدفوعات السكن</string>
+    <string name="category_insurance">تأمين</string>
+    <string name="category_insurance_desc">التأمين على الحياة، الصحة، السيارة، والممتلكات</string>
+    <string name="category_other">أخرى</string>
+    <string name="category_other_desc">مصاريف متنوعة</string>
+
 </resources>

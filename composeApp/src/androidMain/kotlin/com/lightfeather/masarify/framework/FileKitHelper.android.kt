@@ -22,8 +22,9 @@ internal actual suspend fun compressImagePlatform(
 
     // Decode the image
     val options = BitmapFactory.Options()
-    var bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
-        ?: return bytes // Return original if decode fails
+    var bitmap =
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+            ?: return bytes // Return original if decode fails
 
     // Resize if needed
     val width = bitmap.width

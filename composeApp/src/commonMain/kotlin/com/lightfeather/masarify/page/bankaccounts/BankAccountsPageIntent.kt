@@ -1,9 +1,9 @@
 package com.lightfeather.masarify.page.bankaccounts
 
+import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
-import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionDetails
 
 internal sealed interface BankAccountsPageIntent {
@@ -45,7 +45,9 @@ internal sealed interface BankAccountsPageIntent {
 
     data object CancelDeleteTransaction : BankAccountsPageIntent
 
-    data object ConfirmUpdateTransaction : BankAccountsPageIntent
+    data class ConfirmUpdateTransaction(
+        val transactionDate: UiTransactionData,
+    ) : BankAccountsPageIntent
 
     data object CancelUpdateTransaction : BankAccountsPageIntent
 
