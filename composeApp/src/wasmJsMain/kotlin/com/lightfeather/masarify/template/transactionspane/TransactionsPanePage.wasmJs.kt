@@ -49,7 +49,6 @@ actual fun TransactionsPane(
             topBarSupportingContent()
 
             when {
-
                 isEmpty -> {
                     EmptyState(
                         title =
@@ -102,10 +101,11 @@ actual fun TransactionsPane(
             onClick = onAddClick,
             imageVector = Icons.Default.Add,
             contentDescription = stringResource(MR.strings.add_account),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(AppTheme.dimens.default)
-                .padding(bottom = AppTheme.dimens.massive),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(AppTheme.dimens.default)
+                    .padding(bottom = AppTheme.dimens.massive),
         )
     }
 }

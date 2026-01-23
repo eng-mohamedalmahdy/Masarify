@@ -14,6 +14,7 @@ import com.lightfeather.domain.model.PagedData
 import com.lightfeather.domain.model.runCatchingDomainResultSuspend
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
+import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,6 +22,7 @@ import kotlin.reflect.KClass
 
 class TransactionsRepositoryImpl(
     private val sharedDatabase: SharedDatabase,
+    private val attachmentRepository: AttachmentRepository,
 ) : TransactionRepository {
     companion object {
         const val PAGE_SIZE = 20
@@ -34,28 +36,37 @@ class TransactionsRepositoryImpl(
                     is Transaction.Income -> listOf(transaction.source)
                     is Transaction.Transfer -> listOf(Category.Transfer)
                 }
-            sharedDatabase {
-                val transactionsQueries = it.transactionsQueries
-                transactionsQueries.transactionWithResult {
-                    transactionsQueries.insertTransaction(
-                        type = transaction.toDbTransactionType().dbValue,
-                        name = transaction.name,
-                        description = transaction.description,
-                        amount = transaction.amount,
-                        timestamp = transaction.timestamp,
-                        account_id = transaction.account.id.toLong(),
-                    )
-                    val transactionId = transactionsQueries.selectLastInsertedRowId().awaitAsOne()
-
-                    transactionCategories.forEach { category ->
-                        transactionsQueries.insertTransactionCategory(
-                            transaction_id = transactionId,
-                            category_id = category.id.toLong(),
+            val transactionId =
+                sharedDatabase {
+                    val transactionsQueries = it.transactionsQueries
+                    transactionsQueries.transactionWithResult {
+                        transactionsQueries.insertTransaction(
+                            type = transaction.toDbTransactionType().dbValue,
+                            name = transaction.name,
+                            description = transaction.description,
+                            amount = transaction.amount,
+                            timestamp = transaction.timestamp,
+                            account_id = transaction.account.id.toLong(),
                         )
+                        val id = transactionsQueries.selectLastInsertedRowId().awaitAsOne()
+
+                        transactionCategories.forEach { category ->
+                            transactionsQueries.insertTransactionCategory(
+                                transaction_id = id,
+                                category_id = category.id.toLong(),
+                            )
+                        }
+                        id.toInt()
                     }
-                    transactionId.toInt()
                 }
+
+            // Insert attachments
+            transaction.attachments.forEach { attachment ->
+                val attachmentWithId = attachment.copy(transactionId = transactionId)
+                attachmentRepository.createAttachment(attachmentWithId)
             }
+
+            transactionId
         }
 
     override suspend fun deleteTransaction(transactionId: Long): DomainResult<Boolean> =
@@ -155,8 +166,30 @@ class TransactionsRepositoryImpl(
                     timestamp = newTransaction.timestamp,
                     account_id = newTransaction.account.id.toLong(),
                 )
-                true
             }
+
+            // Get existing attachments
+            val existingAttachments =
+                when (val result = attachmentRepository.getAttachmentsByTransactionId(newTransaction.id)) {
+                    is DomainResult.Success -> result.data
+                    is DomainResult.Failure -> emptyList()
+                }
+
+            // Delete attachments that are no longer in the transaction
+            val newAttachmentIds = newTransaction.attachments.map { it.id }.toSet()
+            existingAttachments
+                .filter { it.id !in newAttachmentIds }
+                .forEach { attachmentRepository.deleteAttachment(it.id) }
+
+            // Add new attachments (those with id = -1)
+            newTransaction.attachments
+                .filter { it.id == -1 }
+                .forEach { attachment ->
+                    val attachmentWithId = attachment.copy(transactionId = newTransaction.id)
+                    attachmentRepository.createAttachment(attachmentWithId)
+                }
+
+            true
         }
 
     override suspend fun <T : Transaction> getTotalTransactionsOfTypeAndCurrency(

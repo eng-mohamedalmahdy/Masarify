@@ -3,6 +3,7 @@ package com.lightfeather.masarify.page.transactions
 import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
 import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.SavedFilter
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.UiTransactionType
@@ -85,5 +86,16 @@ sealed interface TransactionsPageIntent {
 
     data class DuplicateTransaction(
         val transaction: UiTransaction,
+    ) : TransactionsPageIntent
+
+    // Attachment Operations
+    data object PickImages : TransactionsPageIntent
+
+    data class DeleteAttachment(
+        val attachment: UiAttachment,
+    ) : TransactionsPageIntent
+
+    data class LoadAttachments(
+        val transactionId: String,
     ) : TransactionsPageIntent
 }

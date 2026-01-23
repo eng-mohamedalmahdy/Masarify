@@ -12,6 +12,7 @@ androidx-lifecycle-navigation3 = "2.10.0-alpha07"
 androidx-testExt = "1.2.1"
 composeHotReload = "1.0.0"
 composeMultiplatform = "1.10.0"
+fileKitVersion = "0.12.0"
 junit = "4.13.2"
 kotlin = "2.3.0"
 kotlinx-coroutines = "1.10.2"
@@ -22,6 +23,7 @@ kotlinxSerialization = "1.9.0"
 coroutines = "1.10.2"
 sqldelight = "2.2.1"
 sqlJs = "1.8.0"
+uriKmp = "0.0.21"
 webPackPlugin = "9.1.0"
 koin = "4.1.1"
 materialKolor = "3.0.1"
@@ -40,8 +42,12 @@ androidx-paging = "3.4.0-alpha04"
 material3 = "1.9.0-beta06"
 okio = "3.16.0"
 ktor = "3.3.0"
-[libraries]
 
+[libraries]
+filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "fileKitVersion" }
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "fileKitVersion" }
+filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "fileKitVersion" }
+filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "fileKitVersion" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -113,6 +119,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+uri-kmp = { module = "com.eygraber:uri-kmp", version.ref = "uriKmp" }
 
 [bundles]
 koinCommon = [
@@ -153,6 +160,12 @@ ktor = [
     "ktor-client-core",
     "ktor-client-content-negotiation",
     "ktor-serialization-json"
+]
+filekit = [
+    "filekit-core",
+    "filekit-dialogs",
+    "filekit-coil",
+    "filekit-dialogs-compose"
 ]
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

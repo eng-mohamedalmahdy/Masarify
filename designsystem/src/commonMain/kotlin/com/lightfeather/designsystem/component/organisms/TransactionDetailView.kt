@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.theme.AppTheme
@@ -47,6 +48,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * Shows all transaction information including type-specific fields
  *
  * @param transaction Transaction to display
+ * @param attachments List of attachments for the transaction
  * @param onEdit Callback when edit button is clicked
  * @param onDelete Callback when delete button is clicked
  * @param onDuplicate Callback when duplicate button is clicked
@@ -56,6 +58,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun TransactionDetailView(
     transaction: UiTransaction,
+    attachments: List<UiAttachment> = emptyList(),
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: () -> Unit,
@@ -257,21 +260,31 @@ fun TransactionDetailView(
         }
 
         // Attachments
-        if (transaction.hasAttachment) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+        if (attachments.isNotEmpty()) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
             ) {
-                Icon(
-                    imageVector = Icons.Default.AttachFile,
-                    contentDescription = "Has attachments",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(AppTheme.dimens.icon.size.small),
-                )
-                Text(
-                    text = "Has Attachments",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AttachFile,
+                        contentDescription = "Attachments",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(AppTheme.dimens.icon.size.small),
+                    )
+                    Text(
+                        text = "Attachments (${attachments.size})",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+
+                AttachmentGrid(
+                    attachments = attachments,
+                    onDelete = null, // Read-only view, no deletion
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }

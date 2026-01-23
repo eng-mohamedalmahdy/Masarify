@@ -7,22 +7,33 @@ import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarServic
 import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
 import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.SavedFilter
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.UiTransactionType
+import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.usecase.CreateTransaction
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.UpdateTransaction
+import com.lightfeather.masarify.framework.FileKitHelper
 import com.lightfeather.masarify.mappers.toAccount
 import com.lightfeather.masarify.mappers.toCategory
 import com.lightfeather.masarify.mappers.toDomainTransaction
+import com.lightfeather.masarify.mappers.toUiAttachment
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCategory
 import com.lightfeather.masarify.mappers.toUiCurrency
 import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,6 +58,7 @@ class TransactionsPageViewModel(
     private val createTransactionUseCase: CreateTransaction,
     private val updateTransactionUseCase: UpdateTransaction,
     private val deleteTransactionUseCase: DeleteTransaction,
+    private val attachmentRepository: AttachmentRepository,
 ) : ViewModel() {
     private val _transactions = MutableStateFlow<List<UiTransaction>>(emptyList())
     private val _state = MutableStateFlow(TransactionsPageState(transactions = _transactions))
@@ -80,6 +92,9 @@ class TransactionsPageViewModel(
             is TransactionsPageIntent.UpdateTransaction -> updateTransaction(intent.data)
             is TransactionsPageIntent.DeleteTransaction -> deleteTransaction(intent.transaction)
             is TransactionsPageIntent.DuplicateTransaction -> duplicateTransaction(intent.transaction)
+            is TransactionsPageIntent.PickImages -> pickImages()
+            is TransactionsPageIntent.DeleteAttachment -> deleteAttachment(intent.attachment)
+            is TransactionsPageIntent.LoadAttachments -> loadAttachments(intent.transactionId)
         }
     }
 
@@ -125,6 +140,10 @@ class TransactionsPageViewModel(
 
     private fun selectTransaction(transaction: UiTransaction?) {
         _state.update { it.copy(selectedTransaction = transaction) }
+        // Load attachments for the selected transaction
+        transaction?.let {
+            loadAttachments(it.id)
+        }
     }
 
     private fun updateFilter(filter: UiTransactionFilter) {
@@ -254,12 +273,22 @@ class TransactionsPageViewModel(
     }
 
     private fun showEditDialog(transaction: UiTransaction) {
-        _state.update {
-            it.copy(
-                showAddEditDialog = true,
-                editingTransaction = transaction,
-                lockedFromAccount = null,
-            )
+        // Load attachments for editing
+        loadAttachments(transaction.id)
+
+        viewModelScope.launch {
+            // Wait a bit for attachments to load
+            kotlinx.coroutines.delay(100)
+
+            val attachments = _state.value.transactionAttachments[transaction.id] ?: emptyList()
+            _state.update {
+                it.copy(
+                    showAddEditDialog = true,
+                    editingTransaction = transaction,
+                    lockedFromAccount = null,
+                    selectedAttachments = attachments,
+                )
+            }
         }
     }
 
@@ -269,6 +298,7 @@ class TransactionsPageViewModel(
                 showAddEditDialog = false,
                 editingTransaction = null,
                 lockedFromAccount = null,
+                selectedAttachments = emptyList(), // Clear attachments when closing dialog
             )
         }
     }
@@ -458,6 +488,90 @@ class TransactionsPageViewModel(
             it.copy(
                 showAddEditDialog = true,
                 editingTransaction = transaction.copy(id = ""),
+            )
+        }
+    }
+
+    /**
+     * Pick images using FileKit and compress them
+     */
+    @Suppress("TooGenericExceptionCaught") // General error handling for FileKit operations
+    private fun pickImages() {
+        viewModelScope.launch {
+            try {
+                val files =
+                    FileKit.openFilePicker(
+                        type = FileKitType.Image,
+                        mode = FileKitMode.Multiple(),
+                    )
+
+                if (files != null) {
+                    val newAttachments = mutableListOf<UiAttachment>()
+
+                    files.forEachIndexed { idx, file ->
+                        try {
+                            val bytes = file.readBytes()
+                            val compressedBytes = FileKitHelper.compressImage(bytes)
+
+                            if (FileKitHelper.isValidImage(compressedBytes, file.mimeType())) {
+                                newAttachments.add(
+                                    UiAttachment(
+                                        id = idx.times(-1).toString(), // New attachment, will be assigned ID on save
+                                        name = file.name,
+                                        mimeType = "image/jpeg",
+                                        fileContent = compressedBytes,
+                                    ),
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Napier.e("Error processing image: ${file.name}", e)
+                        }
+                    }
+
+                    _state.update {
+                        it.copy(
+                            selectedAttachments = it.selectedAttachments + newAttachments,
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Napier.e("Error picking images", e)
+                SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+            }
+        }
+    }
+
+    /**
+     * Delete an attachment from the selected list
+     */
+    private fun deleteAttachment(attachment: UiAttachment) {
+        _state.update {
+            it.copy(
+                selectedAttachments = it.selectedAttachments - attachment,
+            )
+        }
+    }
+
+    /**
+     * Load attachments for a specific transaction
+     */
+    private fun loadAttachments(transactionId: String) {
+        viewModelScope.launch {
+            val id = transactionId.toIntOrNull() ?: return@launch
+
+            attachmentRepository.getAttachmentsByTransactionId(id).fold(
+                onSuccess = { attachments ->
+                    val uiAttachments = attachments.map { it.toUiAttachment() }
+                    _state.update {
+                        it.copy(
+                            transactionAttachments =
+                                it.transactionAttachments + (transactionId to uiAttachments),
+                        )
+                    }
+                },
+                onFailure = { error ->
+                    Napier.e("Error loading attachments for transaction $transactionId $error")
+                },
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.lightfeather.masarify.page.bankaccounts
 
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiCurrency
@@ -16,4 +17,7 @@ internal data class BankAccountsPageState(
     val showAddEditDialog: Boolean = false,
     val underProcessTransaction: UiTransaction? = null,
     val categories: List<UiCategory> = emptyList(),
+    // Attachment state
+    val selectedAttachments: List<UiAttachment> = emptyList(),
+    val transactionAttachments: Map<String, List<UiAttachment>> = emptyMap(),
 )

@@ -201,8 +201,10 @@ internal fun TransactionsPageContent(
             ) { navKey ->
                 val transaction = navKey.transaction?.toUiTransaction()
                 if (transaction != null) {
+                    val attachments = state.transactionAttachments[transaction.id] ?: emptyList()
                     TransactionDetailPane(
                         transaction = transaction,
+                        attachments = attachments,
                         onEdit = {
                             onIntent(TransactionsPageIntent.ShowEditDialog(transaction))
                         },
@@ -251,6 +253,7 @@ internal fun TransactionsPageContent(
                 lockedFromAccount = state.lockedFromAccount,
                 accounts = accounts,
                 categories = categories,
+                attachments = state.selectedAttachments,
                 onDismiss = { onIntent(TransactionsPageIntent.HideAddEditDialog) },
                 onSave = { data ->
                     if (state.editingTransaction != null) {
@@ -258,6 +261,10 @@ internal fun TransactionsPageContent(
                     } else {
                         onIntent(TransactionsPageIntent.CreateTransaction(data))
                     }
+                },
+                onPickImages = { onIntent(TransactionsPageIntent.PickImages) },
+                onDeleteAttachment = { attachment ->
+                    onIntent(TransactionsPageIntent.DeleteAttachment(attachment))
                 },
             )
         }
@@ -267,12 +274,14 @@ internal fun TransactionsPageContent(
 @Composable
 private fun TransactionDetailPane(
     transaction: UiTransaction,
+    attachments: List<com.lightfeather.designsystem.model.UiAttachment>,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: () -> Unit,
 ) {
     TransactionDetailView(
         transaction = transaction,
+        attachments = attachments,
         onEdit = onEdit,
         onDelete = onDelete,
         onDuplicate = onDuplicate,

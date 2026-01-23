@@ -23,7 +23,18 @@ val viewModelModule =
         viewModelOf(::AppMainViewModel)
         viewModelOf(::OnBoardingPageViewModel)
         viewModelOf(::SplashPageViewModel)
-        viewModelOf(::BankAccountsPageViewModel)
+        viewModel {
+            BankAccountsPageViewModel(
+                navigator = get(),
+                getAllAccounts = get(),
+                getAllCurrencies = get(),
+                getWealthWorthInCurrency = get(),
+                exchangeRates = get(),
+                deleteTransaction = get(),
+                updateTransaction = get(),
+                attachmentRepository = get(),
+            )
+        }
         viewModelOf(::DeleteBankAccountPageViewModel)
         viewModelOf(::CategoriesPageViewModel)
         viewModelOf(::CurrenciesPageViewModel)
@@ -36,6 +47,7 @@ val viewModelModule =
                 createTransactionUseCase = get(),
                 updateTransactionUseCase = get(),
                 deleteTransactionUseCase = get(),
+                attachmentRepository = get(),
             )
         }
         viewModel { AddEditCategoryPageViewModel(get(), get(), get(), get(), get(), it.get(), it.get()) }

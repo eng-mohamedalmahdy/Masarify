@@ -5,21 +5,32 @@ import androidx.lifecycle.viewModelScope
 import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransactionType
+import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateTransaction
+import com.lightfeather.masarify.framework.FileKitHelper
 import com.lightfeather.masarify.mappers.toAccount
 import com.lightfeather.masarify.mappers.toTransaction
+import com.lightfeather.masarify.mappers.toUiAttachment
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DeleteAccountRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +39,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class BankAccountsPageViewModel(
@@ -38,6 +50,7 @@ class BankAccountsPageViewModel(
     private val exchangeRates: GetAllCurrenciesExchangeRates,
     private val deleteTransaction: DeleteTransaction,
     private val updateTransaction: UpdateTransaction,
+    private val attachmentRepository: AttachmentRepository,
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(
@@ -73,6 +86,7 @@ class BankAccountsPageViewModel(
         )
     internal val state: StateFlow<BankAccountsPageState> = _state
 
+    @Suppress("CyclomaticComplexMethod") // Complexity due to comprehensive intent handling
     internal fun onIntent(intent: BankAccountsPageIntent) {
         when (intent) {
             is BankAccountsPageIntent.DeleteBankAccount -> {
@@ -120,11 +134,21 @@ class BankAccountsPageViewModel(
             }
 
             BankAccountsPageIntent.CancelDeleteTransaction -> {
-                _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
+                _state.value =
+                    _state.value.copy(
+                        showAddEditDialog = false,
+                        underProcessTransaction = null,
+                        selectedAttachments = emptyList(),
+                    )
             }
 
             BankAccountsPageIntent.CancelUpdateTransaction -> {
-                _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
+                _state.value =
+                    _state.value.copy(
+                        showAddEditDialog = false,
+                        underProcessTransaction = null,
+                        selectedAttachments = emptyList(),
+                    )
             }
 
             BankAccountsPageIntent.ConfirmDeleteTransaction -> {
@@ -162,14 +186,86 @@ class BankAccountsPageViewModel(
             }
 
             is BankAccountsPageIntent.DeleteTransaction -> {
+                loadAttachments(intent.transaction.id)
                 _state.value = _state.value.copy(underProcessTransaction = intent.transaction, showAddEditDialog = true)
             }
 
             is BankAccountsPageIntent.UpdateTransaction -> {
-                _state.value = _state.value.copy(underProcessTransaction = intent.transaction, showAddEditDialog = true)
+                loadAttachments(intent.transaction.id)
+                viewModelScope.launch {
+                    kotlinx.coroutines.delay(100) // Wait for attachments to load
+                    val attachments = _state.value.transactionAttachments[intent.transaction.id] ?: emptyList()
+                    _state.update {
+                        it.copy(
+                            showAddEditDialog = true,
+                            underProcessTransaction = intent.transaction,
+                            selectedAttachments = attachments,
+                        )
+                    }
+                }
             }
 
             is BankAccountsPageIntent.DuplicateTransaction -> TODO()
+
+            // Attachment operations
+            is BankAccountsPageIntent.PickImages -> pickImages()
+            is BankAccountsPageIntent.DeleteAttachment -> deleteAttachment(intent.attachment)
+            is BankAccountsPageIntent.LoadAttachments -> loadAttachments(intent.transactionId)
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught") // General error handling for FileKit operations
+    private fun pickImages() {
+        viewModelScope.launch {
+            try {
+                val files =
+                    FileKit.openFilePicker(
+                        type = FileKitType.Image,
+                        mode = FileKitMode.Multiple(),
+                    )
+                if (files != null) {
+                    val newAttachments = mutableListOf<UiAttachment>()
+                    files.forEach { file ->
+                        val bytes = file.readBytes()
+                        val compressedBytes = FileKitHelper.compressImage(bytes)
+                        if (FileKitHelper.isValidImage(compressedBytes, file.mimeType())) {
+                            newAttachments.add(
+                                UiAttachment(
+                                    id = "-1",
+                                    name = file.name,
+                                    mimeType = "image/jpeg",
+                                    fileContent = compressedBytes,
+                                ),
+                            )
+                        }
+                    }
+                    _state.update { it.copy(selectedAttachments = it.selectedAttachments + newAttachments) }
+                }
+            } catch (e: Exception) {
+                Napier.e("Error picking images", e)
+                SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+            }
+        }
+    }
+
+    private fun deleteAttachment(attachment: UiAttachment) {
+        _state.update { it.copy(selectedAttachments = it.selectedAttachments - attachment) }
+    }
+
+    private fun loadAttachments(transactionId: String) {
+        viewModelScope.launch {
+            val id = transactionId.toIntOrNull() ?: return@launch
+            attachmentRepository.getAttachmentsByTransactionId(id).fold(
+                onSuccess = { attachments ->
+                    val uiAttachments = attachments.map { it.toUiAttachment() }
+                    _state.update {
+                        it.copy(transactionAttachments = it.transactionAttachments + (transactionId to uiAttachments))
+                    }
+                },
+                onFailure = { error ->
+                    Napier.e("Error loading attachments $error")
+                },
+            )
         }
     }
 

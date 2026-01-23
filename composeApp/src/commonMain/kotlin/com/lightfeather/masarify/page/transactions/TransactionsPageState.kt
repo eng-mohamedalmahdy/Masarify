@@ -2,6 +2,7 @@ package com.lightfeather.masarify.page.transactions
 
 import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.SavedFilter
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiCurrency
@@ -34,6 +35,9 @@ data class TransactionsPageState(
     val accounts: Flow<List<UiBankAccount>> = emptyFlow(),
     val categories: Flow<List<UiCategory>> = emptyFlow(),
     val currencies: Flow<List<UiCurrency>> = emptyFlow(),
+    // Attachment state
+    val selectedAttachments: List<UiAttachment> = emptyList(),
+    val transactionAttachments: Map<String, List<UiAttachment>> = emptyMap(),
     // Loading state
     val isLoading: Boolean = false,
 ) {

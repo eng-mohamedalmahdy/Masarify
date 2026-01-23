@@ -40,6 +40,7 @@
     <string name="add_account">Add Account</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
 
     <!-- More Page -->
     <string name="more">More</string>

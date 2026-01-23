@@ -9,6 +9,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lightfeather.masarify.app.App
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.init
+import io.github.vinceglb.filekit.manualFileKitCoreInitialization
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +20,9 @@ class MainActivity : ComponentActivity() {
         if (BuildConfig.DEBUG) {
             Napier.base(DebugAntilog())
         }
+        FileKit.init(this)
+        FileKit.manualFileKitCoreInitialization(this)
+
         setContent {
             App()
         }

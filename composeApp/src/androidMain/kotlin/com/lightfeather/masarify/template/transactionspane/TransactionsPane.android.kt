@@ -2,6 +2,8 @@ package com.lightfeather.masarify.template.transactionspane
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -36,42 +38,44 @@ actual fun TransactionsPane(
     val isLoading = transactions.itemCount == 0 && transactions.loadState.refresh == LoadState.Loading
     val isFiltered = filter != null && !filter.isEmpty()
 
-    Box {
+    Box(Modifier.fillMaxSize()) {
         // Supporting content (title, filter button) provided by parent
-        topBarSupportingContent()
+        Column {
+            topBarSupportingContent()
 
-        when {
-            isEmpty && !isLoading -> {
-                EmptyState(
-                    title =
-                        stringResource(
-                            if (isFiltered) {
-                                MR.strings.empty_filtered_transactions_title
-                            } else {
-                                MR.strings.empty_transactions_title
-                            },
-                        ),
-                    message =
-                        stringResource(
-                            if (isFiltered) {
-                                MR.strings.empty_filtered_transactions_message
-                            } else {
-                                MR.strings.empty_transactions_message
-                            },
-                        ),
-                )
-            }
+            when {
+                isEmpty && !isLoading -> {
+                    EmptyState(
+                        title =
+                            stringResource(
+                                if (isFiltered) {
+                                    MR.strings.empty_filtered_transactions_title
+                                } else {
+                                    MR.strings.empty_transactions_title
+                                },
+                            ),
+                        message =
+                            stringResource(
+                                if (isFiltered) {
+                                    MR.strings.empty_filtered_transactions_message
+                                } else {
+                                    MR.strings.empty_transactions_message
+                                },
+                            ),
+                    )
+                }
 
-            else -> {
-                Box {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
-                    ) {
-                        items(transactions.itemCount) {
-                            TransactionItem(
-                                transaction = transactions[it]!!,
-                                onClick = { onTransactionClick(transactions[it]!!) },
-                            )
+                else -> {
+                    Box {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.hairline),
+                        ) {
+                            items(transactions.itemCount) {
+                                TransactionItem(
+                                    transaction = transactions[it]!!,
+                                    onClick = { onTransactionClick(transactions[it]!!) },
+                                )
+                            }
                         }
                     }
                 }

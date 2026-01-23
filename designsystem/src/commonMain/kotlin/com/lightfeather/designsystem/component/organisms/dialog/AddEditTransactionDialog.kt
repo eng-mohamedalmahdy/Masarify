@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
@@ -24,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,14 +38,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.DialogProperties
+import com.lightfeather.designsystem.component.atoms.ImageThumbnail
 import com.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.theme.AppTheme
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Clock
 
 /**
  * Dialog for adding or editing transactions
@@ -51,8 +62,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * @param lockedFromAccount Locked source account (for transfers from account page)
  * @param accounts Available accounts
  * @param categories Available categories
+ * @param attachments Current attachments for the transaction
  * @param onDismiss Callback when dialog is dismissed
  * @param onSave Callback when transaction is saved
+ * @param onPickImages Callback when user wants to add images
+ * @param onDeleteAttachment Callback when user wants to delete an attachment
  * @param modifier Modifier for the dialog
  */
 @Suppress("LongMethod", "CyclomaticComplexMethod") // Complex form with multiple transaction types
@@ -64,8 +78,11 @@ fun AddEditTransactionDialog(
     lockedFromAccount: UiBankAccount? = null,
     accounts: List<UiBankAccount>,
     categories: List<UiCategory>,
+    attachments: List<UiAttachment> = emptyList(),
     onDismiss: () -> Unit,
     onSave: (UiTransactionData) -> Unit,
+    onPickImages: () -> Unit,
+    onDeleteAttachment: (UiAttachment) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Form state
@@ -147,7 +164,8 @@ fun AddEditTransactionDialog(
                 Column(
                     modifier =
                         Modifier
-                            .weight(1f, fill = false)
+                            // Use fill = true to ensure the scrollable content receives bounded height constraints
+                            .weight(1f, fill = true)
                             .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.medium),
                 ) {
@@ -196,6 +214,55 @@ fun AddEditTransactionDialog(
                         minLines = 2,
                         maxLines = 4,
                     )
+
+                    // Attachments Section
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "Attachments",
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+
+                            TextButton(onClick = onPickImages) {
+                                Icon(
+                                    imageVector = Icons.Default.AddPhotoAlternate,
+                                    contentDescription = "Add photos",
+                                    modifier = Modifier.size(AppTheme.dimens.icon.size.small),
+                                )
+                                Spacer(modifier = Modifier.size(AppTheme.dimens.extraSmall))
+                                Text("Add Photos")
+                            }
+                        }
+
+                        if (attachments.isNotEmpty()) {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+                            ) {
+                                items(
+                                    items = attachments,
+                                    key = { it.id },
+                                ) { attachment ->
+                                    ImageThumbnail(
+                                        imageBytes = attachment.fileContent,
+                                        onDelete = { onDeleteAttachment(attachment) },
+                                        contentDescription = attachment.name,
+                                    )
+                                }
+                            }
+
+                            Text(
+                                text = "${attachments.size} photo${if (attachments.size != 1) "s" else ""}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.outline,
+                            )
+                        }
+                    }
 
                     // Type-Specific Fields
                     when (selectedType) {
@@ -259,10 +326,16 @@ fun AddEditTransactionDialog(
                                     name = name,
                                     amount = amount,
                                     description = description.takeIf { it.isNotBlank() },
+                                    dateTime =
+                                        transaction?.dateTime
+                                            ?: Clock.System
+                                                .now()
+                                                .toLocalDateTime(TimeZone.currentSystemDefault()),
                                     account = selectedAccount!!,
                                     category = selectedCategory,
                                     targetAccount = selectedTargetAccount,
                                     transferFee = transferFee.takeIf { selectedType == UiTransactionType.TRANSFER },
+                                    attachments = attachments,
                                 )
                             onSave(data)
                             onDismiss()
@@ -535,9 +608,11 @@ private fun TransferFields(
                     selectedToAccount == null -> {
                         { Text("Please select an account") }
                     }
+
                     selectedToAccount == selectedFromAccount -> {
                         { Text("Target account must be different") }
                     }
+
                     else -> null
                 },
         )
@@ -585,10 +660,13 @@ data class UiTransactionData(
     val name: String,
     val amount: String,
     val description: String?,
+    val dateTime: LocalDateTime,
     val account: UiBankAccount,
     val category: UiCategory?,
     val targetAccount: UiBankAccount?,
     val transferFee: String?,
+    val attachments: List<UiAttachment> = emptyList(),
+    val attachmentsToDelete: List<String> = emptyList(),
 )
 
 @Preview
@@ -602,6 +680,10 @@ private fun AddEditTransactionDialogPreview() {
             categories = listOf(UiCategory.dummy, UiCategory.dummy.copy(id = "2", name = "Food")),
             onDismiss = {},
             onSave = {},
+            lockedFromAccount = null,
+            attachments = listOf(),
+            onPickImages = {},
+            onDeleteAttachment = { },
         )
     }
 }

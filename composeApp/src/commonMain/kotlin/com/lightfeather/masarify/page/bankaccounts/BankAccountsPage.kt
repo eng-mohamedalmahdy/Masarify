@@ -218,8 +218,10 @@ internal fun BankAccountsPageContent(
             ) { navKey ->
                 val transaction = navKey.transaction?.toUiTransaction()
                 if (transaction != null) {
+                    val attachments = state.transactionAttachments[transaction.id] ?: emptyList()
                     TransactionDetailView(
                         transaction = transaction,
+                        attachments = attachments,
                         onEdit = { onIntent(BankAccountsPageIntent.UpdateTransaction(transaction)) },
                         onDelete = { onIntent(BankAccountsPageIntent.DeleteTransaction(transaction)) },
                         onDuplicate = { onIntent(BankAccountsPageIntent.DuplicateTransaction(transaction)) },
@@ -260,8 +262,13 @@ internal fun BankAccountsPageContent(
             transaction = state.underProcessTransaction,
             accounts = accounts,
             categories = state.categories,
+            attachments = state.selectedAttachments,
             onDismiss = { onIntent(BankAccountsPageIntent.CancelUpdateTransaction) },
             onSave = { onIntent(BankAccountsPageIntent.CancelUpdateTransaction) },
+            onPickImages = { onIntent(BankAccountsPageIntent.PickImages) },
+            onDeleteAttachment = { attachment ->
+                onIntent(BankAccountsPageIntent.DeleteAttachment(attachment))
+            },
         )
     }
 }

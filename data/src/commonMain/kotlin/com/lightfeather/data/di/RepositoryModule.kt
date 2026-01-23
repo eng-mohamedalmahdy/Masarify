@@ -1,12 +1,14 @@
 package com.lightfeather.data.di
 
 import com.lightfeather.data.repository.AccountRepositoryImpl
+import com.lightfeather.data.repository.AttachmentRepositoryImpl
 import com.lightfeather.data.repository.CategoryRepositoryImpl
 import com.lightfeather.data.repository.CurrencyExchangeRateRepositoryImpl
 import com.lightfeather.data.repository.CurrencyRepositoryImpl
 import com.lightfeather.data.repository.TransactionsRepositoryImpl
 import com.lightfeather.data.repository.UserRepositoryImpl
 import com.lightfeather.domain.repository.AccountRepository
+import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.repository.CategoryRepository
 import com.lightfeather.domain.repository.CurrencyExchangeRateRepository
 import com.lightfeather.domain.repository.CurrencyRepository
@@ -17,7 +19,8 @@ import org.koin.dsl.module
 val repositoryModule =
     module {
         single<AccountRepository> { AccountRepositoryImpl(get()) }
-        single<TransactionRepository> { TransactionsRepositoryImpl(get()) }
+        single<AttachmentRepository> { AttachmentRepositoryImpl(get()) }
+        single<TransactionRepository> { TransactionsRepositoryImpl(get(), get()) }
         single<CategoryRepository> { CategoryRepositoryImpl(get(), get()) }
         single<CurrencyRepository> { CurrencyRepositoryImpl(get()) }
         single<CurrencyExchangeRateRepository> { CurrencyExchangeRateRepositoryImpl(get()) }

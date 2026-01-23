@@ -445,6 +445,11 @@ object AppTheme {
                 val maxWidth = 560.dp
                 val minWidth = 280.dp
             }
+
+            object thumbnail {
+                val size = 80.dp
+                val cornerRadius = 8.dp
+            }
         }
 
         object touchTarget {

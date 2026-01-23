@@ -12,11 +12,14 @@ import com.lightfeather.masarify.app.App
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
 import org.koin.core.context.startKoin
 
 private val WINDOW_SIZE = DpSize(width = 1480.dp, height = 720.dp)
 
-fun main() =
+fun main() {
+    FileKit.init(appId = "Masarify")
+
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -28,3 +31,4 @@ fun main() =
             App()
         }
     }
+}

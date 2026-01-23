@@ -107,20 +107,22 @@ fun UiTransactionData.toDomainTransaction(): Transaction {
     val timestamp = dateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
     val parsedAmount = parseAmount(amount)
     val domainAccount = account.toAccount()
+    val transactionId = id?.toIntOrNull() ?: -1
+    val domainAttachments = attachments.map { it.toAttachment(transactionId) }
 
     return when (type) {
         UiTransactionType.INCOME -> {
             val source = category?.toCategory()
             require(source != null) { "Income source required" }
             Transaction.Income(
-                id = id?.toIntOrNull() ?: -1,
+                id = transactionId,
                 name = name,
                 description = description,
                 amount = parsedAmount,
                 timestamp = timestamp,
                 account = domainAccount,
                 source = source,
-                attachments = emptyList(),
+                attachments = domainAttachments,
             )
         }
 
@@ -128,14 +130,14 @@ fun UiTransactionData.toDomainTransaction(): Transaction {
             val categories = listOfNotNull(category?.toCategory())
             require(categories.isNotEmpty()) { "Expense categories required" }
             Transaction.Expense(
-                id = id?.toIntOrNull() ?: -1,
+                id = transactionId,
                 name = name,
                 description = description,
                 amount = parsedAmount,
                 timestamp = timestamp,
                 account = domainAccount,
                 categories = categories,
-                attachments = emptyList(),
+                attachments = domainAttachments,
             )
         }
 
@@ -144,7 +146,7 @@ fun UiTransactionData.toDomainTransaction(): Transaction {
             require(receiver != null) { "Transfer target account required" }
             val fee = transferFee?.let { parseAmount(it) } ?: 0.0
             Transaction.Transfer(
-                id = id?.toIntOrNull() ?: -1,
+                id = transactionId,
                 name = name,
                 description = description,
                 amount = parsedAmount,
@@ -152,7 +154,7 @@ fun UiTransactionData.toDomainTransaction(): Transaction {
                 account = domainAccount,
                 receiverAccount = receiver,
                 fee = fee,
-                attachments = emptyList(),
+                attachments = domainAttachments,
             )
         }
     }

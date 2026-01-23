@@ -24,7 +24,6 @@ actual class TransactionsPaneViewModel(
     private val filter: TransactionFilter,
     private val getFilteredTransactions: GetFilteredTransactionsPaged,
 ) : ViewModel() {
-
     val transactions: MutableStateFlow<PagedData<UiTransaction>> = MutableStateFlow(PagedData.empty())
     private val _currentPage = MutableStateFlow(0)
     val currentPage: StateFlow<Int> = _currentPage
@@ -51,7 +50,7 @@ actual class TransactionsPaneViewModel(
                             Napier.e { "Error fetching transactions for page $page" }
                             SnackbarService.sendErrorMessage(MR.strings.unknown_error)
                             emptyFlow()
-                        }
+                        },
                     )
                 }.collect { value ->
                     withContext(Dispatchers.Main) {
