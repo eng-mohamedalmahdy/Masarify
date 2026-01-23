@@ -57,7 +57,7 @@ import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.asSlug
 import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.mappers.toTransaction
-import com.lightfeather.masarify.mappers.toUiTransaction
+import com.lightfeather.masarify.mappers.toUiTransactionDetails
 import com.lightfeather.masarify.navigation.Display
 import com.lightfeather.masarify.navigation.LocalNavigator
 import com.lightfeather.masarify.navigation.Navigator
@@ -216,7 +216,7 @@ internal fun BankAccountsPageContent(
             entry<ViewTransaction>(
                 metadata = ListDetailSceneStrategy.extraPane(),
             ) { navKey ->
-                val transaction = navKey.transaction?.toUiTransaction()
+                val transaction = navKey.transaction?.toUiTransactionDetails()
                 if (transaction != null) {
                     val attachments = state.transactionAttachments[transaction.id] ?: emptyList()
                     TransactionDetailView(
@@ -264,7 +264,7 @@ internal fun BankAccountsPageContent(
             categories = state.categories,
             attachments = state.selectedAttachments,
             onDismiss = { onIntent(BankAccountsPageIntent.CancelUpdateTransaction) },
-            onSave = { onIntent(BankAccountsPageIntent.CancelUpdateTransaction) },
+            onSave = { onIntent(BankAccountsPageIntent.ConfirmUpdateTransaction) },
             onPickImages = { onIntent(BankAccountsPageIntent.PickImages) },
             onDeleteAttachment = { attachment ->
                 onIntent(BankAccountsPageIntent.DeleteAttachment(attachment))

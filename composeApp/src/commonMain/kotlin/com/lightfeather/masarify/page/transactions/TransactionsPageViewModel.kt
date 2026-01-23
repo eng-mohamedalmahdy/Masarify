@@ -9,6 +9,7 @@ import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.SavedFilter
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.domain.repository.AttachmentRepository
@@ -272,7 +273,7 @@ class TransactionsPageViewModel(
         }
     }
 
-    private fun showEditDialog(transaction: UiTransaction) {
+    private fun showEditDialog(transaction: UiTransactionDetails) {
         // Load attachments for editing
         loadAttachments(transaction.id)
 
@@ -378,7 +379,7 @@ class TransactionsPageViewModel(
     }
 
     @OptIn(ExperimentalTime::class)
-    private fun deleteTransaction(transaction: UiTransaction) {
+    private fun deleteTransaction(transaction: UiTransactionDetails) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
@@ -396,7 +397,7 @@ class TransactionsPageViewModel(
             // Note: The domain transaction needs full data, so we'll need to convert the UI transaction
             try {
                 val domainAccount = transaction.account.toAccount()
-                val domainCategory = transaction.category.toCategory()
+                val domainCategory = transaction.categories.firstOrNull()?.toCategory()
 
                 val domainTransaction =
                     when (transaction.type) {
@@ -412,7 +413,7 @@ class TransactionsPageViewModel(
                                             kotlinx.datetime.TimeZone.currentSystemDefault(),
                                         ).toEpochMilliseconds(),
                                 account = domainAccount,
-                                source = domainCategory,
+                                source = domainCategory!!,
                                 attachments = emptyList(),
                             )
                         }
@@ -429,7 +430,7 @@ class TransactionsPageViewModel(
                                             kotlinx.datetime.TimeZone.currentSystemDefault(),
                                         ).toEpochMilliseconds(),
                                 account = domainAccount,
-                                categories = listOf(domainCategory),
+                                categories = listOfNotNull(domainCategory),
                                 attachments = emptyList(),
                             )
                         }
@@ -483,7 +484,7 @@ class TransactionsPageViewModel(
         }
     }
 
-    private fun duplicateTransaction(transaction: UiTransaction) {
+    private fun duplicateTransaction(transaction: UiTransactionDetails) {
         _state.update {
             it.copy(
                 showAddEditDialog = true,

@@ -33,7 +33,7 @@ import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.AppImage
 import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
 import com.lightfeather.designsystem.model.UiAttachment
-import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.toColorInt
@@ -57,7 +57,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Suppress("LongMethod", "CyclomaticComplexMethod") // Detailed UI with multiple transaction types
 @Composable
 fun TransactionDetailView(
-    transaction: UiTransaction,
+    transaction: UiTransactionDetails,
     attachments: List<UiAttachment> = emptyList(),
     onEdit: () -> Unit,
     onDelete: () -> Unit,
@@ -230,16 +230,16 @@ fun TransactionDetailView(
         // Category
         DetailItem(
             label = if (transaction.type == UiTransactionType.INCOME) "Income Source" else "Category",
-            value = transaction.category.name,
+            value = transaction.categories.firstOrNull()?.name.orEmpty(),
             icon = {
                 AppImage(
-                    model = transaction.category.image,
-                    contentDescription = transaction.category.name,
+                    model = transaction.categories.firstOrNull()?.image,
+                    contentDescription = transaction.categories.firstOrNull()?.name,
                     modifier =
                         Modifier
                             .size(AppTheme.dimens.icon.size.medium)
                             .clip(CircleShape)
-                            .background(Color(transaction.category.color.toColorInt())),
+                            .background(Color(transaction.categories.firstOrNull()?.color?.toColorInt() ?: 0xFF0000)),
                     placeholder = Res.drawable.bank,
                 )
             },
@@ -374,7 +374,7 @@ private fun DetailItem(
 private fun TransactionDetailViewPreview() {
     AppTheme {
         TransactionDetailView(
-            transaction = UiTransaction.dummyTransfer,
+            transaction = UiTransactionDetails.dummyTransfer,
             onEdit = {},
             onDelete = {},
             onDuplicate = {},

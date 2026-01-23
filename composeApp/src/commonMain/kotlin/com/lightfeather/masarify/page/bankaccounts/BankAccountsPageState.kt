@@ -4,7 +4,7 @@ import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiCurrency
-import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import kotlinx.coroutines.flow.Flow
 
 internal data class BankAccountsPageState(
@@ -15,7 +15,7 @@ internal data class BankAccountsPageState(
     val selectedCurrency: UiCurrency? = null,
     val totalAmountInSelectedOrDefaultCurrency: String = "",
     val showAddEditDialog: Boolean = false,
-    val underProcessTransaction: UiTransaction? = null,
+    val underProcessTransaction: UiTransactionDetails? = null,
     val categories: List<UiCategory> = emptyList(),
     // Attachment state
     val selectedAttachments: List<UiAttachment> = emptyList(),

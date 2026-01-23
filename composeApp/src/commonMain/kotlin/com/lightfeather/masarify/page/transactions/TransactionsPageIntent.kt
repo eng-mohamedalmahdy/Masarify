@@ -5,6 +5,7 @@ import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.SavedFilter
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.model.UiTransactionType
 
@@ -67,7 +68,7 @@ sealed interface TransactionsPageIntent {
     ) : TransactionsPageIntent
 
     data class ShowEditDialog(
-        val transaction: UiTransaction,
+        val transaction: UiTransactionDetails,
     ) : TransactionsPageIntent
 
     data object HideAddEditDialog : TransactionsPageIntent
@@ -81,11 +82,11 @@ sealed interface TransactionsPageIntent {
     ) : TransactionsPageIntent
 
     data class DeleteTransaction(
-        val transaction: UiTransaction,
+        val transaction: UiTransactionDetails,
     ) : TransactionsPageIntent
 
     data class DuplicateTransaction(
-        val transaction: UiTransaction,
+        val transaction: UiTransactionDetails,
     ) : TransactionsPageIntent
 
     // Attachment Operations

@@ -16,7 +16,7 @@ import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.framework.FileKitHelper
 import com.lightfeather.masarify.mappers.toAccount
-import com.lightfeather.masarify.mappers.toTransaction
+import com.lightfeather.masarify.mappers.toDomainTransaction
 import com.lightfeather.masarify.mappers.toUiAttachment
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCurrency
@@ -172,7 +172,7 @@ class BankAccountsPageViewModel(
 
             BankAccountsPageIntent.ConfirmUpdateTransaction -> {
                 viewModelScope.launch {
-                    updateTransaction(_state.value.underProcessTransaction!!.toTransaction()).fold(
+                    updateTransaction(_state.value.underProcessTransaction!!.toDomainTransaction()).fold(
                         onSuccess = {
                             _state.value = _state.value.copy(showAddEditDialog = false, underProcessTransaction = null)
                             SnackbarService.sendSuccessMessage(MR.strings.transaction_update_success)

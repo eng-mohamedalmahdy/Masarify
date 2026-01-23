@@ -4,6 +4,7 @@ import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 
 internal sealed interface BankAccountsPageIntent {
     data object LoadData : BankAccountsPageIntent
@@ -29,15 +30,15 @@ internal sealed interface BankAccountsPageIntent {
     ) : BankAccountsPageIntent
 
     data class UpdateTransaction(
-        val transaction: UiTransaction,
+        val transaction: UiTransactionDetails,
     ) : BankAccountsPageIntent
 
     data class DeleteTransaction(
-        val transaction: UiTransaction,
+        val transaction: UiTransactionDetails,
     ) : BankAccountsPageIntent
 
     data class DuplicateTransaction(
-        val transaction: UiTransaction,
+        val transaction: UiTransactionDetails,
     ) : BankAccountsPageIntent
 
     data object ConfirmDeleteTransaction : BankAccountsPageIntent

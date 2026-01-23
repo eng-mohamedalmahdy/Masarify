@@ -35,11 +35,14 @@ import com.lightfeather.designsystem.component.organisms.TransactionDetailView
 import com.lightfeather.designsystem.component.organisms.dialog.AddEditTransactionDialog
 import com.lightfeather.designsystem.component.organisms.dialog.AdvancedFilterDialog
 import com.lightfeather.designsystem.model.PageSize
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.masarify.mappers.toTransaction
 import com.lightfeather.masarify.mappers.toUiTransaction
+import com.lightfeather.masarify.mappers.toUiTransactionDetails
 import com.lightfeather.masarify.navigation.Display
 import com.lightfeather.masarify.navigation.LocalNavigator
 import com.lightfeather.masarify.navigation.Navigator
@@ -199,7 +202,7 @@ internal fun TransactionsPageContent(
             entry<ViewTransaction>(
                 metadata = ListDetailSceneStrategy.detailPane(),
             ) { navKey ->
-                val transaction = navKey.transaction?.toUiTransaction()
+                val transaction = navKey.transaction?.toUiTransactionDetails()
                 if (transaction != null) {
                     val attachments = state.transactionAttachments[transaction.id] ?: emptyList()
                     TransactionDetailPane(
@@ -273,8 +276,8 @@ internal fun TransactionsPageContent(
 
 @Composable
 private fun TransactionDetailPane(
-    transaction: UiTransaction,
-    attachments: List<com.lightfeather.designsystem.model.UiAttachment>,
+    transaction: UiTransactionDetails,
+    attachments: List<UiAttachment>,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: () -> Unit,

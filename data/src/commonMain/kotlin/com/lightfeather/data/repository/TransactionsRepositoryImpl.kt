@@ -183,7 +183,7 @@ class TransactionsRepositoryImpl(
 
             // Add new attachments (those with id = -1)
             newTransaction.attachments
-                .filter { it.id == -1 }
+                .filter { it.id < 0 }
                 .forEach { attachment ->
                     val attachmentWithId = attachment.copy(transactionId = newTransaction.id)
                     attachmentRepository.createAttachment(attachmentWithId)

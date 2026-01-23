@@ -7,6 +7,7 @@ import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -29,7 +30,7 @@ data class TransactionsPageState(
     val totalCount: Long = 0,
     // Dialog state
     val showAddEditDialog: Boolean = false,
-    val editingTransaction: UiTransaction? = null,
+    val editingTransaction: UiTransactionDetails? = null,
     val lockedFromAccount: UiBankAccount? = null,
     // Reference data
     val accounts: Flow<List<UiBankAccount>> = emptyFlow(),

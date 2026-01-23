@@ -44,7 +44,7 @@ import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
-import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.theme.AppTheme
 import kotlinx.datetime.LocalDateTime
@@ -73,7 +73,7 @@ import kotlin.time.Clock
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditTransactionDialog(
-    transaction: UiTransaction?,
+    transaction: UiTransactionDetails?,
     initialType: UiTransactionType = UiTransactionType.EXPENSE,
     lockedFromAccount: UiBankAccount? = null,
     accounts: List<UiBankAccount>,
@@ -91,7 +91,7 @@ fun AddEditTransactionDialog(
     var amount by remember { mutableStateOf(transaction?.amount?.removePrefix("-")?.removePrefix("+") ?: "") }
     var description by remember { mutableStateOf(transaction?.description ?: "") }
     var selectedAccount by remember { mutableStateOf<UiBankAccount?>(lockedFromAccount ?: transaction?.account) }
-    var selectedCategory by remember { mutableStateOf<UiCategory?>(transaction?.category) }
+    var selectedCategory by remember { mutableStateOf<UiCategory?>(transaction?.categories?.firstOrNull()) }
     var selectedTargetAccount by remember { mutableStateOf<UiBankAccount?>(transaction?.receiverAccount) }
     var transferFee by remember { mutableStateOf(transaction?.transferFee ?: "0") }
 

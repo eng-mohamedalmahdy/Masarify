@@ -3,6 +3,7 @@ package com.lightfeather.masarify.mappers
 import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.domain.model.Attachment
 import com.lightfeather.domain.model.transaction.Transaction
@@ -13,6 +14,47 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+
+fun Transaction.toUiTransactionDetails(): UiTransactionDetails {
+    val type =
+        when (this) {
+            is Transaction.Income -> UiTransactionType.INCOME
+            is Transaction.Expense -> UiTransactionType.EXPENSE
+            is Transaction.Transfer -> UiTransactionType.TRANSFER
+        }
+
+    val categories =
+        when (this) {
+            is Transaction.Income -> listOf(source.toUiCategory())
+            is Transaction.Expense -> categories.map { it.toUiCategory() }
+            is Transaction.Transfer -> emptyList()
+        }
+
+    return UiTransactionDetails(
+        id = id.toString(),
+        name = name,
+        type = type,
+        amount = amount.toString(),
+        description = description ?: name,
+        dateTime =
+            Instant
+                .fromEpochMilliseconds(timestamp)
+                .toLocalDateTime(TimeZone.currentSystemDefault()),
+        categories = categories,
+        attachments = attachments.map { it.toUiAttachment() },
+        account = account.toUiBankAccount(),
+        receiverAccount =
+            if (this is Transaction.Transfer)
+                receiverAccount.toUiBankAccount()
+            else
+                null,
+        transferFee =
+            if (this is Transaction.Transfer)
+                fee.toString()
+            else
+                "",
+    )
+}
 
 @OptIn(ExperimentalTime::class)
 fun Transaction.toUiTransaction(): UiTransaction {
@@ -43,6 +85,55 @@ fun Transaction.toUiTransaction(): UiTransaction {
         receiverAccount = if (this is Transaction.Transfer) receiverAccount.toUiBankAccount() else null,
         transferFee = if (this is Transaction.Transfer) fee.toString() else null,
     )
+}
+
+fun UiTransactionDetails.toDomainTransaction(): Transaction {
+    val account = account.toAccount()
+    val attachments = attachments.map { it.toAttachment(transactionId = id.toInt()) }
+    val amountValue = amount.toDouble()
+    val timestampMillis =
+        dateTime
+            .toInstant(TimeZone.currentSystemDefault())
+            .toEpochMilliseconds()
+
+    return when (type) {
+        UiTransactionType.INCOME ->
+            Transaction.Income(
+                id = id.toInt(),
+                name = name,
+                description = description.takeIf { it.isNotBlank() },
+                amount = amountValue,
+                timestamp = timestampMillis,
+                account = account,
+                source = categories.firstOrNull()?.toCategory()!!,
+                attachments = attachments,
+            )
+
+        UiTransactionType.EXPENSE ->
+            Transaction.Expense(
+                id = id.toInt(),
+                name = name,
+                description = description.takeIf { it.isNotBlank() },
+                amount = amountValue,
+                timestamp = timestampMillis,
+                account = account,
+                categories = categories.map { it.toCategory() },
+                attachments = attachments,
+            )
+
+        UiTransactionType.TRANSFER ->
+            Transaction.Transfer(
+                id = id.toInt(),
+                name = name,
+                description = description.takeIf { it.isNotBlank() },
+                amount = amountValue,
+                timestamp = timestampMillis,
+                account = account,
+                receiverAccount = receiverAccount!!.toAccount(),
+                fee = transferFee.toDoubleOrNull() ?: 0.0,
+                attachments = attachments,
+            )
+    }
 }
 
 @OptIn(ExperimentalTime::class)
