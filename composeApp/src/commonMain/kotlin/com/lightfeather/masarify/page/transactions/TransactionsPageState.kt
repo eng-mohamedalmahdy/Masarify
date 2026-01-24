@@ -17,8 +17,6 @@ import kotlinx.coroutines.flow.emptyFlow
  * Manages transaction list, filtering, pagination, and detail pane state
  */
 data class TransactionsPageState(
-    // Transaction data
-    val transactions: Flow<List<UiTransaction>> = emptyFlow(),
     val selectedTransaction: UiTransaction? = null,
     // Filter state
     val filter: UiTransactionFilter = UiTransactionFilter.EMPTY,

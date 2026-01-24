@@ -38,7 +38,6 @@ import com.lightfeather.designsystem.component.organisms.dialog.AddEditTransacti
 import com.lightfeather.designsystem.component.organisms.dialog.AdvancedFilterDialog
 import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.UiAttachment
-import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.theme.AppTheme
@@ -100,17 +99,11 @@ internal fun TransactionsPageContent(
     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
     // Collect state flows
-    val transactions by state.transactions.collectAsState(emptyList())
     val accounts by state.accounts.collectAsState(emptyList())
     val categories by state.categories.collectAsState(emptyList())
     val currencies by state.currencies.collectAsState(emptyList())
     val userAccountsCurrencies by state.userAccountsCurrencies.collectAsState(emptyList())
     val defaultCurrency by state.defaultCurrency.collectAsState(null)
-
-    // Helper to find transaction by ID
-    val findTransaction: (String) -> UiTransaction? = { transactionId ->
-        transactions.find { it.id == transactionId }
-    }
 
     // Key the whole Display on changing inputs that the navigation entry otherwise caches out.
     // This forces recomposition so the AccountsHeader updates and chips become responsive.
@@ -141,10 +134,7 @@ internal fun TransactionsPageContent(
                     filter = state.filter,
                     onBackClick = { listDetailNav.back() },
                     onTransactionClick = { transaction ->
-                        val transaction = findTransaction(transaction.id)
-                        transaction?.let {
-                            listDetailNav.navigateToDetail(ViewTransaction(transaction.toTransaction()))
-                        }
+                        listDetailNav.navigateToDetail(ViewTransaction(transaction.toTransaction()))
                     },
                     onAddClick = {
                         onIntent(TransactionsPageIntent.ShowAddDialog)
@@ -315,14 +305,6 @@ fun TransactionsPagePreview() {
     TransactionsPageContent(
         state =
             TransactionsPageState(
-                transactions =
-                    kotlinx.coroutines.flow.flowOf(
-                        listOf(
-                            UiTransaction.dummy,
-                            UiTransaction.dummyTransfer,
-                            UiTransaction.dummy.copy(id = "3", name = "Grocery Shopping"),
-                        ),
-                    ),
                 currentPage = 0,
                 pageSize = PageSize.MEDIUM,
                 totalCount = 3,

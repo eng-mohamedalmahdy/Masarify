@@ -73,11 +73,9 @@ class TransactionsPageViewModel(
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
     private val exchangeRates: GetAllCurrenciesExchangeRates,
 ) : ViewModel() {
-    private val _transactions = MutableStateFlow<List<UiTransaction>>(emptyList())
     private val _state =
         MutableStateFlow(
             TransactionsPageState(
-                transactions = _transactions,
                 accounts =
                     getAccountsUseCase().foldResult(
                         onSuccess = { accountsFlow ->

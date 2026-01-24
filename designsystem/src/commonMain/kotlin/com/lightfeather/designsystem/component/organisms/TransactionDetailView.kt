@@ -35,6 +35,7 @@ import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
+import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.toColorInt
 import com.lightfeather.designsystem.util.toDisplayableString
@@ -233,7 +234,7 @@ fun TransactionDetailView(
             value =
                 transaction.categories
                     .firstOrNull()
-                    ?.name
+                    ?.getLocalizedName()
                     .orEmpty(),
             icon = {
                 AppImage(
