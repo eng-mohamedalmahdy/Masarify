@@ -50,10 +50,14 @@ class OnBoardingPageViewModel(
                 val stateSnapshot = _state.value
                 val validationError =
                     stateSnapshot.userNameError ?: stateSnapshot.accountNameError
-                        ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
+                    ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
 
                 if (validationError != null) {
                     SnackbarService.sendErrorMessage(validationError)
+                    return
+                }
+                if (stateSnapshot.accountBalance.toDoubleOrNull() == null) {
+                    SnackbarService.sendErrorMessage(MR.strings.account_balance_invalid)
                     return
                 }
 
