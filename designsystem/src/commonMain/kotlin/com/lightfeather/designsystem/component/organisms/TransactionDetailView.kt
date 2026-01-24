@@ -3,6 +3,7 @@ package com.lightfeather.designsystem.component.organisms
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -229,33 +230,33 @@ fun TransactionDetailView(
         }
 
         // Category
-        DetailItem(
-            label = if (transaction.type == UiTransactionType.INCOME) "Income Source" else "Category",
-            value =
-                transaction.categories
-                    .firstOrNull()
-                    ?.getLocalizedName()
-                    .orEmpty(),
-            icon = {
-                AppImage(
-                    model = transaction.categories.firstOrNull()?.image,
-                    contentDescription = transaction.categories.firstOrNull()?.name,
-                    modifier =
-                        Modifier
-                            .size(AppTheme.dimens.icon.size.medium)
-                            .clip(CircleShape)
-                            .background(
-                                Color(
-                                    transaction.categories
-                                        .firstOrNull()
-                                        ?.color
-                                        ?.toColorInt() ?: 0xFF0000,
-                                ),
-                            ),
-                    placeholder = Res.drawable.bank,
+        FlowRow {
+            transaction.categories.forEach { category ->
+                DetailItem(
+                    label = if (transaction.type == UiTransactionType.INCOME) "Income Source" else "Category",
+                    value = category.getLocalizedName(),
+                    icon = {
+                        AppImage(
+                            model = category.image,
+                            contentDescription = category.getLocalizedName(),
+                            modifier =
+                                Modifier
+                                    .size(AppTheme.dimens.icon.size.medium)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Color(
+                                            transaction.categories
+                                                .firstOrNull()
+                                                ?.color
+                                                ?.toColorInt() ?: 0xFF0000,
+                                        ),
+                                    ),
+                            placeholder = Res.drawable.bank,
+                        )
+                    },
                 )
-            },
-        )
+            }
+        }
 
         // Date & Time
         DetailItem(
