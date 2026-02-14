@@ -30,7 +30,10 @@ import com.lightfeather.domain.usecase.GetUserLanguage
 import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.SaveUserColor
+import com.lightfeather.domain.usecase.SeedApplicationData
+import com.lightfeather.domain.usecase.SeedDefaultBankNames
 import com.lightfeather.domain.usecase.SeedDefaultCategories
+import com.lightfeather.domain.usecase.SeedDefaultCurrencies
 import com.lightfeather.domain.usecase.SetLanguage
 import com.lightfeather.domain.usecase.ToggleDarkMode
 import com.lightfeather.domain.usecase.UpdateAccount
@@ -77,9 +80,12 @@ val useCaseModule =
             GetTotalTransactionsByCategories(get())
         }
 
-        factory { GetAllCategoryIcons(get()) }
+        factory { GetAllCategoryIcons(get(), get()) }
         factory { CreateCategory(get()) }
         factory { SeedDefaultCategories(get()) }
+        factory { SeedDefaultCurrencies(get()) }
+        factory { SeedDefaultBankNames(get()) }
+        factory { SeedApplicationData(get(), get(), get(), get()) }
         factory { CreateAccount(get()) }
         factory { GetAllCurrencies(get()) }
         factory { GetAllCurrenciesExchangeRates(get()) }

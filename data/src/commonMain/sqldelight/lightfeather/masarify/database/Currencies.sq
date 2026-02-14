@@ -1,17 +1,23 @@
 CREATE TABLE  IF NOT EXISTS  currencies(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name  TEXT NOT NULL,
-  sign TEXT NOT NULL
+  sign TEXT NOT NULL,
+  type TEXT NOT NULL DEFAULT 'TRADITIONAL',
+  is_default INTEGER NOT NULL DEFAULT 0,
+  resource_key TEXT
 );
 
 insertCurrency:
-INSERT INTO currencies (name, sign)
-VALUES (:name, :sign);
+INSERT INTO currencies (name, sign, type, is_default, resource_key)
+VALUES (:name, :sign, :type, :is_default, :resource_key);
 
 updateCurrency:
 UPDATE currencies
 SET name = :name,
-    sign = :sign
+    sign = :sign,
+    type = :type,
+    is_default = :is_default,
+    resource_key = :resource_key
 WHERE id = :id;
 
 deleteCurrency:

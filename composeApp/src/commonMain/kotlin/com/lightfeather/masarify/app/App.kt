@@ -29,6 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.window.core.layout.WindowWidthSizeClass
+import coil3.ImageLoader
+import coil3.compose.LocalPlatformContext
+import coil3.compose.setSingletonImageLoaderFactory
 import com.lightfeather.designsystem.component.molecules.snackbar.Snackbar
 import com.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
 import com.lightfeather.designsystem.component.organisms.AppNavigationItemColors
@@ -64,6 +67,7 @@ import com.lightfeather.masarify.page.onboarding.OnBoardingPage
 import com.lightfeather.masarify.page.splash.SplashPage
 import com.lightfeather.masarify.page.transactions.TransactionsPage
 import dev.icerock.moko.resources.desc.StringDesc
+import io.github.vinceglb.filekit.coil.addPlatformFileSupport
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
@@ -83,9 +87,16 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
             SplashRoute,
         )
     val navigator = remember(navBackStack) { NavigatorImpl(navBackStack) }
-
+    val context = LocalPlatformContext.current
     LaunchedEffect(navigator) {
         onBackStackReady(navigator)
+    }
+    setSingletonImageLoaderFactory{
+        ImageLoader.Builder(context)
+            .components {
+                addPlatformFileSupport()
+            }
+            .build()
     }
 
     KoinContext(

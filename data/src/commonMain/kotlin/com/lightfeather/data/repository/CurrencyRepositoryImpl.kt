@@ -5,6 +5,7 @@ import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.model.CurrencyType
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.error.AppError
 import com.lightfeather.domain.repository.CurrencyRepository
@@ -30,6 +31,9 @@ class CurrencyRepositoryImpl(
                         currencyQueries.insertCurrency(
                             name = currency.name,
                             sign = currency.sign,
+                            type = currency.type.name,
+                            is_default = if (currency.isDefault) 1L else 0L,
+                            resource_key = currency.resourceKey,
                         )
                         currencyQueries.selectLastInsertedRowId().awaitAsOne()
                     }
@@ -47,6 +51,9 @@ class CurrencyRepositoryImpl(
                     it.currenciesQueries.updateCurrency(
                         name = currency.name,
                         sign = currency.sign,
+                        type = currency.type.name,
+                        is_default = if (currency.isDefault) 1L else 0L,
+                        resource_key = currency.resourceKey,
                         id = currency.id.toLong(),
                     )
                 }
@@ -97,5 +104,8 @@ class CurrencyRepositoryImpl(
             name = currencyName,
             sign = currencySign,
             id = currencyId.toInt(),
+            type = CurrencyType.valueOf(currencyType ?: "TRADITIONAL"),
+            isDefault = (currencyIsDefault ?: 0L) == 1L,
+            resourceKey = currencyResourceKey,
         )
 }

@@ -37,6 +37,9 @@ SELECT
     c.id                     AS currencyId,
     c.name                   AS currencyName,
     c.sign                   AS currencySign,
+    c.type                   AS currencyType,
+    c.is_default             AS currencyIsDefault,
+    c.resource_key           AS currencyResourceKey,
 
     -- Receiver Account (for transfers only)
     ra.id                    AS receiverAccountIdFull,
@@ -50,6 +53,9 @@ SELECT
     rc.id                    AS receiverCurrencyId,
     rc.name                  AS receiverCurrencyName,
     rc.sign                  AS receiverCurrencySign,
+    rc.type                  AS receiverCurrencyType,
+    rc.is_default            AS receiverCurrencyIsDefault,
+    rc.resource_key          AS receiverCurrencyResourceKey,
 
     -- Attachment (if exists)
     ath.id                   AS attachmentId,
@@ -88,7 +94,10 @@ SELECT
 
     c.id          AS currencyId,
     c.name        AS currencyName,
-    c.sign        AS currencySign
+    c.sign        AS currencySign,
+    c.type        AS currencyType,
+    c.is_default  AS currencyIsDefault,
+    c.resource_key AS currencyResourceKey
 FROM bank_accounts a
 JOIN currencies c ON a.currency = c.id;
 
@@ -120,7 +129,10 @@ CREATE VIEW IF NOT EXISTS  v_currencies AS
 SELECT
     id   AS currencyId,
     name AS currencyName,
-    sign AS currencySign
+    sign AS currencySign,
+    type AS currencyType,
+    is_default AS currencyIsDefault,
+    resource_key AS currencyResourceKey
 FROM currencies;
 
 
@@ -150,3 +162,13 @@ SELECT
 FROM exchange_rates er
 JOIN v_currencies fc ON fc.currencyId = er.from_currency_id
 JOIN v_currencies tc ON tc.currencyId = er.to_currency_id;
+
+
+CREATE VIEW IF NOT EXISTS  v_bank_names AS
+SELECT
+    id           AS bankNameId,
+    name         AS bankName,
+    resource_key AS bankNameResourceKey,
+    logo_url     AS bankNameLogoUrl,
+    is_default   AS bankNameIsDefault
+FROM bank_names;

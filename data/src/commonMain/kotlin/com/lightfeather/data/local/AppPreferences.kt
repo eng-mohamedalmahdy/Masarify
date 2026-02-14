@@ -18,6 +18,7 @@ class AppPreferences(
         const val APP_LANGUAGE = "appLanguage"
 
         const val USER_SAVED_COLORS = "userSavedColors"
+        const val DATA_SEEDED = "dataSeeded"
     }
 
     var userData: UserData?
@@ -39,4 +40,8 @@ class AppPreferences(
     var userSavedColors: List<String>
         set(value) = settings.encodeValue(USER_SAVED_COLORS, value)
         get() = settings.decodeValueOrNull<List<String>>(USER_SAVED_COLORS) ?: emptyList()
+
+    var isDataSeeded: Boolean
+        set(value) = settings.set(DATA_SEEDED, value)
+        get() = settings[DATA_SEEDED] ?: false
 }

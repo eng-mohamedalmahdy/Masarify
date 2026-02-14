@@ -4,6 +4,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +19,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.BrowseGallery
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ColorLens
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -303,6 +308,20 @@ private fun ColorPickerWithIcons(
                     horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.small),
                     verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.small),
                 ) {
+                    item {
+                        Button(
+                            onClick = { onIntent(AddEditCategoryPageIntent.AddIconFromGallery) },
+                            modifier = Modifier.size(AppTheme.dimens.huge),
+                            shape = AppTheme.shapes.small,
+                            contentPadding = PaddingValues(),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AddPhotoAlternate,
+                                contentDescription = stringResource(MR.strings.select_icon),
+                                Modifier.padding(AppTheme.dimens.spacing.padding.small).fillMaxSize(),
+                            )
+                        }
+                    }
                     items(
                         items = state.availableIcons,
                         key = { it },

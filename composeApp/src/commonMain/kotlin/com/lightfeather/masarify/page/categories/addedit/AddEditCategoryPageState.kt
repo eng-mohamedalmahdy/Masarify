@@ -1,6 +1,7 @@
 package com.lightfeather.masarify.page.categories.addedit
 
 import com.lightfeather.designsystem.model.UiCategory
+import kotlin.io.encoding.Base64
 
 internal data class AddEditCategoryPageState(
     val categoryId: Int? = null,
@@ -17,6 +18,14 @@ internal data class AddEditCategoryPageState(
 ) {
     val isEditMode: Boolean get() = categoryId != null
     val isValid: Boolean get() = name.isNotBlank() && (selectedIcon != null || customIconUrl.isNotBlank())
+
+    val toBeAddedIcon = customIconUrl.takeIf { it.isNotBlank() }
+        ?: selectedIcon?.acquireStringValue()
+
+    private fun Any.acquireStringValue() = when(this){
+        is ByteArray -> Base64.encode(this)
+        else -> this.toString()
+    }
 
     companion object {
         fun fromCategory(category: UiCategory) =

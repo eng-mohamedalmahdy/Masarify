@@ -22,6 +22,7 @@ import dev.icerock.moko.resources.compose.painterResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.io.encoding.Base64
 
 @Composable
 fun AppImage(
@@ -39,6 +40,29 @@ fun AppImage(
     mokoPlaceholder: ImageResource? = null,
 ) {
     val isPreview = LocalInspectionMode.current
+    val isUrl = when (model) {
+        is String -> model.startsWith("http://") || model.startsWith("https://")
+        else -> false
+    }
+    if (isUrl.not() && model is String) {
+        val decoded = Base64.decode(model)
+        AsyncImage(
+            model = decoded,
+            error = errorPlaceholder?.let { painterResource(resource = it) },
+            contentDescription = contentDescription,
+            modifier = modifier,
+            placeholder = placeholder?.let { painterResource(resource = it) },
+            onLoading = { onState?.invoke(it) },
+            onSuccess = { onState?.invoke(it) },
+            onError = { onState?.invoke(it) },
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha,
+            colorFilter = colorFilter,
+            filterQuality = filterQuality,
+        )
+        return
+    }
 
     if (isPreview) {
         Image(

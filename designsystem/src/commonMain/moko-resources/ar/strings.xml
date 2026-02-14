@@ -122,4 +122,155 @@
     <string name="category_other">أخرى</string>
     <string name="category_other_desc">مصاريف متنوعة</string>
 
+    <!-- ============================================ -->
+    <!-- العملات الافتراضية -->
+    <!-- ============================================ -->
+
+    <!-- العملات التقليدية -->
+    <string name="currency_usd">الدولار الأمريكي</string>
+    <string name="currency_usd_desc">دولار الولايات المتحدة</string>
+    <string name="currency_eur">اليورو</string>
+    <string name="currency_eur_desc">يورو الاتحاد الأوروبي</string>
+    <string name="currency_gbp">الجنيه الإسترليني</string>
+    <string name="currency_gbp_desc">الجنيه الإسترليني البريطاني</string>
+    <string name="currency_jpy">الين الياباني</string>
+    <string name="currency_jpy_desc">الين الياباني</string>
+    <string name="currency_cny">اليوان الصيني</string>
+    <string name="currency_cny_desc">اليوان الصيني رنمينبي</string>
+    <string name="currency_chf">الفرنك السويسري</string>
+    <string name="currency_chf_desc">الفرنك السويسري</string>
+    <string name="currency_cad">الدولار الكندي</string>
+    <string name="currency_cad_desc">الدولار الكندي</string>
+    <string name="currency_aud">الدولار الأسترالي</string>
+    <string name="currency_aud_desc">الدولار الأسترالي</string>
+
+    <!-- عملات الشرق الأوسط وشمال أفريقيا -->
+    <string name="currency_egp">الجنيه المصري</string>
+    <string name="currency_egp_desc">الجنيه المصري</string>
+    <string name="currency_sar">الريال السعودي</string>
+    <string name="currency_sar_desc">الريال السعودي</string>
+    <string name="currency_aed">الدرهم الإماراتي</string>
+    <string name="currency_aed_desc">درهم الإمارات العربية المتحدة</string>
+    <string name="currency_kwd">الدينار الكويتي</string>
+    <string name="currency_kwd_desc">الدينار الكويتي</string>
+    <string name="currency_qar">الريال القطري</string>
+    <string name="currency_qar_desc">الريال القطري</string>
+    <string name="currency_bhd">الدينار البحريني</string>
+    <string name="currency_bhd_desc">الدينار البحريني</string>
+    <string name="currency_omr">الريال العماني</string>
+    <string name="currency_omr_desc">الريال العماني</string>
+    <string name="currency_jod">الدينار الأردني</string>
+    <string name="currency_jod_desc">الدينار الأردني</string>
+    <string name="currency_lbp">الليرة اللبنانية</string>
+    <string name="currency_lbp_desc">الليرة اللبنانية</string>
+
+    <!-- عملات أخرى مهمة -->
+    <string name="currency_try">الليرة التركية</string>
+    <string name="currency_try_desc">الليرة التركية</string>
+    <string name="currency_inr">الروبية الهندية</string>
+    <string name="currency_inr_desc">الروبية الهندية</string>
+    <string name="currency_rub">الروبل الروسي</string>
+    <string name="currency_rub_desc">الروبل الروسي</string>
+
+    <!-- المعادن الثمينة -->
+    <string name="currency_gold">الذهب</string>
+    <string name="currency_gold_desc">الذهب (أونصة تروي)</string>
+    <string name="currency_silver">الفضة</string>
+    <string name="currency_silver_desc">الفضة (أونصة تروي)</string>
+    <string name="currency_platinum">البلاتين</string>
+    <string name="currency_platinum_desc">البلاتين (أونصة تروي)</string>
+    <string name="currency_palladium">البلاديوم</string>
+    <string name="currency_palladium_desc">البلاديوم (أونصة تروي)</string>
+
+    <!-- العملات الرقمية -->
+    <string name="currency_bitcoin">بيتكوين</string>
+    <string name="currency_bitcoin_desc">العملة الرقمية بيتكوين</string>
+    <string name="currency_ethereum">إيثيريوم</string>
+    <string name="currency_ethereum_desc">منصة البلوكشين إيثيريوم</string>
+    <string name="currency_tether">تيثر</string>
+    <string name="currency_tether_desc">العملة المستقرة تيثر دولار</string>
+    <string name="currency_binance_coin">بينانس كوين</string>
+    <string name="currency_binance_coin_desc">عملة منصة بينانس</string>
+    <string name="currency_xrp">ريبل</string>
+    <string name="currency_xrp_desc">العملة الرقمية ريبل</string>
+    <string name="currency_cardano">كاردانو</string>
+    <string name="currency_cardano_desc">منصة البلوكشين كاردانو</string>
+    <string name="currency_solana">سولانا</string>
+    <string name="currency_solana_desc">البلوكشين عالية السرعة سولانا</string>
+    <string name="currency_dogecoin">دوجكوين</string>
+    <string name="currency_dogecoin_desc">العملة الرقمية دوجكوين</string>
+    <string name="currency_polkadot">بولكادوت</string>
+    <string name="currency_polkadot_desc">بروتوكول البلوكشين المتعدد</string>
+    <string name="currency_polygon">بوليجون</string>
+    <string name="currency_polygon_desc">حل التوسع بوليجون</string>
+    <string name="currency_litecoin">لايتكوين</string>
+    <string name="currency_litecoin_desc">العملة الرقمية لايتكوين</string>
+    <string name="currency_avalanche">أفالانش</string>
+    <string name="currency_avalanche_desc">منصة البلوكشين أفالانش</string>
+
+    <!-- أسهم الشركات -->
+    <string name="currency_apple">آبل</string>
+    <string name="currency_apple_desc">سهم شركة آبل</string>
+    <string name="currency_google">ألفابت</string>
+    <string name="currency_google_desc">سهم ألفابت (جوجل)</string>
+    <string name="currency_microsoft">مايكروسوفت</string>
+    <string name="currency_microsoft_desc">سهم شركة مايكروسوفت</string>
+    <string name="currency_amazon">أمازون</string>
+    <string name="currency_amazon_desc">سهم شركة أمازون</string>
+    <string name="currency_tesla">تسلا</string>
+    <string name="currency_tesla_desc">سهم شركة تسلا</string>
+    <string name="currency_meta">ميتا</string>
+    <string name="currency_meta_desc">سهم ميتا (فيسبوك)</string>
+    <string name="currency_nvidia">إنفيديا</string>
+    <string name="currency_nvidia_desc">سهم شركة إنفيديا</string>
+    <string name="currency_alibaba">علي بابا</string>
+    <string name="currency_alibaba_desc">سهم مجموعة علي بابا</string>
+    <string name="currency_disney">ديزني</string>
+    <string name="currency_disney_desc">سهم شركة والت ديزني</string>
+    <string name="currency_netflix">نتفليكس</string>
+    <string name="currency_netflix_desc">سهم شركة نتفليكس</string>
+    <string name="currency_intel">إنتل</string>
+    <string name="currency_intel_desc">سهم شركة إنتل</string>
+    <string name="currency_amd">إيه إم دي</string>
+    <string name="currency_amd_desc">سهم شركة إيه إم دي</string>
+
+    <!-- ============================================ -->
+    <!-- أسماء البنوك الافتراضية -->
+    <!-- ============================================ -->
+
+    <!-- البنوك المصرية -->
+    <string name="bank_nbe">البنك الأهلي المصري</string>
+    <string name="bank_banque_misr">بنك مصر</string>
+    <string name="bank_cib">البنك التجاري الدولي</string>
+    <string name="bank_qnb_alahli">بنك قطر الوطني الأهلي</string>
+    <string name="bank_alex_bank">بنك الإسكندرية</string>
+    <string name="bank_banque_du_caire">بنك القاهرة</string>
+    <string name="bank_saib">بنك الشركة العربية الدولية</string>
+    <string name="bank_aaib">بنك العربي الأفريقي الدولي</string>
+    <string name="bank_arab_african">بنك العربي الأفريقي الدولي</string>
+    <string name="bank_egyptian_gulf">بنك الخليج المصري</string>
+    <string name="bank_credit_agricole_egypt">كريدي أجريكول مصر</string>
+    <string name="bank_faisal_islamic">بنك فيصل الإسلامي</string>
+
+    <!-- بنوك دول الخليج -->
+    <string name="bank_emirates_nbd">بنك الإمارات دبي الوطني</string>
+    <string name="bank_al_rajhi">مصرف الراجحي</string>
+    <string name="bank_qatar_national">بنك قطر الوطني</string>
+    <string name="bank_kuwait_finance_house">بيت التمويل الكويتي</string>
+    <string name="bank_nbk">بنك الكويت الوطني</string>
+    <string name="bank_dubai_islamic">بنك دبي الإسلامي</string>
+    <string name="bank_arab_bank">البنك العربي</string>
+    <string name="bank_riyad">بنك الرياض</string>
+
+    <!-- البنوك الدولية -->
+    <string name="bank_hsbc">إتش إس بي سي</string>
+    <string name="bank_citibank">سيتي بنك</string>
+    <string name="bank_barclays">باركليز</string>
+    <string name="bank_standard_chartered">ستاندرد تشارترد</string>
+    <string name="bank_deutsche_bank">دويتشه بنك</string>
+
+    <!-- خاص -->
+    <string name="bank_custom">بنك مخصص</string>
+    <string name="select_icon">اختيار ايقونة</string>
+
 </resources>

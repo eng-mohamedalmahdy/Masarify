@@ -43,4 +43,10 @@ class UserRepositoryImpl(
     override fun saveColor(color: String) {
         preferences.userSavedColors = (listOf(color) + preferences.userSavedColors).toSet().take(10)
     }
+
+    override fun isDataSeeded(): Boolean = preferences.isDataSeeded
+
+    override fun markDataAsSeeded() {
+        preferences.isDataSeeded = true
+    }
 }

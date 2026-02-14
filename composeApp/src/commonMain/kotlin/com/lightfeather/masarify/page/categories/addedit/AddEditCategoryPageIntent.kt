@@ -34,4 +34,6 @@ internal sealed interface AddEditCategoryPageIntent {
     data class SaveRecentColor(
         val color: String,
     ) : AddEditCategoryPageIntent
+
+    data object AddIconFromGallery : AddEditCategoryPageIntent
 }

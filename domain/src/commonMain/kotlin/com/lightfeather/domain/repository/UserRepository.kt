@@ -24,4 +24,16 @@ interface UserRepository {
     fun getUserSavedColors(): List<String>
 
     fun saveColor(color: String)
+
+    /**
+     * Checks if application data (currencies, bank names, categories) has been seeded.
+     *
+     * @return true if data has been seeded, false otherwise
+     */
+    fun isDataSeeded(): Boolean
+
+    /**
+     * Marks application data as seeded to prevent duplicate seeding on subsequent launches.
+     */
+    fun markDataAsSeeded()
 }

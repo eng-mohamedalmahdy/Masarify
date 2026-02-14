@@ -44,6 +44,7 @@ import com.lightfeather.designsystem.component.molecules.button.FloatingActionBu
 import com.lightfeather.designsystem.component.molecules.dialog.AppAlertDialog
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiCurrencyExchangeRate
+import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -170,7 +171,7 @@ internal fun CurrenciesPageContent(
             message =
                 stringResource(
                     MR.strings.delete_currency_dialog_description_with_name,
-                    state.deletingCurrency.name,
+                    state.deletingCurrency.getLocalizedName(),
                 ),
             onConfirm = {
                 onIntent(CurrenciesPageIntent.DeleteCurrency(state.deletingCurrency))
@@ -192,13 +193,13 @@ private fun BaseCurrencySelector(
         AppDropMenu(
             label = stringResource(MR.strings.base_currency),
             displayedValue =
-                selectedCurrency?.let { "${it.name} (${it.symbol})" }
+                selectedCurrency?.let { "${it.getLocalizedName()} (${it.symbol})" }
                     ?: stringResource(MR.strings.select_base_currency),
             items = currencies,
             onSelectedItem = onCurrencySelected,
             contentRow = { currency ->
                 Text(
-                    text = "${currency.name} (${currency.symbol})",
+                    text = "${currency.getLocalizedName()} (${currency.symbol})",
                     modifier = Modifier.fillMaxWidth(),
                 )
             },
@@ -395,7 +396,7 @@ private fun ExchangeRateItem(
             ) {
                 // Currency Name
                 Text(
-                    text = "${exchangeRate.toCurrency.name} (${exchangeRate.toCurrency.symbol})",
+                    text = "${exchangeRate.toCurrency.getLocalizedName()} (${exchangeRate.toCurrency.symbol})",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -454,7 +455,7 @@ private fun ExchangeRateItem(
             ) {
                 // Currency Name and Symbol
                 Text(
-                    text = "${exchangeRate.toCurrency.name} (${exchangeRate.toCurrency.symbol})",
+                    text = "${exchangeRate.toCurrency.getLocalizedName()} (${exchangeRate.toCurrency.symbol})",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.weight(1f),

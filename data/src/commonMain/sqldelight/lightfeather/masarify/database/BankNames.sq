@@ -1,0 +1,33 @@
+CREATE TABLE IF NOT EXISTS bank_names(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  resource_key TEXT,
+  logo_url TEXT,
+  is_default INTEGER NOT NULL DEFAULT 0
+);
+
+insertBankName:
+INSERT INTO bank_names (name, resource_key, logo_url, is_default)
+VALUES (:name, :resource_key, :logo_url, :is_default);
+
+updateBankName:
+UPDATE bank_names
+SET name = :name,
+    resource_key = :resource_key,
+    logo_url = :logo_url,
+    is_default = :is_default
+WHERE id = :id;
+
+deleteBankName:
+DELETE FROM bank_names
+WHERE id = :id;
+
+selectAllBankNames:
+SELECT * FROM v_bank_names;
+
+selectBankNameById:
+SELECT * FROM v_bank_names
+WHERE bankNameId = :id;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();

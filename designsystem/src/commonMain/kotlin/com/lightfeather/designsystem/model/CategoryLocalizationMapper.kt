@@ -2,7 +2,6 @@ package com.lightfeather.designsystem.model
 
 import androidx.compose.runtime.Composable
 import com.lightfeather.designsystem.MR
-import com.lightfeather.designsystem.model.UiCategory
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -14,7 +13,7 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun UiCategory.getLocalizedName(): String =
     if (isDefault && resourceKey != null) {
-        val stringRes = getStringResourceByKey(resourceKey!!)
+        val stringRes = getStringResourceByKey(resourceKey)
         stringResource(stringRes)
     } else {
         name

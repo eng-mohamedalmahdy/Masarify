@@ -3,6 +3,7 @@ package com.lightfeather.domain.repository
 import com.lightfeather.domain.model.Attachment
 import com.lightfeather.domain.model.AttachmentEntityType
 import com.lightfeather.domain.model.DomainResult
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Repository interface for attachment operations
@@ -16,6 +17,8 @@ interface AttachmentRepository {
      * @return DomainResult containing the created attachment ID
      */
     suspend fun createAttachment(attachment: Attachment): DomainResult<Int>
+
+    suspend fun getAttachmentsOfEntityType(type : AttachmentEntityType) : DomainResult<Flow<List<Attachment>>>
 
     /**
      * Delete an attachment by ID

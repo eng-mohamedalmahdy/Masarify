@@ -423,4 +423,155 @@
     <string name="category_other">Other</string>
     <string name="category_other_desc">Miscellaneous expenses</string>
 
+    <!-- ============================================ -->
+    <!-- DEFAULT CURRENCIES -->
+    <!-- ============================================ -->
+
+    <!-- Traditional Currencies -->
+    <string name="currency_usd">US Dollar</string>
+    <string name="currency_usd_desc">United States Dollar</string>
+    <string name="currency_eur">Euro</string>
+    <string name="currency_eur_desc">European Union Euro</string>
+    <string name="currency_gbp">British Pound</string>
+    <string name="currency_gbp_desc">United Kingdom Pound Sterling</string>
+    <string name="currency_jpy">Japanese Yen</string>
+    <string name="currency_jpy_desc">Japanese Yen</string>
+    <string name="currency_cny">Chinese Yuan</string>
+    <string name="currency_cny_desc">Chinese Yuan Renminbi</string>
+    <string name="currency_chf">Swiss Franc</string>
+    <string name="currency_chf_desc">Swiss Franc</string>
+    <string name="currency_cad">Canadian Dollar</string>
+    <string name="currency_cad_desc">Canadian Dollar</string>
+    <string name="currency_aud">Australian Dollar</string>
+    <string name="currency_aud_desc">Australian Dollar</string>
+
+    <!-- Middle East & North Africa Currencies -->
+    <string name="currency_egp">Egyptian Pound</string>
+    <string name="currency_egp_desc">Egyptian Pound</string>
+    <string name="currency_sar">Saudi Riyal</string>
+    <string name="currency_sar_desc">Saudi Arabian Riyal</string>
+    <string name="currency_aed">UAE Dirham</string>
+    <string name="currency_aed_desc">United Arab Emirates Dirham</string>
+    <string name="currency_kwd">Kuwaiti Dinar</string>
+    <string name="currency_kwd_desc">Kuwaiti Dinar</string>
+    <string name="currency_qar">Qatari Riyal</string>
+    <string name="currency_qar_desc">Qatari Riyal</string>
+    <string name="currency_bhd">Bahraini Dinar</string>
+    <string name="currency_bhd_desc">Bahraini Dinar</string>
+    <string name="currency_omr">Omani Rial</string>
+    <string name="currency_omr_desc">Omani Rial</string>
+    <string name="currency_jod">Jordanian Dinar</string>
+    <string name="currency_jod_desc">Jordanian Dinar</string>
+    <string name="currency_lbp">Lebanese Pound</string>
+    <string name="currency_lbp_desc">Lebanese Pound</string>
+
+    <!-- Other Notable Currencies -->
+    <string name="currency_try">Turkish Lira</string>
+    <string name="currency_try_desc">Turkish Lira</string>
+    <string name="currency_inr">Indian Rupee</string>
+    <string name="currency_inr_desc">Indian Rupee</string>
+    <string name="currency_rub">Russian Ruble</string>
+    <string name="currency_rub_desc">Russian Ruble</string>
+
+    <!-- Precious Metals -->
+    <string name="currency_gold">Gold</string>
+    <string name="currency_gold_desc">Gold (troy ounce)</string>
+    <string name="currency_silver">Silver</string>
+    <string name="currency_silver_desc">Silver (troy ounce)</string>
+    <string name="currency_platinum">Platinum</string>
+    <string name="currency_platinum_desc">Platinum (troy ounce)</string>
+    <string name="currency_palladium">Palladium</string>
+    <string name="currency_palladium_desc">Palladium (troy ounce)</string>
+
+    <!-- Cryptocurrencies -->
+    <string name="currency_bitcoin">Bitcoin</string>
+    <string name="currency_bitcoin_desc">Bitcoin digital currency</string>
+    <string name="currency_ethereum">Ethereum</string>
+    <string name="currency_ethereum_desc">Ethereum blockchain platform</string>
+    <string name="currency_tether">Tether</string>
+    <string name="currency_tether_desc">Tether USD stablecoin</string>
+    <string name="currency_binance_coin">Binance Coin</string>
+    <string name="currency_binance_coin_desc">Binance exchange token</string>
+    <string name="currency_xrp">XRP</string>
+    <string name="currency_xrp_desc">Ripple XRP cryptocurrency</string>
+    <string name="currency_cardano">Cardano</string>
+    <string name="currency_cardano_desc">Cardano blockchain platform</string>
+    <string name="currency_solana">Solana</string>
+    <string name="currency_solana_desc">Solana high-speed blockchain</string>
+    <string name="currency_dogecoin">Dogecoin</string>
+    <string name="currency_dogecoin_desc">Dogecoin cryptocurrency</string>
+    <string name="currency_polkadot">Polkadot</string>
+    <string name="currency_polkadot_desc">Polkadot multi-chain protocol</string>
+    <string name="currency_polygon">Polygon</string>
+    <string name="currency_polygon_desc">Polygon scaling solution</string>
+    <string name="currency_litecoin">Litecoin</string>
+    <string name="currency_litecoin_desc">Litecoin cryptocurrency</string>
+    <string name="currency_avalanche">Avalanche</string>
+    <string name="currency_avalanche_desc">Avalanche blockchain platform</string>
+
+    <!-- Stock Market Securities -->
+    <string name="currency_apple">Apple Inc.</string>
+    <string name="currency_apple_desc">Apple Inc. stock</string>
+    <string name="currency_google">Alphabet Inc.</string>
+    <string name="currency_google_desc">Alphabet (Google) stock</string>
+    <string name="currency_microsoft">Microsoft Corp.</string>
+    <string name="currency_microsoft_desc">Microsoft Corporation stock</string>
+    <string name="currency_amazon">Amazon.com Inc.</string>
+    <string name="currency_amazon_desc">Amazon.com stock</string>
+    <string name="currency_tesla">Tesla Inc.</string>
+    <string name="currency_tesla_desc">Tesla Inc. stock</string>
+    <string name="currency_meta">Meta Platforms</string>
+    <string name="currency_meta_desc">Meta (Facebook) stock</string>
+    <string name="currency_nvidia">NVIDIA Corp.</string>
+    <string name="currency_nvidia_desc">NVIDIA Corporation stock</string>
+    <string name="currency_alibaba">Alibaba Group</string>
+    <string name="currency_alibaba_desc">Alibaba Group stock</string>
+    <string name="currency_disney">The Walt Disney Co.</string>
+    <string name="currency_disney_desc">Walt Disney Company stock</string>
+    <string name="currency_netflix">Netflix Inc.</string>
+    <string name="currency_netflix_desc">Netflix Inc. stock</string>
+    <string name="currency_intel">Intel Corp.</string>
+    <string name="currency_intel_desc">Intel Corporation stock</string>
+    <string name="currency_amd">AMD Inc.</string>
+    <string name="currency_amd_desc">Advanced Micro Devices stock</string>
+
+    <!-- ============================================ -->
+    <!-- DEFAULT BANK NAMES -->
+    <!-- ============================================ -->
+
+    <!-- Egyptian Banks -->
+    <string name="bank_nbe">National Bank of Egypt</string>
+    <string name="bank_banque_misr">Banque Misr</string>
+    <string name="bank_cib">Commercial International Bank</string>
+    <string name="bank_qnb_alahli">QNB Alahli</string>
+    <string name="bank_alex_bank">ALEX BANK</string>
+    <string name="bank_banque_du_caire">Banque du Caire</string>
+    <string name="bank_saib">SAIB</string>
+    <string name="bank_aaib">Arab African International Bank</string>
+    <string name="bank_arab_african">Arab African International Bank</string>
+    <string name="bank_egyptian_gulf">Egyptian Gulf Bank</string>
+    <string name="bank_credit_agricole_egypt">Crédit Agricole Egypt</string>
+    <string name="bank_faisal_islamic">Faisal Islamic Bank</string>
+
+    <!-- Gulf Countries Banks -->
+    <string name="bank_emirates_nbd">Emirates NBD</string>
+    <string name="bank_al_rajhi">Al Rajhi Bank</string>
+    <string name="bank_qatar_national">Qatar National Bank</string>
+    <string name="bank_kuwait_finance_house">Kuwait Finance House</string>
+    <string name="bank_nbk">National Bank of Kuwait</string>
+    <string name="bank_dubai_islamic">Dubai Islamic Bank</string>
+    <string name="bank_arab_bank">Arab Bank</string>
+    <string name="bank_riyad">Riyad Bank</string>
+
+    <!-- International Banks -->
+    <string name="bank_hsbc">HSBC</string>
+    <string name="bank_citibank">Citibank</string>
+    <string name="bank_barclays">Barclays</string>
+    <string name="bank_standard_chartered">Standard Chartered</string>
+    <string name="bank_deutsche_bank">Deutsche Bank</string>
+
+    <!-- Special -->
+    <string name="bank_custom">Custom Bank</string>
+    <string name="select_icon">Select Icon</string>
+
 </resources>

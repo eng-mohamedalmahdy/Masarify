@@ -2,16 +2,28 @@ package com.lightfeather.masarify.page.categories.addedit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.designsystem.model.UiCategory
+import com.lightfeather.domain.model.Attachment
+import com.lightfeather.domain.model.AttachmentEntityType
 import com.lightfeather.domain.model.Category
+import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.usecase.CreateCategory
 import com.lightfeather.domain.usecase.GetAllCategoryIcons
 import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.SaveUserColor
 import com.lightfeather.domain.usecase.UpdateCategory
 import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,6 +34,7 @@ class AddEditCategoryPageViewModel(
     private val getAllCategoryIcons: GetAllCategoryIcons,
     private val getUserSavedColors: GetUserSavedColors,
     private val saveUserColor: SaveUserColor,
+    private val attachmentsRepository: AttachmentRepository,
     private val onBackCallback: () -> Unit,
     initialCategory: UiCategory?,
 ) : ViewModel() {
@@ -91,6 +104,37 @@ class AddEditCategoryPageViewModel(
             is AddEditCategoryPageIntent.SaveRecentColor -> {
                 saveUserColor(intent.color)
             }
+
+            AddEditCategoryPageIntent.AddIconFromGallery -> {
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    val pickerResult = FileKit.openFilePicker(
+                        type = FileKitType.Image,
+                        mode = FileKitMode.Single
+                    )
+                    pickerResult?.let {
+                        attachmentsRepository.createAttachment(
+                            Attachment(
+                                id = 0,
+                                entityType = AttachmentEntityType.CATEGORY,
+                                entityId = null,
+                                mimeType = pickerResult.mimeType()?.primaryType.orEmpty(),
+                                fileName = pickerResult.name,
+                                fileContent = pickerResult.readBytes()
+                            )
+                        ).fold(
+                            onSuccess = {
+                                Napier.d { "$it" }
+                                SnackbarService.sendSuccessMessage(MR.strings.category_updated_success)
+                            },
+                            onFailure = {
+                                Napier.d { "$it" }
+                            }
+
+
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -139,9 +183,7 @@ class AddEditCategoryPageViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
-            val iconValue =
-                currentState.customIconUrl.takeIf { it.isNotBlank() }
-                    ?: currentState.selectedIcon.toString()
+            val iconValue = currentState.toBeAddedIcon.orEmpty()
 
             val category =
                 Category(
