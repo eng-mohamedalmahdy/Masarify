@@ -1,7 +1,6 @@
 package com.lightfeather.masarify.page.dashboard
 
 import org.koin.core.module.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -13,13 +12,8 @@ val dashboardModule =
             DashboardPageViewModel(
                 getAllAccounts = get(),
                 getWealthWorthInCurrency = get(),
-                getAllTransactionsPaged = get(),
                 getFilteredTransactionsPaged = get(),
                 getFilteredTransactions = get(),
-                getTotalExpenseOfCurrency = get(),
-                getTotalIncomeOfCurrency = get(),
-                getTotalExpensesByCategories = get(named("expense")),
-                getExchangeRatesOfCurrency = get(),
                 getAllCategories = get(),
                 deleteTransaction = get(),
                 updateTransaction = get(),

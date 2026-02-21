@@ -87,6 +87,7 @@
     <string name="duplicate">Duplicate</string>
     <string name="save">Save</string>
     <string name="submit">Submit</string>
+    <string name="total">Total</string>
 
     <!-- App Strings (Moved from composeApp) -->
     <string name="app_name">Masarify</string>

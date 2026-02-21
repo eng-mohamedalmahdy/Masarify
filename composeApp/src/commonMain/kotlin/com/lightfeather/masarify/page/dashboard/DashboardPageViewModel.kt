@@ -13,6 +13,9 @@ import com.lightfeather.designsystem.model.UiQuickStats
 import com.lightfeather.designsystem.model.UiSpendingAnalytics
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionDetails
+import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.AppLanguages
+import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
@@ -22,13 +25,8 @@ import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
-import com.lightfeather.domain.usecase.GetAllTransactionsPaged
-import com.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
 import com.lightfeather.domain.usecase.GetFilteredTransactions
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
-import com.lightfeather.domain.usecase.GetTotalExpenseOfCurrency
-import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
-import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.framework.FileKitHelper
@@ -61,6 +59,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
@@ -89,13 +88,8 @@ import kotlinx.datetime.toLocalDateTime
 internal class DashboardPageViewModel(
     private val getAllAccounts: GetAllAccounts,
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
-    @Suppress("unused") private val getAllTransactionsPaged: GetAllTransactionsPaged,
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
     private val getFilteredTransactions: GetFilteredTransactions,
-    @Suppress("unused") private val getTotalExpenseOfCurrency: GetTotalExpenseOfCurrency,
-    @Suppress("unused") private val getTotalIncomeOfCurrency: GetTotalIncomeOfCurrency,
-    @Suppress("unused") private val getTotalExpensesByCategories: GetTotalTransactionsByCategories<Transaction.Expense>,
-    @Suppress("unused") private val getExchangeRatesOfCurrency: GetExchangeRatesOfCurrency,
     private val getAllCategories: GetAllCategories,
     private val deleteTransaction: DeleteTransaction,
     private val updateTransaction: UpdateTransaction,
@@ -314,7 +308,6 @@ internal class DashboardPageViewModel(
         _state.update { it.copy(isAnalyticsLoading = true) }
 
         try {
-            delay(ANALYTICS_DELAY_MS) // Small delay for UX
 
             val selectedCurrency = _state.value.selectedCurrency
             if (selectedCurrency == null) {
@@ -344,7 +337,7 @@ internal class DashboardPageViewModel(
             val dateRange = getMonthDateRange(_state.value.selectedMonthTimestamp)
             val filter =
                 transactionFilter {
-                    currencyIn(domainCurrency)
+//                    currencyIn(domainCurrency)
                     dateRange(dateRange.from!!, dateRange.to!!)
                 }
 
@@ -371,7 +364,7 @@ internal class DashboardPageViewModel(
             val savingPercentage = if (total > 0) (totalIncome / total).toFloat() else 0f
 
             // Get category breakdown for expenses
-            val categoryBreakdown = buildCategoryBreakdown(domainCurrency, totalExpense, dateRange)
+            val categoryBreakdown = buildCategoryBreakdown(totalExpense, dateRange)
 
             _state.update {
                 it.copy(
@@ -401,7 +394,6 @@ internal class DashboardPageViewModel(
      */
     @Suppress("TooGenericExceptionCaught", "SwallowedException", "ReturnCount")
     private suspend fun buildCategoryBreakdown(
-        targetCurrency: com.lightfeather.domain.model.Currency,
         totalExpenseInTargetCurrency: Double,
         dateRange: TransactionFilter.DateRange,
     ): List<UiCategorySpending> {
@@ -409,7 +401,7 @@ internal class DashboardPageViewModel(
             // Create filter for expenses in target currency and date range
             val filter =
                 transactionFilter {
-                    currencyIn(targetCurrency)
+//                    currencyIn(targetCurrency)
                     dateRange(dateRange.from!!, dateRange.to!!)
                     expenseOnly()
                 }
@@ -426,7 +418,7 @@ internal class DashboardPageViewModel(
             }
 
             // Group by categories and calculate totals
-            val expensesByCategory = mutableMapOf<com.lightfeather.domain.model.Category, Double>()
+            val expensesByCategory = mutableMapOf<Category, Double>()
             expenses.forEach { expense ->
                 expense.categories.forEach { category ->
                     expensesByCategory[category] = (expensesByCategory[category] ?: 0.0) + expense.amount
@@ -515,22 +507,29 @@ internal class DashboardPageViewModel(
         }
     }
 
-    private fun getMonthName(month: Int): String =
-        when (month) {
-            1 -> "January"
-            2 -> "February"
-            3 -> "March"
-            4 -> "April"
-            5 -> "May"
-            6 -> "June"
-            7 -> "July"
-            8 -> "August"
-            9 -> "September"
-            10 -> "October"
-            11 -> "November"
-            12 -> "December"
-            else -> "Unknown"
+    private fun getMonthName(month: Int): String {
+
+        require(month in 1..12) { "Month must be between 1 and 12" }
+
+        val months = when (userRepository.getAppLanguage()) {
+            AppLanguages.English -> listOf(
+                "January", "February", "March", "April",
+                "May", "June", "July", "August",
+                "September", "October", "November", "December"
+            )
+
+            AppLanguages.Arabic -> listOf(
+                "يناير", "فبراير", "مارس", "أبريل",
+                "مايو", "يونيو", "يوليو", "أغسطس",
+                "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+            )
+
+            else -> listOf()
         }
+
+        return months[month - 1]
+    }
+
 
     private fun selectCurrency(currency: UiCurrency) {
         _state.update { it.copy(selectedCurrency = currency) }
@@ -714,6 +713,7 @@ internal class DashboardPageViewModel(
                         )
                     }
                 }
+
                 is DomainResult.Failure -> {
                     _state.update {
                         it.copy(

@@ -87,6 +87,7 @@
     <string name="duplicate">تكرار</string>
     <string name="save">حفظ</string>
     <string name="submit">إرسال</string>
+    <string name="total">المجموع</string>
 
     <!-- App Strings -->
     <string name="app_name">مصاريفي</string>

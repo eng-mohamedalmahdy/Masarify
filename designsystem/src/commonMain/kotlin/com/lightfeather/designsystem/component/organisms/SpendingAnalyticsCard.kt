@@ -143,7 +143,7 @@ private fun SpendingAnalyticsContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "Total",
+                    text = stringResource(MR.strings.total).orEmpty(),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
