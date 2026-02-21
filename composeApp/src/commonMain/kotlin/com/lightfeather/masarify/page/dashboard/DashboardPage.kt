@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -84,8 +85,9 @@ internal fun DashboardPageContent(
         Column {
             Text(
                 text = stringResource(MR.strings.dashboard).orEmpty(),
+                modifier = Modifier.offset(x = -AppTheme.dimens.small),
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onBackground,
             )
 
             if (state.userName.isNotEmpty()) {
@@ -224,11 +226,13 @@ private fun calculateNetBalance(
 
 private const val GREETING_ALPHA = 0.7f
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun DashboardPagePreview() {
-    DashboardPageContent(
-        state = DashboardPageState.dummy,
-        onIntent = {},
-    )
+    AppTheme {
+        DashboardPageContent(
+            state = DashboardPageState.dummy,
+            onIntent = {},
+        )
+    }
 }

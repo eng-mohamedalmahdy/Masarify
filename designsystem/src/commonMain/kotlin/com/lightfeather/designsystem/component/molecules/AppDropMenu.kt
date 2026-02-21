@@ -25,38 +25,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.window.PopupProperties
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.designsystem.util.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun <T> AppDropMenu(
+fun <T>
+    AppDropMenu(
     label: String,
     displayedValue: String,
     items: List<T>,
     onSelectedItem: (T) -> Unit,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    containerShape: Shape = MaterialTheme.shapes.small,
+    labelColor: Color = MaterialTheme.colorScheme.primary,
     dismissOnHeartClick: Boolean = true,
     dismissOnFooterClick: Boolean = true,
     contentRow:
-        @Composable()
-        ((T) -> Unit),
-    searchFunction: ((List<T>, String) -> List<T>)? = null,
+    @Composable()
+    ((T) -> Unit),
+    searchFunction: @Composable ((List<T>, String) -> List<T>)? = null,
     headerContent: (@Composable (searchQuery: String) -> Unit)? = null,
     footerContent: (@Composable (searchQuery: String) -> Unit)? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-
-    val filteredItems =
-        remember(items, searchQuery) {
-            if (searchFunction != null && searchQuery.isNotEmpty()) {
-                searchFunction(items, searchQuery)
-            } else {
-                items
-            }
-        }
+    val filteredItems = if (searchFunction != null && searchQuery.isNotEmpty()) {
+        searchFunction(items, searchQuery)
+    } else {
+        items
+    }
 
     Box(
         modifier = modifier.clickable { expanded = !expanded },
@@ -66,20 +70,26 @@ fun <T> AppDropMenu(
             Text(
                 label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
+                color = labelColor,
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().padding(vertical = AppTheme.dimens.small),
             ) {
-                AppDropdownContainer(displayedValue) {
+                AppDropdownContainer(
+                    displayedValue,
+                    backgroundColor = containerColor,
+                    shape = containerShape,
+                ) {
                     Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                 }
             }
         }
 
         DropdownMenu(
+            shape = MaterialTheme.shapes.large,
             expanded = expanded,
+            containerColor = MaterialTheme.colorScheme.surface,
             onDismissRequest = {
                 expanded = false
                 searchQuery = ""
@@ -118,11 +128,11 @@ fun <T> AppDropMenu(
                 DropdownMenuItem(
                     onClick = { /* Do nothing - just focus search */ },
                     text = {
-                        com.lightfeather.designsystem.component.molecules.SearchTextField(
+                        SearchTextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
                             onSearch = { /* Search happens automatically */ },
-                            placeholder = "Search...",
+                            placeholder = stringResource(MR.strings.filter_text_search),
                             modifier = Modifier.fillMaxWidth(),
                         )
                     },
@@ -163,6 +173,8 @@ fun <T> AppDropMenu(
 fun AppDropdownContainer(
     label: String,
     modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    shape: Shape = MaterialTheme.shapes.small,
     labelStyle: TextStyle = AppTheme.typography.labelLarge,
     content: @Composable RowScope.() -> Unit,
 ) {
@@ -175,9 +187,9 @@ fun AppDropdownContainer(
                 .border(
                     width = AppTheme.dimens.hairline,
                     color = MaterialTheme.colorScheme.outline,
-                    shape = MaterialTheme.shapes.small,
-                ).clip(MaterialTheme.shapes.small)
-                .background(MaterialTheme.colorScheme.surfaceVariant) // Match container background
+                    shape = shape,
+                ).clip(shape)
+                .background(backgroundColor) // Match container background
                 .padding(AppTheme.dimens.default), // Inner padding
     ) {
         Text(
@@ -197,16 +209,19 @@ fun AppDropdownContainer(
 @Preview
 @Composable
 fun AppDropMenuPreview() {
-    AppDropMenu(
-        label = "Select an item",
-        displayedValue = "Item 1",
-        items = listOf("Item 1", "Item 2", "Item 3"),
-        onSelectedItem = { selectedItem ->
-            // Handle item selection
-        },
-        modifier = Modifier.fillMaxWidth(),
-        contentRow = { item ->
-            Text(text = item)
-        },
-    )
+    AppTheme {
+        AppDropMenu(
+            containerColor = MaterialTheme.colorScheme.surface,
+            label = "Select an item",
+            displayedValue = "Item 1",
+            items = listOf("Item 1", "Item 2", "Item 3"),
+            onSelectedItem = { selectedItem ->
+                // Handle item selection
+            },
+            modifier = Modifier.fillMaxWidth(),
+            contentRow = { item ->
+                Text(text = item)
+            },
+        )
+    }
 }

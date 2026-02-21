@@ -412,6 +412,12 @@ object AppTheme {
                 val minWidth = 64.dp
             }
 
+            object dropDown {
+                val height = 90.dp
+                val heightSmall = 40.dp
+                val heightLarge = 64.dp
+            }
+
             object textField {
                 val height = 56.dp
                 val heightSmall = 40.dp

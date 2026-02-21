@@ -6,12 +6,14 @@ import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.domain.model.Account
-import com.lightfeather.domain.model.Currency
-import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.DomainResult.Success
 import com.lightfeather.domain.model.UserData
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCurrency
+import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.UpsertUserData
+import com.lightfeather.masarify.mappers.toCurrency
+import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +21,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class OnBoardingPageViewModel(
@@ -26,20 +29,33 @@ class OnBoardingPageViewModel(
     private val createAccount: CreateAccount,
     private val upsertUserData: UpsertUserData,
     private val navigator: Navigator,
+    private val getAllCurrencies: GetAllCurrencies,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OnBoardingPageState())
     internal val state: StateFlow<OnBoardingPageState> = _state
 
+    init {
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            getAllCurrencies().foldSuspend(
+                onSuccess = { currenciesFlow ->
+                    val uiFlow = currenciesFlow.map { it.map { it.toUiCurrency() } }
+                    uiFlow.collect {
+                        _state.value = _state.value.copy(appCurrencies = it)
+                    }
+                },
+                onFailure = {
+                    SnackbarService.sendErrorMessage(it.message)
+                }
+            )
+        }
+    }
+
     internal fun onIntent(intent: OnBoardingPageIntent) {
         when (intent) {
             is OnBoardingPageIntent.UpdateAccountName -> _state.value = _state.value.copy(accountName = intent.name)
-            is OnBoardingPageIntent.UpdateCurrencyName ->
+            is OnBoardingPageIntent.UpdateCurrency ->
                 _state.value =
-                    _state.value.copy(accountCurrencyName = intent.name)
-
-            is OnBoardingPageIntent.UpdateCurrencySymbol ->
-                _state.value =
-                    _state.value.copy(mainAccountCurrencySymbol = intent.name)
+                    _state.value.copy(selectedCurrency = intent.currency)
 
             is OnBoardingPageIntent.UpdateUserName -> _state.value = _state.value.copy(userName = intent.name)
             is OnBoardingPageIntent.UpdateAccountBalance ->
@@ -50,7 +66,7 @@ class OnBoardingPageViewModel(
                 val stateSnapshot = _state.value
                 val validationError =
                     stateSnapshot.userNameError ?: stateSnapshot.accountNameError
-                        ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
+                    ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
 
                 if (validationError != null) {
                     SnackbarService.sendErrorMessage(validationError)
@@ -64,12 +80,7 @@ class OnBoardingPageViewModel(
                 viewModelScope.launch {
                     val createAccountJob =
                         async(Dispatchers.IoDispatcher) {
-                            val toBeCreateCurrency =
-                                Currency(
-                                    stateSnapshot.accountCurrencyName,
-                                    stateSnapshot.mainAccountCurrencySymbol.takeIf { it.isNotBlank() }
-                                        ?: stateSnapshot.accountCurrencyName,
-                                )
+                            val toBeCreateCurrency = stateSnapshot.selectedCurrency!!.toCurrency()
                             val createCurrencyResult = createCurrency(toBeCreateCurrency)
 
                             createCurrencyResult.flatMapSuspend { currencyId ->
@@ -93,7 +104,7 @@ class OnBoardingPageViewModel(
                     createAccountResult
                         .flatMap { accountId ->
                             upsertUserDataResult.flatMap { userDataId ->
-                                DomainResult.Success(Unit)
+                                Success(Unit)
                             }
                         }.fold(
                             onSuccess = {
@@ -102,6 +113,20 @@ class OnBoardingPageViewModel(
                             },
                             onFailure = { SnackbarService.sendErrorMessage(it.message) },
                         )
+                }
+            }
+
+            is OnBoardingPageIntent.AddNewCurrency -> {
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    createCurrency(intent.currency.toCurrency()).fold(
+                        onSuccess = {
+                            SnackbarService.sendSuccessMessage(MR.strings.currency_create_success)
+                        },
+                        onFailure = {
+                            SnackbarService.sendErrorMessage(it.message)
+                        }
+
+                    )
                 }
             }
         }

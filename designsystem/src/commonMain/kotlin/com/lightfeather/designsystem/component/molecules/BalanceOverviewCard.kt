@@ -36,9 +36,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.designsystem.util.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -233,24 +235,24 @@ fun BalanceOverviewCard(
                 ) {
                     StatItem(
                         icon = Icons.Default.ArrowDownward,
-                        label = "INCOME",
-                        amount = "$$income",
+                        label = stringResource(MR.strings.income).orEmpty(),
+                        amount = "${selectedCurrency?.symbol}$income",
                         iconColor = AppTheme.colors.success,
                         backgroundColor = AppTheme.colors.success.copy(alpha = STAT_BG_ALPHA),
                     )
 
                     StatItem(
                         icon = Icons.Default.ArrowUpward,
-                        label = "EXPENSE",
-                        amount = "$$expense",
+                        label = stringResource(MR.strings.expense).orEmpty(),
+                        amount = "${selectedCurrency?.symbol}$expense",
                         iconColor = MaterialTheme.colorScheme.error,
                         backgroundColor = MaterialTheme.colorScheme.error.copy(alpha = STAT_BG_ALPHA),
                     )
 
                     StatItem(
                         icon = null,
-                        label = "NET BAL",
-                        amount = "+$$netBalance",
+                        label = stringResource(MR.strings.net_balance_label).orEmpty(),
+                        amount = "+${selectedCurrency?.symbol}$netBalance",
                         iconColor = AppTheme.colors.secondary,
                         backgroundColor = AppTheme.colors.secondary.copy(alpha = STAT_BG_ALPHA),
                     )

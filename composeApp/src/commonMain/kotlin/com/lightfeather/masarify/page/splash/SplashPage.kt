@@ -30,7 +30,7 @@ fun SplashPage(viewModel: SplashPageViewModel = koinViewModel()) {
 
 @Composable
 internal fun SplashPageContent() {
-    val animationJson: String? by MR.assets.animated_json.readTextAsState()
+    val animationJson: String? by MR.assets.animated_logo_json.readTextAsState()
 
     val composition by rememberLottieComposition {
         LottieCompositionSpec.JsonString(animationJson.orEmpty())
@@ -38,7 +38,7 @@ internal fun SplashPageContent() {
 
     val progress by animateLottieCompositionAsState(
         composition = composition,
-        iterations = Int.MAX_VALUE,
+        iterations = 1,
     )
 
     Box(

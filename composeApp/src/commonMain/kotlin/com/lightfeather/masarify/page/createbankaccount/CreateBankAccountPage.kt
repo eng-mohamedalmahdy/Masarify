@@ -47,6 +47,7 @@ import com.lightfeather.designsystem.component.molecules.button.TextButton
 import com.lightfeather.designsystem.component.molecules.dialog.ColorPickerDialog
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
+import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.colorToHex
 import com.lightfeather.designsystem.util.parseColor
@@ -201,7 +202,9 @@ internal fun CreateBankAccountPageContent(
         AppDropMenu(
             label = stringResource(MR.strings.currency),
             displayedValue =
-                state.currency?.let { "${it.name} (${it.symbol})" } ?: stringResource(MR.strings.select_currency),
+                state.currency?.let {
+                    "${it.getLocalizedName()} (${it.symbol})"
+                } ?: stringResource(MR.strings.select_currency),
             items = state.availableCurrencies,
             onSelectedItem = { currency ->
                 onIntent(CreateBankAccountPageIntent.UpdateCurrency(currency))
@@ -240,7 +243,7 @@ internal fun CreateBankAccountPageContent(
             contentRow = { currency ->
                 Column {
                     Text(
-                        text = currency.name,
+                        text = currency.getLocalizedName(),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
