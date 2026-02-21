@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <string name="test">اختبار</string>
     <string name="total_wealth">إجمالي الثروة</string>
     <string name="accounts_count">%d حسابات</string>
     <string name="original_values">القيم الأصلية</string>
@@ -40,6 +39,7 @@
     <string name="add_account">إضافة حساب</string>
     <string name="yes">نعم</string>
     <string name="cancel">إلغاء</string>
+    <string name="close">إغلاق</string>
 
     <!-- More Page -->
     <string name="more">المزيد</string>
@@ -79,9 +79,309 @@
     <string name="rate_us_description">قيم التطبيق في متجر التطبيقات</string>
     <string name="rate_us_content">أحببت استخدام مصاريفي؟ يرجى تقييمنا في متجر التطبيقات!</string>
     <string name="coming_soon">قريباً</string>
-    <string name="advanced_filters">ترشحيات متقدمة</string>
+    <string name="delete_category">حذف الفئة</string>
 
-    <!-- Default Category Names and Descriptions (Arabic) -->
+    <!-- Common Actions -->
+    <string name="apply">تطبيق</string>
+    <string name="clear">مسح</string>
+    <string name="duplicate">تكرار</string>
+    <string name="save">حفظ</string>
+    <string name="submit">إرسال</string>
+
+    <!-- App Strings -->
+    <string name="app_name">مصاريفي</string>
+    <string name="app_slogan">تتبع ذكي، إنفاق أحكم.</string>
+    <string name="my_string">نص التوطين الافتراضي</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">مرحباً بك في مصاريفي</string>
+    <string name="user_name">اسم المستخدم</string>
+    <string name="account_name">اسم الحساب</string>
+    <string name="balance">الرصيد</string>
+    <string name="currency">العملة</string>
+    <string name="onboarding_user_name_error">اسم المستخدم لا يمكن أن يكون فارغاً</string>
+    <string name="onboarding_account_name_error">اسم الحساب لا يمكن أن يكون فارغاً</string>
+    <string name="onboarding_account_balance_error">رصيد الحساب لا يمكن أن يكون فارغاً</string>
+    <string name="onboarding_account_currency_error">عملة الحساب لا يمكن أن تكون فارغة</string>
+
+    <!-- Navigation -->
+    <string name="dashboard">الرئيسية</string>
+    <string name="accounts">حساباتي</string>
+
+    <!-- Create/Edit Account Validation Messages -->
+    <string name="account_name_required">اسم الحساب مطلوب</string>
+    <string name="account_currency_required">يرجى اختيار عملة</string>
+    <string name="account_balance_required">الرصيد الأولي مطلوب</string>
+    <string name="account_balance_invalid">يرجى إدخال قيمة رصيد صحيحة</string>
+    <string name="unknown_error">حدث خطأ غير متوقع</string>
+
+    <!-- Account CRUD Messages -->
+    <string name="account_create_success">تم إنشاء الحساب بنجاح</string>
+    <string name="account_create_failure">فشل إنشاء الحساب</string>
+    <string name="account_update_success">تم تحديث الحساب بنجاح</string>
+    <string name="account_update_failure">فشل تحديث الحساب</string>
+    <string name="account_delete_success">تم حذف الحساب بنجاح</string>
+    <string name="account_delete_failure">فشل حذف الحساب</string>
+    <string name="account_fetch_success">تم تحميل الحسابات بنجاح</string>
+    <string name="account_fetch_failure">فشل تحميل الحسابات</string>
+
+    <!-- Transaction CRUD Messages -->
+    <string name="transaction_create_success">تم إنشاء المعاملة بنجاح</string>
+    <string name="transaction_create_failure">فشل إنشاء المعاملة</string>
+    <string name="transaction_update_success">تم تحديث المعاملة بنجاح</string>
+    <string name="transaction_update_failure">فشل تحديث المعاملة</string>
+    <string name="transaction_delete_success">تم حذف المعاملة بنجاح</string>
+    <string name="transaction_delete_failure">فشل حذف المعاملة</string>
+    <string name="transaction_fetch_success">تم تحميل المعاملات بنجاح</string>
+    <string name="transaction_fetch_failure">فشل تحميل المعاملات</string>
+
+    <!-- Category CRUD Messages -->
+    <string name="category_create_success">تم إنشاء الفئة بنجاح</string>
+    <string name="category_create_failure">فشل إنشاء الفئة</string>
+    <string name="category_update_success">تم تحديث الفئة بنجاح</string>
+    <string name="category_update_failure">فشل تحديث الفئة</string>
+    <string name="category_delete_success">تم حذف الفئة بنجاح</string>
+    <string name="category_delete_failure">فشل حذف الفئة</string>
+    <string name="category_fetch_success">تم تحميل الفئات بنجاح</string>
+    <string name="category_fetch_failure">فشل تحميل الفئات</string>
+
+    <!-- Currency CRUD Messages -->
+    <string name="currency_create_success">تم إنشاء العملة بنجاح</string>
+    <string name="currency_create_failure">فشل إنشاء العملة</string>
+    <string name="currency_update_success">تم تحديث العملة بنجاح</string>
+    <string name="currency_update_failure">فشل تحديث العملة</string>
+    <string name="currency_delete_success">تم حذف العملة بنجاح</string>
+    <string name="currency_delete_failure">فشل حذف العملة</string>
+    <string name="currency_fetch_success">تم تحميل العملات بنجاح</string>
+    <string name="currency_fetch_failure">فشل تحميل العملات</string>
+
+    <!-- Exchange Rate CRUD Messages -->
+    <string name="exchange_rate_create_success">تم إنشاء سعر الصرف بنجاح</string>
+    <string name="exchange_rate_create_failure">فشل إنشاء سعر الصرف</string>
+    <string name="exchange_rate_update_success">تم تحديث سعر الصرف بنجاح</string>
+    <string name="exchange_rate_update_failure">فشل تحديث سعر الصرف</string>
+    <string name="exchange_rate_delete_success">تم حذف سعر الصرف بنجاح</string>
+    <string name="exchange_rate_delete_failure">فشل حذف سعر الصرف</string>
+    <string name="exchange_rate_fetch_success">تم تحميل أسعار الصرف بنجاح</string>
+    <string name="exchange_rate_fetch_failure">فشل تحميل أسعار الصرف</string>
+
+    <!-- Create/Edit Bank Account Form Labels -->
+    <string name="enter_account_name">أدخل اسم الحساب</string>
+    <string name="description">الوصف</string>
+    <string name="enter_description_optional">أدخل الوصف (اختياري)</string>
+    <string name="initial_balance">الرصيد الأولي</string>
+    <string name="current_balance">الرصيد الحالي</string>
+    <string name="balance_placeholder">0.00</string>
+    <string name="account_color">لون الحساب</string>
+    <string name="tap_to_select_color">اضغط لاختيار اللون</string>
+    <string name="choose_color">اختر اللون</string>
+    <string name="select_currency">اختر العملة</string>
+    <string name="add_new_currency">إضافة عملة جديدة</string>
+    <string name="add_new_currency_description">إضافة عملة جديدة</string>
+    <string name="create_account">إنشاء حساب</string>
+    <string name="update_account">تحديث الحساب</string>
+
+    <!-- Delete Bank Account Dialog -->
+    <string name="delete_bank_account_dialog_title">حذف الحساب</string>
+    <string name="delete_bank_account_dialog_description">هل أنت متأكد من حذف هذا الحساب؟ هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع المعاملات المرتبطة به نهائياً.</string>
+    <string name="delete_bank_account_dialog_description_with_name">هل أنت متأكد من حذف حساب "%s"؟ هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع المعاملات المرتبطة به نهائياً.</string>
+
+    <!-- Categories Page -->
+    <string name="categories">الفئات</string>
+    <string name="categories_subtitle">إدارة فئات الدخل والمصروفات</string>
+    <string name="add_category">إضافة فئة</string>
+    <string name="edit_category">تعديل الفئة</string>
+    <string name="no_categories_title">لا توجد فئات بعد</string>
+    <string name="no_categories_message">ابدأ بإضافة فئتك الأولى لتنظيم معاملاتك</string>
+    <string name="no_category_selected_title">لم يتم اختيار فئة</string>
+    <string name="no_category_selected_message">اختر فئة لعرض أو تعديل تفاصيلها</string>
+    <string name="add_edit_category_coming_soon">ميزة تعديل الفئة قريباً</string>
+
+    <!-- Delete Category Dialog -->
+    <string name="delete_category_dialog_title">حذف الفئة</string>
+    <string name="delete_category_dialog_description">هل أنت متأكد من حذف هذه الفئة؟ هذا الإجراء لا يمكن التراجع عنه.</string>
+    <string name="delete_category_dialog_description_with_name">هل أنت متأكد من حذف فئة "%s"؟ هذا الإجراء لا يمكن التراجع عنه.</string>
+
+    <!-- Add/Edit Category Form -->
+    <string name="category_name">اسم الفئة</string>
+    <string name="enter_category_name">أدخل اسم الفئة</string>
+    <string name="enter_category_description">أدخل وصف الفئة</string>
+    <string name="description_optional">الوصف (اختياري)</string>
+    <string name="color">اللون</string>
+    <string name="icon">الأيقونة</string>
+    <string name="select_color">اختر اللون</string>
+    <string name="preview">معاينة</string>
+    <string name="category_name_required">اسم الفئة مطلوب</string>
+    <string name="category_icon_required">أيقونة الفئة مطلوبة</string>
+    <string name="failed_to_load_icons">فشل تحميل الأيقونات</string>
+    <string name="no_icons_available">لا توجد أيقونات متاحة</string>
+    <string name="no_icons_message">غير قادر على تحميل أيقونات الفئات في الوقت الحالي</string>
+    <string name="category_created_success">تم إنشاء الفئة بنجاح</string>
+    <string name="category_updated_success">تم تحديث الفئة بنجاح</string>
+    <string name="custom_icon_url">رابط الأيقونة المخصصة (اختياري)</string>
+    <string name="enter_custom_icon_url">أدخل رابط الأيقونة المخصصة</string>
+    <string name="recent_colors">الألوان الحديثة</string>
+    <string name="no_recent_colors">لا توجد ألوان حديثة بعد</string>
+    <string name="tap_color_to_select">اضغط على اللون لاختياره</string>
+
+    <!-- Currencies Page -->
+    <string name="currencies">العملات</string>
+    <string name="currencies_subtitle">إدارة العملات وأسعار الصرف</string>
+    <string name="add_currency">إضافة عملة</string>
+    <string name="edit_currency">تعديل العملة</string>
+    <string name="base_currency">العملة الأساسية</string>
+    <string name="select_base_currency">اختر العملة الأساسية</string>
+    <string name="exchange_rates">أسعار الصرف</string>
+    <string name="edit_rates">تعديل الأسعار</string>
+    <string name="save_rates">حفظ الأسعار</string>
+    <string name="cancel_edit">إلغاء</string>
+    <string name="no_currencies_title">لا توجد عملات بعد</string>
+    <string name="no_currencies_message">ابدأ بإضافة عملتك الأولى</string>
+    <string name="no_exchange_rates_title">لا توجد أسعار صرف</string>
+    <string name="no_exchange_rates_message">اختر عملة أساسية لعرض أسعار الصرف</string>
+    <string name="update_inverse_rate">تحديث السعر العكسي أيضاً؟</string>
+
+    <!-- Currency Dialog -->
+    <string name="add_currency_dialog_title">إضافة عملة</string>
+    <string name="edit_currency_dialog_title">تعديل العملة</string>
+    <string name="currency_name">اسم العملة</string>
+    <string name="enter_currency_name">أدخل اسم العملة</string>
+    <string name="currency_symbol">رمز العملة</string>
+    <string name="enter_currency_symbol">أدخل رمز العملة</string>
+    <string name="currency_name_required">اسم العملة مطلوب</string>
+    <string name="currency_symbol_required">رمز العملة مطلوب</string>
+
+    <!-- Delete Currency Dialog -->
+    <string name="delete_currency_dialog_title">حذف العملة</string>
+    <string name="delete_currency_dialog_description">هل أنت متأكد من حذف هذه العملة؟ هذا الإجراء لا يمكن التراجع عنه.</string>
+    <string name="delete_currency_dialog_description_with_name">هل أنت متأكد من حذف "%s"؟ هذا الإجراء لا يمكن التراجع عنه.</string>
+
+    <!-- Exchange Rate Messages -->
+    <string name="exchange_rates_updated">تم تحديث أسعار الصرف بنجاح</string>
+    <string name="exchange_rates_update_failed">فشل تحديث أسعار الصرف</string>
+    <string name="currency_created_success">تم إنشاء العملة بنجاح</string>
+    <string name="currency_create_failed">فشل إنشاء العملة</string>
+    <string name="currency_updated_success">تم تحديث العملة بنجاح</string>
+    <string name="currency_update_failed">فشل تحديث العملة</string>
+    <string name="currency_deleted_success">تم حذف العملة بنجاح</string>
+    <string name="currency_delete_failed">فشل حذف العملة</string>
+
+    <!-- Transactions Page -->
+    <string name="transactions_title">المعاملات</string>
+    <string name="transactions_subtitle">تتبع الدخل والمصروفات والتحويلات</string>
+    <string name="add_transaction">إضافة معاملة</string>
+    <string name="edit_transaction">تعديل المعاملة</string>
+    <string name="delete_transaction">حذف المعاملة</string>
+    <string name="duplicate_transaction">تكرار المعاملة</string>
+    <string name="filter_transactions">تصفية المعاملات</string>
+    <string name="no_transactions_title">لا توجد معاملات بعد</string>
+    <string name="no_transactions_message">ابدأ في تتبع أموالك بإضافة أول معاملة لك</string>
+    <string name="no_filtered_transactions_title">لا توجد معاملات مطابقة</string>
+    <string name="no_filtered_transactions_message">حاول تعديل المرشحات</string>
+    <string name="no_transaction_selected_title">لم يتم اختيار معاملة</string>
+    <string name="no_transaction_selected_message">اختر معاملة لعرض تفاصيلها</string>
+
+    <!-- Transaction Types -->
+    <string name="expense">مصروف</string>
+
+    <!-- Transaction Form -->
+    <string name="transaction_name">اسم المعاملة</string>
+    <string name="enter_transaction_name">أدخل اسم المعاملة</string>
+    <string name="transaction_amount">المبلغ</string>
+    <string name="enter_amount">أدخل المبلغ</string>
+    <string name="transaction_date">التاريخ</string>
+    <string name="transaction_time">الوقت</string>
+    <string name="transaction_description">الوصف (اختياري)</string>
+    <string name="enter_transaction_description">أدخل الوصف</string>
+    <string name="source_account">حساب المصدر</string>
+    <string name="target_account">الحساب الهدف</string>
+    <string name="from_account">من حساب</string>
+    <string name="to_account">إلى حساب</string>
+    <string name="transfer_fee">رسوم التحويل</string>
+    <string name="enter_transfer_fee">أدخل رسوم التحويل</string>
+    <string name="select_category">اختر الفئة</string>
+    <string name="select_categories">اختر الفئات</string>
+    <string name="income_source">مصدر الدخل</string>
+    <string name="expense_categories">فئات المصروفات</string>
+    <string name="attachments">المرفقات</string>
+    <string name="add_attachment">إضافة مرفق</string>
+    <string name="remove_attachment">إزالة المرفق</string>
+
+    <!-- Filter Dialog -->
+    <string name="advanced_filters">ترشيحات متقدمة</string>
+    <string name="filter_by_account">تصفية بالحساب</string>
+    <string name="filter_by_category">تصفية بالفئة</string>
+    <string name="filter_by_currency">تصفية بالعملة</string>
+    <string name="filter_by_type">تصفية بالنوع</string>
+    <string name="filter_by_amount">تصفية بالمبلغ</string>
+    <string name="filter_by_date">تصفية بالتاريخ</string>
+    <string name="filter_text_search">البحث في المعاملات</string>
+    <string name="filter_attachments">المرفقات</string>
+    <string name="filter_logic">منطق التصفية</string>
+    <string name="save_filter">حفظ الترشيح</string>
+    <string name="saved_filters">الترشيحات المحفوظة</string>
+    <string name="clear_filters">مسح الكل</string>
+    <string name="apply_filters">تطبيق</string>
+    <string name="active_filters_count">%d ترشيحات نشطة</string>
+    <string name="active_filter_singular">ترشيح نشط واحد</string>
+    <string name="amount_min">الحد الأدنى للمبلغ</string>
+    <string name="amount_max">الحد الأقصى للمبلغ</string>
+    <string name="date_from">من تاريخ</string>
+    <string name="date_to">إلى تاريخ</string>
+    <string name="with_attachments">مع مرفقات</string>
+    <string name="without_attachments">بدون مرفقات</string>
+    <string name="any_attachment">أي</string>
+    <string name="all_conditions">جميع الشروط (و)</string>
+    <string name="any_condition">أي شرط (أو)</string>
+    <string name="filter_name">اسم الترشيح</string>
+    <string name="enter_filter_name">أدخل اسم الترشيح</string>
+    <string name="delete_saved_filter">حذف الترشيح المحفوظ</string>
+    <string name="saved_filter_deleted">تم حذف الترشيح بنجاح</string>
+    <string name="filter_saved_success">تم حفظ الترشيح بنجاح</string>
+    <string name="filter_save_failed">فشل حفظ الترشيح</string>
+
+    <!-- Pagination -->
+    <string name="page_info">صفحة %d من %d</string>
+    <string name="total_transactions_count">%d معاملات</string>
+    <string name="total_transaction_singular">معاملة واحدة</string>
+    <string name="page_size">عدد العناصر في الصفحة</string>
+    <string name="next_page">الصفحة التالية</string>
+    <string name="previous_page">الصفحة السابقة</string>
+    <string name="first_page">الصفحة الأولى</string>
+    <string name="last_page">الصفحة الأخيرة</string>
+
+    <!-- Transaction Validation -->
+    <string name="transaction_name_required">اسم المعاملة مطلوب</string>
+    <string name="transaction_amount_required">المبلغ مطلوب</string>
+    <string name="transaction_amount_invalid">يرجى إدخال مبلغ صحيح</string>
+    <string name="transaction_amount_positive">المبلغ يجب أن يكون أكبر من صفر</string>
+    <string name="transaction_account_required">يرجى اختيار حساب</string>
+    <string name="transaction_category_required">يرجى اختيار فئة واحدة على الأقل</string>
+    <string name="transaction_source_required">يرجى اختيار مصدر الدخل</string>
+    <string name="transfer_accounts_same">حساب المصدر والهدف يجب أن يكونا مختلفين</string>
+    <string name="insufficient_balance">الرصيد غير كافي لهذه المعاملة</string>
+    <string name="transfer_fee_invalid">رسوم التحويل يجب أن تكون رقماً صحيحاً</string>
+    <string name="transaction_date_required">يرجى اختيار تاريخ</string>
+
+    <!-- Transaction Detail -->
+    <string name="transaction_details">تفاصيل المعاملة</string>
+    <string name="transaction_id">معرف المعاملة</string>
+    <string name="transaction_type">النوع</string>
+    <string name="old_balance">الرصيد القديم</string>
+    <string name="new_balance">الرصيد الجديد</string>
+    <string name="balance_impact">تأثير الرصيد</string>
+    <string name="receiver_account">الحساب المستلم</string>
+    <string name="receiver_old_balance">رصيد المستلم القديم</string>
+    <string name="receiver_new_balance">رصيد المستلم الجديد</string>
+    <string name="created_at">تاريخ الإنشاء</string>
+    <string name="updated_at">تاريخ التحديث</string>
+
+    <!-- Delete Transaction Dialog -->
+    <string name="delete_transaction_dialog_title">حذف المعاملة</string>
+    <string name="delete_transaction_dialog_description">هل أنت متأكد من حذف هذه المعاملة؟ هذا الإجراء لا يمكن التراجع عنه.</string>
+    <string name="delete_transaction_dialog_description_with_name">هل أنت متأكد من حذف "%s"؟ هذا الإجراء لا يمكن التراجع عنه.</string>
+
+    <!-- Default Category Names and Descriptions -->
     <!-- Transfer Category -->
     <string name="category_transfer">تحويل</string>
     <string name="category_transfer_desc">تحويل الأموال من حساب إلى آخر</string>
@@ -123,10 +423,10 @@
     <string name="category_other_desc">مصاريف متنوعة</string>
 
     <!-- ============================================ -->
-    <!-- العملات الافتراضية -->
+    <!-- DEFAULT CURRENCIES -->
     <!-- ============================================ -->
 
-    <!-- العملات التقليدية -->
+    <!-- Traditional Currencies -->
     <string name="currency_usd">الدولار الأمريكي</string>
     <string name="currency_usd_desc">دولار الولايات المتحدة</string>
     <string name="currency_eur">اليورو</string>
@@ -144,7 +444,7 @@
     <string name="currency_aud">الدولار الأسترالي</string>
     <string name="currency_aud_desc">الدولار الأسترالي</string>
 
-    <!-- عملات الشرق الأوسط وشمال أفريقيا -->
+    <!-- Middle East & North Africa Currencies -->
     <string name="currency_egp">الجنيه المصري</string>
     <string name="currency_egp_desc">الجنيه المصري</string>
     <string name="currency_sar">الريال السعودي</string>
@@ -164,7 +464,7 @@
     <string name="currency_lbp">الليرة اللبنانية</string>
     <string name="currency_lbp_desc">الليرة اللبنانية</string>
 
-    <!-- عملات أخرى مهمة -->
+    <!-- Other Notable Currencies -->
     <string name="currency_try">الليرة التركية</string>
     <string name="currency_try_desc">الليرة التركية</string>
     <string name="currency_inr">الروبية الهندية</string>
@@ -172,7 +472,7 @@
     <string name="currency_rub">الروبل الروسي</string>
     <string name="currency_rub_desc">الروبل الروسي</string>
 
-    <!-- المعادن الثمينة -->
+    <!-- Precious Metals -->
     <string name="currency_gold">الذهب</string>
     <string name="currency_gold_desc">الذهب (أونصة تروي)</string>
     <string name="currency_silver">الفضة</string>
@@ -182,7 +482,7 @@
     <string name="currency_palladium">البلاديوم</string>
     <string name="currency_palladium_desc">البلاديوم (أونصة تروي)</string>
 
-    <!-- العملات الرقمية -->
+    <!-- Cryptocurrencies -->
     <string name="currency_bitcoin">بيتكوين</string>
     <string name="currency_bitcoin_desc">العملة الرقمية بيتكوين</string>
     <string name="currency_ethereum">إيثيريوم</string>
@@ -208,7 +508,7 @@
     <string name="currency_avalanche">أفالانش</string>
     <string name="currency_avalanche_desc">منصة البلوكشين أفالانش</string>
 
-    <!-- أسهم الشركات -->
+    <!-- Stock Market Securities -->
     <string name="currency_apple">آبل</string>
     <string name="currency_apple_desc">سهم شركة آبل</string>
     <string name="currency_google">ألفابت</string>
@@ -235,10 +535,10 @@
     <string name="currency_amd_desc">سهم شركة إيه إم دي</string>
 
     <!-- ============================================ -->
-    <!-- أسماء البنوك الافتراضية -->
+    <!-- DEFAULT BANK NAMES -->
     <!-- ============================================ -->
 
-    <!-- البنوك المصرية -->
+    <!-- Egyptian Banks -->
     <string name="bank_nbe">البنك الأهلي المصري</string>
     <string name="bank_banque_misr">بنك مصر</string>
     <string name="bank_cib">البنك التجاري الدولي</string>
@@ -252,7 +552,7 @@
     <string name="bank_credit_agricole_egypt">كريدي أجريكول مصر</string>
     <string name="bank_faisal_islamic">بنك فيصل الإسلامي</string>
 
-    <!-- بنوك دول الخليج -->
+    <!-- Gulf Countries Banks -->
     <string name="bank_emirates_nbd">بنك الإمارات دبي الوطني</string>
     <string name="bank_al_rajhi">مصرف الراجحي</string>
     <string name="bank_qatar_national">بنك قطر الوطني</string>
@@ -262,15 +562,60 @@
     <string name="bank_arab_bank">البنك العربي</string>
     <string name="bank_riyad">بنك الرياض</string>
 
-    <!-- البنوك الدولية -->
+    <!-- International Banks -->
     <string name="bank_hsbc">إتش إس بي سي</string>
     <string name="bank_citibank">سيتي بنك</string>
     <string name="bank_barclays">باركليز</string>
     <string name="bank_standard_chartered">ستاندرد تشارترد</string>
     <string name="bank_deutsche_bank">دويتشه بنك</string>
 
-    <!-- خاص -->
+    <!-- Special -->
     <string name="bank_custom">بنك مخصص</string>
-    <string name="select_icon">اختيار ايقونة</string>
+    <string name="select_icon">اختيار أيقونة</string>
+
+    <!-- ============================================ -->
+    <!-- DASHBOARD PAGE -->
+    <!-- ============================================ -->
+
+    <!-- Greetings -->
+    <string name="good_morning">صباح الخير</string>
+    <string name="good_afternoon">مساء الخير</string>
+    <string name="good_evening">مساء الخير</string>
+    <string name="good_night">تصبح على خير</string>
+
+    <!-- Dashboard Sections -->
+    <string name="overview">نظرة عامة</string>
+    <string name="total_balance">إجمالي الرصيد</string>
+    <string name="quick_stats">إحصائيات سريعة</string>
+    <string name="spending_analytics">تحليلات الإنفاق</string>
+    <string name="recent_transactions">أحدث المعاملات</string>
+
+    <!-- Quick Stats -->
+    <string name="cash">نقداً</string>
+    <string name="debit">بطاقة خصم</string>
+    <string name="credit">بطاقة ائتمان</string>
+
+    <!-- Spending Analytics -->
+    <string name="spending_vs_saving">الإنفاق مقابل الادخار</string>
+    <string name="spending">الإنفاق</string>
+    <string name="saving">الادخار</string>
+    <string name="by_category">حسب الفئة</string>
+
+    <!-- Actions -->
+    <string name="see_all">عرض الكل</string>
+    <string name="previous_month">الشهر السابق</string>
+    <string name="next_month">الشهر التالي</string>
+
+    <!-- Empty States -->
+    <string name="no_analytics_title">لا توجد تحليلات متاحة</string>
+    <string name="no_analytics_message">أضف معاملات لعرض تحليلات إنفاقك</string>
+    <string name="no_recent_transactions_title">لا توجد معاملات حديثة</string>
+    <string name="no_recent_transactions_message">ستظهر معاملاتك الأخيرة هنا</string>
+
+    <!-- Balance Overview Card -->
+    <string name="total_balance_label">إجمالي الرصيد</string>
+    <string name="income_label">الدخل</string>
+    <string name="expense_label">المصروفات</string>
+    <string name="net_balance_label">صافي الرصيد</string>
 
 </resources>

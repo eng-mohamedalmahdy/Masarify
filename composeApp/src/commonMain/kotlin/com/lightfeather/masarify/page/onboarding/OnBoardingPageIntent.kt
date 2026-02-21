@@ -15,7 +15,6 @@ internal sealed interface OnBoardingPageIntent {
         val currency: UiCurrency,
     ) : OnBoardingPageIntent
 
-
     data class UpdateAccountBalance(
         val balance: String,
     ) : OnBoardingPageIntent

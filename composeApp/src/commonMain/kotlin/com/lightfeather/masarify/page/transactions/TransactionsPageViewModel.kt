@@ -19,8 +19,8 @@ import com.lightfeather.domain.usecase.CreateTransaction
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
-import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
+import com.lightfeather.domain.usecase.GetUsedCurrencies
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.framework.FileKitHelper
@@ -65,7 +65,7 @@ import kotlin.time.ExperimentalTime
 class TransactionsPageViewModel(
     private val getAccountsUseCase: GetAllAccounts,
     private val categoriesUseCase: GetAllCategories,
-    private val getCurrenciesUseCase: GetAllCurrencies,
+    private val getCurrenciesUseCase: GetUsedCurrencies,
     private val createTransactionUseCase: CreateTransaction,
     private val updateTransactionUseCase: UpdateTransaction,
     private val deleteTransactionUseCase: DeleteTransaction,
@@ -85,25 +85,28 @@ class TransactionsPageViewModel(
                         },
                         onFailure = { error -> flowOf() },
                     ),
-                userAccountsCurrencies =
-                    getCurrenciesUseCase().foldResult(
-                        onSuccess = { currencies ->
-                            currencies.map { currencies ->
-                                currencies.map { currency -> currency.toUiCurrency() }
-                            }
-                        },
-                        onFailure = { error -> flowOf() },
-                    ),
-                defaultCurrency =
-                    getCurrenciesUseCase().foldResult(
-                        onSuccess = { currencies ->
-                            currencies.map { currencies -> currencies.firstOrNull()?.toUiCurrency() }
-                        },
-                        onFailure = { error -> flowOf(null) },
-                    ),
             ),
         )
     val state: StateFlow<TransactionsPageState> = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            val currenciesFlow = getCurrenciesUseCase().foldResult(
+                onSuccess = { currencies ->
+                    currencies.map { currencies ->
+                        currencies.map { currency -> currency.toUiCurrency() }
+                    }
+                },
+                onFailure = { error -> flowOf() },
+            )
+            _state.update { it.copy(userAccountsCurrencies = currenciesFlow) }
+            launch {
+                currenciesFlow.collect { currencies ->
+                    _state.update { it.copy(selectedCurrency = currencies.firstOrNull()) }
+                }
+            }
+        }
+    }
 
     /**
      * Handle user intents
@@ -622,7 +625,6 @@ class TransactionsPageViewModel(
     fun loadWealthWorthListening() {
         val selectedCurrencyFlow = _state.map { it.selectedCurrency }
 
-
         // Total Amount Calculation
         viewModelScope.launch(Dispatchers.IoDispatcher) {
             // 1. Get the Raw Accounts Flow (Source of Truth)
@@ -691,6 +693,5 @@ class TransactionsPageViewModel(
                 }
             }
         }
-
     }
 }

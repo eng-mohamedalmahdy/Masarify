@@ -1,8 +1,11 @@
 package com.lightfeather.masarify.page.dashboard
 
+import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 
 /**
  * Dashboard page intents representing all user actions on the dashboard
@@ -48,7 +51,7 @@ internal sealed interface DashboardPageIntent {
     data object NavigateToAddAccount : DashboardPageIntent
 
     /**
-     * Navigate to a specific bank account detail page
+     * Navigate to a specific bank account detail page (adaptive detail pane)
      *
      * @property account The account to view
      */
@@ -57,11 +60,84 @@ internal sealed interface DashboardPageIntent {
     ) : DashboardPageIntent
 
     /**
-     * Navigate to a specific transaction detail page
+     * Navigate to a specific transaction detail page (adaptive extra pane)
      *
      * @property transaction The transaction to view
      */
     data class NavigateToTransaction(
         val transaction: UiTransaction,
+    ) : DashboardPageIntent
+
+    /**
+     * Select an account for detail pane display
+     *
+     * @property account The account that was selected
+     */
+    data class SelectAccount(
+        val account: UiBankAccount?,
+    ) : DashboardPageIntent
+
+    /**
+     * Create a new transaction in a specific account
+     *
+     * @property account The account to create transaction in
+     */
+    data class CreateTransactionInAccount(
+        val account: UiBankAccount,
+    ) : DashboardPageIntent
+
+    /**
+     * Update an existing transaction
+     *
+     * @property transaction The transaction to update
+     */
+    data class UpdateTransaction(
+        val transaction: UiTransactionDetails,
+    ) : DashboardPageIntent
+
+    /**
+     * Delete a transaction
+     *
+     * @property transaction The transaction to delete
+     */
+    data class DeleteTransaction(
+        val transaction: UiTransactionDetails,
+    ) : DashboardPageIntent
+
+    /**
+     * Duplicate a transaction
+     *
+     * @property transaction The transaction to duplicate
+     */
+    data class DuplicateTransaction(
+        val transaction: UiTransactionDetails,
+    ) : DashboardPageIntent
+
+    /**
+     * Confirm the transaction update/creation
+     *
+     * @property transaction The transaction data to save
+     */
+    data class ConfirmUpdateTransaction(
+        val transaction: UiTransactionData,
+    ) : DashboardPageIntent
+
+    /**
+     * Cancel the transaction update/creation
+     */
+    data object CancelUpdateTransaction : DashboardPageIntent
+
+    /**
+     * Pick images for transaction attachments
+     */
+    data object PickImages : DashboardPageIntent
+
+    /**
+     * Delete an attachment from the transaction
+     *
+     * @property attachment The attachment to delete
+     */
+    data class DeleteAttachment(
+        val attachment: UiAttachment,
     ) : DashboardPageIntent
 }

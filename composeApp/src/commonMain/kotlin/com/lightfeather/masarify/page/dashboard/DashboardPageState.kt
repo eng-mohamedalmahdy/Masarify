@@ -1,10 +1,13 @@
 package com.lightfeather.masarify.page.dashboard
 
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
+import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiQuickStats
 import com.lightfeather.designsystem.model.UiSpendingAnalytics
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -28,6 +31,13 @@ import kotlinx.coroutines.flow.emptyFlow
  * @property displayedTransactionsLimit Maximum number of transactions to show in summary
  * @property isLoading General loading state for page
  * @property isAnalyticsLoading Loading state specific to analytics calculation
+ * @property selectedAccount Currently selected account for detail pane navigation
+ * @property selectedTransaction Currently selected transaction for extra pane navigation
+ * @property transactionAttachments Map of transaction ID to its attachments
+ * @property showAddEditDialog Whether to show the add/edit transaction dialog
+ * @property underProcessTransaction Transaction being edited or created
+ * @property selectedAttachments Attachments selected for the current transaction
+ * @property categories Available categories for transaction categorization
  */
 internal data class DashboardPageState(
     // User information
@@ -54,6 +64,15 @@ internal data class DashboardPageState(
     // Loading states
     val isLoading: Boolean = false,
     val isAnalyticsLoading: Boolean = false,
+    // Adaptive navigation state
+    val selectedAccount: UiBankAccount? = null,
+    val selectedTransaction: UiTransaction? = null,
+    // Transaction management
+    val transactionAttachments: Map<String, List<UiAttachment>> = emptyMap(),
+    val showAddEditDialog: Boolean = false,
+    val underProcessTransaction: UiTransactionDetails? = null,
+    val selectedAttachments: List<UiAttachment> = emptyList(),
+    val categories: List<UiCategory> = emptyList(),
 ) {
     companion object {
         val dummy =

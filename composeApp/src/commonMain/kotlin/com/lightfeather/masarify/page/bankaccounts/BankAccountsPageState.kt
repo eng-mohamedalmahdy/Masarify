@@ -6,11 +6,12 @@ import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiTransactionDetails
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 internal data class BankAccountsPageState(
     val bankAccounts: Flow<List<UiBankAccount>>,
-    val userAccountsCurrencies: Flow<List<UiCurrency>>,
-    val defaultCurrency: Flow<UiCurrency?>,
+    val userAccountsCurrencies: Flow<List<UiCurrency>> = flowOf(),
+    val defaultCurrency: Flow<UiCurrency?> = flowOf(),
     val selectedAccount: UiBankAccount? = null,
     val selectedCurrency: UiCurrency? = null,
     val totalAmountInSelectedOrDefaultCurrency: String = "",

@@ -119,6 +119,4 @@ class CurrencyRepositoryImpl(
             isDefault = currencyIsDefault == 1L,
             resourceKey = currencyResourceKey,
         )
-
-
 }

@@ -4,22 +4,36 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
+import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategorySpending
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiQuickStats
 import com.lightfeather.designsystem.model.UiSpendingAnalytics
 import com.lightfeather.designsystem.model.UiTransaction
+import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.transaction.Transaction
+import com.lightfeather.domain.model.transaction.TransactionFilter
+import com.lightfeather.domain.model.transaction.transactionFilter
+import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.repository.UserRepository
+import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
+import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.domain.usecase.GetAllTransactionsPaged
 import com.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
+import com.lightfeather.domain.usecase.GetFilteredTransactions
+import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import com.lightfeather.domain.usecase.GetTotalExpenseOfCurrency
 import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
 import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import com.lightfeather.domain.usecase.UpdateTransaction
+import com.lightfeather.masarify.framework.FileKitHelper
+import com.lightfeather.masarify.mappers.toDomainTransaction
+import com.lightfeather.masarify.mappers.toUiAttachment
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCategory
 import com.lightfeather.masarify.mappers.toUiCurrency
@@ -28,6 +42,14 @@ import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.util.formatAmount
+import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +59,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -51,22 +72,34 @@ import kotlinx.datetime.toLocalDateTime
  * @property getAllAccounts Use case to fetch all bank accounts
  * @property getWealthWorthInCurrency Use case to calculate total wealth in different currencies
  * @property getAllTransactionsPaged Use case to fetch recent transactions
+ * @property getFilteredTransactionsPaged Use case to fetch filtered transactions with pagination
+ * @property getFilteredTransactions Use case to fetch filtered transactions
  * @property getTotalExpenseOfCurrency Use case to get total expenses for a currency
  * @property getTotalIncomeOfCurrency Use case to get total income for a currency
  * @property getTotalExpensesByCategories Use case to get expenses grouped by category
  * @property getExchangeRatesOfCurrency Use case to get exchange rates for currency conversion
+ * @property getAllCategories Use case to fetch all categories
+ * @property deleteTransaction Use case to delete a transaction
+ * @property updateTransaction Use case to update or create a transaction
+ * @property attachmentRepository Repository for transaction attachments
  * @property userRepository Repository for user preferences and data
  * @property navigator Navigator for page navigation
  */
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "UnusedPrivateProperty")
 internal class DashboardPageViewModel(
     private val getAllAccounts: GetAllAccounts,
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
-    private val getAllTransactionsPaged: GetAllTransactionsPaged,
-    private val getTotalExpenseOfCurrency: GetTotalExpenseOfCurrency,
-    private val getTotalIncomeOfCurrency: GetTotalIncomeOfCurrency,
-    private val getTotalExpensesByCategories: GetTotalTransactionsByCategories<Transaction.Expense>,
-    private val getExchangeRatesOfCurrency: GetExchangeRatesOfCurrency,
+    @Suppress("unused") private val getAllTransactionsPaged: GetAllTransactionsPaged,
+    private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
+    private val getFilteredTransactions: GetFilteredTransactions,
+    @Suppress("unused") private val getTotalExpenseOfCurrency: GetTotalExpenseOfCurrency,
+    @Suppress("unused") private val getTotalIncomeOfCurrency: GetTotalIncomeOfCurrency,
+    @Suppress("unused") private val getTotalExpensesByCategories: GetTotalTransactionsByCategories<Transaction.Expense>,
+    @Suppress("unused") private val getExchangeRatesOfCurrency: GetExchangeRatesOfCurrency,
+    private val getAllCategories: GetAllCategories,
+    private val deleteTransaction: DeleteTransaction,
+    private val updateTransaction: UpdateTransaction,
+    private val attachmentRepository: AttachmentRepository,
     private val userRepository: UserRepository,
     private val navigator: Navigator,
 ) : ViewModel() {
@@ -77,6 +110,7 @@ internal class DashboardPageViewModel(
         onIntent(DashboardPageIntent.LoadData)
     }
 
+    @Suppress("CyclomaticComplexMethod") // Complexity due to comprehensive intent handling
     fun onIntent(intent: DashboardPageIntent) {
         when (intent) {
             is DashboardPageIntent.LoadData -> loadData()
@@ -88,6 +122,15 @@ internal class DashboardPageViewModel(
             is DashboardPageIntent.NavigateToAddAccount -> navigateToAddAccount()
             is DashboardPageIntent.NavigateToAccount -> navigateToAccount(intent.account)
             is DashboardPageIntent.NavigateToTransaction -> navigateToTransaction(intent.transaction)
+            is DashboardPageIntent.SelectAccount -> selectAccount(intent.account)
+            is DashboardPageIntent.CreateTransactionInAccount -> createTransactionInAccount(intent.account)
+            is DashboardPageIntent.UpdateTransaction -> updateTransactionDialog(intent.transaction)
+            is DashboardPageIntent.DeleteTransaction -> deleteTransactionDialog(intent.transaction)
+            is DashboardPageIntent.DuplicateTransaction -> duplicateTransaction(intent.transaction)
+            is DashboardPageIntent.ConfirmUpdateTransaction -> confirmUpdateTransaction(intent.transaction)
+            is DashboardPageIntent.CancelUpdateTransaction -> cancelUpdateTransaction()
+            is DashboardPageIntent.PickImages -> pickImages()
+            is DashboardPageIntent.DeleteAttachment -> deleteAttachment(intent.attachment)
         }
     }
 
@@ -110,6 +153,9 @@ internal class DashboardPageViewModel(
 
             // Load currencies and wealth
             loadWealthAndCurrencies()
+
+            // Load categories
+            loadCategories()
 
             // Load recent transactions
             loadRecentTransactions()
@@ -160,6 +206,7 @@ internal class DashboardPageViewModel(
                 // Calculate quick stats
                 calculateQuickStats()
             }
+
             is DomainResult.Failure -> {
                 SnackbarService.sendErrorMessage(MR.strings.account_fetch_failure)
             }
@@ -201,6 +248,7 @@ internal class DashboardPageViewModel(
                     }
                 }
             }
+
             is DomainResult.Failure -> {
                 SnackbarService.sendErrorMessage(MR.strings.currency_fetch_failure)
             }
@@ -208,7 +256,14 @@ internal class DashboardPageViewModel(
     }
 
     private suspend fun loadRecentTransactions() {
-        when (val result = getAllTransactionsPaged(page = 0)) {
+        // Create date range filter for selected month
+        val dateRange = getMonthDateRange(_state.value.selectedMonthTimestamp)
+        val filter =
+            transactionFilter {
+                dateRange(dateRange.from!!, dateRange.to!!)
+            }
+
+        when (val result = getFilteredTransactionsPaged(filter, page = 0)) {
             is DomainResult.Success -> {
                 val transactionsFlow =
                     result.data.map { pagedData ->
@@ -216,6 +271,7 @@ internal class DashboardPageViewModel(
                     }
                 _state.update { it.copy(recentTransactions = transactionsFlow) }
             }
+
             is DomainResult.Failure -> {
                 SnackbarService.sendErrorMessage(MR.strings.transaction_fetch_failure)
             }
@@ -275,6 +331,7 @@ internal class DashboardPageViewModel(
                             ?.find { it.currency.id.toString() == selectedCurrency.id }
                             ?.currency
                     }
+
                     else -> null
                 }
 
@@ -283,28 +340,38 @@ internal class DashboardPageViewModel(
                 return
             }
 
-            // Calculate total expenses and income for the selected currency
-            // These totals include all transactions in the selected currency
-            val totalExpense =
-                when (
-                    val expenseResult = getTotalExpenseOfCurrency<Transaction.Expense>(domainCurrency)
-                ) {
-                    is DomainResult.Success -> expenseResult.data.firstOrNull() ?: 0.0
-                    is DomainResult.Failure -> 0.0
+            // Create date range filter for selected month
+            val dateRange = getMonthDateRange(_state.value.selectedMonthTimestamp)
+            val filter =
+                transactionFilter {
+                    currencyIn(domainCurrency)
+                    dateRange(dateRange.from!!, dateRange.to!!)
                 }
 
-            val totalIncome =
-                when (val incomeResult = getTotalIncomeOfCurrency(domainCurrency)) {
-                    is DomainResult.Success -> incomeResult.data.firstOrNull() ?: 0.0
-                    is DomainResult.Failure -> 0.0
+            // Get filtered transactions for the month
+            val transactions =
+                when (val result = getFilteredTransactions(filter)) {
+                    is DomainResult.Success -> result.data
+                    is DomainResult.Failure -> emptyList()
                 }
+
+            // Calculate totals from filtered transactions
+            val totalExpense =
+                transactions
+                    .filterIsInstance<Transaction.Expense>()
+                    .sumOf { it.amount }
+
+            val totalIncome =
+                transactions
+                    .filterIsInstance<Transaction.Income>()
+                    .sumOf { it.amount }
 
             val total = totalExpense + totalIncome
             val spendingPercentage = if (total > 0) (totalExpense / total).toFloat() else 0f
             val savingPercentage = if (total > 0) (totalIncome / total).toFloat() else 0f
 
             // Get category breakdown for expenses
-            val categoryBreakdown = buildCategoryBreakdown(domainCurrency, totalExpense)
+            val categoryBreakdown = buildCategoryBreakdown(domainCurrency, totalExpense, dateRange)
 
             _state.update {
                 it.copy(
@@ -329,51 +396,63 @@ internal class DashboardPageViewModel(
     }
 
     /**
-     * Build category breakdown with currency conversion
-     * Gets expenses grouped by category and converts each to the selected currency
+     * Build category breakdown with currency and date filtering
+     * Gets expenses grouped by category for the selected month and currency
      */
-    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    @Suppress("TooGenericExceptionCaught", "SwallowedException", "ReturnCount")
     private suspend fun buildCategoryBreakdown(
         targetCurrency: com.lightfeather.domain.model.Currency,
         totalExpenseInTargetCurrency: Double,
+        dateRange: TransactionFilter.DateRange,
     ): List<UiCategorySpending> {
         try {
-            // Get expenses grouped by category
-            val expensesByCategory =
-                when (val result = getTotalExpensesByCategories<Transaction.Expense>()) {
-                    is DomainResult.Success -> result.data.firstOrNull() ?: emptyMap()
+            // Create filter for expenses in target currency and date range
+            val filter =
+                transactionFilter {
+                    currencyIn(targetCurrency)
+                    dateRange(dateRange.from!!, dateRange.to!!)
+                    expenseOnly()
+                }
+
+            // Get filtered transactions
+            val expenses =
+                when (val result = getFilteredTransactions(filter)) {
+                    is DomainResult.Success -> result.data.filterIsInstance<Transaction.Expense>()
                     is DomainResult.Failure -> return emptyList()
                 }
 
-            if (expensesByCategory.isEmpty()) {
+            if (expenses.isEmpty()) {
                 return emptyList()
             }
 
-            // Convert each category total to target currency and calculate percentages
-            val categorySpendingList = mutableListOf<UiCategorySpending>()
+            // Group by categories and calculate totals
+            val expensesByCategory = mutableMapOf<com.lightfeather.domain.model.Category, Double>()
+            expenses.forEach { expense ->
+                expense.categories.forEach { category ->
+                    expensesByCategory[category] = (expensesByCategory[category] ?: 0.0) + expense.amount
+                }
+            }
 
-            expensesByCategory.forEach { (category, amount) ->
-                // For now, we assume transactions are already in the target currency
-                // In the future, we could enhance this with proper currency conversion
-                // per transaction based on the account currency
+            // Convert to UI category spending with percentages
+            val categorySpendingList =
+                expensesByCategory.mapNotNull { (category, amount) ->
+                    if (amount > 0) {
+                        val percentage =
+                            if (totalExpenseInTargetCurrency > 0) {
+                                (amount / totalExpenseInTargetCurrency).toFloat()
+                            } else {
+                                0f
+                            }
 
-                val percentage =
-                    if (totalExpenseInTargetCurrency > 0) {
-                        (amount / totalExpenseInTargetCurrency).toFloat()
-                    } else {
-                        0f
-                    }
-
-                if (amount > 0) {
-                    categorySpendingList.add(
                         UiCategorySpending(
                             category = category.toUiCategory(),
                             amount = formatAmount(amount),
                             percentage = percentage,
-                        ),
-                    )
+                        )
+                    } else {
+                        null
+                    }
                 }
-            }
 
             // Sort by amount descending
             return categorySpendingList.sortedByDescending {
@@ -475,18 +554,243 @@ internal class DashboardPageViewModel(
         navigator.navigate(AccountsRoute)
     }
 
-    @Suppress("UnusedParameter")
     private fun navigateToAccount(account: UiBankAccount) {
-        // Navigate to accounts page
-        // The account selection logic is handled by BankAccountsPage
-        navigator.navigate(AccountsRoute)
+        // Update state to show account in detail pane (handled by adaptive UI)
+        _state.update { it.copy(selectedAccount = account) }
     }
 
-    @Suppress("UnusedParameter")
     private fun navigateToTransaction(transaction: UiTransaction) {
-        // Navigate to transactions page
-        navigator.navigate(TransactionsRoute())
+        // Update state to show transaction in extra pane (handled by adaptive UI)
+        _state.update { it.copy(selectedTransaction = transaction) }
     }
+
+    private fun selectAccount(account: UiBankAccount?) {
+        _state.update { it.copy(selectedAccount = account) }
+    }
+
+    // Transaction management methods
+
+    private fun createTransactionInAccount(account: UiBankAccount) {
+        viewModelScope.launch {
+            // Navigate to transactions page with add dialog open and account locked
+            navigator.navigate(
+                TransactionsRoute(
+                    openAddDialog = true,
+                    fromAccountId = account.id,
+                ),
+            )
+        }
+    }
+
+    private fun updateTransactionDialog(transaction: UiTransactionDetails) {
+        loadAttachments(transaction.id)
+        viewModelScope.launch {
+            delay(100) // Wait for attachments to load
+            val attachments = _state.value.transactionAttachments[transaction.id] ?: emptyList()
+            _state.update {
+                it.copy(
+                    showAddEditDialog = true,
+                    underProcessTransaction = transaction,
+                    selectedAttachments = attachments,
+                )
+            }
+        }
+    }
+
+    private fun deleteTransactionDialog(transaction: UiTransactionDetails) {
+        loadAttachments(transaction.id)
+        viewModelScope.launch {
+            delay(100) // Wait for attachments to load
+            _state.update {
+                it.copy(
+                    showAddEditDialog = true,
+                    underProcessTransaction = transaction,
+                )
+            }
+
+            // Delete the transaction
+            deleteTransaction(transaction.id.toLong()).foldSuspend(
+                onSuccess = {
+                    _state.update { it.copy(showAddEditDialog = false, underProcessTransaction = null) }
+                    SnackbarService.sendSuccessMessage(MR.strings.transaction_delete_success)
+                    // Reload data
+                    loadRecentTransactions()
+                    calculateSpendingAnalytics()
+                },
+                onFailure = {
+                    _state.update { it.copy(showAddEditDialog = false) }
+                    SnackbarService.sendErrorMessage(MR.strings.transaction_delete_failure)
+                },
+            )
+        }
+    }
+
+    @Suppress("UnusedParameter", "UnusedPrivateProperty")
+    private fun duplicateTransaction(transaction: UiTransactionDetails) {
+        // Transaction duplication will be implemented in a future release
+    }
+
+    private fun confirmUpdateTransaction(transaction: UiTransactionData) {
+        viewModelScope.launch {
+            updateTransaction(transaction.toDomainTransaction()).fold(
+                onSuccess = {
+                    _state.update { it.copy(showAddEditDialog = false, underProcessTransaction = null) }
+                    SnackbarService.sendSuccessMessage(MR.strings.transaction_update_success)
+                    viewModelScope.launch {
+                        // Reload data
+                        launch {
+                            loadRecentTransactions()
+                        }
+                        launch {
+                            calculateSpendingAnalytics()
+                        }
+                    }
+                },
+                onFailure = {
+                    _state.update { it.copy(showAddEditDialog = false) }
+                    SnackbarService.sendErrorMessage(MR.strings.transaction_update_failure)
+                },
+            )
+        }
+    }
+
+    private fun cancelUpdateTransaction() {
+        _state.update {
+            it.copy(
+                showAddEditDialog = false,
+                underProcessTransaction = null,
+                selectedAttachments = emptyList(),
+            )
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught") // General error handling for FileKit operations
+    private fun pickImages() {
+        viewModelScope.launch {
+            try {
+                val files =
+                    FileKit.openFilePicker(
+                        type = FileKitType.Image,
+                        mode = FileKitMode.Multiple(),
+                    )
+                if (files != null) {
+                    val newAttachments = mutableListOf<UiAttachment>()
+                    files.forEach { file ->
+                        val bytes = file.readBytes()
+                        val compressedBytes = FileKitHelper.compressImage(bytes)
+                        if (FileKitHelper.isValidImage(compressedBytes, file.mimeType())) {
+                            newAttachments.add(
+                                UiAttachment(
+                                    id = "-1",
+                                    name = file.name,
+                                    mimeType = "image/jpeg",
+                                    fileContent = compressedBytes,
+                                ),
+                            )
+                        }
+                    }
+                    _state.update { it.copy(selectedAttachments = it.selectedAttachments + newAttachments) }
+                }
+            } catch (e: Exception) {
+                Napier.e("Error picking images", e)
+                SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+            }
+        }
+    }
+
+    private fun deleteAttachment(attachment: UiAttachment) {
+        _state.update { it.copy(selectedAttachments = it.selectedAttachments - attachment) }
+    }
+
+    private fun loadAttachments(transactionId: String) {
+        viewModelScope.launch {
+            when (val result = attachmentRepository.getAttachmentsByTransactionId(transactionId.toIntOrNull() ?: -1)) {
+                is DomainResult.Success -> {
+                    val attachments = result.data.map { it.toUiAttachment() }
+                    _state.update {
+                        it.copy(
+                            transactionAttachments =
+                                it.transactionAttachments + (transactionId to attachments),
+                        )
+                    }
+                }
+                is DomainResult.Failure -> {
+                    _state.update {
+                        it.copy(
+                            transactionAttachments =
+                                it.transactionAttachments + (transactionId to emptyList()),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun loadCategories() {
+        when (val result = getAllCategories()) {
+            is DomainResult.Success -> {
+                val categories = result.data.firstOrNull()?.map { it.toUiCategory() } ?: emptyList()
+                _state.update { it.copy(categories = categories) }
+            }
+
+            is DomainResult.Failure -> {
+                SnackbarService.sendErrorMessage(MR.strings.category_fetch_failure)
+            }
+        }
+    }
+
+    /**
+     * Calculate date range for a given month timestamp
+     * Returns a DateRange with start and end of month
+     */
+    private fun getMonthDateRange(timestamp: Long): TransactionFilter.DateRange {
+        val instant = Instant.fromEpochMilliseconds(timestamp)
+        val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+
+        // Start of month: first day at 00:00:00
+        val startOfMonth =
+            LocalDateTime(
+                year = dateTime.year,
+                monthNumber = dateTime.monthNumber,
+                dayOfMonth = 1,
+                hour = 0,
+                minute = 0,
+                second = 0,
+            )
+
+        // End of month: last day at 23:59:59
+        val daysInMonth = getDaysInMonth(dateTime.year, dateTime.monthNumber)
+        val endOfMonth =
+            LocalDateTime(
+                year = dateTime.year,
+                monthNumber = dateTime.monthNumber,
+                dayOfMonth = daysInMonth,
+                hour = 23,
+                minute = 59,
+                second = 59,
+            )
+
+        return TransactionFilter.DateRange(from = startOfMonth, to = endOfMonth)
+    }
+
+    /**
+     * Get number of days in a given month
+     */
+    private fun getDaysInMonth(
+        year: Int,
+        month: Int,
+    ): Int =
+        when (month) {
+            1, 3, 5, 7, 8, 10, 12 -> 31
+            4, 6, 9, 11 -> 30
+            2 -> if (isLeapYear(year)) 29 else 28
+            else -> 30
+        }
+
+    /**
+     * Check if a year is a leap year
+     */
+    private fun isLeapYear(year: Int): Boolean = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
 
     companion object {
         private const val ANALYTICS_DELAY_MS = 300L

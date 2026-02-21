@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.model.UiCurrency
+import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -122,7 +123,7 @@ fun AccountsHeader(
                                     fontWeight = FontWeight.Bold,
                                 )
                                 Text(
-                                    text = currency.name,
+                                    text = currency.getLocalizedName(),
                                     style = MaterialTheme.typography.labelSmall,
                                 )
                             }

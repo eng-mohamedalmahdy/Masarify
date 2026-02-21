@@ -10,8 +10,8 @@ import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
-import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
+import com.lightfeather.domain.usecase.GetUsedCurrencies
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.framework.FileKitHelper
@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 class BankAccountsPageViewModel(
     private val navigator: Navigator,
     private val getAllAccounts: GetAllAccounts,
-    private val getAllCurrencies: GetAllCurrencies,
+    private val getAllCurrencies: GetUsedCurrencies,
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
     private val exchangeRates: GetAllCurrenciesExchangeRates,
     private val deleteTransaction: DeleteTransaction,
@@ -63,28 +63,34 @@ class BankAccountsPageViewModel(
                             }
                         },
                         onFailure = { error -> flowOf() },
-                    ),
-                userAccountsCurrencies =
-                    getAllCurrencies().foldResult(
-                        onSuccess = { currencies ->
-                            currencies.map { currencies ->
-                                currencies.map { currency -> currency.toUiCurrency() }.also {
-                                    Napier.d("Currencies mapped to UI: $it")
-                                }
-                            }
-                        },
-                        onFailure = { error -> flowOf() },
-                    ),
-                defaultCurrency =
-                    getAllCurrencies().foldResult(
-                        onSuccess = { currencies ->
-                            currencies.map { currencies -> currencies.firstOrNull()?.toUiCurrency() }
-                        },
-                        onFailure = { error -> flowOf(null) },
-                    ),
+                    )
             ),
         )
     internal val state: StateFlow<BankAccountsPageState> = _state
+
+    init {
+
+
+        viewModelScope.launch {
+            val currenciesFlow = getAllCurrencies().foldResult(
+                onSuccess = { currencies ->
+                    currencies.map { currencies ->
+                        currencies.map { currency -> currency.toUiCurrency() }.also {
+                            Napier.d("Currencies mapped to UI: $it")
+                        }
+                    }
+                },
+                onFailure = { error -> flowOf() },
+            )
+            _state.value = _state.value.copy(userAccountsCurrencies = currenciesFlow)
+            launch(Dispatchers.IoDispatcher) {
+                currenciesFlow.collect {
+                    _state.value = _state.value.copy(defaultCurrency = flowOf(it.firstOrNull()))
+                }
+            }
+        }
+
+    }
 
     @Suppress("CyclomaticComplexMethod") // Complexity due to comprehensive intent handling
     internal fun onIntent(intent: BankAccountsPageIntent) {
@@ -279,7 +285,6 @@ class BankAccountsPageViewModel(
                 onFailure = { flowOf(emptyList()) },
             )
 
-
         // Total Amount Calculation
         viewModelScope.launch(Dispatchers.IoDispatcher) {
             // 2. Get the Wealth/Total flow
@@ -339,7 +344,6 @@ class BankAccountsPageViewModel(
                     _state.value = _state.value.copy(bankAccounts = flowOf(mappedAccounts))
                 }
             }
-
         }
     }
 }

@@ -19,8 +19,6 @@ fun UiCurrency.getLocalizedName(): String =
         name
     }
 
-
-
 /**
  * Get the localized description for a currency
  * If the currency is a default currency with a resource key, returns the localized description
