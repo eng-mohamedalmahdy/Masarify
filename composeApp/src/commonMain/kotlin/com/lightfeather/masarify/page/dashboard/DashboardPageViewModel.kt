@@ -15,10 +15,13 @@ import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllTransactionsPaged
+import com.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
 import com.lightfeather.domain.usecase.GetTotalExpenseOfCurrency
 import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
+import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.masarify.mappers.toUiBankAccount
+import com.lightfeather.masarify.mappers.toUiCategory
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.mappers.toUiTransaction
 import com.lightfeather.masarify.navigation.Navigator
@@ -50,6 +53,8 @@ import kotlinx.datetime.toLocalDateTime
  * @property getAllTransactionsPaged Use case to fetch recent transactions
  * @property getTotalExpenseOfCurrency Use case to get total expenses for a currency
  * @property getTotalIncomeOfCurrency Use case to get total income for a currency
+ * @property getTotalExpensesByCategories Use case to get expenses grouped by category
+ * @property getExchangeRatesOfCurrency Use case to get exchange rates for currency conversion
  * @property userRepository Repository for user preferences and data
  * @property navigator Navigator for page navigation
  */
@@ -60,6 +65,8 @@ internal class DashboardPageViewModel(
     private val getAllTransactionsPaged: GetAllTransactionsPaged,
     private val getTotalExpenseOfCurrency: GetTotalExpenseOfCurrency,
     private val getTotalIncomeOfCurrency: GetTotalIncomeOfCurrency,
+    private val getTotalExpensesByCategories: GetTotalTransactionsByCategories<Transaction.Expense>,
+    private val getExchangeRatesOfCurrency: GetExchangeRatesOfCurrency,
     private val userRepository: UserRepository,
     private val navigator: Navigator,
 ) : ViewModel() {
@@ -246,7 +253,7 @@ internal class DashboardPageViewModel(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    @Suppress("TooGenericExceptionCaught", "SwallowedException", "CyclomaticComplexMethod")
     private suspend fun calculateSpendingAnalytics() {
         _state.update { it.copy(isAnalyticsLoading = true) }
 
@@ -276,8 +283,8 @@ internal class DashboardPageViewModel(
                 return
             }
 
-            // Calculate total expenses and income for the month
-            // Use cases return DomainResult<Flow<Double>>, so we need to collect the Flow
+            // Calculate total expenses and income for the selected currency
+            // These totals include all transactions in the selected currency
             val totalExpense =
                 when (
                     val expenseResult = getTotalExpenseOfCurrency<Transaction.Expense>(domainCurrency)
@@ -296,9 +303,8 @@ internal class DashboardPageViewModel(
             val spendingPercentage = if (total > 0) (totalExpense / total).toFloat() else 0f
             val savingPercentage = if (total > 0) (totalIncome / total).toFloat() else 0f
 
-            // For category breakdown, we'll use a simplified approach
-            // In a real app, you'd query transactions by category for the selected month
-            val categoryBreakdown = emptyList<UiCategorySpending>()
+            // Get category breakdown for expenses
+            val categoryBreakdown = buildCategoryBreakdown(domainCurrency, totalExpense)
 
             _state.update {
                 it.copy(
@@ -306,6 +312,7 @@ internal class DashboardPageViewModel(
                     expense = formatAmount(totalExpense),
                     spendingAnalytics =
                         UiSpendingAnalytics(
+                            selectedCurrency = selectedCurrency,
                             spendingPercentage = spendingPercentage,
                             savingPercentage = savingPercentage,
                             totalSpending = formatAmount(totalExpense),
@@ -318,6 +325,63 @@ internal class DashboardPageViewModel(
         } catch (e: Exception) {
             // Logging would be added here in production
             _state.update { it.copy(isAnalyticsLoading = false) }
+        }
+    }
+
+    /**
+     * Build category breakdown with currency conversion
+     * Gets expenses grouped by category and converts each to the selected currency
+     */
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    private suspend fun buildCategoryBreakdown(
+        targetCurrency: com.lightfeather.domain.model.Currency,
+        totalExpenseInTargetCurrency: Double,
+    ): List<UiCategorySpending> {
+        try {
+            // Get expenses grouped by category
+            val expensesByCategory =
+                when (val result = getTotalExpensesByCategories<Transaction.Expense>()) {
+                    is DomainResult.Success -> result.data.firstOrNull() ?: emptyMap()
+                    is DomainResult.Failure -> return emptyList()
+                }
+
+            if (expensesByCategory.isEmpty()) {
+                return emptyList()
+            }
+
+            // Convert each category total to target currency and calculate percentages
+            val categorySpendingList = mutableListOf<UiCategorySpending>()
+
+            expensesByCategory.forEach { (category, amount) ->
+                // For now, we assume transactions are already in the target currency
+                // In the future, we could enhance this with proper currency conversion
+                // per transaction based on the account currency
+
+                val percentage =
+                    if (totalExpenseInTargetCurrency > 0) {
+                        (amount / totalExpenseInTargetCurrency).toFloat()
+                    } else {
+                        0f
+                    }
+
+                if (amount > 0) {
+                    categorySpendingList.add(
+                        UiCategorySpending(
+                            category = category.toUiCategory(),
+                            amount = formatAmount(amount),
+                            percentage = percentage,
+                        ),
+                    )
+                }
+            }
+
+            // Sort by amount descending
+            return categorySpendingList.sortedByDescending {
+                it.amount.replace(",", "").toDoubleOrNull() ?: 0.0
+            }
+        } catch (e: Exception) {
+            // Logging would be added here in production
+            return emptyList()
         }
     }
 

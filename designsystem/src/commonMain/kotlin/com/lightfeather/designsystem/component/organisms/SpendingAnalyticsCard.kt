@@ -35,6 +35,7 @@ import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.model.UiCategorySpending
 import com.lightfeather.designsystem.model.UiSpendingAnalytics
 import com.lightfeather.designsystem.model.dummyInstance
+import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.designsystem.util.toColorInt
@@ -148,7 +149,7 @@ private fun SpendingAnalyticsContent(
                 )
 
                 Text(
-                    text = "$${spendingAnalytics.totalSpending}",
+                    text = "${spendingAnalytics.selectedCurrency.symbol}${spendingAnalytics.totalSpending}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -261,7 +262,7 @@ private fun CategoryBreakdownItem(
             )
 
             Text(
-                text = categorySpending.category.name,
+                text = categorySpending.category.getLocalizedName(),
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface,

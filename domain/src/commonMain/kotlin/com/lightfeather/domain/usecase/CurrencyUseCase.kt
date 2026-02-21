@@ -75,3 +75,9 @@ class GetAllCurrencies(
 ) {
     operator fun invoke() = currencyRepository.getAllCurrencies()
 }
+
+class GetUsedCurrencies(
+    private val currencyRepository: CurrencyRepository,
+) {
+    suspend operator fun invoke() = currencyRepository.getUsedCurrencies()
+}

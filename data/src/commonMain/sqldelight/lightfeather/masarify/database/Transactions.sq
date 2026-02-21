@@ -111,6 +111,8 @@ SELECT
     c.description AS category_description,
     c.color AS category_color,
     c.icon AS category_icon,
+    c.is_default AS is_default,
+    c.resource_key AS resource_key,
     SUM(t.transactionAmount) AS total_amount
 FROM v_transactions t
 JOIN transaction_categories tc ON t.transactionId = tc.transaction_id

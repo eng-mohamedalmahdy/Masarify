@@ -208,7 +208,7 @@ fun BalanceOverviewCard(
 
                     // Balance Amount
                     Text(
-                        text = "$$totalBalance",
+                        text = "${selectedCurrency?.symbol.orEmpty()}$totalBalance",
                         style = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,

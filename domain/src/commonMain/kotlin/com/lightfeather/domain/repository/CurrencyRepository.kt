@@ -14,4 +14,6 @@ interface CurrencyRepository {
     suspend fun getCurrencyById(id: Int): DomainResult<Currency>
 
     fun getAllCurrencies(): DomainResult<Flow<List<Currency>>>
+
+    suspend fun getUsedCurrencies(): DomainResult<Flow<List<Currency>>>
 }

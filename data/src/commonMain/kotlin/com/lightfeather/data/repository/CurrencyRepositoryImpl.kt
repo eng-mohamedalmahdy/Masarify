@@ -8,6 +8,7 @@ import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.CurrencyType
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.error.AppError
+import com.lightfeather.domain.model.runCatchingDomainResultSuspend
 import com.lightfeather.domain.repository.CurrencyRepository
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
@@ -99,13 +100,25 @@ class CurrencyRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting currencies"))
         }
 
+    override suspend fun getUsedCurrencies(): DomainResult<Flow<List<Currency>>> {
+        return runCatchingDomainResultSuspend {
+            database {
+                it.currenciesQueries.selectUsedCurrencies().asFlow().map { query ->
+                    query.awaitAsList().map { it.toDomain() }
+                }
+            }
+        }
+    }
+
     private fun V_currencies.toDomain(): Currency =
         Currency(
             name = currencyName,
             sign = currencySign,
             id = currencyId.toInt(),
-            type = CurrencyType.valueOf(currencyType ?: "TRADITIONAL"),
-            isDefault = (currencyIsDefault ?: 0L) == 1L,
+            type = CurrencyType.valueOf(currencyType),
+            isDefault = currencyIsDefault == 1L,
             resourceKey = currencyResourceKey,
         )
+
+
 }

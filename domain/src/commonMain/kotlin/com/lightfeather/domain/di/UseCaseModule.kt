@@ -25,6 +25,7 @@ import com.lightfeather.domain.usecase.GetTotalIncomeOfCurrency
 import com.lightfeather.domain.usecase.GetTotalTransactionsByCategories
 import com.lightfeather.domain.usecase.GetTransactionCount
 import com.lightfeather.domain.usecase.GetTransactionCountOfType
+import com.lightfeather.domain.usecase.GetUsedCurrencies
 import com.lightfeather.domain.usecase.GetUserDarkMode
 import com.lightfeather.domain.usecase.GetUserLanguage
 import com.lightfeather.domain.usecase.GetUserSavedColors
@@ -42,6 +43,7 @@ import com.lightfeather.domain.usecase.UpdateCurrency
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.domain.usecase.UpsertUserData
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -138,4 +140,5 @@ val useCaseModule =
         factory { UpdateCurrency(get()) }
         factory { DeleteCurrency(get()) }
         factory { GetExchangeRatesOfCurrency(get()) }
+        factoryOf(::GetUsedCurrencies)
     }

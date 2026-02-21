@@ -23,6 +23,7 @@ data class UiQuickStats(
  * @property categoryBreakdown List of spending by category
  */
 data class UiSpendingAnalytics(
+    val selectedCurrency: UiCurrency,
     val spendingPercentage: Float = 0f,
     val savingPercentage: Float = 0f,
     val totalSpending: String = "",
@@ -59,6 +60,7 @@ data class UiCategorySpending(
  */
 fun UiSpendingAnalytics.Companion.dummyInstance() =
     UiSpendingAnalytics(
+        selectedCurrency = UiCurrency.dummy,
         spendingPercentage = 0.6f,
         savingPercentage = 0.4f,
         totalSpending = "2,500.00",

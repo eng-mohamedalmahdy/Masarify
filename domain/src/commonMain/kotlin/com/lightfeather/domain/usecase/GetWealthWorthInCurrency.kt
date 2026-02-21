@@ -14,10 +14,10 @@ class GetWealthWorthInCurrency(
     private val currencyExchangeRateRepository: CurrencyExchangeRateRepository,
     private val currencyRepository: CurrencyRepository,
 ) {
-    operator fun invoke(): DomainResult<Flow<List<WealthWorthInCurrency>>> =
+    suspend operator fun invoke(): DomainResult<Flow<List<WealthWorthInCurrency>>> =
         DomainResult.combine(
             accountRepository.getAccounts(),
-            currencyRepository.getAllCurrencies(),
+            currencyRepository.getUsedCurrencies(),
         ) { accountsFlow, currenciesFlow ->
             combine(accountsFlow, currenciesFlow) { accounts, currencies ->
                 currencies.map { targetCurrency ->

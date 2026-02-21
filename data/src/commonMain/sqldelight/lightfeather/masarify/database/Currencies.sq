@@ -27,6 +27,12 @@ WHERE id = :id;
 selectAllCurrencies:
 SELECT * FROM v_currencies;
 
+selectUsedCurrencies:
+SELECT DISTINCT vc.*
+FROM v_currencies vc
+INNER JOIN v_accounts va
+    ON va.currencyId = vc.currencyId;
+
 selectCurrencyById:
 SELECT * FROM v_currencies
 WHERE currencyId = :id;

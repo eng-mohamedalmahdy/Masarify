@@ -407,11 +407,13 @@ class TransactionsRepositoryImpl(
                         it.awaitAsList().associate {
                             Pair(
                                 Category(
-                                    it.category_id.toInt(),
-                                    it.category_name,
-                                    it.category_description,
-                                    it.category_color,
-                                    it.category_icon,
+                                    id = it.category_id.toInt(),
+                                    name = it.category_name,
+                                    description = it.category_description,
+                                    color = it.category_color,
+                                    icon = it.category_icon,
+                                    isDefault = it.is_default == 1L,
+                                    resourceKey = it.resource_key,
                                 ),
                                 it.total_amount ?: 0.0,
                             )

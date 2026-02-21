@@ -622,73 +622,75 @@ class TransactionsPageViewModel(
     fun loadWealthWorthListening() {
         val selectedCurrencyFlow = _state.map { it.selectedCurrency }
 
-        // 1. Get the Raw Accounts Flow (Source of Truth)
-        val rawAccountsFlow =
-            getAccountsUseCase().foldResult(
-                onSuccess = { it },
-                onFailure = { flowOf(emptyList()) },
-            )
-
-        // 2. Get the Wealth/Total flow
-        val wealthInAllCurrenciesFlow =
-            getWealthWorthInCurrency().foldResult(
-                onSuccess = { it },
-                onFailure = { flowOf(emptyList()) },
-            )
-
-        // 3. Get Exchange Rates
-        val exchangeRatesFlow =
-            exchangeRates().foldResult(
-                onSuccess = { it },
-                onFailure = { flowOf(emptyList()) },
-            )
 
         // Total Amount Calculation
         viewModelScope.launch(Dispatchers.IoDispatcher) {
-            combine(selectedCurrencyFlow, wealthInAllCurrenciesFlow) { selected, wealth ->
-                selected to wealth
-            }.collect { (selectedCurrency, wealthList) ->
-                val selectedCurrencyWealth =
-                    wealthList.find { it.currency.toUiCurrency() == selectedCurrency }
-                        ?: wealthList.firstOrNull()
+            // 1. Get the Raw Accounts Flow (Source of Truth)
+            val rawAccountsFlow =
+                getAccountsUseCase().foldResult(
+                    onSuccess = { it },
+                    onFailure = { flowOf(emptyList()) },
+                )
 
-                _state.value =
-                    _state.value.copy(
-                        totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString(),
-                    )
+            // 2. Get the Wealth/Total flow
+            val wealthInAllCurrenciesFlow =
+                getWealthWorthInCurrency().foldResult(
+                    onSuccess = { it },
+                    onFailure = { flowOf(emptyList()) },
+                )
+
+            // 3. Get Exchange Rates
+            val exchangeRatesFlow =
+                exchangeRates().foldResult(
+                    onSuccess = { it },
+                    onFailure = { flowOf(emptyList()) },
+                )
+
+            launch {
+                combine(selectedCurrencyFlow, wealthInAllCurrenciesFlow) { selected, wealth ->
+                    selected to wealth
+                }.collect { (selectedCurrency, wealthList) ->
+                    val selectedCurrencyWealth =
+                        wealthList.find { it.currency.toUiCurrency() == selectedCurrency }
+                            ?: wealthList.firstOrNull()
+
+                    _state.value =
+                        _state.value.copy(
+                            totalAmountInSelectedOrDefaultCurrency = (selectedCurrencyWealth?.worth ?: 0.0).toString(),
+                        )
+                }
             }
-        }
+            launch {
+                combine(rawAccountsFlow, selectedCurrencyFlow, exchangeRatesFlow) { accounts, selectedCurrency, rates ->
+                    Triple(accounts, selectedCurrency, rates)
+                }.distinctUntilChanged().collectLatest { (accounts, selectedCurrency, rates) ->
 
-        // Bank Accounts List Calculation (convert balances based on selected currency)
-        viewModelScope.launch(Dispatchers.IoDispatcher) {
-            combine(rawAccountsFlow, selectedCurrencyFlow, exchangeRatesFlow) { accounts, selectedCurrency, rates ->
-                Triple(accounts, selectedCurrency, rates)
-            }.distinctUntilChanged().collectLatest { (accounts, selectedCurrency, rates) ->
+                    val mappedAccounts =
+                        if (selectedCurrency == null) {
+                            // If no currency selected, just show original balances
+                            accounts.map { it.toUiBankAccount() }
+                        } else {
+                            // Convert ALWAYS from the original account balance
+                            accounts.map { account ->
+                                val uiAccount = account.toUiBankAccount()
+                                val rateEntry =
+                                    rates.find {
+                                        it.from.id.toString() == uiAccount.currency.id &&
+                                            it.to.id.toString() == selectedCurrency.id
+                                    }
 
-                val mappedAccounts =
-                    if (selectedCurrency == null) {
-                        // If no currency selected, just show original balances
-                        accounts.map { it.toUiBankAccount() }
-                    } else {
-                        // Convert ALWAYS from the original account balance
-                        accounts.map { account ->
-                            val uiAccount = account.toUiBankAccount()
-                            val rateEntry =
-                                rates.find {
-                                    it.from.id.toString() == uiAccount.currency.id &&
-                                        it.to.id.toString() == selectedCurrency.id
-                                }
-
-                            uiAccount.copy(
-                                balance = (uiAccount.balance.toDouble() * (rateEntry?.rate ?: 1.0)).toString(),
-                                currency = selectedCurrency,
-                            )
+                                uiAccount.copy(
+                                    balance = (uiAccount.balance.toDouble() * (rateEntry?.rate ?: 1.0)).toString(),
+                                    currency = selectedCurrency,
+                                )
+                            }
                         }
-                    }
 
-                // Update the state with a fresh Flow of the calculated list
-                _state.value = _state.value.copy(accounts = flowOf(mappedAccounts))
+                    // Update the state with a fresh Flow of the calculated list
+                    _state.value = _state.value.copy(accounts = flowOf(mappedAccounts))
+                }
             }
         }
+
     }
 }
