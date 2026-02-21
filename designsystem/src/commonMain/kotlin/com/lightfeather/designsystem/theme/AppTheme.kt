@@ -94,7 +94,7 @@ object AppTheme {
         internal val dark =
             darkColorScheme(
                 primary = primary,
-                onPrimary = Color(0xFF003732),
+                onPrimary = Color(0xFFEDEDED),
                 primaryContainer = primaryContainerDark,
                 onPrimaryContainer = Color(0xFFB2DFDB),
                 secondary = secondary,

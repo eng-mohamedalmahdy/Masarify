@@ -95,6 +95,8 @@ kotlin {
             implementation(libs.okio.core)
             implementation(libs.uri.kmp)
             implementation(libs.bundles.filekit)
+            implementation(libs.compottie)
+            implementation(libs.compottie.resources)
         }
         androidMain.dependencies {
             implementation(compose.preview)

@@ -49,6 +49,7 @@ class AddEditCategoryPageViewModel(
         onIntent(AddEditCategoryPageIntent.LoadData)
     }
 
+    @Suppress("CyclomaticComplexMethod") // Business logic: handles multiple intent types
     internal fun onIntent(intent: AddEditCategoryPageIntent) {
         when (intent) {
             is AddEditCategoryPageIntent.LoadData -> {
@@ -107,31 +108,31 @@ class AddEditCategoryPageViewModel(
 
             AddEditCategoryPageIntent.AddIconFromGallery -> {
                 viewModelScope.launch(Dispatchers.IoDispatcher) {
-                    val pickerResult = FileKit.openFilePicker(
-                        type = FileKitType.Image,
-                        mode = FileKitMode.Single
-                    )
-                    pickerResult?.let {
-                        attachmentsRepository.createAttachment(
-                            Attachment(
-                                id = 0,
-                                entityType = AttachmentEntityType.CATEGORY,
-                                entityId = null,
-                                mimeType = pickerResult.mimeType()?.primaryType.orEmpty(),
-                                fileName = pickerResult.name,
-                                fileContent = pickerResult.readBytes()
-                            )
-                        ).fold(
-                            onSuccess = {
-                                Napier.d { "$it" }
-                                SnackbarService.sendSuccessMessage(MR.strings.category_updated_success)
-                            },
-                            onFailure = {
-                                Napier.d { "$it" }
-                            }
-
-
+                    val pickerResult =
+                        FileKit.openFilePicker(
+                            type = FileKitType.Image,
+                            mode = FileKitMode.Single,
                         )
+                    pickerResult?.let {
+                        attachmentsRepository
+                            .createAttachment(
+                                Attachment(
+                                    id = 0,
+                                    entityType = AttachmentEntityType.CATEGORY,
+                                    entityId = null,
+                                    mimeType = pickerResult.mimeType()?.primaryType.orEmpty(),
+                                    fileName = pickerResult.name,
+                                    fileContent = pickerResult.readBytes(),
+                                ),
+                            ).fold(
+                                onSuccess = {
+                                    Napier.d { "$it" }
+                                    SnackbarService.sendSuccessMessage(MR.strings.category_updated_success)
+                                },
+                                onFailure = {
+                                    Napier.d { "$it" }
+                                },
+                            )
                     }
                 }
             }

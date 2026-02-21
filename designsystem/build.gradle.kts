@@ -90,6 +90,8 @@ kotlin {
                 implementation(libs.bundles.material3Adaptive)
                 implementation(libs.material3.material3)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.compottie)
+                implementation(libs.compottie.resources)
             }
         }
 

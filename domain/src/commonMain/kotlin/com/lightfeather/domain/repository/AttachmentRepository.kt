@@ -18,7 +18,7 @@ interface AttachmentRepository {
      */
     suspend fun createAttachment(attachment: Attachment): DomainResult<Int>
 
-    suspend fun getAttachmentsOfEntityType(type : AttachmentEntityType) : DomainResult<Flow<List<Attachment>>>
+    suspend fun getAttachmentsOfEntityType(type: AttachmentEntityType): DomainResult<Flow<List<Attachment>>>
 
     /**
      * Delete an attachment by ID

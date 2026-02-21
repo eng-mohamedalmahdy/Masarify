@@ -42,6 +42,7 @@ androidx-paging = "3.4.0-alpha04"
 material3 = "1.9.0-beta06"
 okio = "3.16.0"
 ktor = "3.3.0"
+compottie = "2.0.0"
 
 [libraries]
 filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "fileKitVersion" }
@@ -120,6 +121,13 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 uri-kmp = { module = "com.eygraber:uri-kmp", version.ref = "uriKmp" }
+
+# Compottie - Lottie animations
+compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
+compottie-lite = { module = "io.github.alexzhirkevich:compottie-lite", version.ref = "compottie" }
+compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "compottie" }
+compottie-network = { module = "io.github.alexzhirkevich:compottie-network", version.ref = "compottie" }
+compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
 
 [bundles]
 koinCommon = [

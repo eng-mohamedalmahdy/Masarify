@@ -574,4 +574,50 @@
     <string name="bank_custom">Custom Bank</string>
     <string name="select_icon">Select Icon</string>
 
+    <!-- ============================================ -->
+    <!-- DASHBOARD PAGE -->
+    <!-- ============================================ -->
+
+    <!-- Greetings -->
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="good_night">Good Night</string>
+
+    <!-- Dashboard Sections -->
+    <string name="overview">Overview</string>
+    <string name="total_balance">Total Balance</string>
+    <string name="quick_stats">Quick Stats</string>
+    <string name="spending_analytics">Spending Analytics</string>
+    <string name="recent_transactions">Recent Transactions</string>
+
+    <!-- Quick Stats -->
+    <string name="cash">Cash</string>
+    <string name="debit">Debit</string>
+    <string name="credit">Credit</string>
+
+    <!-- Spending Analytics -->
+    <string name="spending_vs_saving">Spending vs Saving</string>
+    <string name="spending">Spending</string>
+    <string name="saving">Saving</string>
+    <string name="by_category">By Category</string>
+
+    <!-- Actions -->
+    <string name="see_all">See All</string>
+    <string name="previous_month">Previous Month</string>
+    <string name="next_month">Next Month</string>
+
+    <!-- Empty States -->
+    <string name="no_analytics_title">No Analytics Available</string>
+    <string name="no_analytics_message">Add transactions to see your spending analytics</string>
+    <string name="no_recent_transactions_title">No Recent Transactions</string>
+    <string name="no_recent_transactions_message">Your recent transactions will appear here</string>
+
+    <!-- Balance Overview Card -->
+    <string name="total_balance_label">TOTAL BALANCE</string>
+    <string name="income_label">INCOME</string>
+    <string name="expense_label">EXPENSE</string>
+    <string name="net_balance_label">NET BAL</string>
+    <string name="select_currency">Select Currency</string>
+
 </resources>

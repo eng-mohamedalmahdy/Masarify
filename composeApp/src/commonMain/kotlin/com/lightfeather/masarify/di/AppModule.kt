@@ -5,6 +5,7 @@ import com.lightfeather.data.di.frameworkModule
 import com.lightfeather.data.di.repositoryModule
 import com.lightfeather.domain.di.useCaseModule
 import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.page.dashboard.dashboardModule
 
 // Core modules that don't require parameters
 val coreModules =
@@ -15,6 +16,7 @@ val coreModules =
         frameworkModule,
         useCaseModule,
         frameworkViewModelModule,
+        dashboardModule,
     )
 
 // Function to get all modules including UI module that requires parameters

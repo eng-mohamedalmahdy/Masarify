@@ -24,6 +24,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.io.encoding.Base64
 
+@Suppress("CyclomaticComplexMethod") // Composable: handles multiple image loading scenarios
 @Composable
 fun AppImage(
     model: Any?,
@@ -40,10 +41,11 @@ fun AppImage(
     mokoPlaceholder: ImageResource? = null,
 ) {
     val isPreview = LocalInspectionMode.current
-    val isUrl = when (model) {
-        is String -> model.startsWith("http://") || model.startsWith("https://")
-        else -> false
-    }
+    val isUrl =
+        when (model) {
+            is String -> model.startsWith("http://") || model.startsWith("https://")
+            else -> false
+        }
     if (isUrl.not() && model is String) {
         val decoded = Base64.decode(model)
         AsyncImage(

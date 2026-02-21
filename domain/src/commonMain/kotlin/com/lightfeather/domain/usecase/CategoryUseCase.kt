@@ -7,8 +7,6 @@ import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class CreateCategory(
@@ -50,9 +48,8 @@ class GetAllCategoryIcons(
         val savedIcons = attachmentRepository.getAttachmentsOfEntityType(AttachmentEntityType.CATEGORY)
         return apiIcons.combine(savedIcons) { api, saved ->
             api.combine(saved) { apiIcons, savedIcons ->
-               savedIcons.map { it.fileContent }.plus(apiIcons)
+                savedIcons.map { it.fileContent }.plus(apiIcons)
             }
         }
-
     }
 }

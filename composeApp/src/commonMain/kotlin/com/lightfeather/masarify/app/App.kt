@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -60,6 +59,7 @@ import com.lightfeather.masarify.navigation.routes.SplashRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
 import com.lightfeather.masarify.page.categories.CategoriesPage
+import com.lightfeather.masarify.page.dashboard.DashboardPage
 import com.lightfeather.masarify.page.deletebankaccount.DeleteBankAccountPage
 import com.lightfeather.masarify.page.deletecategory.DeleteCategoryPage
 import com.lightfeather.masarify.page.more.MorePage
@@ -91,12 +91,12 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
     LaunchedEffect(navigator) {
         onBackStackReady(navigator)
     }
-    setSingletonImageLoaderFactory{
-        ImageLoader.Builder(context)
+    setSingletonImageLoaderFactory {
+        ImageLoader
+            .Builder(context)
             .components {
                 addPlatformFileSupport()
-            }
-            .build()
+            }.build()
     }
 
     KoinContext(
@@ -166,7 +166,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                     PlatformsSlugs.WEB if (
                                         adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
                                             WindowWidthSizeClass.EXPANDED
-                                    ) -> {
+                                        ) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
@@ -183,7 +183,6 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .statusBarsPadding()
                             .navigationBarsPadding()
                             .background(MaterialTheme.colorScheme.background),
                 ) {}
@@ -281,7 +280,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                                     },
                                                 unselectedTextColor =
                                                     if (isDarkMode) {
-                                                        MaterialTheme.colorScheme.surface
+                                                        MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f,)
                                                     } else {
                                                         MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                                                     },
@@ -304,8 +303,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                             OnBoardingPage()
                         }
                         entry<DashboardRoute> {
-                            // Dashboard placeholder
-                            Text("Dashboard Page - Coming Soon")
+                            DashboardPage()
                         }
                         entry<AccountsRoute> {
                             BankAccountsPage()

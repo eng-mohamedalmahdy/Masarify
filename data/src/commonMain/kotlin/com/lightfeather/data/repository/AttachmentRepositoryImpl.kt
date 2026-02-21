@@ -38,27 +38,30 @@ class AttachmentRepositoryImpl(
             }
         }
 
-    override suspend fun getAttachmentsOfEntityType(type: AttachmentEntityType): DomainResult<Flow<List<Attachment>>> {
-        return runCatchingDomainResultSuspend {
+    override suspend fun getAttachmentsOfEntityType(type: AttachmentEntityType): DomainResult<Flow<List<Attachment>>> =
+        runCatchingDomainResultSuspend {
             sharedDatabase {
                 val queries = it.attachmentsQueries
-                queries.getAttachmentsByEntity(type.name.lowercase(), null).asFlow().mapToList(Dispatchers.IoDispatcher).map {
-                    it.map { row ->
-                        Attachment(
-                            id = row.attachmentId.toInt(),
-                            entityType = AttachmentEntityType.fromValue(row.entityType.orEmpty())
-                                ?: AttachmentEntityType.CATEGORY,
-                            entityId = row.entityId?.toInt(),
-                            fileName = row.attachmentName.orEmpty(),
-                            mimeType = row.attachmentMimeType,
-                            fileContent = row.attachmentData,
-                        )
+                queries
+                    .getAttachmentsByEntity(type.name.lowercase(), null)
+                    .asFlow()
+                    .mapToList(Dispatchers.IoDispatcher)
+                    .map {
+                        it.map { row ->
+                            Attachment(
+                                id = row.attachmentId.toInt(),
+                                entityType =
+                                    AttachmentEntityType.fromValue(row.entityType.orEmpty())
+                                        ?: AttachmentEntityType.CATEGORY,
+                                entityId = row.entityId?.toInt(),
+                                fileName = row.attachmentName.orEmpty(),
+                                mimeType = row.attachmentMimeType,
+                                fileContent = row.attachmentData,
+                            )
+                        }
                     }
-                }
             }
         }
-
-    }
 
     override suspend fun deleteAttachment(id: Int): DomainResult<Boolean> =
         runCatchingDomainResultSuspend {

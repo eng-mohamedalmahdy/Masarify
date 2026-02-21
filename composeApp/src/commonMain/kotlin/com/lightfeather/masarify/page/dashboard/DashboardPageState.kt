@@ -1,0 +1,68 @@
+package com.lightfeather.masarify.page.dashboard
+
+import com.lightfeather.designsystem.model.UiBankAccount
+import com.lightfeather.designsystem.model.UiCurrency
+import com.lightfeather.designsystem.model.UiQuickStats
+import com.lightfeather.designsystem.model.UiSpendingAnalytics
+import com.lightfeather.designsystem.model.UiTransaction
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+
+/**
+ * Dashboard page state containing all data for the main dashboard screen
+ *
+ * @property userName Current user's name for personalized greeting
+ * @property greeting Time-based greeting message (Good Morning, etc.)
+ * @property selectedMonth Display text for currently selected month (e.g., "January 2026")
+ * @property selectedMonthTimestamp Unix timestamp for the selected month
+ * @property selectedCurrency Currently selected currency for displaying totals
+ * @property availableCurrencies Flow of all currencies user has accounts in
+ * @property totalBalance Total balance across all accounts in selected currency
+ * @property income Total income for selected month and currency
+ * @property expense Total expenses for selected month and currency
+ * @property quickStats Quick stats broken down by account type (cash, debit, credit)
+ * @property accounts Flow of all bank accounts
+ * @property displayedAccountsLimit Maximum number of accounts to show in summary
+ * @property spendingAnalytics Spending vs saving analytics for selected month
+ * @property recentTransactions Flow of recent transactions
+ * @property displayedTransactionsLimit Maximum number of transactions to show in summary
+ * @property isLoading General loading state for page
+ * @property isAnalyticsLoading Loading state specific to analytics calculation
+ */
+internal data class DashboardPageState(
+    // User information
+    val userName: String = "",
+    val greeting: String = "",
+    // Month navigation
+    val selectedMonth: String = "",
+    val selectedMonthTimestamp: Long = 0L,
+    // Overview section
+    val selectedCurrency: UiCurrency? = null,
+    val availableCurrencies: Flow<List<UiCurrency>> = emptyFlow(),
+    val totalBalance: String = "",
+    val income: String = "",
+    val expense: String = "",
+    val quickStats: UiQuickStats = UiQuickStats(),
+    // Accounts section
+    val accounts: Flow<List<UiBankAccount>> = emptyFlow(),
+    val displayedAccountsLimit: Int = 3,
+    // Spending analytics
+    val spendingAnalytics: UiSpendingAnalytics? = null,
+    // Recent transactions
+    val recentTransactions: Flow<List<UiTransaction>> = emptyFlow(),
+    val displayedTransactionsLimit: Int = 5,
+    // Loading states
+    val isLoading: Boolean = false,
+    val isAnalyticsLoading: Boolean = false,
+) {
+    companion object {
+        val dummy =
+            DashboardPageState(
+                userName = "John Doe",
+                greeting = "good_morning",
+                selectedMonth = "January 2026",
+                selectedMonthTimestamp = 1672531200L,
+                selectedCurrency = UiCurrency.dummy,
+            )
+    }
+}

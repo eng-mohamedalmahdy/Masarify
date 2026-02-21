@@ -35,7 +35,6 @@ import com.lightfeather.designsystem.theme.AppTheme
 import dev.icerock.moko.resources.compose.stringResource
 import masarify.composeapp.generated.resources.Res
 import masarify.composeapp.generated.resources.bg
-import masarify.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -86,10 +85,12 @@ internal fun OnBoardingPageContent(
                     modifier = Modifier.onSizeChanged { topRowWidth = it.width },
                 ) {
                     AppImage(
-                        model = painterResource(Res.drawable.compose_multiplatform),
+                        model =
+                            dev.icerock.moko.resources.compose
+                                .painterResource(MR.images.logo_transparent),
                         contentDescription = null,
                         modifier = Modifier.size(AppTheme.dimens.massive),
-                        placeholder = Res.drawable.compose_multiplatform,
+                        mokoPlaceholder = MR.images.logo_transparent,
                     )
                     Column {
                         Text(
