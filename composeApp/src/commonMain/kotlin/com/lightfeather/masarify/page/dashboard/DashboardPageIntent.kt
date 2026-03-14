@@ -1,9 +1,11 @@
 package com.lightfeather.masarify.page.dashboard
 
 import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
+import com.lightfeather.designsystem.model.UiAccountSnapshot
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
+import com.lightfeather.designsystem.model.UiFinancialSession
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionDetails
 
@@ -140,4 +142,85 @@ internal sealed interface DashboardPageIntent {
     data class DeleteAttachment(
         val attachment: UiAttachment,
     ) : DashboardPageIntent
+
+    /**
+     * Toggle the expandable FAB on the dashboard
+     */
+
+    /**
+     * Show the Start Over dialog
+     */
+    data object ShowStartOverDialog : DashboardPageIntent
+
+    /**
+     * Confirm the Start Over action with account snapshots
+     */
+    data class ConfirmStartOver(
+        val name: String?,
+        val snapshots: List<UiAccountSnapshot>,
+    ) : DashboardPageIntent
+
+    /**
+     * Dismiss the Start Over dialog
+     */
+    data object DismissStartOverDialog : DashboardPageIntent
+
+    /**
+     * Edit an existing financial session
+     */
+    data class EditStartOverSession(
+        val session: UiFinancialSession,
+    ) : DashboardPageIntent
+
+    /**
+     * Delete a financial session
+     */
+    data class DeleteStartOverSession(
+        val sessionId: String,
+    ) : DashboardPageIntent
+
+    /**
+     * Toggle a Start Over marker expansion in the timeline
+     */
+    data class ToggleStartOverMarker(
+        val sessionId: String,
+    ) : DashboardPageIntent
+
+    /**
+     * Show the Fix Balance dialog (pre-select account if provided)
+     */
+    data class ShowFixBalanceDialog(
+        val account: UiBankAccount? = null,
+    ) : DashboardPageIntent
+
+    /**
+     * Dismiss the Fix Balance dialog
+     */
+    data object DismissFixBalanceDialog : DashboardPageIntent
+
+    /**
+     * Apply a balance adjustment transaction
+     */
+    data class ApplyBalanceAdjustment(
+        val account: UiBankAccount,
+        val actualBalance: Double,
+        val isIncrease: Boolean,
+    ) : DashboardPageIntent
+
+    /**
+     * Check if biometric suggestion should be shown (pass availability from UI)
+     */
+    data class CheckBiometricSuggestion(
+        val isAvailable: Boolean,
+    ) : DashboardPageIntent
+
+    /**
+     * Dismiss the biometric suggestion dialog without enabling
+     */
+    data object DismissBiometricSuggestion : DashboardPageIntent
+
+    /**
+     * Enable biometric from the suggestion dialog and dismiss
+     */
+    data object EnableBiometricFromSuggestion : DashboardPageIntent
 }

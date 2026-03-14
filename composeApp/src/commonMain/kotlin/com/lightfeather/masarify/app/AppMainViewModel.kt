@@ -91,6 +91,8 @@ class AppMainViewModel(
                 initialValue = AppLanguages.English,
             )
 
+    fun isBiometricEnabled(): Boolean = userDataRepository.isBiometricEnabled()
+
     fun toggleDarkTheme() {
         viewModelScope.launch {
             userDataRepository.toggleDarkMode()

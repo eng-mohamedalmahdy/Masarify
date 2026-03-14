@@ -1,9 +1,11 @@
 package com.lightfeather.masarify.page.dashboard
 
+import com.lightfeather.designsystem.model.TransactionListItem
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategory
 import com.lightfeather.designsystem.model.UiCurrency
+import com.lightfeather.designsystem.model.UiFinancialSession
 import com.lightfeather.designsystem.model.UiQuickStats
 import com.lightfeather.designsystem.model.UiSpendingAnalytics
 import com.lightfeather.designsystem.model.UiTransaction
@@ -61,8 +63,9 @@ internal data class DashboardPageState(
     // Recent transactions
     val recentTransactions: Flow<List<UiTransaction>> = emptyFlow(),
     val displayedTransactionsLimit: Int = 5,
+    // Recent activity timeline (transactions + start over markers merged)
+    val recentTimelineItems: List<TransactionListItem> = emptyList(),
     // Loading states
-    val isLoading: Boolean = false,
     val isAnalyticsLoading: Boolean = false,
     // Adaptive navigation state
     val selectedAccount: UiBankAccount? = null,
@@ -73,6 +76,14 @@ internal data class DashboardPageState(
     val underProcessTransaction: UiTransactionDetails? = null,
     val selectedAttachments: List<UiAttachment> = emptyList(),
     val categories: List<UiCategory> = emptyList(),
+    // Start Over feature
+    val showStartOverDialog: Boolean = false,
+    val startOverEditingSession: UiFinancialSession? = null,
+    // Fix Balance feature
+    val showFixBalanceDialog: Boolean = false,
+    val fixBalanceAccount: UiBankAccount? = null,
+    // Biometric suggestion
+    val showBiometricSuggestion: Boolean = false,
 ) {
     companion object {
         val dummy =

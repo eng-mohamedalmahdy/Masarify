@@ -100,15 +100,14 @@ class CurrencyRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting currencies"))
         }
 
-    override suspend fun getUsedCurrencies(): DomainResult<Flow<List<Currency>>> {
-        return runCatchingDomainResultSuspend {
+    override suspend fun getUsedCurrencies(): DomainResult<Flow<List<Currency>>> =
+        runCatchingDomainResultSuspend {
             database {
                 it.currenciesQueries.selectUsedCurrencies().asFlow().map { query ->
                     query.awaitAsList().map { it.toDomain() }
                 }
             }
         }
-    }
 
     private fun V_currencies.toDomain(): Currency =
         Currency(

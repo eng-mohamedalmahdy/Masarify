@@ -20,6 +20,10 @@ val dashboardModule =
                 attachmentRepository = get(),
                 userRepository = get(),
                 navigator = get(),
+                createFinancialSession = get(),
+                updateFinancialSession = get(),
+                deleteFinancialSession = get(),
+                getAllFinancialSessions = get(),
             )
         }
     }

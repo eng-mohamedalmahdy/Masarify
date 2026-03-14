@@ -619,4 +619,48 @@
     <string name="expense_label">المصروفات</string>
     <string name="net_balance_label">صافي الرصيد</string>
 
+    <!-- Balance Before/After -->
+    <string name="balance_before">الرصيد قبل</string>
+    <string name="balance_after">الرصيد بعد</string>
+    <string name="recent_activities">أحدث الانشطة</string>
+
+    <!-- Biometric Authentication -->
+    <string name="biometric_suggestion_title">أمّن تطبيقك</string>
+    <string name="biometric_suggestion_message">قم بتفعيل المصادقة البيومترية لحماية بياناتك المالية باستخدام البصمة أو التعرف على الوجه.</string>
+    <string name="biometric_enable">تفعيل</string>
+    <string name="biometric_not_now">ليس الآن</string>
+    <string name="biometric_lock_title">مصاريفي</string>
+    <string name="biometric_lock_subtitle">قم بالمصادقة للمتابعة</string>
+    <string name="biometric_unlock">فتح</string>
+    <string name="biometric_settings">القفل البيومتري</string>
+    <string name="biometric_settings_description">حماية التطبيق باستخدام المصادقة البيومترية</string>
+    <string name="biometric_enabled">تم تفعيل القفل البيومتري</string>
+    <string name="biometric_disabled">تم تعطيل القفل البيومتري</string>
+
+    <!-- Fix Balance Feature -->
+    <string name="fix_balance">تعديل الرصيد</string>
+    <string name="actual_balance">الرصيد الفعلي</string>
+    <string name="balance_adjustment">تعديل الرصيد</string>
+    <string name="balance_increase">زيادة</string>
+    <string name="balance_decrease">نقصان</string>
+    <string name="apply_adjustment">تطبيق التعديل</string>
+    <string name="category_balance_adjustment">تعديل الرصيد</string>
+    <string name="fix_balance_success">تم تعديل الرصيد بنجاح</string>
+    <string name="fix_balance_failure">فشل تعديل الرصيد</string>
+    <string name="fix_balance_no_difference">لا يوجد فرق في الرصيد</string>
+    <string name="enter_actual_balance">أدخل الرصيد الفعلي</string>
+
+    <!-- Start Over Feature -->
+    <string name="start_over">بدء من جديد</string>
+    <string name="starting_balances">الأرصدة الابتدائية</string>
+    <string name="financial_checkpoint">نقطة مالية (اختياري)</string>
+    <string name="tap_to_see_balances">اضغط لرؤية الأرصدة الابتدائية</string>
+    <string name="total_initialized">إجمالي الرصيد المبدئي</string>
+    <string name="start_over_create_success">تم بدء جلسة مالية جديدة</string>
+    <string name="start_over_create_failure">فشل بدء جلسة جديدة</string>
+    <string name="start_over_update_success">تم تحديث الجلسة بنجاح</string>
+    <string name="start_over_delete_success">تم حذف الجلسة بنجاح</string>
+    <string name="start_over_confirm_delete">هل تريد حذف هذه النقطة المالية؟</string>
+    <string name="recent_activity">النشاط الأخير</string>
+
 </resources>

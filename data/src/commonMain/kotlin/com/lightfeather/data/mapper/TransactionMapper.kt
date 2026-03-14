@@ -74,7 +74,7 @@ fun List<V_transactions>.toDomainTransactions(): List<Transaction> =
                             color = it.categoryColor!!,
                             icon = it.categoryIcon!!,
                             isDefault = it.categoryIsDefault == 1L,
-                            resourceKey = it.categoryResourceKey
+                            resourceKey = it.categoryResourceKey,
                         )
                     }.distinctBy { it.id }
 

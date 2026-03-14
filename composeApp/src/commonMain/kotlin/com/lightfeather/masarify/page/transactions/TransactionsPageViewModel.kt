@@ -91,14 +91,15 @@ class TransactionsPageViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IoDispatcher) {
-            val currenciesFlow = getCurrenciesUseCase().foldResult(
-                onSuccess = { currencies ->
-                    currencies.map { currencies ->
-                        currencies.map { currency -> currency.toUiCurrency() }
-                    }
-                },
-                onFailure = { error -> flowOf() },
-            )
+            val currenciesFlow =
+                getCurrenciesUseCase().foldResult(
+                    onSuccess = { currencies ->
+                        currencies.map { currencies ->
+                            currencies.map { currency -> currency.toUiCurrency() }
+                        }
+                    },
+                    onFailure = { error -> flowOf() },
+                )
             _state.update { it.copy(userAccountsCurrencies = currenciesFlow) }
             launch {
                 currenciesFlow.collect { currencies ->

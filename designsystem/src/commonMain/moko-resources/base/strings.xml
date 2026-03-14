@@ -574,6 +574,50 @@
     <string name="bank_custom">Custom Bank</string>
     <string name="select_icon">Select Icon</string>
 
+    <!-- Balance Before/After -->
+    <string name="balance_before">Balance Before</string>
+    <string name="balance_after">Balance After</string>
+    <string name="recent_activities">Recent Activities</string>
+
+    <!-- Biometric Authentication -->
+    <string name="biometric_suggestion_title">Secure Your App</string>
+    <string name="biometric_suggestion_message">Enable biometric authentication to protect your financial data with fingerprint or face recognition.</string>
+    <string name="biometric_enable">Enable</string>
+    <string name="biometric_not_now">Not Now</string>
+    <string name="biometric_lock_title">Masarify</string>
+    <string name="biometric_lock_subtitle">Authenticate to continue</string>
+    <string name="biometric_unlock">Unlock</string>
+    <string name="biometric_settings">Biometric Lock</string>
+    <string name="biometric_settings_description">Protect the app with biometric authentication</string>
+    <string name="biometric_enabled">Biometric lock enabled</string>
+    <string name="biometric_disabled">Biometric lock disabled</string>
+
+    <!-- Fix Balance Feature -->
+    <string name="fix_balance">Fix Balance</string>
+    <string name="actual_balance">Actual Balance</string>
+    <string name="balance_adjustment">Balance Adjustment</string>
+    <string name="balance_increase">Increase</string>
+    <string name="balance_decrease">Decrease</string>
+    <string name="apply_adjustment">Apply Adjustment</string>
+    <string name="category_balance_adjustment">Balance Adjustment</string>
+    <string name="fix_balance_success">Balance adjusted successfully</string>
+    <string name="fix_balance_failure">Failed to adjust balance</string>
+    <string name="fix_balance_no_difference">No difference detected</string>
+    <string name="enter_actual_balance">Enter actual balance</string>
+
+    <!-- Start Over Feature -->
+    <string name="start_over">Start Over</string>
+    <string name="starting_balances">Starting Balances</string>
+    <string name="financial_checkpoint">Financial Checkpoint (Optional)</string>
+    <string name="tap_to_see_balances">Tap to see starting balances</string>
+    <string name="total_initialized">Total Initialized</string>
+    <string name="start_over_create_success">New financial session started</string>
+    <string name="start_over_create_failure">Failed to start over</string>
+    <string name="start_over_update_success">Session updated successfully</string>
+    <string name="start_over_delete_success">Session deleted successfully</string>
+    <string name="start_over_confirm_delete">Delete this financial checkpoint?</string>
+    <string name="recent_activity">Recent Activity</string>
+
     <!-- ============================================ -->
     <!-- DASHBOARD PAGE -->
     <!-- ============================================ -->

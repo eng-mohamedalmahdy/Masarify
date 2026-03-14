@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
+import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.GetUserDarkMode
 import com.lightfeather.domain.usecase.GetUserLanguage
 import dev.icerock.moko.resources.desc.StringDesc
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 class MorePageViewModel(
     private val isDarkModeEnabled: GetUserDarkMode,
     private val getLanguage: GetUserLanguage,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MorePageState())
     internal val state: StateFlow<MorePageState> = _state
@@ -29,6 +31,16 @@ class MorePageViewModel(
                     _state.value = _state.value.copy(isDarkTheme = intent.enabled)
                     SnackbarService.sendSuccessMessage(
                         if (intent.enabled) MR.strings.dark_theme_enabled else MR.strings.dark_theme_disabled,
+                    )
+                }
+            }
+
+            is MorePageIntent.ToggleBiometric -> {
+                viewModelScope.launch {
+                    userRepository.setBiometricEnabled(intent.enabled)
+                    _state.value = _state.value.copy(isBiometricEnabled = intent.enabled)
+                    SnackbarService.sendSuccessMessage(
+                        if (intent.enabled) MR.strings.biometric_enabled else MR.strings.biometric_disabled,
                     )
                 }
             }
@@ -75,10 +87,12 @@ class MorePageViewModel(
             // Load current user preferences
             val currentLanguage = getLanguage()
             val darkModeEnabled = isDarkModeEnabled()
+            val biometricEnabled = userRepository.isBiometricEnabled()
             _state.value =
                 _state.value.copy(
                     selectedLanguage = currentLanguage,
                     isDarkTheme = darkModeEnabled,
+                    isBiometricEnabled = biometricEnabled,
                     isLoading = false,
                 )
         }

@@ -63,25 +63,24 @@ class BankAccountsPageViewModel(
                             }
                         },
                         onFailure = { error -> flowOf() },
-                    )
+                    ),
             ),
         )
     internal val state: StateFlow<BankAccountsPageState> = _state
 
     init {
-
-
         viewModelScope.launch {
-            val currenciesFlow = getAllCurrencies().foldResult(
-                onSuccess = { currencies ->
-                    currencies.map { currencies ->
-                        currencies.map { currency -> currency.toUiCurrency() }.also {
-                            Napier.d("Currencies mapped to UI: $it")
+            val currenciesFlow =
+                getAllCurrencies().foldResult(
+                    onSuccess = { currencies ->
+                        currencies.map { currencies ->
+                            currencies.map { currency -> currency.toUiCurrency() }.also {
+                                Napier.d("Currencies mapped to UI: $it")
+                            }
                         }
-                    }
-                },
-                onFailure = { error -> flowOf() },
-            )
+                    },
+                    onFailure = { error -> flowOf() },
+                )
             _state.value = _state.value.copy(userAccountsCurrencies = currenciesFlow)
             launch(Dispatchers.IoDispatcher) {
                 currenciesFlow.collect {
@@ -89,7 +88,6 @@ class BankAccountsPageViewModel(
                 }
             }
         }
-
     }
 
     @Suppress("CyclomaticComplexMethod") // Complexity due to comprehensive intent handling

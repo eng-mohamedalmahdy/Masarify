@@ -128,6 +128,16 @@ fun TransactionItem(
                         color = MaterialTheme.colorScheme.outline,
                     )
                 }
+
+                if (transaction.balanceBefore.isNotEmpty() && transaction.balanceAfter.isNotEmpty()) {
+                    Text(
+                        text = "${transaction.balanceBefore} → ${transaction.balanceAfter}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
 
             // Amount

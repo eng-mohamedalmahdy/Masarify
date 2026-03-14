@@ -23,5 +23,16 @@ data class Category(
                 isDefault = true,
                 resourceKey = "category_transfer",
             )
+
+        val BalanceAdjustment =
+            Category(
+                id = -2,
+                name = "Balance Adjustment",
+                description = "Correct account balance to match real-world amount",
+                color = "#FF6B35",
+                icon = "https://img.icons8.com/color/512/balance.png",
+                isDefault = true,
+                resourceKey = "category_balance_adjustment",
+            )
     }
 }

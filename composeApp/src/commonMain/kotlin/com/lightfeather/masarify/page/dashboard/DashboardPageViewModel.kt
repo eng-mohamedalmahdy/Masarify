@@ -5,36 +5,46 @@ import androidx.lifecycle.viewModelScope
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
+import com.lightfeather.designsystem.model.TransactionListItem
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCategorySpending
 import com.lightfeather.designsystem.model.UiCurrency
+import com.lightfeather.designsystem.model.UiFinancialSession
 import com.lightfeather.designsystem.model.UiQuickStats
 import com.lightfeather.designsystem.model.UiSpendingAnalytics
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.model.UiTransactionDetails
-import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.Account
+import com.lightfeather.domain.model.AccountSnapshot
 import com.lightfeather.domain.model.AppLanguages
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.FinancialSession
 import com.lightfeather.domain.model.transaction.Transaction
 import com.lightfeather.domain.model.transaction.TransactionFilter
 import com.lightfeather.domain.model.transaction.transactionFilter
 import com.lightfeather.domain.repository.AttachmentRepository
 import com.lightfeather.domain.repository.UserRepository
+import com.lightfeather.domain.usecase.CreateFinancialSession
+import com.lightfeather.domain.usecase.DeleteFinancialSession
 import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
+import com.lightfeather.domain.usecase.GetAllFinancialSessions
 import com.lightfeather.domain.usecase.GetFilteredTransactions
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import com.lightfeather.domain.usecase.UpdateFinancialSession
 import com.lightfeather.domain.usecase.UpdateTransaction
 import com.lightfeather.masarify.framework.FileKitHelper
+import com.lightfeather.masarify.mappers.toAccount
 import com.lightfeather.masarify.mappers.toDomainTransaction
 import com.lightfeather.masarify.mappers.toUiAttachment
 import com.lightfeather.masarify.mappers.toUiBankAccount
 import com.lightfeather.masarify.mappers.toUiCategory
 import com.lightfeather.masarify.mappers.toUiCurrency
+import com.lightfeather.masarify.mappers.toUiFinancialSession
 import com.lightfeather.masarify.mappers.toUiTransaction
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
@@ -59,7 +69,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
@@ -84,7 +93,7 @@ import kotlinx.datetime.toLocalDateTime
  * @property userRepository Repository for user preferences and data
  * @property navigator Navigator for page navigation
  */
-@Suppress("LongParameterList", "UnusedPrivateProperty")
+@Suppress("LongParameterList", "UnusedPrivateProperty", "LargeClass")
 internal class DashboardPageViewModel(
     private val getAllAccounts: GetAllAccounts,
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
@@ -96,6 +105,10 @@ internal class DashboardPageViewModel(
     private val attachmentRepository: AttachmentRepository,
     private val userRepository: UserRepository,
     private val navigator: Navigator,
+    private val createFinancialSession: CreateFinancialSession,
+    private val updateFinancialSession: UpdateFinancialSession,
+    private val deleteFinancialSession: DeleteFinancialSession,
+    private val getAllFinancialSessions: GetAllFinancialSessions,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DashboardPageState())
     val state: StateFlow<DashboardPageState> = _state.asStateFlow()
@@ -125,12 +138,24 @@ internal class DashboardPageViewModel(
             is DashboardPageIntent.CancelUpdateTransaction -> cancelUpdateTransaction()
             is DashboardPageIntent.PickImages -> pickImages()
             is DashboardPageIntent.DeleteAttachment -> deleteAttachment(intent.attachment)
+            is DashboardPageIntent.ShowStartOverDialog -> showStartOverDialog()
+            is DashboardPageIntent.ConfirmStartOver -> confirmStartOver(intent.name, intent.snapshots)
+            is DashboardPageIntent.DismissStartOverDialog -> dismissStartOverDialog()
+            is DashboardPageIntent.EditStartOverSession -> editStartOverSession(intent.session)
+            is DashboardPageIntent.DeleteStartOverSession -> deleteStartOverSession(intent.sessionId)
+            is DashboardPageIntent.ToggleStartOverMarker -> toggleStartOverMarker(intent.sessionId)
+            is DashboardPageIntent.ShowFixBalanceDialog -> showFixBalanceDialog(intent.account)
+            is DashboardPageIntent.DismissFixBalanceDialog -> dismissFixBalanceDialog()
+            is DashboardPageIntent.ApplyBalanceAdjustment ->
+                applyBalanceAdjustment(intent.account, intent.actualBalance, intent.isIncrease)
+            is DashboardPageIntent.CheckBiometricSuggestion -> checkBiometricSuggestion(intent.isAvailable)
+            is DashboardPageIntent.DismissBiometricSuggestion ->
+                _state.update { it.copy(showBiometricSuggestion = false) }
+            is DashboardPageIntent.EnableBiometricFromSuggestion -> enableBiometricFromSuggestion()
         }
     }
 
     private fun loadData() {
-        _state.update { it.copy(isLoading = true) }
-
         viewModelScope.launch {
             // Load user data for greeting
             loadUserGreeting()
@@ -154,10 +179,11 @@ internal class DashboardPageViewModel(
             // Load recent transactions
             loadRecentTransactions()
 
+            // Build timeline items (transactions + markers)
+            buildRecentTimeline()
+
             // Calculate spending analytics
             calculateSpendingAnalytics()
-
-            _state.update { it.copy(isLoading = false) }
         }
     }
 
@@ -308,7 +334,6 @@ internal class DashboardPageViewModel(
         _state.update { it.copy(isAnalyticsLoading = true) }
 
         try {
-
             val selectedCurrency = _state.value.selectedCurrency
             if (selectedCurrency == null) {
                 _state.update { it.copy(isAnalyticsLoading = false) }
@@ -508,28 +533,61 @@ internal class DashboardPageViewModel(
     }
 
     private fun getMonthName(month: Int): String {
-
         require(month in 1..12) { "Month must be between 1 and 12" }
 
-        val months = when (userRepository.getAppLanguage()) {
-            AppLanguages.English -> listOf(
-                "January", "February", "March", "April",
-                "May", "June", "July", "August",
-                "September", "October", "November", "December"
-            )
+        val months =
+            when (userRepository.getAppLanguage()) {
+                AppLanguages.English ->
+                    listOf(
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December",
+                    )
 
-            AppLanguages.Arabic -> listOf(
-                "يناير", "فبراير", "مارس", "أبريل",
-                "مايو", "يونيو", "يوليو", "أغسطس",
-                "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
-            )
+                AppLanguages.Arabic ->
+                    listOf(
+                        "يناير",
+                        "فبراير",
+                        "مارس",
+                        "أبريل",
+                        "مايو",
+                        "يونيو",
+                        "يوليو",
+                        "أغسطس",
+                        "سبتمبر",
+                        "أكتوبر",
+                        "نوفمبر",
+                        "ديسمبر",
+                    )
 
-            else -> listOf()
-        }
+                else ->
+                    listOf(
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December",
+                    )
+            }
 
         return months[month - 1]
     }
-
 
     private fun selectCurrency(currency: UiCurrency) {
         _state.update { it.copy(selectedCurrency = currency) }
@@ -791,6 +849,270 @@ internal class DashboardPageViewModel(
      * Check if a year is a leap year
      */
     private fun isLeapYear(year: Int): Boolean = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+
+    // --------------- Start Over Feature ---------------
+
+    private fun showStartOverDialog() {
+        _state.update { it.copy(showStartOverDialog = true, startOverEditingSession = null) }
+    }
+
+    private fun dismissStartOverDialog() {
+        _state.update { it.copy(showStartOverDialog = false, startOverEditingSession = null) }
+    }
+
+    private fun editStartOverSession(session: UiFinancialSession) {
+        _state.update { it.copy(showStartOverDialog = true, startOverEditingSession = session) }
+    }
+
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    private fun confirmStartOver(
+        name: String?,
+        snapshots: List<com.lightfeather.designsystem.model.UiAccountSnapshot>,
+    ) {
+        viewModelScope.launch {
+            try {
+                val accountsResult = getAllAccounts()
+                val domainAccounts: List<Account> =
+                    when (accountsResult) {
+                        is DomainResult.Success -> accountsResult.data.firstOrNull() ?: emptyList()
+                        is DomainResult.Failure -> emptyList()
+                    }
+                val accountMap = domainAccounts.associateBy { it.id.toString() }
+                val domainSnapshots =
+                    snapshots.mapNotNull { snapshot ->
+                        val account = accountMap[snapshot.accountId] ?: return@mapNotNull null
+                        AccountSnapshot(
+                            account = account,
+                            startingBalance = snapshot.startingBalance.toDoubleOrNull() ?: 0.0,
+                        )
+                    }
+
+                val editingSession = _state.value.startOverEditingSession
+                if (editingSession != null) {
+                    val updatedSession =
+                        FinancialSession(
+                            id = editingSession.id.toIntOrNull() ?: -1,
+                            timestamp =
+                                kotlinx.datetime.TimeZone.currentSystemDefault().let { tz ->
+                                    editingSession.timestamp.toInstant(tz).toEpochMilliseconds()
+                                },
+                            name = name,
+                            accountSnapshots = domainSnapshots,
+                        )
+                    updateFinancialSession(updatedSession).foldSuspend(
+                        onSuccess = {
+                            SnackbarService.sendSuccessMessage(MR.strings.start_over_update_success)
+                            _state.update { it.copy(showStartOverDialog = false, startOverEditingSession = null) }
+                            buildRecentTimeline()
+                        },
+                        onFailure = {
+                            SnackbarService.sendErrorMessage(MR.strings.start_over_create_failure)
+                        },
+                    )
+                } else {
+                    val session =
+                        FinancialSession(
+                            timestamp =
+                                kotlin.time.Clock.System
+                                    .now()
+                                    .toEpochMilliseconds(),
+                            name = name,
+                            accountSnapshots = domainSnapshots,
+                        )
+                    createFinancialSession(session).foldSuspend(
+                        onSuccess = {
+                            SnackbarService.sendSuccessMessage(MR.strings.start_over_create_success)
+                            _state.update { it.copy(showStartOverDialog = false) }
+                            loadAccounts()
+                            buildRecentTimeline()
+                        },
+                        onFailure = {
+                            SnackbarService.sendErrorMessage(MR.strings.start_over_create_failure)
+                        },
+                    )
+                }
+            } catch (e: Exception) {
+                SnackbarService.sendErrorMessage(MR.strings.start_over_create_failure)
+            }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    private fun deleteStartOverSession(sessionId: String) {
+        viewModelScope.launch {
+            try {
+                deleteFinancialSession(sessionId.toIntOrNull() ?: -1).foldSuspend(
+                    onSuccess = {
+                        SnackbarService.sendSuccessMessage(MR.strings.start_over_delete_success)
+                        buildRecentTimeline()
+                    },
+                    onFailure = {
+                        SnackbarService.sendErrorMessage(MR.strings.start_over_create_failure)
+                    },
+                )
+            } catch (e: Exception) {
+                SnackbarService.sendErrorMessage(MR.strings.start_over_create_failure)
+            }
+        }
+    }
+
+    private fun toggleStartOverMarker(sessionId: String) {
+        _state.update { state ->
+            val updatedItems =
+                state.recentTimelineItems.map { item ->
+                    when {
+                        item is TransactionListItem.StartOverMarker && item.session.id == sessionId ->
+                            item.copy(isExpanded = !item.isExpanded)
+                        else -> item
+                    }
+                }
+            state.copy(recentTimelineItems = updatedItems)
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun buildRecentTimeline() {
+        try {
+            val transactions = _state.value.recentTransactions.firstOrNull() ?: emptyList()
+            val sessions: List<com.lightfeather.domain.model.FinancialSession> =
+                when (
+                    val result = getAllFinancialSessions()
+                ) {
+                    is DomainResult.Success -> result.data.firstOrNull() ?: emptyList()
+                    is DomainResult.Failure -> emptyList()
+                }
+
+            val transactionItems =
+                transactions
+                    .take(_state.value.displayedTransactionsLimit)
+                    .map { TransactionListItem.TransactionEntry(it) }
+
+            val markerItems =
+                sessions.map { session ->
+                    TransactionListItem.StartOverMarker(session = session.toUiFinancialSession())
+                }
+
+            val allItems =
+                (transactionItems + markerItems).sortedByDescending { item ->
+                    when (item) {
+                        is TransactionListItem.TransactionEntry ->
+                            item.transaction.dateTime.let { dt ->
+                                dt.year.toLong() * 1_0000_000_000L +
+                                    dt.monthNumber.toLong() * 1_000_000_00L +
+                                    dt.dayOfMonth.toLong() * 1_000_000L +
+                                    dt.hour.toLong() * 10_000L +
+                                    dt.minute.toLong() * 100L +
+                                    dt.second.toLong()
+                            }
+                        is TransactionListItem.StartOverMarker ->
+                            item.session.timestamp.let { dt ->
+                                dt.year.toLong() * 1_0000_000_000L +
+                                    dt.monthNumber.toLong() * 1_000_000_00L +
+                                    dt.dayOfMonth.toLong() * 1_000_000L +
+                                    dt.hour.toLong() * 10_000L +
+                                    dt.minute.toLong() * 100L +
+                                    dt.second.toLong()
+                            }
+                    }
+                }
+
+            _state.update { it.copy(recentTimelineItems = allItems) }
+        } catch (e: Exception) {
+            Napier.e("Error building timeline", e)
+        }
+    }
+
+    // --------------- Fix Balance Feature ---------------
+
+    private fun showFixBalanceDialog(account: UiBankAccount?) {
+        _state.update { it.copy(showFixBalanceDialog = true, fixBalanceAccount = account) }
+    }
+
+    private fun dismissFixBalanceDialog() {
+        _state.update { it.copy(showFixBalanceDialog = false, fixBalanceAccount = null) }
+    }
+
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    private fun applyBalanceAdjustment(
+        account: UiBankAccount,
+        actualBalance: Double,
+        isIncrease: Boolean,
+    ) {
+        viewModelScope.launch {
+            try {
+                val currentBalance = account.balance.replace(Regex("[^\\d.-]"), "").toDoubleOrNull() ?: 0.0
+                val difference = if (isIncrease) actualBalance - currentBalance else currentBalance - actualBalance
+                val absDiff = if (difference < 0) -difference else difference
+
+                if (absDiff < 0.001) {
+                    SnackbarService.sendWarningMessage(MR.strings.fix_balance_no_difference)
+                    return@launch
+                }
+
+                val domainAccount = account.toAccount()
+                val transaction =
+                    if (isIncrease) {
+                        Transaction.Income(
+                            id = -1,
+                            name = "Balance Adjustment",
+                            description = "Balance fixed to $actualBalance",
+                            amount = absDiff,
+                            timestamp =
+                                kotlin.time.Clock.System
+                                    .now()
+                                    .toEpochMilliseconds(),
+                            account = domainAccount,
+                            source = com.lightfeather.domain.model.Category.BalanceAdjustment,
+                        )
+                    } else {
+                        Transaction.Expense(
+                            id = -1,
+                            name = "Balance Adjustment",
+                            description = "Balance fixed to $actualBalance",
+                            amount = absDiff,
+                            timestamp =
+                                kotlin.time.Clock.System
+                                    .now()
+                                    .toEpochMilliseconds(),
+                            account = domainAccount,
+                            categories = listOf(com.lightfeather.domain.model.Category.BalanceAdjustment),
+                        )
+                    }
+
+                updateTransaction(transaction).fold(
+                    onSuccess = {
+                        _state.update { it.copy(showFixBalanceDialog = false, fixBalanceAccount = null) }
+                        SnackbarService.sendSuccessMessage(MR.strings.fix_balance_success)
+                        viewModelScope.launch {
+                            launch { loadRecentTransactions() }
+                            launch { calculateSpendingAnalytics() }
+                            launch { loadAccounts() }
+                        }
+                    },
+                    onFailure = {
+                        _state.update { it.copy(showFixBalanceDialog = false) }
+                        SnackbarService.sendErrorMessage(MR.strings.fix_balance_failure)
+                    },
+                )
+            } catch (e: Exception) {
+                SnackbarService.sendErrorMessage(MR.strings.fix_balance_failure)
+            }
+        }
+    }
+
+    // --------------- Biometric Suggestion Feature ---------------
+
+    private fun checkBiometricSuggestion(isAvailable: Boolean) {
+        if (!isAvailable) return
+        if (userRepository.hasShownBiometricSuggestion()) return
+        userRepository.markBiometricSuggestionShown()
+        _state.update { it.copy(showBiometricSuggestion = true) }
+    }
+
+    private fun enableBiometricFromSuggestion() {
+        userRepository.setBiometricEnabled(true)
+        _state.update { it.copy(showBiometricSuggestion = false) }
+    }
 
     companion object {
         private const val ANALYTICS_DELAY_MS = 300L

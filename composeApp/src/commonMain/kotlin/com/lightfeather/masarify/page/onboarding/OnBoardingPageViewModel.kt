@@ -45,7 +45,7 @@ class OnBoardingPageViewModel(
                 },
                 onFailure = {
                     SnackbarService.sendErrorMessage(it.message)
-                }
+                },
             )
         }
     }
@@ -66,7 +66,7 @@ class OnBoardingPageViewModel(
                 val stateSnapshot = _state.value
                 val validationError =
                     stateSnapshot.userNameError ?: stateSnapshot.accountNameError
-                    ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
+                        ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
 
                 if (validationError != null) {
                     SnackbarService.sendErrorMessage(validationError)
@@ -124,8 +124,7 @@ class OnBoardingPageViewModel(
                         },
                         onFailure = {
                             SnackbarService.sendErrorMessage(it.message)
-                        }
-
+                        },
                     )
                 }
             }

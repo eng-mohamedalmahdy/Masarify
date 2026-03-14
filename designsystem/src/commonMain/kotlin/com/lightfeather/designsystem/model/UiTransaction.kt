@@ -17,6 +17,8 @@ data class UiTransaction(
     val account: UiBankAccount,
     val category: UiCategory,
     val hasAttachment: Boolean,
+    val balanceBefore: String = "",
+    val balanceAfter: String = "",
     // Transfer-specific fields
     val receiverAccount: UiBankAccount? = null,
     val transferFee: String? = null,

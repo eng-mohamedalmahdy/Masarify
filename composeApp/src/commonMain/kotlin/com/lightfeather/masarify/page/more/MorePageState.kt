@@ -5,6 +5,7 @@ import com.lightfeather.domain.model.AppLanguages
 
 internal data class MorePageState(
     val isDarkTheme: Boolean = false,
+    val isBiometricEnabled: Boolean = false,
     val selectedLanguage: AppLanguage = AppLanguages.English,
     val availableLanguages: List<AppLanguage> = listOf(AppLanguages.English, AppLanguages.Arabic),
     val selectedDetailItem: MoreDetailItem? = null,

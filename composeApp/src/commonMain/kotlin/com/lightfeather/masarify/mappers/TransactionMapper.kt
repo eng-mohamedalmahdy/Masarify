@@ -74,6 +74,7 @@ fun Transaction.toUiTransaction(): UiTransaction {
             is Transaction.Transfer -> UiCategory.empty
         }
 
+    val currencySymbol = account.currency.sign
     return UiTransaction(
         id = id.toString(),
         type = type,
@@ -86,6 +87,8 @@ fun Transaction.toUiTransaction(): UiTransaction {
         account = account.toUiBankAccount(),
         receiverAccount = if (this is Transaction.Transfer) receiverAccount.toUiBankAccount() else null,
         transferFee = if (this is Transaction.Transfer) fee.toString() else null,
+        balanceBefore = "$currencySymbol${formatBalanceAmount(accountOldBalance)}",
+        balanceAfter = "$currencySymbol${formatBalanceAmount(accountNewBalance)}",
     )
 }
 
@@ -189,6 +192,14 @@ private fun parseAmount(amountString: String): Double =
     amountString
         .replace(Regex("[^\\d.-]"), "")
         .toDoubleOrNull() ?: 0.0
+
+private fun formatBalanceAmount(value: Double): String {
+    val rounded = (value * 100).toLong() / 100.0
+    val intPart = rounded.toLong()
+    val decPart = ((rounded - intPart) * 100).toLong()
+    val decStr = if (decPart < 0) (-decPart).toString().padStart(2, '0') else decPart.toString().padStart(2, '0')
+    return "$intPart.$decStr"
+}
 
 /**
  * Convert UiTransactionData to domain Transaction

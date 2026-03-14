@@ -36,4 +36,16 @@ interface UserRepository {
      * Marks application data as seeded to prevent duplicate seeding on subsequent launches.
      */
     fun markDataAsSeeded()
+
+    /** Returns true if biometric authentication is enabled by the user. */
+    fun isBiometricEnabled(): Boolean
+
+    /** Enables or disables biometric authentication. */
+    fun setBiometricEnabled(enabled: Boolean)
+
+    /** Returns true if the biometric suggestion dialog has already been shown. */
+    fun hasShownBiometricSuggestion(): Boolean
+
+    /** Marks the biometric suggestion dialog as shown. */
+    fun markBiometricSuggestionShown()
 }

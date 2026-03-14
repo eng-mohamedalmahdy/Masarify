@@ -53,7 +53,6 @@ internal fun OnBoardingPageContent(
     state: OnBoardingPageState,
     onIntent: (OnBoardingPageIntent) -> Unit,
 ) {
-
     Box(
         Modifier
             .fillMaxSize()
@@ -80,7 +79,6 @@ internal fun OnBoardingPageContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -122,7 +120,11 @@ internal fun OnBoardingPageContent(
                         )
                         TextField(
                             value = state.accountBalance,
-                            modifier = Modifier.height(AppTheme.dimens.component.textField.height.times(1.47f)),
+                            modifier =
+                                Modifier.height(
+                                    AppTheme.dimens.component.textField.height
+                                        .times(1.47f),
+                                ),
                             onValueChange = { onIntent(OnBoardingPageIntent.UpdateAccountBalance(it)) },
                             label = stringResource(MR.strings.balance),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -172,7 +174,7 @@ internal fun OnBoardingPageContent(
                                     Text(stringResource(MR.strings.add_new_currency))
                                 }
                             }
-                        }
+                        },
                     )
                 }
                 PrimaryButton(

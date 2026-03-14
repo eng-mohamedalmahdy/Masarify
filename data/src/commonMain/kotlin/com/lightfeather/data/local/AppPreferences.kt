@@ -19,6 +19,8 @@ class AppPreferences(
 
         const val USER_SAVED_COLORS = "userSavedColors"
         const val DATA_SEEDED = "dataSeeded"
+        const val BIOMETRIC_ENABLED = "biometricEnabled"
+        const val BIOMETRIC_SUGGESTION_SHOWN = "biometricSuggestionShown"
     }
 
     var userData: UserData?
@@ -44,4 +46,12 @@ class AppPreferences(
     var isDataSeeded: Boolean
         set(value) = settings.set(DATA_SEEDED, value)
         get() = settings[DATA_SEEDED] ?: false
+
+    var isBiometricEnabled: Boolean
+        set(value) = settings.set(BIOMETRIC_ENABLED, value)
+        get() = settings[BIOMETRIC_ENABLED] ?: false
+
+    var hasShownBiometricSuggestion: Boolean
+        set(value) = settings.set(BIOMETRIC_SUGGESTION_SHOWN, value)
+        get() = settings[BIOMETRIC_SUGGESTION_SHOWN] ?: false
 }

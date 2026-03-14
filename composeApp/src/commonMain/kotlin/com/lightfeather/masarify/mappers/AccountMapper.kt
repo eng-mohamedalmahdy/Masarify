@@ -11,7 +11,7 @@ fun Account.toUiBankAccount(): UiBankAccount =
         balance = formatBalance(balance),
         currency = currency.toUiCurrency(),
         color = color,
-        image = logo.takeIf { it.isNotBlank() },
+        image = logo.takeIf { it.isNullOrEmpty().not() },
     )
 
 fun UiBankAccount.toAccount(): Account =

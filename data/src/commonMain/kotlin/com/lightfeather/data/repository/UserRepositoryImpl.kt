@@ -49,4 +49,16 @@ class UserRepositoryImpl(
     override fun markDataAsSeeded() {
         preferences.isDataSeeded = true
     }
+
+    override fun isBiometricEnabled(): Boolean = preferences.isBiometricEnabled
+
+    override fun setBiometricEnabled(enabled: Boolean) {
+        preferences.isBiometricEnabled = enabled
+    }
+
+    override fun hasShownBiometricSuggestion(): Boolean = preferences.hasShownBiometricSuggestion
+
+    override fun markBiometricSuggestionShown() {
+        preferences.hasShownBiometricSuggestion = true
+    }
 }

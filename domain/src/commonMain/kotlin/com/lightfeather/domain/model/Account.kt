@@ -11,6 +11,6 @@ data class Account(
     val description: String?,
     val balance: Double,
     val color: String,
-    val logo: String,
+    val logo: String?,
     val id: Int = -1,
 )

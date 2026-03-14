@@ -20,6 +20,7 @@ internal sealed interface OnBoardingPageIntent {
     ) : OnBoardingPageIntent
 
     data object Submit : OnBoardingPageIntent
+
     data class AddNewCurrency(
         val currency: UiCurrency,
     ) : OnBoardingPageIntent

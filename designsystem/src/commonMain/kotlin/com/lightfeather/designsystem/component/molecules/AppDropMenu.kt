@@ -35,8 +35,7 @@ import com.lightfeather.designsystem.util.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun <T>
-    AppDropMenu(
+fun <T> AppDropMenu(
     label: String,
     displayedValue: String,
     items: List<T>,
@@ -48,19 +47,20 @@ fun <T>
     dismissOnHeartClick: Boolean = true,
     dismissOnFooterClick: Boolean = true,
     contentRow:
-    @Composable()
-    ((T) -> Unit),
+        @Composable()
+        ((T) -> Unit),
     searchFunction: @Composable ((List<T>, String) -> List<T>)? = null,
     headerContent: (@Composable (searchQuery: String) -> Unit)? = null,
     footerContent: (@Composable (searchQuery: String) -> Unit)? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    val filteredItems = if (searchFunction != null && searchQuery.isNotEmpty()) {
-        searchFunction(items, searchQuery)
-    } else {
-        items
-    }
+    val filteredItems =
+        if (searchFunction != null && searchQuery.isNotEmpty()) {
+            searchFunction(items, searchQuery)
+        } else {
+            items
+        }
 
     Box(
         modifier = modifier.clickable { expanded = !expanded },

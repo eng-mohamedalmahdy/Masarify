@@ -19,7 +19,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +43,7 @@ import com.lightfeather.designsystem.util.stringResource
 import com.lightfeather.domain.model.AppLanguages
 import com.lightfeather.masarify.PlatformsSlugs
 import com.lightfeather.masarify.asSlug
+import com.lightfeather.masarify.auth.rememberBiometricAuthenticator
 import com.lightfeather.masarify.di.getAppModules
 import com.lightfeather.masarify.getPlatform
 import com.lightfeather.masarify.model.AppTopLevelRoutes
@@ -118,6 +122,21 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
             LocalNavigator provides navigator,
         ) {
             AppTheme(isDarkMode) {
+                val biometricAuthenticator = rememberBiometricAuthenticator()
+                val needsBiometricAuth =
+                    remember(mainViewModel) {
+                        mainViewModel.isBiometricEnabled() && biometricAuthenticator.isAvailable()
+                    }
+                var isAuthenticated by rememberSaveable { mutableStateOf(!needsBiometricAuth) }
+
+                if (!isAuthenticated) {
+                    BiometricLockScreen(
+                        authenticator = biometricAuthenticator,
+                        onAuthenticated = { isAuthenticated = true },
+                    )
+                    return@AppTheme
+                }
+
                 val englishTopLevelRoutes =
                     listOf<AppTopLevelRoutes>(
                         AppTopLevelRoutes.Dashboard,
@@ -166,7 +185,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                     PlatformsSlugs.WEB if (
                                         adaptiveInfo.windowSizeClass.windowWidthSizeClass ==
                                             WindowWidthSizeClass.EXPANDED
-                                        ) -> {
+                                    ) -> {
                                         NavigationSuiteType.NavigationDrawer
                                     }
 
@@ -280,7 +299,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                                     },
                                                 unselectedTextColor =
                                                     if (isDarkMode) {
-                                                        MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f,)
+                                                        MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                                                     } else {
                                                         MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                                                     },

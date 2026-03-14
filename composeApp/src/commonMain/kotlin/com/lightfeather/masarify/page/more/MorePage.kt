@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.ContactMail
 import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Star
@@ -102,6 +103,9 @@ internal fun MorePageContent(
                 onDarkThemeToggle = {
                     onIntent(MorePageIntent.ToggleDarkTheme(it))
                     appMainViewModel.toggleDarkTheme()
+                },
+                onBiometricToggle = {
+                    onIntent(MorePageIntent.ToggleBiometric(it))
                 },
                 onLanguageSelected = {
                     onIntent(MorePageIntent.SelectLanguage(it))
@@ -205,6 +209,7 @@ internal fun MorePageContent(
 private fun ThreePaneScaffoldPaneScope.MoreListPane(
     state: MorePageState,
     onDarkThemeToggle: (Boolean) -> Unit,
+    onBiometricToggle: (Boolean) -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit,
     onCurrencyManagementClick: () -> Unit,
     onCategoryManagementClick: () -> Unit,
@@ -247,6 +252,16 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
                     checked = state.isDarkTheme,
                     onCheckedChange = onDarkThemeToggle,
                     contentDescription = stringResource(MR.strings.dark_theme_description),
+                )
+            }
+
+            item {
+                MoreListItemWithSwitch(
+                    text = stringResource(MR.strings.biometric_settings),
+                    image = Icons.Default.Fingerprint,
+                    checked = state.isBiometricEnabled,
+                    onCheckedChange = onBiometricToggle,
+                    contentDescription = stringResource(MR.strings.biometric_settings_description),
                 )
             }
 
