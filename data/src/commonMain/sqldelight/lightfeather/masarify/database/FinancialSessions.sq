@@ -1,0 +1,55 @@
+CREATE TABLE IF NOT EXISTS financial_sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp INTEGER NOT NULL,
+    name TEXT
+);
+
+CREATE TABLE IF NOT EXISTS session_account_snapshots (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER NOT NULL,
+    account_id INTEGER NOT NULL,
+    starting_balance REAL NOT NULL DEFAULT 0.0,
+    FOREIGN KEY (session_id) REFERENCES financial_sessions(id) ON DELETE CASCADE
+);
+
+insertSession:
+INSERT INTO financial_sessions (timestamp, name) VALUES (:timestamp, :name);
+
+updateSession:
+UPDATE financial_sessions SET name = :name WHERE id = :id;
+
+deleteSession:
+DELETE FROM financial_sessions WHERE id = :id;
+
+getAllSessions:
+SELECT * FROM financial_sessions ORDER BY timestamp DESC;
+
+getSessionById:
+SELECT * FROM financial_sessions WHERE id = :id;
+
+insertSnapshot:
+INSERT INTO session_account_snapshots (session_id, account_id, starting_balance)
+VALUES (:session_id, :account_id, :starting_balance);
+
+deleteSnapshotsForSession:
+DELETE FROM session_account_snapshots WHERE session_id = :session_id;
+
+getSnapshotsForSession:
+SELECT
+    sas.id,
+    sas.session_id,
+    sas.account_id,
+    sas.starting_balance,
+    ba.name AS account_name,
+    ba.color AS account_color,
+    ba.logo AS account_logo,
+    c.id AS currency_id,
+    c.name AS currency_name,
+    c.sign AS currency_symbol
+FROM session_account_snapshots sas
+JOIN bank_accounts ba ON sas.account_id = ba.id
+JOIN currencies c ON ba.currency = c.id
+WHERE sas.session_id = :session_id;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();
