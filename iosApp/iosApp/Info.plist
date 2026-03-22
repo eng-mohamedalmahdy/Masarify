@@ -4,5 +4,16 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.lightfeather.masarify</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>masarify</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

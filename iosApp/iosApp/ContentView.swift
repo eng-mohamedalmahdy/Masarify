@@ -5,6 +5,7 @@ import ComposeApp
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         MainViewControllerKt.InitApp()
+        
         return MainViewControllerKt.MainViewController()
     }
 

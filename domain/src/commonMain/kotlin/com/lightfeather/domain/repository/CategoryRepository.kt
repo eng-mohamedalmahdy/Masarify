@@ -16,4 +16,6 @@ interface CategoryRepository {
     suspend fun getCategoryById(id: Int): DomainResult<Category>
 
     fun getAllCategoryIcons(): DomainResult<Flow<List<Any>>>
+
+    fun getExpenseCategoriesByUsage(limit: Int): DomainResult<Flow<List<Category>>>
 }

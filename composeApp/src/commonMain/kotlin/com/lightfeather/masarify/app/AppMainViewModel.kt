@@ -6,9 +6,12 @@ import com.lightfeather.domain.model.AppLanguage
 import com.lightfeather.domain.model.AppLanguages
 import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.GetAllAccounts
+import com.lightfeather.domain.usecase.GetExpenseCategoriesByUsage
 import com.lightfeather.domain.usecase.SeedDefaultCategories
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
+import com.lightfeather.masarify.widget.WidgetCategory
+import com.lightfeather.masarify.widget.WidgetDataSyncService
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -25,21 +28,48 @@ class AppMainViewModel(
     private val userDataRepository: UserRepository,
     private val getAllAccounts: GetAllAccounts,
     private val seedDefaultCategories: SeedDefaultCategories,
+    private val getExpenseCategoriesByUsage: GetExpenseCategoriesByUsage,
+    private val widgetDataSyncService: WidgetDataSyncService,
 ) : ViewModel() {
     init {
-        // Seed default categories on app startup
         viewModelScope.launch {
-            seedDefaultCategories().fold(
+            seedDefaultCategories().foldSuspend(
                 onSuccess = { success ->
-                    if (success) {
-                        Napier.d("Default categories seeded successfully")
-                    }
+                    if (success) Napier.d("Default categories seeded successfully")
                 },
                 onFailure = { error ->
                     Napier.e("Failed to seed default categories: $error")
                 },
             )
         }
+        viewModelScope.launch { syncWidgetCategories() }
+    }
+
+    private suspend fun syncWidgetCategories() {
+        getExpenseCategoriesByUsage(MAX_WIDGET_CATEGORIES).foldSuspend(
+            onSuccess = { categoriesFlow ->
+                categoriesFlow.collect { categories ->
+                    val widgetCategories =
+                        categories.map { category ->
+                            WidgetCategory(
+                                id = category.id.toString(),
+                                name = category.name,
+                                color = category.color,
+                                icon = category.icon,
+                                resourceKey = category.resourceKey,
+                            )
+                        }
+                    widgetDataSyncService.syncExpenseCategories(widgetCategories)
+                }
+            },
+            onFailure = { error ->
+                Napier.e("Failed to sync widget categories: $error")
+            },
+        )
+    }
+
+    companion object {
+        private const val MAX_WIDGET_CATEGORIES = 5
     }
 
     private val _darkTheme = MutableStateFlow(false)

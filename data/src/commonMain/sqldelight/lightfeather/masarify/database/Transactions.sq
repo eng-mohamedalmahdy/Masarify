@@ -143,3 +143,21 @@ getTransactionCountOfType:
 SELECT COUNT(*)
 FROM v_transactions
 WHERE transactionType = :type;
+
+getExpenseCategoriesByUsage:
+SELECT
+    c.id AS category_id,
+    c.name AS category_name,
+    c.description AS category_description,
+    c.color AS category_color,
+    c.icon AS category_icon,
+    c.is_default AS is_default,
+    c.resource_key AS resource_key,
+    COUNT(tc.transaction_id) AS usage_count
+FROM categories c
+LEFT JOIN transaction_categories tc ON c.id = tc.category_id
+LEFT JOIN transactions t ON tc.transaction_id = t.id AND t.type = 'Expense'
+WHERE c.id != 0 AND c.id != -2
+GROUP BY c.id
+ORDER BY usage_count DESC, c.id ASC
+LIMIT :limit;

@@ -18,7 +18,26 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="transactions"
+                    android:scheme="masarify" />
+            </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".widget.ExpenseCategoriesWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/expense_categories_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

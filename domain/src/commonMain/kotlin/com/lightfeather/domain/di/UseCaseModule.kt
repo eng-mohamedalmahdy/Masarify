@@ -21,6 +21,7 @@ import com.lightfeather.domain.usecase.GetAllTransactions
 import com.lightfeather.domain.usecase.GetAllTransactionsOfTypePaged
 import com.lightfeather.domain.usecase.GetAllTransactionsPaged
 import com.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
+import com.lightfeather.domain.usecase.GetExpenseCategoriesByUsage
 import com.lightfeather.domain.usecase.GetFilteredTransactionCount
 import com.lightfeather.domain.usecase.GetFilteredTransactions
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
@@ -155,4 +156,5 @@ val useCaseModule =
         factoryOf(::DeleteFinancialSession)
         factoryOf(::GetAllFinancialSessions)
         factoryOf(::GetFinancialSessionById)
+        factoryOf(::GetExpenseCategoriesByUsage)
     }

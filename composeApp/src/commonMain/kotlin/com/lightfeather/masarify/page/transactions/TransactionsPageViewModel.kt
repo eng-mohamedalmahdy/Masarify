@@ -130,7 +130,8 @@ class TransactionsPageViewModel(
             is TransactionsPageIntent.NextPage -> nextPage()
             is TransactionsPageIntent.PreviousPage -> previousPage()
             is TransactionsPageIntent.ShowAddDialog -> showAddDialog()
-            is TransactionsPageIntent.ShowAddDialogWithType -> showAddDialogWithType(intent.type, intent.fromAccountId)
+            is TransactionsPageIntent.ShowAddDialogWithType ->
+                showAddDialogWithType(intent.type, intent.fromAccountId, intent.categoryId)
             is TransactionsPageIntent.ShowEditDialog -> showEditDialog(intent.transaction)
             is TransactionsPageIntent.HideAddEditDialog -> hideAddEditDialog()
             is TransactionsPageIntent.CreateTransaction -> createTransaction(intent.data)
@@ -282,29 +283,34 @@ class TransactionsPageViewModel(
     private fun showAddDialogWithType(
         type: UiTransactionType,
         fromAccountId: String?,
+        categoryId: String? = null,
     ) {
-        if (fromAccountId == null) {
-            // No locked account, just show dialog
-            _state.update {
-                it.copy(
-                    showAddEditDialog = true,
-                    editingTransaction = null,
-                    lockedFromAccount = null,
-                )
-            }
-        } else {
-            // Find and lock the specified account
+        // Show dialog immediately
+        _state.update {
+            it.copy(
+                showAddEditDialog = true,
+                editingTransaction = null,
+                lockedFromAccount = null,
+                initialCategory = null,
+            )
+        }
+
+        if (fromAccountId != null) {
             viewModelScope.launch {
                 _state.value.accounts
                     .map { accounts -> accounts.find { it.id == fromAccountId } }
                     .collect { account ->
-                        _state.update {
-                            it.copy(
-                                showAddEditDialog = true,
-                                editingTransaction = null,
-                                lockedFromAccount = account,
-                            )
-                        }
+                        _state.update { it.copy(lockedFromAccount = account) }
+                    }
+            }
+        }
+
+        if (categoryId != null) {
+            viewModelScope.launch {
+                _state.value.categories
+                    .map { cats -> cats.find { it.id == categoryId } }
+                    .collect { category ->
+                        _state.update { it.copy(initialCategory = category) }
                     }
             }
         }
@@ -336,6 +342,7 @@ class TransactionsPageViewModel(
                 showAddEditDialog = false,
                 editingTransaction = null,
                 lockedFromAccount = null,
+                initialCategory = null,
                 selectedAttachments = emptyList(), // Clear attachments when closing dialog
             )
         }

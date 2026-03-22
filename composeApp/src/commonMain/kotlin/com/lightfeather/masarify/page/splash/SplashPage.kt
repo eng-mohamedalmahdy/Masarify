@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.theme.AppTheme
+import com.lightfeather.masarify.navigation.Route
 import dev.icerock.moko.resources.compose.readTextAsState
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
@@ -20,9 +21,16 @@ import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun SplashPage(viewModel: SplashPageViewModel = koinViewModel()) {
+fun SplashPage(
+    pendingRoute: Route? = null,
+    viewModel: SplashPageViewModel =
+        koinViewModel(
+            parameters = pendingRoute?.let { route -> { parametersOf(route) } },
+        ),
+) {
     val state by viewModel.state.collectAsState()
 
     SplashPageContent()

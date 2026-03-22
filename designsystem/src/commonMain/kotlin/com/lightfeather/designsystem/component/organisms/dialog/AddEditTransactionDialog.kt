@@ -77,6 +77,7 @@ fun AddEditTransactionDialog(
     transaction: UiTransactionDetails?,
     initialType: UiTransactionType = UiTransactionType.EXPENSE,
     lockedFromAccount: UiBankAccount? = null,
+    initialCategory: UiCategory? = null,
     accounts: List<UiBankAccount>,
     categories: List<UiCategory>,
     attachments: List<UiAttachment> = emptyList(),
@@ -92,7 +93,9 @@ fun AddEditTransactionDialog(
     var amount by remember { mutableStateOf(transaction?.amount?.removePrefix("-")?.removePrefix("+") ?: "") }
     var description by remember { mutableStateOf(transaction?.description ?: "") }
     var selectedAccount by remember { mutableStateOf<UiBankAccount?>(lockedFromAccount ?: transaction?.account) }
-    var selectedCategory by remember { mutableStateOf<UiCategory?>(transaction?.categories?.firstOrNull()) }
+    var selectedCategory by remember {
+        mutableStateOf<UiCategory?>(initialCategory ?: transaction?.categories?.firstOrNull())
+    }
     var selectedTargetAccount by remember { mutableStateOf<UiBankAccount?>(transaction?.receiverAccount) }
     var transferFee by remember { mutableStateOf(transaction?.transferFee ?: "0") }
 

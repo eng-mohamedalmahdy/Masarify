@@ -13,7 +13,7 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun UiCurrency.getLocalizedName(): String =
     if (resourceKey != null) {
-        val stringRes = getStringResourceByKey(resourceKey)
+        val stringRes = getCurrencyStringResourceByKey(resourceKey)
         stringResource(stringRes)
     } else {
         name
@@ -39,7 +39,7 @@ fun UiCurrency.getLocalizedDescription(): String? =
  * This uses a when statement to map keys to actual string resources for all 62 currencies
  */
 @Suppress("CyclomaticComplexMethod", "LongMethod") // Large when statement for resource mapping
-private fun getStringResourceByKey(key: String): StringResource =
+private fun getCurrencyStringResourceByKey(key: String): StringResource =
     when (key) {
         // ============================
         // TRADITIONAL CURRENCIES

@@ -1,6 +1,7 @@
 package com.lightfeather.masarify.di
 
 import com.lightfeather.masarify.app.AppMainViewModel
+import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPageViewModel
 import com.lightfeather.masarify.page.categories.CategoriesPageViewModel
 import com.lightfeather.masarify.page.categories.addedit.AddEditCategoryPageViewModel
@@ -22,7 +23,15 @@ val viewModelModule =
     module {
         viewModelOf(::AppMainViewModel)
         viewModelOf(::OnBoardingPageViewModel)
-        viewModelOf(::SplashPageViewModel)
+        viewModel { params ->
+            SplashPageViewModel(
+                navigator = get(),
+                userRepository = get(),
+                bankAccountRepository = get(),
+                seedApplicationData = get(),
+                pendingRoute = runCatching { params.get<Route>() }.getOrNull(),
+            )
+        }
         viewModel {
             BankAccountsPageViewModel(
                 navigator = get(),

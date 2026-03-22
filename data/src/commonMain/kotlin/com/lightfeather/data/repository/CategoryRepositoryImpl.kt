@@ -117,6 +117,36 @@ CategoryRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting category"))
         }
 
+    override fun getExpenseCategoriesByUsage(limit: Int): DomainResult<Flow<List<Category>>> =
+        try {
+            val categoriesFlow: Flow<List<Category>> =
+                flow {
+                    val flow =
+                        database { db ->
+                            db.transactionsQueries
+                                .getExpenseCategoriesByUsage(limit.toLong())
+                                .asFlow()
+                                .map { query ->
+                                    query.awaitAsList().map { row ->
+                                        Category(
+                                            id = row.category_id.toInt(),
+                                            name = row.category_name,
+                                            description = row.category_description,
+                                            color = row.category_color,
+                                            icon = row.category_icon,
+                                            isDefault = row.is_default == 1L,
+                                            resourceKey = row.resource_key,
+                                        )
+                                    }
+                                }
+                        }
+                    emitAll(flow)
+                }
+            DomainResult.Success(categoriesFlow)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting categories by usage"))
+        }
+
     override fun getAllCategoryIcons(): DomainResult<Flow<List<Any>>> =
         try {
             val iconsFlow: Flow<List<Any>> =

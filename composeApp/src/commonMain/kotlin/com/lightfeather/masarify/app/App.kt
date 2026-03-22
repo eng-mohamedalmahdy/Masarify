@@ -52,6 +52,7 @@ import com.lightfeather.masarify.navigation.LocalNavigator
 import com.lightfeather.masarify.navigation.NavigationRegistry
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.NavigatorImpl
+import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.AccountsRoute
 import com.lightfeather.masarify.navigation.routes.CategoriesRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
@@ -83,7 +84,10 @@ import kotlin.time.ExperimentalTime
 @Suppress("LongMethod", "CyclomaticComplexMethod")
 @Composable
 @Preview
-fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
+fun App(
+    pendingDeepLink: Route? = null,
+    onBackStackReady: suspend (Navigator) -> Unit = {},
+) {
     // Create nav back stack with initial route
     val navBackStack =
         rememberNavBackStack(
@@ -316,7 +320,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                 ) {
                     navigator.Display(modifier = Modifier.safeDrawingPadding()) {
                         entry<SplashRoute> {
-                            SplashPage()
+                            SplashPage(pendingRoute = pendingDeepLink)
                         }
                         entry<OnBoardingRoute> {
                             OnBoardingPage()
@@ -332,6 +336,7 @@ fun App(onBackStackReady: suspend (Navigator) -> Unit = {}) {
                                 openAddDialog = route.openAddDialog,
                                 transactionType = route.transactionType,
                                 fromAccountId = route.fromAccountId,
+                                categoryId = route.categoryId,
                             )
                         }
                         entry<MoreRoute> {

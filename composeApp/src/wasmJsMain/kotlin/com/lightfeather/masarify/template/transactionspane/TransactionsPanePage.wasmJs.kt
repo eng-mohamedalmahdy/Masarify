@@ -27,6 +27,7 @@ import com.lightfeather.designsystem.model.UiTransactionFilter
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.usecase.GetAllFinancialSessions
+import com.lightfeather.masarify.mappers.toTransactionFilter
 import com.lightfeather.masarify.mappers.toUiFinancialSession
 import dev.icerock.moko.resources.compose.stringResource
 import org.koin.compose.koinInject
@@ -47,10 +48,7 @@ actual fun TransactionsPane(
     // Update filter when it changes
     LaunchedEffect(filter) {
         val domainFilter =
-            filter?.let {
-                com.lightfeather.masarify.mappers
-                    .toTransactionFilter(it)
-            } ?: com.lightfeather.domain.model.transaction.TransactionFilter.EMPTY
+            filter?.toTransactionFilter() ?: com.lightfeather.domain.model.transaction.TransactionFilter.EMPTY
         viewModel.updateFilter(domainFilter)
     }
 

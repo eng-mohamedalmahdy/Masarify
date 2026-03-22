@@ -57,6 +57,7 @@ fun TransactionsPage(
     openAddDialog: Boolean = false,
     transactionType: UiTransactionType? = null,
     fromAccountId: String? = null,
+    categoryId: String? = null,
     viewModel: TransactionsPageViewModel = koinViewModel(),
     navigator: Navigator = LocalNavigator.current,
 ) {
@@ -65,13 +66,14 @@ fun TransactionsPage(
         viewModel.onIntent(TransactionsPageIntent.LoadData)
     }
 
-    // Handle opening add dialog with optional type and account
-    LaunchedEffect(openAddDialog, transactionType, fromAccountId) {
+    // Handle opening add dialog with optional type, account, and category
+    LaunchedEffect(openAddDialog, transactionType, fromAccountId, categoryId) {
         if (openAddDialog) {
             viewModel.onIntent(
                 TransactionsPageIntent.ShowAddDialogWithType(
                     type = transactionType ?: UiTransactionType.EXPENSE,
                     fromAccountId = fromAccountId,
+                    categoryId = categoryId,
                 ),
             )
         }
@@ -262,6 +264,7 @@ internal fun TransactionsPageContent(
             AddEditTransactionDialog(
                 transaction = state.editingTransaction,
                 lockedFromAccount = state.lockedFromAccount,
+                initialCategory = state.initialCategory,
                 accounts = accounts,
                 categories = categories,
                 attachments = state.selectedAttachments,

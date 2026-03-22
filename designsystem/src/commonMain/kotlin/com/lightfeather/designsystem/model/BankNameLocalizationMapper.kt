@@ -13,7 +13,7 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun UiBankName.getLocalizedName(): String =
     if (isDefault && resourceKey != null) {
-        val stringRes = getStringResourceByKey(resourceKey!!)
+        val stringRes = getBankStringResourceByKey(resourceKey!!)
         stringResource(stringRes)
     } else {
         name
@@ -24,7 +24,7 @@ fun UiBankName.getLocalizedName(): String =
  * This uses a when statement to map keys to actual string resources for all 26 banks
  */
 @Suppress("CyclomaticComplexMethod") // Large when statement for resource mapping is acceptable
-private fun getStringResourceByKey(key: String): StringResource =
+private fun getBankStringResourceByKey(key: String): StringResource =
     when (key) {
         // ============================
         // EGYPTIAN BANKS

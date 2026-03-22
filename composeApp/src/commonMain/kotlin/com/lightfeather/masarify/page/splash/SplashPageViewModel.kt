@@ -7,6 +7,7 @@ import com.lightfeather.domain.repository.AccountRepository
 import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.SeedApplicationData
 import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import io.github.aakira.napier.Napier
@@ -23,6 +24,7 @@ class SplashPageViewModel(
     private val userRepository: UserRepository,
     private val bankAccountRepository: AccountRepository,
     private val seedApplicationData: SeedApplicationData,
+    private val pendingRoute: Route? = null,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SplashPageState())
     internal val state: StateFlow<SplashPageState> = _state
@@ -71,6 +73,7 @@ class SplashPageViewModel(
                         Napier.d("hasBankAccounts: $hasBankAccounts")
                         if (hasBankAccounts) {
                             navigator.navigateAndClearBackStack(DashboardRoute)
+                            pendingRoute?.let { navigator.navigate(it) }
                         } else {
                             navigator.navigateAndClearBackStack(OnBoardingRoute)
                         }

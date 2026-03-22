@@ -6,11 +6,51 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		10BA10902F6E1F2C007D1FDE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10BA108F2F6E1F2C007D1FDE /* WidgetKit.framework */; };
+		10BA10922F6E1F2C007D1FDE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10BA10912F6E1F2C007D1FDE /* SwiftUI.framework */; };
+		10BA10A32F6E1F2D007D1FDE /* QuickTransactionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 10BA108D2F6E1F2C007D1FDE /* QuickTransactionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		10BA10A12F6E1F2D007D1FDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9DA97A92DC1472C00A4DA20 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10BA108C2F6E1F2C007D1FDE;
+			remoteInfo = QuickTransactionExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AABB00070000000000000007 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				10BA10A32F6E1F2D007D1FDE /* QuickTransactionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		10BA108D2F6E1F2C007D1FDE /* QuickTransactionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QuickTransactionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		10BA108F2F6E1F2C007D1FDE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		10BA10912F6E1F2C007D1FDE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B9DA97B12DC1472C00A4DA20 /* Masarify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Masarify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		10BA10A72F6E1F2D007D1FDE /* Exceptions for "QuickTransaction" folder in "QuickTransactionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 10BA108C2F6E1F2C007D1FDE /* QuickTransactionExtension */;
+		};
 		B99700CA2DC9B8D800C7335B /* Exceptions for "iosApp" folder in "iosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -21,6 +61,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		10BA10932F6E1F2C007D1FDE /* QuickTransaction */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				10BA10A72F6E1F2D007D1FDE /* Exceptions for "QuickTransaction" folder in "QuickTransactionExtension" target */,
+			);
+			path = QuickTransaction;
+			sourceTree = "<group>";
+		};
 		B9DA97B32DC1472C00A4DA20 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -37,6 +85,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		10BA108A2F6E1F2C007D1FDE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10BA10922F6E1F2C007D1FDE /* SwiftUI.framework in Frameworks */,
+				10BA10902F6E1F2C007D1FDE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B9DA97AE2DC1472C00A4DA20 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -47,11 +104,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		10BA108E2F6E1F2C007D1FDE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				10BA108F2F6E1F2C007D1FDE /* WidgetKit.framework */,
+				10BA10912F6E1F2C007D1FDE /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B9DA97A82DC1472C00A4DA20 = {
 			isa = PBXGroup;
 			children = (
 				B9DA98002DC14AA900A4DA20 /* Configuration */,
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
+				10BA10932F6E1F2C007D1FDE /* QuickTransaction */,
+				10BA108E2F6E1F2C007D1FDE /* Frameworks */,
 				B9DA97B22DC1472C00A4DA20 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				B9DA97B12DC1472C00A4DA20 /* Masarify.app */,
+				10BA108D2F6E1F2C007D1FDE /* QuickTransactionExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,6 +136,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		10BA108C2F6E1F2C007D1FDE /* QuickTransactionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10BA10A42F6E1F2D007D1FDE /* Build configuration list for PBXNativeTarget "QuickTransactionExtension" */;
+			buildPhases = (
+				10BA10892F6E1F2C007D1FDE /* Sources */,
+				10BA108A2F6E1F2C007D1FDE /* Frameworks */,
+				10BA108B2F6E1F2C007D1FDE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				10BA10932F6E1F2C007D1FDE /* QuickTransaction */,
+			);
+			name = QuickTransactionExtension;
+			packageProductDependencies = (
+			);
+			productName = QuickTransactionExtension;
+			productReference = 10BA108D2F6E1F2C007D1FDE /* QuickTransactionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B9DA97B02DC1472C00A4DA20 /* iosApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "iosApp" */;
@@ -76,10 +167,12 @@
 				B9DA97AE2DC1472C00A4DA20 /* Frameworks */,
 				B9DA97AF2DC1472C00A4DA20 /* Resources */,
 				105EB1B72E86141200AF4685 /* Run Script */,
+				AABB00070000000000000007 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				10BA10A22F6E1F2D007D1FDE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
@@ -98,9 +191,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
+					10BA108C2F6E1F2C007D1FDE = {
+						CreatedOnToolsVersion = 26.2;
+					};
 					B9DA97B02DC1472C00A4DA20 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -112,6 +208,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = B9DA97A82DC1472C00A4DA20;
 			minimizedProjectReferenceProxies = 1;
@@ -121,11 +218,19 @@
 			projectRoot = "";
 			targets = (
 				B9DA97B02DC1472C00A4DA20 /* iosApp */,
+				10BA108C2F6E1F2C007D1FDE /* QuickTransactionExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		10BA108B2F6E1F2C007D1FDE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B9DA97AF2DC1472C00A4DA20 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -176,6 +281,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		10BA10892F6E1F2C007D1FDE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B9DA97AD2DC1472C00A4DA20 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -185,7 +297,83 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		10BA10A22F6E1F2D007D1FDE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 10BA108C2F6E1F2C007D1FDE /* QuickTransactionExtension */;
+			targetProxy = 10BA10A12F6E1F2D007D1FDE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		10BA10A52F6E1F2D007D1FDE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = QuickTransaction/QuickTransaction.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuickTransaction/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuickTransaction;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightfeather.masarify.Masarify.QuickTransaction;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		10BA10A62F6E1F2D007D1FDE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = QuickTransaction/QuickTransaction.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuickTransaction/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuickTransaction;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightfeather.masarify.Masarify.QuickTransaction;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		B9DA97BD2DC1472D00A4DA20 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -314,6 +502,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -335,6 +524,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightfeather.masarify.Masarify;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -348,6 +538,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -368,6 +559,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightfeather.masarify.Masarify;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -377,6 +569,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		10BA10A42F6E1F2D007D1FDE /* Build configuration list for PBXNativeTarget "QuickTransactionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10BA10A52F6E1F2D007D1FDE /* Debug */,
+				10BA10A62F6E1F2D007D1FDE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B9DA97AC2DC1472C00A4DA20 /* Build configuration list for PBXProject "iosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

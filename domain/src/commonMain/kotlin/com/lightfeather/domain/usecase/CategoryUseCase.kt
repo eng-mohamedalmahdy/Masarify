@@ -39,6 +39,13 @@ class GetAllCategories(
     operator fun invoke() = categoryRepository.getAllCategories()
 }
 
+class GetExpenseCategoriesByUsage(
+    private val categoryRepository: CategoryRepository,
+) {
+    operator fun invoke(limit: Int): DomainResult<Flow<List<Category>>> =
+        categoryRepository.getExpenseCategoriesByUsage(limit)
+}
+
 class GetAllCategoryIcons(
     private val repository: CategoryRepository,
     private val attachmentRepository: AttachmentRepository,

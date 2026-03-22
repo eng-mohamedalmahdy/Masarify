@@ -9,6 +9,7 @@ data class TransactionsRoute(
     val openAddDialog: Boolean = false,
     val transactionType: UiTransactionType? = null,
     val fromAccountId: String? = null,
+    val categoryId: String? = null,
 ) : Route() {
     override val routeName: String = "com.lightfeather.masarify.navigation.routes.TransactionsRoute"
 }

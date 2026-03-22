@@ -66,6 +66,7 @@ sealed interface TransactionsPageIntent {
     data class ShowAddDialogWithType(
         val type: UiTransactionType,
         val fromAccountId: String? = null,
+        val categoryId: String? = null,
     ) : TransactionsPageIntent
 
     data class ShowEditDialog(

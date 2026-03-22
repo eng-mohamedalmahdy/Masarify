@@ -105,6 +105,8 @@ kotlin {
             implementation(libs.androidx.paging.common)
             implementation(libs.androidx.paging.compose)
             implementation(libs.androidx.biometric)
+            implementation(libs.androidx.glance.appwidget)
+            implementation(libs.androidx.glance.material3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

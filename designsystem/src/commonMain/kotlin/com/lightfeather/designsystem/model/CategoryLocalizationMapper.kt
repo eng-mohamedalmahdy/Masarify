@@ -39,7 +39,7 @@ fun UiCategory.getLocalizedDescription(): String? =
  * This uses reflection-like approach via when statement to map keys to actual string resources
  */
 @Suppress("CyclomaticComplexMethod") // Large when statement for resource mapping is acceptable
-private fun getStringResourceByKey(key: String): StringResource =
+fun getStringResourceByKey(key: String): StringResource =
     when (key) {
         // Transfer
         "category_transfer" -> MR.strings.category_transfer

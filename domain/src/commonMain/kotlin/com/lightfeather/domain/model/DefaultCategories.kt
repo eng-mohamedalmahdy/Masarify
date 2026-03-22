@@ -21,7 +21,9 @@ enum class DefaultCategory(
         resourceKey = "category_freelance",
         descriptionKey = "category_freelance_desc",
         color = "#8BC34A",
-        icon = "https://img.icons8.com/color/512/freelance.png",
+        icon =
+            "https://img.icons8.com/external-wanicon-flat-wanicon/64/" +
+                "external-freelance-stay-at-home-wanicon-flat-wanicon.png",
     ),
     INVESTMENTS(
         resourceKey = "category_investments",
