@@ -223,4 +223,22 @@ internal sealed interface DashboardPageIntent {
      * Enable biometric from the suggestion dialog and dismiss
      */
     data object EnableBiometricFromSuggestion : DashboardPageIntent
+
+    /**
+     * Toggle inline expand/collapse for a transaction in the timeline
+     *
+     * @property transactionId The ID of the transaction to toggle
+     */
+    data class ToggleTransactionExpansion(
+        val transactionId: String,
+    ) : DashboardPageIntent
+
+    /**
+     * Delete a transaction directly by ID (from expanded quick action)
+     *
+     * @property transactionId The ID of the transaction to delete
+     */
+    data class DeleteTransactionById(
+        val transactionId: String,
+    ) : DashboardPageIntent
 }

@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.DialogProperties
+import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.atoms.ImageThumbnail
 import com.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
@@ -48,9 +49,11 @@ import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
 import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Clock
 
@@ -137,7 +140,9 @@ fun AddEditTransactionDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = if (transaction == null) "Add Transaction" else "Edit Transaction",
+                        text = if (transaction == null) stringResource(MR.strings.add_transaction) else stringResource(
+                            MR.strings.edit_transaction
+                        ),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                     )
@@ -145,7 +150,7 @@ fun AddEditTransactionDialog(
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Close",
+                            contentDescription = stringResource(MR.strings.close),
                         )
                     }
                 }
@@ -160,7 +165,15 @@ fun AddEditTransactionDialog(
                         Tab(
                             selected = selectedType == type,
                             onClick = { selectedType = type },
-                            text = { Text(type.name) },
+                            text = {
+                                Text(
+                                    when (type) {
+                                        UiTransactionType.EXPENSE -> stringResource(MR.strings.expense)
+                                        UiTransactionType.INCOME -> stringResource(MR.strings.income)
+                                        UiTransactionType.TRANSFER -> stringResource(MR.strings.transfer)
+                                    },
+                                )
+                            },
                         )
                     }
                 }
@@ -182,13 +195,13 @@ fun AddEditTransactionDialog(
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Transaction Name") },
+                        label = { Text(stringResource(MR.strings.transaction_name)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         isError = name.isBlank(),
                         supportingText =
                             if (name.isBlank()) {
-                                { Text("Name is required") }
+                                { Text(stringResource(MR.strings.transaction_name_required)) }
                             } else {
                                 null
                             },
@@ -198,15 +211,15 @@ fun AddEditTransactionDialog(
                     OutlinedTextField(
                         value = amount,
                         onValueChange = { amount = it },
-                        label = { Text("Amount") },
+                        label = { Text(stringResource(MR.strings.enter_amount)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         isError = amount.isBlank() || amount.toDoubleOrNull() == null,
                         supportingText =
                             if (amount.isBlank()) {
-                                { Text("Amount is required") }
+                                { Text(stringResource(MR.strings.transaction_amount_required)) }
                             } else if (amount.toDoubleOrNull() == null) {
-                                { Text("Please enter a valid amount") }
+                                { Text(stringResource(MR.strings.transaction_amount_invalid)) }
                             } else {
                                 null
                             },
@@ -216,7 +229,7 @@ fun AddEditTransactionDialog(
                     OutlinedTextField(
                         value = description,
                         onValueChange = { description = it },
-                        label = { Text("Description (Optional)") },
+                        label = { Text(stringResource(MR.strings.transaction_description)) },
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
                         maxLines = 4,
@@ -232,18 +245,18 @@ fun AddEditTransactionDialog(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "Attachments",
+                                text = stringResource(MR.strings.attachments),
                                 style = MaterialTheme.typography.labelLarge,
                             )
 
                             TextButton(onClick = onPickImages) {
                                 Icon(
                                     imageVector = Icons.Default.AddPhotoAlternate,
-                                    contentDescription = "Add photos",
+                                    contentDescription = stringResource(MR.strings.add_attachment),
                                     modifier = Modifier.size(AppTheme.dimens.icon.size.small),
                                 )
                                 Spacer(modifier = Modifier.size(AppTheme.dimens.extraSmall))
-                                Text("Add Photos")
+                                Text(stringResource(MR.strings.add_attachment))
                             }
                         }
 
@@ -263,7 +276,11 @@ fun AddEditTransactionDialog(
                             }
 
                             Text(
-                                text = "${attachments.size} photo${if (attachments.size != 1) "s" else ""}",
+                                text = if (attachments.size == 1) {
+                                    stringResource(MR.strings.attachments_count_singular)
+                                } else {
+                                    stringResource(MR.strings.attachments_count_plural, attachments.size)
+                                },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.outline,
                             )
@@ -320,7 +337,7 @@ fun AddEditTransactionDialog(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f),
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(MR.strings.cancel))
                     }
 
                     PrimaryButton(
@@ -349,7 +366,7 @@ fun AddEditTransactionDialog(
                         modifier = Modifier.weight(1f),
                         enabled = isValid,
                     ) {
-                        Text(if (transaction == null) "Add" else "Save")
+                        Text(if (transaction == null) stringResource(MR.strings.add) else stringResource(MR.strings.save))
                     }
                 }
             }
@@ -379,13 +396,13 @@ private fun ExpenseFields(
             value = selectedAccount?.name ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("Source Account") },
+            label = { Text(stringResource(MR.strings.source_account)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = accountExpanded) },
             modifier = Modifier.fillMaxWidth().menuAnchor(),
             isError = selectedAccount == null,
             supportingText =
                 if (selectedAccount == null) {
-                    { Text("Please select an account") }
+                    { Text(stringResource(MR.strings.transaction_account_required)) }
                 } else {
                     null
                 },
@@ -416,13 +433,13 @@ private fun ExpenseFields(
             value = selectedCategory?.getLocalizedName().orEmpty(),
             onValueChange = {},
             readOnly = true,
-            label = { Text("Category") },
+            label = { Text(stringResource(MR.strings.category)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
             modifier = Modifier.fillMaxWidth().menuAnchor(),
             isError = selectedCategory == null,
             supportingText =
                 if (selectedCategory == null) {
-                    { Text("Please select a category") }
+                    { Text(stringResource(MR.strings.transaction_category_required)) }
                 } else {
                     null
                 },
@@ -467,13 +484,13 @@ private fun IncomeFields(
             value = selectedAccount?.name ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("Target Account") },
+            label = { Text(stringResource(MR.strings.target_account)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = accountExpanded) },
             modifier = Modifier.fillMaxWidth().menuAnchor(),
             isError = selectedAccount == null,
             supportingText =
                 if (selectedAccount == null) {
-                    { Text("Please select an account") }
+                    { Text(stringResource(MR.strings.transaction_account_required)) }
                 } else {
                     null
                 },
@@ -504,13 +521,13 @@ private fun IncomeFields(
             value = selectedCategory?.getLocalizedName() ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("Income Source") },
+            label = { Text(stringResource(MR.strings.income_source)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = sourceExpanded) },
             modifier = Modifier.fillMaxWidth().menuAnchor(),
             isError = selectedCategory == null,
             supportingText =
                 if (selectedCategory == null) {
-                    { Text("Please select an income source") }
+                    { Text(stringResource(MR.strings.transaction_source_required)) }
                 } else {
                     null
                 },
@@ -522,7 +539,7 @@ private fun IncomeFields(
         ) {
             categories.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text(category.name) },
+                    text = { Text(category.getLocalizedName()) },
                     onClick = {
                         onCategorySelected(category)
                         sourceExpanded = false
@@ -559,7 +576,15 @@ private fun TransferFields(
             onValueChange = {},
             readOnly = true,
             enabled = !isFromAccountLocked,
-            label = { Text("From Account" + if (isFromAccountLocked) " (Locked)" else "") },
+            label = {
+                Text(
+                    if (isFromAccountLocked) {
+                        "${stringResource(MR.strings.from_account)} (${stringResource(MR.strings.locked)})"
+                    } else {
+                        stringResource(MR.strings.from_account)
+                    },
+                )
+            },
             trailingIcon = {
                 if (!isFromAccountLocked) {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = fromExpanded)
@@ -571,7 +596,7 @@ private fun TransferFields(
             isError = selectedFromAccount == null,
             supportingText =
                 if (selectedFromAccount == null) {
-                    { Text("Please select an account") }
+                    { Text(stringResource(MR.strings.transaction_account_required)) }
                 } else {
                     null
                 },
@@ -605,20 +630,18 @@ private fun TransferFields(
             value = selectedToAccount?.name ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("To Account") },
+            label = { Text(stringResource(MR.strings.to_account)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = toExpanded) },
             modifier = Modifier.fillMaxWidth().menuAnchor(),
             isError = selectedToAccount == null || selectedToAccount == selectedFromAccount,
             supportingText =
-                when {
-                    selectedToAccount == null -> {
-                        { Text("Please select an account") }
+                when (selectedToAccount) {
+                    null -> {
+                        { Text(stringResource(MR.strings.transaction_account_required)) }
                     }
-
-                    selectedToAccount == selectedFromAccount -> {
-                        { Text("Target account must be different") }
+                    selectedFromAccount -> {
+                        { Text(stringResource(MR.strings.transfer_accounts_same)) }
                     }
-
                     else -> null
                 },
         )
@@ -644,13 +667,13 @@ private fun TransferFields(
     OutlinedTextField(
         value = transferFee,
         onValueChange = onTransferFeeChanged,
-        label = { Text("Transfer Fee") },
+        label = { Text(stringResource(MR.strings.transfer_fee)) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         isError = transferFee.toDoubleOrNull() == null,
         supportingText =
             if (transferFee.toDoubleOrNull() == null) {
-                { Text("Please enter a valid fee amount") }
+                { Text(stringResource(MR.strings.transfer_fee_invalid)) }
             } else {
                 null
             },

@@ -30,6 +30,7 @@ class TransactionsRepositoryImpl(
 
     override suspend fun createTransaction(transaction: Transaction): DomainResult<Int> =
         runCatchingDomainResultSuspend {
+            require(transaction.isFeasible()) { "Transaction would result in negative balance" }
             val transactionCategories =
                 when (transaction) {
                     is Transaction.Expense -> transaction.categories
@@ -255,6 +256,7 @@ class TransactionsRepositoryImpl(
             }
         }
 
+    @Suppress("CyclomaticComplexMethod") // Complexity stems from multi-type transaction reversal and feasibility checks
     override suspend fun updateTransaction(newTransaction: Transaction): DomainResult<Boolean> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
@@ -270,6 +272,21 @@ class TransactionsRepositoryImpl(
                     val oldTransaction =
                         oldTransactionRows.toDomainTransactions().firstOrNull()
                             ?: error("Transaction not found: ${newTransaction.id}")
+
+                    // Check feasibility using the balance restored after reversing the old transaction
+                    val restoredBalance =
+                        if (oldTransaction.account.id == newTransaction.account.id) {
+                            oldTransaction.accountOldBalance
+                        } else {
+                            newTransaction.account.balance
+                        }
+                    val newTransactionFeasible =
+                        when (newTransaction) {
+                            is Transaction.Income -> true
+                            is Transaction.Expense -> restoredBalance >= newTransaction.amount
+                            is Transaction.Transfer -> restoredBalance >= newTransaction.amount + newTransaction.fee
+                        }
+                    require(newTransactionFeasible) { "Transaction would result in negative balance" }
 
                     // Reverse old transaction's effect on account balance(s)
                     when (oldTransaction) {

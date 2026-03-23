@@ -82,12 +82,14 @@
     <string name="delete_category">حذف الفئة</string>
 
     <!-- Common Actions -->
+    <string name="add">إضافة</string>
     <string name="apply">تطبيق</string>
     <string name="clear">مسح</string>
     <string name="duplicate">تكرار</string>
     <string name="save">حفظ</string>
     <string name="submit">إرسال</string>
     <string name="total">المجموع</string>
+    <string name="locked">مقفل</string>
 
     <!-- App Strings -->
     <string name="app_name">مصاريفي</string>
@@ -298,6 +300,7 @@
     <string name="transaction_date">التاريخ</string>
     <string name="transaction_time">الوقت</string>
     <string name="transaction_description">الوصف (اختياري)</string>
+    <string name="transaction_description_label">الوصف</string>
     <string name="enter_transaction_description">أدخل الوصف</string>
     <string name="source_account">حساب المصدر</string>
     <string name="target_account">الحساب الهدف</string>
@@ -309,9 +312,12 @@
     <string name="select_categories">اختر الفئات</string>
     <string name="income_source">مصدر الدخل</string>
     <string name="expense_categories">فئات المصروفات</string>
+    <string name="category">الفئة</string>
     <string name="attachments">المرفقات</string>
     <string name="add_attachment">إضافة مرفق</string>
     <string name="remove_attachment">إزالة المرفق</string>
+    <string name="attachments_count_singular">صورة واحدة</string>
+    <string name="attachments_count_plural">%d صور</string>
 
     <!-- Filter Dialog -->
     <string name="advanced_filters">ترشيحات متقدمة</string>

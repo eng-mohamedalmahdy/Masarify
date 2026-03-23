@@ -533,6 +533,16 @@ private fun DashboardListPane(
                 onMarkerDelete = { sessionId ->
                     onIntent(DashboardPageIntent.DeleteStartOverSession(sessionId))
                 },
+                transactionAttachments = state.transactionAttachments,
+                onTransactionToggle = { id ->
+                    onIntent(DashboardPageIntent.ToggleTransactionExpansion(id))
+                },
+                onTransactionEdit = { tx ->
+                    onIntent(DashboardPageIntent.NavigateToTransaction(tx))
+                },
+                onTransactionDelete = { tx ->
+                    onIntent(DashboardPageIntent.DeleteTransactionById(tx.id))
+                },
             )
         }
     }

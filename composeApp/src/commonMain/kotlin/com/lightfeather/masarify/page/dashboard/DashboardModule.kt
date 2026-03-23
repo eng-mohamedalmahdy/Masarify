@@ -15,6 +15,7 @@ val dashboardModule =
                 getFilteredTransactionsPaged = get(),
                 getFilteredTransactions = get(),
                 getAllCategories = get(),
+                getAllTransactions = get(),
                 deleteTransaction = get(),
                 updateTransaction = get(),
                 attachmentRepository = get(),

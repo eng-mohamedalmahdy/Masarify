@@ -32,6 +32,7 @@ import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.domain.usecase.GetAllFinancialSessions
+import com.lightfeather.domain.usecase.GetAllTransactions
 import com.lightfeather.domain.usecase.GetFilteredTransactions
 import com.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
@@ -62,6 +63,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -100,6 +104,7 @@ internal class DashboardPageViewModel(
     private val getFilteredTransactionsPaged: GetFilteredTransactionsPaged,
     private val getFilteredTransactions: GetFilteredTransactions,
     private val getAllCategories: GetAllCategories,
+    private val getAllTransactions: GetAllTransactions,
     private val deleteTransaction: DeleteTransaction,
     private val updateTransaction: UpdateTransaction,
     private val attachmentRepository: AttachmentRepository,
@@ -152,6 +157,9 @@ internal class DashboardPageViewModel(
             is DashboardPageIntent.DismissBiometricSuggestion ->
                 _state.update { it.copy(showBiometricSuggestion = false) }
             is DashboardPageIntent.EnableBiometricFromSuggestion -> enableBiometricFromSuggestion()
+            is DashboardPageIntent.ToggleTransactionExpansion ->
+                toggleTransactionExpansion(intent.transactionId)
+            is DashboardPageIntent.DeleteTransactionById -> deleteTransactionById(intent.transactionId)
         }
     }
 
@@ -184,6 +192,35 @@ internal class DashboardPageViewModel(
 
             // Calculate spending analytics
             calculateSpendingAnalytics()
+
+            // Observe transaction changes and refresh automatically
+            setupReactiveTransactionObserver()
+        }
+    }
+
+    private suspend fun refreshDashboardData() {
+        loadRecentTransactions()
+        buildRecentTimeline()
+        calculateSpendingAnalytics()
+        loadWealthAndCurrencies()
+    }
+
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    private fun setupReactiveTransactionObserver() {
+        viewModelScope.launch {
+            try {
+                when (val result = getAllTransactions()) {
+                    is DomainResult.Success -> {
+                        result.data
+                            .drop(1)
+                            .debounce(300)
+                            .collectLatest { refreshDashboardData() }
+                    }
+                    is DomainResult.Failure -> Unit
+                }
+            } catch (e: Exception) {
+                Napier.e("Failed to set up reactive transaction observer", e)
+            }
         }
     }
 
@@ -670,9 +707,7 @@ internal class DashboardPageViewModel(
                 onSuccess = {
                     _state.update { it.copy(showAddEditDialog = false, underProcessTransaction = null) }
                     SnackbarService.sendSuccessMessage(MR.strings.transaction_delete_success)
-                    // Reload data
-                    loadRecentTransactions()
-                    calculateSpendingAnalytics()
+                    refreshDashboardData()
                 },
                 onFailure = {
                     _state.update { it.copy(showAddEditDialog = false) }
@@ -694,13 +729,7 @@ internal class DashboardPageViewModel(
                     _state.update { it.copy(showAddEditDialog = false, underProcessTransaction = null) }
                     SnackbarService.sendSuccessMessage(MR.strings.transaction_update_success)
                     viewModelScope.launch {
-                        // Reload data
-                        launch {
-                            loadRecentTransactions()
-                        }
-                        launch {
-                            calculateSpendingAnalytics()
-                        }
+                        refreshDashboardData()
                     }
                 },
                 onFailure = {
@@ -1084,9 +1113,8 @@ internal class DashboardPageViewModel(
                         _state.update { it.copy(showFixBalanceDialog = false, fixBalanceAccount = null) }
                         SnackbarService.sendSuccessMessage(MR.strings.fix_balance_success)
                         viewModelScope.launch {
-                            launch { loadRecentTransactions() }
-                            launch { calculateSpendingAnalytics() }
-                            launch { loadAccounts() }
+                            loadAccounts()
+                            refreshDashboardData()
                         }
                     },
                     onFailure = {
@@ -1097,6 +1125,50 @@ internal class DashboardPageViewModel(
             } catch (e: Exception) {
                 SnackbarService.sendErrorMessage(MR.strings.fix_balance_failure)
             }
+        }
+    }
+
+    // --------------- Transaction Expand Feature ---------------
+
+    private fun toggleTransactionExpansion(transactionId: String) {
+        val wasExpanded =
+            _state.value.recentTimelineItems
+                .filterIsInstance<TransactionListItem.TransactionEntry>()
+                .find { it.transaction.id == transactionId }
+                ?.isExpanded ?: false
+
+        _state.update { state ->
+            state.copy(
+                recentTimelineItems =
+                    state.recentTimelineItems.map { item ->
+                        if (item is TransactionListItem.TransactionEntry &&
+                            item.transaction.id == transactionId
+                        ) {
+                            item.copy(isExpanded = !wasExpanded)
+                        } else {
+                            item
+                        }
+                    },
+            )
+        }
+
+        // Lazy-load attachments the first time we expand
+        if (!wasExpanded && _state.value.transactionAttachments[transactionId] == null) {
+            loadAttachments(transactionId)
+        }
+    }
+
+    private fun deleteTransactionById(transactionId: String) {
+        viewModelScope.launch {
+            deleteTransaction(transactionId.toLong()).foldSuspend(
+                onSuccess = {
+                    SnackbarService.sendSuccessMessage(MR.strings.transaction_delete_success)
+                    refreshDashboardData()
+                },
+                onFailure = {
+                    SnackbarService.sendErrorMessage(MR.strings.transaction_delete_failure)
+                },
+            )
         }
     }
 

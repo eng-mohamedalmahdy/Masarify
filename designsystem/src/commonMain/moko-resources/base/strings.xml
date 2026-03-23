@@ -82,12 +82,14 @@
     <string name="delete_category">Delete Category</string>
 
     <!-- Common Actions -->
+    <string name="add">Add</string>
     <string name="apply">Apply</string>
     <string name="clear">Clear</string>
     <string name="duplicate">Duplicate</string>
     <string name="save">Save</string>
     <string name="submit">Submit</string>
     <string name="total">Total</string>
+    <string name="locked">Locked</string>
 
     <!-- App Strings (Moved from composeApp) -->
     <string name="app_name">Masarify</string>
@@ -298,6 +300,7 @@
     <string name="transaction_date">Date</string>
     <string name="transaction_time">Time</string>
     <string name="transaction_description">Description (Optional)</string>
+    <string name="transaction_description_label">Description</string>
     <string name="enter_transaction_description">Enter description</string>
     <string name="source_account">Source Account</string>
     <string name="target_account">Target Account</string>
@@ -309,9 +312,12 @@
     <string name="select_categories">Select Categories</string>
     <string name="income_source">Income Source</string>
     <string name="expense_categories">Expense Categories</string>
+    <string name="category">Category</string>
     <string name="attachments">Attachments</string>
     <string name="add_attachment">Add Attachment</string>
     <string name="remove_attachment">Remove Attachment</string>
+    <string name="attachments_count_singular">1 photo</string>
+    <string name="attachments_count_plural">%d photos</string>
 
     <!-- Filter Dialog -->
     <string name="advanced_filters">Advanced Filters</string>

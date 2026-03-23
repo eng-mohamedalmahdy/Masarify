@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import com.lightfeather.designsystem.component.organisms.listitem.StartOverMarkerItem
 import com.lightfeather.designsystem.component.organisms.listitem.TransactionItem
 import com.lightfeather.designsystem.model.TransactionListItem
+import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiFinancialSession
 import com.lightfeather.designsystem.model.UiTransaction
 import com.lightfeather.designsystem.theme.AppTheme
@@ -31,6 +32,10 @@ fun TransactionTimeline(
     onMarkerEdit: (UiFinancialSession) -> Unit,
     onMarkerDelete: (String) -> Unit,
     modifier: Modifier = Modifier,
+    transactionAttachments: Map<String, List<UiAttachment>> = emptyMap(),
+    onTransactionToggle: ((transactionId: String) -> Unit)? = null,
+    onTransactionEdit: ((UiTransaction) -> Unit)? = null,
+    onTransactionDelete: ((UiTransaction) -> Unit)? = null,
 ) {
     val lineColor = AppTheme.colors.primary.copy(alpha = 0.25f)
 
@@ -47,6 +52,11 @@ fun TransactionTimeline(
                         TransactionItem(
                             transaction = item.transaction,
                             modifier = Modifier.fillMaxWidth(),
+                            isExpanded = item.isExpanded,
+                            attachments = transactionAttachments[item.transaction.id] ?: emptyList(),
+                            onToggle = onTransactionToggle?.let { { it(item.transaction.id) } },
+                            onEdit = onTransactionEdit?.let { { it(item.transaction) } },
+                            onDelete = onTransactionDelete?.let { { it(item.transaction) } },
                             onClick = { onTransactionClick(item.transaction) },
                         )
 
@@ -121,6 +131,10 @@ fun TransactionTimelineColumn(
     onMarkerEdit: (UiFinancialSession) -> Unit,
     onMarkerDelete: (String) -> Unit,
     modifier: Modifier = Modifier,
+    transactionAttachments: Map<String, List<UiAttachment>> = emptyMap(),
+    onTransactionToggle: ((transactionId: String) -> Unit)? = null,
+    onTransactionEdit: ((UiTransaction) -> Unit)? = null,
+    onTransactionDelete: ((UiTransaction) -> Unit)? = null,
 ) {
     val lineColor = AppTheme.colors.primary.copy(alpha = 0.25f)
 
@@ -132,6 +146,11 @@ fun TransactionTimelineColumn(
                         TransactionItem(
                             transaction = item.transaction,
                             modifier = Modifier.fillMaxWidth(),
+                            isExpanded = item.isExpanded,
+                            attachments = transactionAttachments[item.transaction.id] ?: emptyList(),
+                            onToggle = onTransactionToggle?.let { { it(item.transaction.id) } },
+                            onEdit = onTransactionEdit?.let { { it(item.transaction) } },
+                            onDelete = onTransactionDelete?.let { { it(item.transaction) } },
                             onClick = { onTransactionClick(item.transaction) },
                         )
 
