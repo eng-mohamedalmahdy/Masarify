@@ -13,4 +13,5 @@ data class Account(
     val color: String,
     val logo: String?,
     val id: Int = -1,
+    val isDefault: Boolean = false,
 )

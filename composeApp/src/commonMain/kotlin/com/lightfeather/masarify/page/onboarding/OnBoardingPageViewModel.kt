@@ -6,13 +6,17 @@ import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.domain.model.Account
+import com.lightfeather.domain.model.BankName
 import com.lightfeather.domain.model.DomainResult.Success
 import com.lightfeather.domain.model.UserData
+import com.lightfeather.domain.usecase.BankNameUseCase
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.GetAllCurrencies
+import com.lightfeather.domain.usecase.SetDefaultAccount
 import com.lightfeather.domain.usecase.UpsertUserData
 import com.lightfeather.masarify.mappers.toCurrency
+import com.lightfeather.masarify.mappers.toUiBankName
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
@@ -30,6 +34,9 @@ class OnBoardingPageViewModel(
     private val upsertUserData: UpsertUserData,
     private val navigator: Navigator,
     private val getAllCurrencies: GetAllCurrencies,
+    private val getAllBankNames: BankNameUseCase.GetAllBankNames,
+    private val createBankName: BankNameUseCase.CreateBankName,
+    private val setDefaultAccount: SetDefaultAccount,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OnBoardingPageState())
     internal val state: StateFlow<OnBoardingPageState> = _state
@@ -48,6 +55,18 @@ class OnBoardingPageViewModel(
                 },
             )
         }
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            getAllBankNames().foldSuspend(
+                onSuccess = { bankNamesFlow ->
+                    bankNamesFlow.map { it.map { it.toUiBankName() } }.collect { banks ->
+                        _state.value = _state.value.copy(availableBanks = banks, selectedBank = banks.firstOrNull())
+                    }
+                },
+                onFailure = {
+                    SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+                },
+            )
+        }
     }
 
     internal fun onIntent(intent: OnBoardingPageIntent) {
@@ -61,6 +80,40 @@ class OnBoardingPageViewModel(
             is OnBoardingPageIntent.UpdateAccountBalance ->
                 _state.value =
                     _state.value.copy(accountBalance = intent.balance)
+
+            is OnBoardingPageIntent.SelectBank -> {
+                _state.value =
+                    _state.value.copy(
+                        selectedBank = intent.bank,
+                        accountLogo = intent.bank.logoUrl.orEmpty(),
+                    )
+            }
+
+            is OnBoardingPageIntent.AddNewBank -> {
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    val newBank =
+                        BankName(
+                            name = intent.bankName,
+                            resourceKey = null,
+                            logoUrl = null,
+                            isDefault = false,
+                        )
+                    createBankName(newBank).fold(
+                        onSuccess = { bankId ->
+                            val uiBankName = newBank.copy(id = bankId).toUiBankName()
+                            _state.value =
+                                _state.value.copy(
+                                    selectedBank = uiBankName,
+                                    accountLogo = "",
+                                    availableBanks = _state.value.availableBanks + uiBankName,
+                                )
+                        },
+                        onFailure = {
+                            SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+                        },
+                    )
+                }
+            }
 
             OnBoardingPageIntent.Submit -> {
                 val stateSnapshot = _state.value
@@ -86,7 +139,7 @@ class OnBoardingPageViewModel(
                             createCurrencyResult.flatMapSuspend { currencyId ->
                                 val toBeCreateAccount =
                                     Account(
-                                        name = stateSnapshot.accountName,
+                                        name = stateSnapshot.selectedBank?.name.orEmpty(),
                                         currency = toBeCreateCurrency.copy(id = currencyId),
                                         description = "",
                                         balance = stateSnapshot.accountBalance.toDouble(),
@@ -103,11 +156,12 @@ class OnBoardingPageViewModel(
                     val (createAccountResult, upsertUserDataResult) = awaitAll(createAccountJob, upsertUserDataJob)
                     createAccountResult
                         .flatMap { accountId ->
-                            upsertUserDataResult.flatMap { userDataId ->
-                                Success(Unit)
+                            upsertUserDataResult.flatMap {
+                                Success(accountId)
                             }
-                        }.fold(
-                            onSuccess = {
+                        }.foldSuspend(
+                            onSuccess = { accountId ->
+                                setDefaultAccount(accountId as Int)
                                 navigator.navigateAndClearBackStack(DashboardRoute)
                                 SnackbarService.sendSuccessMessage(MR.strings.app_slogan)
                             },

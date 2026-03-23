@@ -32,3 +32,15 @@ class GetBankAccountById(
 ) {
     suspend operator fun invoke(accountId: Int) = repository.getAccountById(accountId)
 }
+
+class SetDefaultAccount(
+    private val repository: AccountRepository,
+) {
+    suspend operator fun invoke(accountId: Int) = repository.setDefaultAccount(accountId)
+}
+
+class GetDefaultAccount(
+    private val repository: AccountRepository,
+) {
+    operator fun invoke() = repository.getDefaultAccount()
+}

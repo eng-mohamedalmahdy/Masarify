@@ -61,6 +61,11 @@ enum class DefaultBankName(
     // ============================
 
     /**
+     * Represents a cash account (no bank).
+     */
+    CASH("bank_cash"),
+
+    /**
      * Represents a custom bank name entered by the user (not a pre-seeded bank).
      */
     CUSTOM("bank_custom"),

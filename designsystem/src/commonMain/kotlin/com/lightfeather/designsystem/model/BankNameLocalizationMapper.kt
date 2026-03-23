@@ -70,6 +70,7 @@ private fun getBankStringResourceByKey(key: String): StringResource =
         // SPECIAL OPTIONS
         // ============================
 
+        "bank_cash" -> MR.strings.bank_cash
         "bank_custom" -> MR.strings.bank_custom
 
         // Fallback - return custom as default

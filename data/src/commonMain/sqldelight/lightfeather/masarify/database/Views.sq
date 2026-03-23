@@ -91,6 +91,7 @@ SELECT
     a.color       AS accountColor,
     a.logo        AS accountLogo,
     a.currency    AS accountCurrencyId,
+    a.is_default  AS accountIsDefault,
 
     c.id          AS currencyId,
     c.name        AS currencyName,

@@ -25,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -60,7 +61,7 @@ fun CreateBankAccountPage(
     account: UiBankAccount,
     viewModel: CreateBankAccountPageViewModel =
         koinViewModel(
-            key = account.id, // Use account ID as unique key for ViewModel instances
+            key = account.id,
             parameters = { parametersOf(account) },
         ),
     onBack: () -> Unit,
@@ -110,6 +111,52 @@ internal fun CreateBankAccountPageContent(
             modifier = Modifier.fillMaxWidth(),
         )
 
+        // Bank Selection Dropdown
+        AppDropMenu(
+            label = stringResource(MR.strings.select_bank),
+            displayedValue =
+                state.selectedBank?.getLocalizedName()
+                    ?: stringResource(MR.strings.select_bank),
+            items = state.availableBanks,
+            onSelectedItem = { bank ->
+                onIntent(CreateBankAccountPageIntent.SelectBank(bank))
+            },
+            searchFunction = { banks, query ->
+                banks.filter { bank ->
+                    bank.name.contains(query, ignoreCase = true)
+                }
+            },
+            footerContent = { searchQuery ->
+                TextButton(
+                    onClick = {
+                        if (searchQuery.isNotBlank()) {
+                            onIntent(CreateBankAccountPageIntent.AddNewBank(searchQuery))
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(MR.strings.add_new_bank_description),
+                        )
+                        Text(stringResource(MR.strings.add_new_bank))
+                    }
+                }
+            },
+            contentRow = { bank ->
+                Text(
+                    text = bank.getLocalizedName(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = AppTheme.dimens.small),
+                )
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
+
         // Description Field
         TextField(
             value = state.description,
@@ -125,9 +172,7 @@ internal fun CreateBankAccountPageContent(
             onValueChange = { onIntent(CreateBankAccountPageIntent.UpdateInitialBalance(it)) },
             label =
                 if (state.inEditMode) {
-                    stringResource(
-                        MR.strings.current_balance,
-                    )
+                    stringResource(MR.strings.current_balance)
                 } else {
                     stringResource(MR.strings.initial_balance)
                 },
@@ -256,6 +301,22 @@ internal fun CreateBankAccountPageContent(
             modifier = Modifier.fillMaxWidth(),
         )
 
+        // Default Account Toggle
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = stringResource(MR.strings.set_as_default_account),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Switch(
+                checked = state.isDefault,
+                onCheckedChange = { onIntent(CreateBankAccountPageIntent.ToggleDefault) },
+            )
+        }
+
         Spacer(modifier = Modifier.height(AppTheme.dimens.large))
 
         // Submit Button
@@ -270,9 +331,7 @@ internal fun CreateBankAccountPageContent(
             Text(
                 text =
                     if (state.inEditMode) {
-                        stringResource(
-                            MR.strings.update_account,
-                        )
+                        stringResource(MR.strings.update_account)
                     } else {
                         stringResource(MR.strings.create_account)
                     },

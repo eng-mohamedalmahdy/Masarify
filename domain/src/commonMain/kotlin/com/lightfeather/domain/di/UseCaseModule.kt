@@ -1,6 +1,7 @@
 package com.lightfeather.domain.di
 
 import com.lightfeather.domain.model.transaction.Transaction
+import com.lightfeather.domain.usecase.BankNameUseCase
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCategory
 import com.lightfeather.domain.usecase.CreateCurrency
@@ -20,6 +21,7 @@ import com.lightfeather.domain.usecase.GetAllFinancialSessions
 import com.lightfeather.domain.usecase.GetAllTransactions
 import com.lightfeather.domain.usecase.GetAllTransactionsOfTypePaged
 import com.lightfeather.domain.usecase.GetAllTransactionsPaged
+import com.lightfeather.domain.usecase.GetDefaultAccount
 import com.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
 import com.lightfeather.domain.usecase.GetExpenseCategoriesByUsage
 import com.lightfeather.domain.usecase.GetFilteredTransactionCount
@@ -41,6 +43,7 @@ import com.lightfeather.domain.usecase.SeedApplicationData
 import com.lightfeather.domain.usecase.SeedDefaultBankNames
 import com.lightfeather.domain.usecase.SeedDefaultCategories
 import com.lightfeather.domain.usecase.SeedDefaultCurrencies
+import com.lightfeather.domain.usecase.SetDefaultAccount
 import com.lightfeather.domain.usecase.SetLanguage
 import com.lightfeather.domain.usecase.ToggleDarkMode
 import com.lightfeather.domain.usecase.UpdateAccount
@@ -96,6 +99,10 @@ val useCaseModule =
         factory { SeedDefaultBankNames(get()) }
         factory { SeedApplicationData(get(), get(), get(), get()) }
         factory { CreateAccount(get()) }
+        factory { SetDefaultAccount(get()) }
+        factory { GetDefaultAccount(get()) }
+        factory { BankNameUseCase.GetAllBankNames(get()) }
+        factory { BankNameUseCase.CreateBankName(get()) }
         factory { GetAllCurrencies(get()) }
         factory { GetAllCurrenciesExchangeRates(get()) }
         factory { CreateCurrency(get(), get()) }

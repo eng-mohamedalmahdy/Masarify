@@ -48,6 +48,7 @@ fun OnBoardingPage(viewModel: OnBoardingPageViewModel = koinViewModel()) {
     )
 }
 
+@Suppress("LongMethod")
 @Composable
 internal fun OnBoardingPageContent(
     state: OnBoardingPageState,
@@ -100,12 +101,55 @@ internal fun OnBoardingPageContent(
                     modifier = Modifier.fillMaxWidth(),
                     label = stringResource(MR.strings.user_name),
                 )
-                TextField(
-                    value = state.accountName,
-                    onValueChange = { onIntent(OnBoardingPageIntent.UpdateAccountName(it)) },
+//                TextField(
+//                    value = state.accountName,
+//                    onValueChange = { onIntent(OnBoardingPageIntent.UpdateAccountName(it)) },
+//                    modifier = Modifier.fillMaxWidth(),
+//                    label = stringResource(MR.strings.account_name),
+//                )
+
+                // Bank Selection Dropdown
+                AppDropMenu(
+                    label = stringResource(MR.strings.select_bank),
+                    displayedValue = state.selectedBank?.getLocalizedName().orEmpty(),
+                    items = state.availableBanks,
                     modifier = Modifier.fillMaxWidth(),
-                    label = stringResource(MR.strings.account_name),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerShape = MaterialTheme.shapes.medium,
+                    labelColor = MaterialTheme.colorScheme.onSurface,
+                    onSelectedItem = { onIntent(OnBoardingPageIntent.SelectBank(it)) },
+                    contentRow = {
+                        Text(
+                            text = it.getLocalizedName(),
+                            modifier = Modifier.padding(vertical = AppTheme.dimens.small),
+                        )
+                    },
+                    searchFunction = { banks, query ->
+                        banks.filter { it.name.contains(query, true) }
+                    },
+                    footerContent = { searchQuery ->
+                        TextButton(
+                            onClick = {
+                                if (searchQuery.isNotBlank()) {
+                                    onIntent(OnBoardingPageIntent.AddNewBank(searchQuery))
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = stringResource(MR.strings.add_new_bank_description),
+                                )
+                                Text(stringResource(MR.strings.add_new_bank))
+                            }
+                        }
+                    },
                 )
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Top,

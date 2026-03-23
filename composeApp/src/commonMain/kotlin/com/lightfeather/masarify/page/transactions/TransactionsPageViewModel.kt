@@ -20,6 +20,7 @@ import com.lightfeather.domain.usecase.DeleteTransaction
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.domain.usecase.GetAllCurrenciesExchangeRates
+import com.lightfeather.domain.usecase.GetDefaultAccount
 import com.lightfeather.domain.usecase.GetUsedCurrencies
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import com.lightfeather.domain.usecase.UpdateTransaction
@@ -72,6 +73,7 @@ class TransactionsPageViewModel(
     private val attachmentRepository: AttachmentRepository,
     private val getWealthWorthInCurrency: GetWealthWorthInCurrency,
     private val exchangeRates: GetAllCurrenciesExchangeRates,
+    private val getDefaultAccount: GetDefaultAccount,
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(
@@ -106,6 +108,16 @@ class TransactionsPageViewModel(
                     _state.update { it.copy(selectedCurrency = currencies.firstOrNull()) }
                 }
             }
+        }
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            getDefaultAccount().foldSuspend(
+                onSuccess = { defaultAccountFlow ->
+                    defaultAccountFlow.collect { account ->
+                        _state.update { it.copy(defaultAccount = account?.toUiBankAccount()) }
+                    }
+                },
+                onFailure = { },
+            )
         }
     }
 

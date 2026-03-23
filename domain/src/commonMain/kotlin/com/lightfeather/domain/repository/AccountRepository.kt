@@ -14,4 +14,8 @@ interface AccountRepository {
     suspend fun getAccountById(id: Int): DomainResult<Account>
 
     fun getAccounts(): DomainResult<Flow<List<Account>>>
+
+    suspend fun setDefaultAccount(accountId: Int): DomainResult<Boolean>
+
+    fun getDefaultAccount(): DomainResult<Flow<Account?>>
 }

@@ -31,6 +31,7 @@ data class TransactionsPageState(
     val editingTransaction: UiTransactionDetails? = null,
     val lockedFromAccount: UiBankAccount? = null,
     val initialCategory: UiCategory? = null,
+    val defaultAccount: UiBankAccount? = null,
     // Reference data
     val accounts: Flow<List<UiBankAccount>> = emptyFlow(),
     val categories: Flow<List<UiCategory>> = emptyFlow(),

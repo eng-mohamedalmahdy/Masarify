@@ -1,5 +1,6 @@
 package com.lightfeather.masarify.page.createbankaccount
 
+import com.lightfeather.designsystem.model.UiBankName
 import com.lightfeather.designsystem.model.UiCurrency
 
 data class CreateBankAccountPageState(
@@ -13,6 +14,9 @@ data class CreateBankAccountPageState(
     val isLoading: Boolean = false,
     val availableCurrencies: List<UiCurrency> = emptyList(),
     val savedColors: List<String> = emptyList(),
+    val selectedBank: UiBankName? = null,
+    val availableBanks: List<UiBankName> = emptyList(),
+    val isDefault: Boolean = false,
 ) {
     val inEditMode: Boolean get() = accountId != null
 }

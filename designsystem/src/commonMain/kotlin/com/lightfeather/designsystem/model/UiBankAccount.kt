@@ -11,6 +11,7 @@ data class UiBankAccount(
     val currency: UiCurrency,
     val color: String,
     val image: String?,
+    val isDefault: Boolean = false,
 ) {
     companion object {
         val dummy =

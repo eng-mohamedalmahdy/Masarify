@@ -179,6 +179,11 @@
     <string name="select_currency">Select Currency</string>
     <string name="add_new_currency">Add New Currency</string>
     <string name="add_new_currency_description">Add new currency</string>
+    <string name="select_bank">Select Bank</string>
+    <string name="add_new_bank">Add New Bank</string>
+    <string name="add_new_bank_description">Add custom bank</string>
+    <string name="set_as_default_account">Set as default account</string>
+    <string name="default_account">Default Account</string>
     <string name="create_account">Create Account</string>
     <string name="update_account">Update Account</string>
 
@@ -571,6 +576,7 @@
     <string name="bank_deutsche_bank">Deutsche Bank</string>
 
     <!-- Special -->
+    <string name="bank_cash">Cash</string>
     <string name="bank_custom">Custom Bank</string>
     <string name="select_icon">Select Icon</string>
 

@@ -264,6 +264,7 @@ internal fun TransactionsPageContent(
             AddEditTransactionDialog(
                 transaction = state.editingTransaction,
                 lockedFromAccount = state.lockedFromAccount,
+                initialAccount = state.defaultAccount,
                 initialCategory = state.initialCategory,
                 accounts = accounts,
                 categories = categories,

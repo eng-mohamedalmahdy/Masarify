@@ -5,19 +5,21 @@ CREATE TABLE  IF NOT EXISTS  bank_accounts (
   description TEXT,
   balance REAL NOT NULL DEFAULT  0.0,
   color TEXT NOT NULL,
-  logo TEXT
+  logo TEXT,
+  is_default INTEGER NOT NULL DEFAULT 0
 );
 
 insertBankAccount:
-INSERT INTO bank_accounts (currency, name, description, balance, color, logo)
-VALUES (:currency, :name, :description, :balance, :color, :logo);
+INSERT INTO bank_accounts (currency, name, description, balance, color, logo, is_default)
+VALUES (:currency, :name, :description, :balance, :color, :logo, :isDefault);
 
 updateAccount:
 UPDATE bank_accounts
-SET balance = :balance,
-    name    = :name,
-    color   = :color,
-    logo    = :logo
+SET balance    = :balance,
+    name       = :name,
+    color      = :color,
+    logo       = :logo,
+    is_default = :isDefault
 WHERE id = :id;
 
 updateAccountBalance:
@@ -29,6 +31,11 @@ deleteAccount:
 DELETE FROM bank_accounts
 WHERE id = :id;
 
+clearDefaultAccounts:
+UPDATE bank_accounts SET is_default = 0;
+
+markAccountAsDefault:
+UPDATE bank_accounts SET is_default = 1 WHERE id = :id;
 
 getAllAccounts:
 SELECT * FROM v_accounts;
@@ -37,7 +44,10 @@ getAccountById:
 SELECT * FROM v_accounts
 WHERE accountId = :id;
 
+getDefaultAccount:
+SELECT * FROM v_accounts
+WHERE accountIsDefault = 1
+LIMIT 1;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
-

@@ -1,5 +1,6 @@
 package com.lightfeather.masarify.page.createbankaccount
 
+import com.lightfeather.designsystem.model.UiBankName
 import com.lightfeather.designsystem.model.UiCurrency
 
 sealed interface CreateBankAccountPageIntent {
@@ -30,6 +31,16 @@ sealed interface CreateBankAccountPageIntent {
     data class AddNewCurrency(
         val currency: UiCurrency,
     ) : CreateBankAccountPageIntent
+
+    data class SelectBank(
+        val bank: UiBankName,
+    ) : CreateBankAccountPageIntent
+
+    data class AddNewBank(
+        val bankName: String,
+    ) : CreateBankAccountPageIntent
+
+    data object ToggleDefault : CreateBankAccountPageIntent
 
     data object NavigateBack : CreateBankAccountPageIntent
 

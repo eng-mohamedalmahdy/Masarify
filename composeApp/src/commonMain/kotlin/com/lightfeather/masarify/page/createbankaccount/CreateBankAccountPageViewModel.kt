@@ -8,13 +8,17 @@ import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarServic
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.domain.model.Account
+import com.lightfeather.domain.model.BankName
+import com.lightfeather.domain.usecase.BankNameUseCase
 import com.lightfeather.domain.usecase.CreateAccount
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.GetAllCurrencies
 import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.SaveUserColor
+import com.lightfeather.domain.usecase.SetDefaultAccount
 import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.masarify.mappers.toCurrency
+import com.lightfeather.masarify.mappers.toUiBankName
 import com.lightfeather.masarify.mappers.toUiCurrency
 import com.lightfeather.masarify.navigation.Navigator
 import dev.icerock.moko.resources.StringResource
@@ -24,6 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+@Suppress("LongParameterList")
 class CreateBankAccountPageViewModel(
     private val account: UiBankAccount,
     private val navigator: Navigator,
@@ -33,6 +38,9 @@ class CreateBankAccountPageViewModel(
     private val getUserSavedColors: GetUserSavedColors,
     private val saveColor: SaveUserColor,
     private val createCurrency: CreateCurrency,
+    private val getAllBankNames: BankNameUseCase.GetAllBankNames,
+    private val createBankName: BankNameUseCase.CreateBankName,
+    private val setDefaultAccount: SetDefaultAccount,
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(
@@ -44,6 +52,7 @@ class CreateBankAccountPageViewModel(
                 color = account.color.takeIf { it.isNotEmpty() } ?: "#FFFFFF",
                 logo = account.image.orEmpty(),
                 currency = account.currency.takeIf { it != UiCurrency.empty },
+                isDefault = account.isDefault,
             ),
         )
     internal val state: StateFlow<CreateBankAccountPageState> = _state
@@ -58,8 +67,25 @@ class CreateBankAccountPageViewModel(
                         _state.value = _state.value.copy(availableCurrencies = it)
                     }
                 },
-                onFailure = { error ->
+                onFailure = {
                     SnackbarService.sendErrorMessage(MR.strings.currency_fetch_failure)
+                },
+            )
+        }
+        viewModelScope.launch(Dispatchers.IoDispatcher) {
+            getAllBankNames().foldSuspend(
+                onSuccess = { bankNamesFlow ->
+                    bankNamesFlow.map { it.map { it.toUiBankName() } }.collect { banks ->
+                        val currentLogoMatch = banks.find { it.logoUrl == _state.value.logo }
+                        _state.value =
+                            _state.value.copy(
+                                availableBanks = banks,
+                                selectedBank = currentLogoMatch ?: _state.value.selectedBank,
+                            )
+                    }
+                },
+                onFailure = {
+                    SnackbarService.sendErrorMessage(MR.strings.unknown_error)
                 },
             )
         }
@@ -89,6 +115,44 @@ class CreateBankAccountPageViewModel(
 
             is CreateBankAccountPageIntent.UpdateCurrency -> {
                 _state.value = _state.value.copy(currency = intent.currency)
+            }
+
+            is CreateBankAccountPageIntent.SelectBank -> {
+                _state.value =
+                    _state.value.copy(
+                        selectedBank = intent.bank,
+                        logo = intent.bank.logoUrl.orEmpty(),
+                    )
+            }
+
+            is CreateBankAccountPageIntent.AddNewBank -> {
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    val newBank =
+                        BankName(
+                            name = intent.bankName,
+                            resourceKey = null,
+                            logoUrl = null,
+                            isDefault = false,
+                        )
+                    createBankName(newBank).fold(
+                        onSuccess = { bankId ->
+                            val uiBankName = newBank.copy(id = bankId).toUiBankName()
+                            _state.value =
+                                _state.value.copy(
+                                    selectedBank = uiBankName,
+                                    logo = "",
+                                    availableBanks = _state.value.availableBanks + uiBankName,
+                                )
+                        },
+                        onFailure = {
+                            SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+                        },
+                    )
+                }
+            }
+
+            is CreateBankAccountPageIntent.ToggleDefault -> {
+                _state.value = _state.value.copy(isDefault = !_state.value.isDefault)
             }
 
             is CreateBankAccountPageIntent.NavigateBack -> {
@@ -123,7 +187,6 @@ class CreateBankAccountPageViewModel(
     private fun submitAccount() {
         val stateSnapshot = _state.value
 
-        // Validation
         val validationError = validateAccountInput(stateSnapshot)
         if (validationError != null) {
             SnackbarService.sendErrorMessage(validationError)
@@ -141,32 +204,37 @@ class CreateBankAccountPageViewModel(
                 color = stateSnapshot.color,
                 logo = stateSnapshot.logo,
                 currency = stateSnapshot.currency!!.toCurrency(),
+                isDefault = stateSnapshot.isDefault,
             )
 
-        // Generic catch for unexpected errors - user feedback via SnackbarService
         @Suppress("TooGenericExceptionCaught", "SwallowedException")
         viewModelScope.launch {
             try {
                 if (stateSnapshot.inEditMode) {
-                    updateAccount.invoke(resultAccount).fold(
+                    updateAccount.invoke(resultAccount).foldSuspend(
                         onSuccess = {
+                            if (stateSnapshot.isDefault) {
+                                setDefaultAccount(stateSnapshot.accountId!!.toInt())
+                            }
                             SnackbarService.sendSuccessMessage(MR.strings.account_update_success)
-                            resetState()
                             resetState()
                             navigator.navigateUp()
                         },
-                        onFailure = { error ->
+                        onFailure = {
                             SnackbarService.sendErrorMessage(MR.strings.account_update_failure)
                         },
                     )
                 } else {
-                    createAccount.invoke(resultAccount).fold(
-                        onSuccess = {
+                    createAccount.invoke(resultAccount).foldSuspend(
+                        onSuccess = { accountId ->
+                            if (stateSnapshot.isDefault) {
+                                setDefaultAccount(accountId)
+                            }
                             SnackbarService.sendSuccessMessage(MR.strings.account_create_success)
                             resetState()
                             navigator.navigateUp()
                         },
-                        onFailure = { error ->
+                        onFailure = {
                             SnackbarService.sendErrorMessage(MR.strings.account_create_failure)
                         },
                     )

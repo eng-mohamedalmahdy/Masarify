@@ -1,5 +1,6 @@
 package com.lightfeather.masarify.page.onboarding
 
+import com.lightfeather.designsystem.model.UiBankName
 import com.lightfeather.designsystem.model.UiCurrency
 
 internal sealed interface OnBoardingPageIntent {
@@ -23,5 +24,13 @@ internal sealed interface OnBoardingPageIntent {
 
     data class AddNewCurrency(
         val currency: UiCurrency,
+    ) : OnBoardingPageIntent
+
+    data class SelectBank(
+        val bank: UiBankName,
+    ) : OnBoardingPageIntent
+
+    data class AddNewBank(
+        val bankName: String,
     ) : OnBoardingPageIntent
 }

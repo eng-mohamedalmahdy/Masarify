@@ -12,6 +12,7 @@ fun Account.toUiBankAccount(): UiBankAccount =
         currency = currency.toUiCurrency(),
         color = color,
         image = logo.takeIf { it.isNullOrEmpty().not() },
+        isDefault = isDefault,
     )
 
 fun UiBankAccount.toAccount(): Account =

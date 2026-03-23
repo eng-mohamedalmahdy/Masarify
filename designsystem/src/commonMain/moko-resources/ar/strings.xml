@@ -179,6 +179,11 @@
     <string name="select_currency">اختر العملة</string>
     <string name="add_new_currency">إضافة عملة جديدة</string>
     <string name="add_new_currency_description">إضافة عملة جديدة</string>
+    <string name="select_bank">اختر البنك</string>
+    <string name="add_new_bank">إضافة بنك جديد</string>
+    <string name="add_new_bank_description">إضافة بنك مخصص</string>
+    <string name="set_as_default_account">تعيين كحساب افتراضي</string>
+    <string name="default_account">الحساب الافتراضي</string>
     <string name="create_account">إنشاء حساب</string>
     <string name="update_account">تحديث الحساب</string>
 
@@ -571,6 +576,7 @@
     <string name="bank_deutsche_bank">دويتشه بنك</string>
 
     <!-- Special -->
+    <string name="bank_cash">نقدي</string>
     <string name="bank_custom">بنك مخصص</string>
     <string name="select_icon">اختيار أيقونة</string>
 

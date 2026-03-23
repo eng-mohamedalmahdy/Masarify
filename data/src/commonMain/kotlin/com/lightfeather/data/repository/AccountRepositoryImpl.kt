@@ -2,6 +2,7 @@ package com.lightfeather.data.repository
 
 import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.async.coroutines.awaitAsOne
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.model.Account
@@ -33,6 +34,7 @@ class AccountRepositoryImpl(
                             balance = account.balance,
                             color = account.color,
                             logo = account.logo,
+                            isDefault = if (account.isDefault) 1L else 0L,
                         )
                         bankAccountsQueries.selectLastInsertedRowId().awaitAsOne()
                     }
@@ -52,6 +54,7 @@ class AccountRepositoryImpl(
                         name = account.name,
                         color = account.color,
                         logo = account.logo,
+                        isDefault = if (account.isDefault) 1L else 0L,
                         id = account.id.toLong(),
                     )
                 }
@@ -101,6 +104,40 @@ class AccountRepositoryImpl(
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting accounts"))
         }
 
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun setDefaultAccount(accountId: Int): DomainResult<Boolean> =
+        try {
+            database {
+                val queries = it.bankAccountsQueries
+                queries.transaction {
+                    queries.clearDefaultAccounts()
+                    queries.markAccountAsDefault(accountId.toLong())
+                }
+            }
+            DomainResult.Success(true)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error setting default account"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override fun getDefaultAccount(): DomainResult<Flow<Account?>> =
+        try {
+            val defaultAccountFlow: Flow<Account?> =
+                flow {
+                    val accountFlow =
+                        database { db ->
+                            db.bankAccountsQueries
+                                .getDefaultAccount()
+                                .asFlow()
+                                .map { query -> query.awaitAsOneOrNull()?.toDomain() }
+                        }
+                    emitAll(accountFlow)
+                }
+            DomainResult.Success(defaultAccountFlow)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting default account"))
+        }
+
     private fun V_accounts.toDomain(): Account =
         Account(
             id = accountId.toInt(),
@@ -109,6 +146,7 @@ class AccountRepositoryImpl(
             balance = accountBalance,
             color = accountColor,
             logo = accountLogo.toString(),
+            isDefault = accountIsDefault == 1L,
             currency =
                 Currency(
                     name = currencyName,
