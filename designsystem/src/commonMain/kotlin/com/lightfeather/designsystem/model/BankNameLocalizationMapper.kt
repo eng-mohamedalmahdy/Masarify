@@ -19,12 +19,21 @@ fun UiBankName.getLocalizedName(): String =
         name
     }
 
+@Composable
+fun String.getBankLocalizedName(): String {
+    val bankName = getBankStringResourceByKey(this)
+    if (bankName != MR.strings.bank_custom) {
+        return stringResource(bankName)
+    }
+    return this
+}
+
 /**
  * Map resource key to MR.strings StringResource
  * This uses a when statement to map keys to actual string resources for all 26 banks
  */
 @Suppress("CyclomaticComplexMethod") // Large when statement for resource mapping is acceptable
-private fun getBankStringResourceByKey(key: String): StringResource =
+fun getBankStringResourceByKey(key: String): StringResource =
     when (key) {
         // ============================
         // EGYPTIAN BANKS

@@ -24,6 +24,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.lightfeather.designsystem.model.UiBankAccount
+import com.lightfeather.designsystem.model.getBankLocalizedName
+import com.lightfeather.designsystem.model.getBankStringResourceByKey
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.toColorInt
 import masarify.designsystem.generated.resources.Res
@@ -100,7 +102,7 @@ fun DashboardAccountCard(
                 verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall),
             ) {
                 Text(
-                    text = account.name,
+                    text = account.name.getBankLocalizedName(),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,

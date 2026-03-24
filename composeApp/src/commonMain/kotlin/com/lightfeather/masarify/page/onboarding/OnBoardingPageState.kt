@@ -17,7 +17,8 @@ internal data class OnBoardingPageState(
     val availableBanks: List<UiBankName> = emptyList(),
 ) {
     val userNameError: StringResource? = MR.strings.onboarding_user_name_error.takeIf { userName.isBlank() }
-    val accountNameError: StringResource? = MR.strings.onboarding_account_name_error.takeIf { accountName.isBlank() }
+    val accountNameError: StringResource? =
+        MR.strings.onboarding_account_name_error.takeIf { accountName.isBlank() && selectedBank?.name.isNullOrBlank() }
     val balanceError: StringResource? =
         MR.strings.onboarding_account_balance_error.takeIf { accountBalance.isBlank() }
     val currencyNameError: StringResource? =
