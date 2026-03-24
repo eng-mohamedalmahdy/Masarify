@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.lightfeather.designsystem.model.UiBankAccount
 import com.lightfeather.designsystem.model.getBankLocalizedName
-import com.lightfeather.designsystem.model.getBankStringResourceByKey
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.toColorInt
 import masarify.designsystem.generated.resources.Res

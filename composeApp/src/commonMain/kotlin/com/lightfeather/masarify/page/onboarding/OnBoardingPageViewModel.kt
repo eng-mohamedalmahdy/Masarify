@@ -47,7 +47,9 @@ class OnBoardingPageViewModel(
                 onSuccess = { currenciesFlow ->
                     val uiFlow = currenciesFlow.map { it.map { it.toUiCurrency() } }
                     uiFlow.collect {
-                        _state.value = _state.value.copy(appCurrencies = it)
+                        _state.value = _state.value.copy(
+                            appCurrencies = it,
+                            selectedCurrency = it.firstOrNull { it.symbol == "E£" })
                     }
                 },
                 onFailure = {
@@ -119,7 +121,7 @@ class OnBoardingPageViewModel(
                 val stateSnapshot = _state.value
                 val validationError =
                     stateSnapshot.userNameError ?: stateSnapshot.accountNameError
-                        ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
+                    ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
 
                 if (validationError != null) {
                     SnackbarService.sendErrorMessage(validationError)
