@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Masarify is a Kotlin Multiplatform project targeting Android, iOS, Web (WASM), and Desktop (JVM) platforms. It's a financial management application built with Compose Multiplatform and follows clean architecture patterns with MVI for the presentation layer.
 
+## Monorepo Context
+
+This project lives inside the **Masarify System** monorepo. See `../CLAUDE.md` for the top-level overview.
+
+**Masarify Backend** (`../Masarify Backend/`) — Ktor REST API (Kotlin, JVM 21) that will serve as the sync/cloud backend for this app. See `../Masarify Backend/CLAUDE.md` for commands and architecture.
+
+**Masarify Documentation** (`../Masarify Documentation/`) — System-level docs covering domain models, current features, and roadmap.
+
 ## Essential Commands
 
 ### Build and Run

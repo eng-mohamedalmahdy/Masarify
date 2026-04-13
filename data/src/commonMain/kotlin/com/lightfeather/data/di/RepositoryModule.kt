@@ -7,6 +7,7 @@ import com.lightfeather.data.repository.CategoryRepositoryImpl
 import com.lightfeather.data.repository.CurrencyExchangeRateRepositoryImpl
 import com.lightfeather.data.repository.CurrencyRepositoryImpl
 import com.lightfeather.data.repository.FinancialSessionRepositoryImpl
+import com.lightfeather.data.repository.RemoteExchangeRateRepositoryImpl
 import com.lightfeather.data.repository.TransactionsRepositoryImpl
 import com.lightfeather.data.repository.UserRepositoryImpl
 import com.lightfeather.domain.repository.AccountRepository
@@ -16,6 +17,7 @@ import com.lightfeather.domain.repository.CategoryRepository
 import com.lightfeather.domain.repository.CurrencyExchangeRateRepository
 import com.lightfeather.domain.repository.CurrencyRepository
 import com.lightfeather.domain.repository.FinancialSessionRepository
+import com.lightfeather.domain.repository.RemoteExchangeRateRepository
 import com.lightfeather.domain.repository.TransactionRepository
 import com.lightfeather.domain.repository.UserRepository
 import org.koin.dsl.module
@@ -31,4 +33,5 @@ val repositoryModule =
         single<UserRepository> { UserRepositoryImpl(get()) }
         single<BankNameRepository> { BankNameRepositoryImpl(get()) }
         single<FinancialSessionRepository> { FinancialSessionRepositoryImpl(get()) }
+        single<RemoteExchangeRateRepository> { RemoteExchangeRateRepositoryImpl(get()) }
     }

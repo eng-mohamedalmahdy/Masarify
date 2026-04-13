@@ -8,6 +8,7 @@ import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetExpenseCategoriesByUsage
 import com.lightfeather.domain.usecase.SeedDefaultCategories
+import com.lightfeather.domain.usecase.SyncRemoteExchangeRatesUseCase
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import com.lightfeather.masarify.widget.WidgetCategory
@@ -30,8 +31,16 @@ class AppMainViewModel(
     private val seedDefaultCategories: SeedDefaultCategories,
     private val getExpenseCategoriesByUsage: GetExpenseCategoriesByUsage,
     private val widgetDataSyncService: WidgetDataSyncService,
+    private val syncRemoteExchangeRates: SyncRemoteExchangeRatesUseCase,
 ) : ViewModel() {
     init {
+        viewModelScope.launch {
+            if (userDataRepository.isAutoSyncRatesEnabled()) {
+                syncRemoteExchangeRates().fold(
+                    onFailure = { Napier.e("Failed to sync remote exchange rates: $it") },
+                )
+            }
+        }
         viewModelScope.launch {
             seedDefaultCategories().foldSuspend(
                 onSuccess = { success ->

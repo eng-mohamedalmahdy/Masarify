@@ -7,6 +7,7 @@ import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarServic
 import com.lightfeather.designsystem.model.UiCurrency
 import com.lightfeather.designsystem.model.UiCurrencyExchangeRate
 import com.lightfeather.domain.model.Currency
+import com.lightfeather.domain.repository.UserRepository
 import com.lightfeather.domain.usecase.CreateCurrency
 import com.lightfeather.domain.usecase.DeleteCurrency
 import com.lightfeather.domain.usecase.GetAllCurrencies
@@ -32,6 +33,7 @@ class CurrenciesPageViewModel(
     private val deleteCurrency: DeleteCurrency,
     private val getExchangeRatesOfCurrency: GetExchangeRatesOfCurrency,
     private val updateCurrencyExchangeRates: UpdateCurrencyExchangeRates,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CurrenciesPageState())
     internal val state: StateFlow<CurrenciesPageState> = _state
@@ -70,7 +72,8 @@ class CurrenciesPageViewModel(
                         onFailure = { flowOf(emptyList()) },
                     )
 
-            _state.value = _state.value.copy(allCurrencies = currenciesFlow)
+            val autoSyncEnabled = userRepository.isAutoSyncRatesEnabled()
+            _state.value = _state.value.copy(allCurrencies = currenciesFlow, isAutoSyncEnabled = autoSyncEnabled)
 
             // Load first currency as base and its exchange rates
             currenciesFlow.collect { currencies ->

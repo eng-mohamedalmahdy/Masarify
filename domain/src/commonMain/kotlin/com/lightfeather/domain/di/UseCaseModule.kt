@@ -45,6 +45,7 @@ import com.lightfeather.domain.usecase.SeedDefaultCategories
 import com.lightfeather.domain.usecase.SeedDefaultCurrencies
 import com.lightfeather.domain.usecase.SetDefaultAccount
 import com.lightfeather.domain.usecase.SetLanguage
+import com.lightfeather.domain.usecase.SyncRemoteExchangeRatesUseCase
 import com.lightfeather.domain.usecase.ToggleDarkMode
 import com.lightfeather.domain.usecase.UpdateAccount
 import com.lightfeather.domain.usecase.UpdateCategory
@@ -164,4 +165,5 @@ val useCaseModule =
         factoryOf(::GetAllFinancialSessions)
         factoryOf(::GetFinancialSessionById)
         factoryOf(::GetExpenseCategoriesByUsage)
+        factoryOf(::SyncRemoteExchangeRatesUseCase)
     }

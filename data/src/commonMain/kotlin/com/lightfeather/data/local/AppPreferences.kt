@@ -21,6 +21,7 @@ class AppPreferences(
         const val DATA_SEEDED = "dataSeeded"
         const val BIOMETRIC_ENABLED = "biometricEnabled"
         const val BIOMETRIC_SUGGESTION_SHOWN = "biometricSuggestionShown"
+        const val AUTO_SYNC_RATES = "autoSyncRates"
     }
 
     var userData: UserData?
@@ -54,4 +55,8 @@ class AppPreferences(
     var hasShownBiometricSuggestion: Boolean
         set(value) = settings.set(BIOMETRIC_SUGGESTION_SHOWN, value)
         get() = settings[BIOMETRIC_SUGGESTION_SHOWN] ?: false
+
+    var isAutoSyncRatesEnabled: Boolean
+        set(value) = settings.set(AUTO_SYNC_RATES, value)
+        get() = settings[AUTO_SYNC_RATES] ?: true
 }

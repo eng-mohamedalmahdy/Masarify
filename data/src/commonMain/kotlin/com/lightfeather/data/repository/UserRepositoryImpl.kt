@@ -61,4 +61,10 @@ class UserRepositoryImpl(
     override fun markBiometricSuggestionShown() {
         preferences.hasShownBiometricSuggestion = true
     }
+
+    override fun isAutoSyncRatesEnabled(): Boolean = preferences.isAutoSyncRatesEnabled
+
+    override fun setAutoSyncRatesEnabled(enabled: Boolean) {
+        preferences.isAutoSyncRatesEnabled = enabled
+    }
 }

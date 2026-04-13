@@ -15,45 +15,46 @@ enum class DefaultCurrency(
     val resourceKey: String,
     val sign: String,
     val type: CurrencyType,
+    val isoCode: String? = null,
 ) {
     // ============================
     // TRADITIONAL CURRENCIES (Fiat)
     // ============================
 
     // Major World Currencies
-    USD("currency_usd", "$", CurrencyType.TRADITIONAL),
-    EUR("currency_eur", "€", CurrencyType.TRADITIONAL),
-    GBP("currency_gbp", "£", CurrencyType.TRADITIONAL),
-    JPY("currency_jpy", "¥", CurrencyType.TRADITIONAL),
-    CNY("currency_cny", "¥", CurrencyType.TRADITIONAL),
-    CHF("currency_chf", "CHF", CurrencyType.TRADITIONAL),
-    CAD("currency_cad", "C$", CurrencyType.TRADITIONAL),
-    AUD("currency_aud", "A$", CurrencyType.TRADITIONAL),
+    USD("currency_usd", "$", CurrencyType.TRADITIONAL, "USD"),
+    EUR("currency_eur", "€", CurrencyType.TRADITIONAL, "EUR"),
+    GBP("currency_gbp", "£", CurrencyType.TRADITIONAL, "GBP"),
+    JPY("currency_jpy", "¥", CurrencyType.TRADITIONAL, "JPY"),
+    CNY("currency_cny", "¥", CurrencyType.TRADITIONAL, "CNY"),
+    CHF("currency_chf", "CHF", CurrencyType.TRADITIONAL, "CHF"),
+    CAD("currency_cad", "C$", CurrencyType.TRADITIONAL, "CAD"),
+    AUD("currency_aud", "A$", CurrencyType.TRADITIONAL, "AUD"),
 
     // Middle East & North Africa
-    EGP("currency_egp", "E£", CurrencyType.TRADITIONAL),
-    SAR("currency_sar", "﷼", CurrencyType.TRADITIONAL),
-    AED("currency_aed", "د.إ", CurrencyType.TRADITIONAL),
-    KWD("currency_kwd", "د.ك", CurrencyType.TRADITIONAL),
-    QAR("currency_qar", "ر.ق", CurrencyType.TRADITIONAL),
-    BHD("currency_bhd", "د.ب", CurrencyType.TRADITIONAL),
-    OMR("currency_omr", "ر.ع", CurrencyType.TRADITIONAL),
-    JOD("currency_jod", "د.ا", CurrencyType.TRADITIONAL),
-    LBP("currency_lbp", "ل.ل", CurrencyType.TRADITIONAL),
+    EGP("currency_egp", "E£", CurrencyType.TRADITIONAL, "EGP"),
+    SAR("currency_sar", "﷼", CurrencyType.TRADITIONAL, "SAR"),
+    AED("currency_aed", "د.إ", CurrencyType.TRADITIONAL, "AED"),
+    KWD("currency_kwd", "د.ك", CurrencyType.TRADITIONAL, "KWD"),
+    QAR("currency_qar", "ر.ق", CurrencyType.TRADITIONAL, "QAR"),
+    BHD("currency_bhd", "د.ب", CurrencyType.TRADITIONAL, "BHD"),
+    OMR("currency_omr", "ر.ع", CurrencyType.TRADITIONAL, "OMR"),
+    JOD("currency_jod", "د.ا", CurrencyType.TRADITIONAL, "JOD"),
+    LBP("currency_lbp", "ل.ل", CurrencyType.TRADITIONAL, "LBP"),
 
     // Other Notable Currencies
-    TRY("currency_try", "₺", CurrencyType.TRADITIONAL),
-    INR("currency_inr", "₹", CurrencyType.TRADITIONAL),
-    RUB("currency_rub", "₽", CurrencyType.TRADITIONAL),
+    TRY("currency_try", "₺", CurrencyType.TRADITIONAL, "TRY"),
+    INR("currency_inr", "₹", CurrencyType.TRADITIONAL, "INR"),
+    RUB("currency_rub", "₽", CurrencyType.TRADITIONAL, "RUB"),
 
     // ============================
     // PRECIOUS METALS & COMMODITIES
     // ============================
 
-    GOLD("currency_gold", "XAU", CurrencyType.METAL),
-    SILVER("currency_silver", "XAG", CurrencyType.METAL),
-    PLATINUM("currency_platinum", "XPT", CurrencyType.METAL),
-    PALLADIUM("currency_palladium", "XPD", CurrencyType.METAL),
+    GOLD("currency_gold", "XAU", CurrencyType.METAL, "XAU"),
+    SILVER("currency_silver", "XAG", CurrencyType.METAL, "XAG"),
+    PLATINUM("currency_platinum", "XPT", CurrencyType.METAL, "XPT"),
+    PALLADIUM("currency_palladium", "XPD", CurrencyType.METAL, "XPD"),
 
     // ============================
     // CRYPTOCURRENCIES
@@ -102,6 +103,7 @@ enum class DefaultCurrency(
             type = type,
             isDefault = false,
             resourceKey = resourceKey,
+            isoCode = isoCode,
         )
 
     companion object {

@@ -7,6 +7,7 @@ data class UiCurrency(
     val type: UiCurrencyType = UiCurrencyType.TRADITIONAL,
     val isDefault: Boolean = false,
     val resourceKey: String? = null,
+    val isoCode: String? = null,
 ) {
     companion object {
         val dummy =

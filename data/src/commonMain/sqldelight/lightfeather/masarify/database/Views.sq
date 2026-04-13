@@ -133,7 +133,8 @@ SELECT
     sign AS currencySign,
     type AS currencyType,
     is_default AS currencyIsDefault,
-    resource_key AS currencyResourceKey
+    resource_key AS currencyResourceKey,
+    iso_code AS currencyIsoCode
 FROM currencies;
 
 
@@ -153,13 +154,21 @@ JOIN v_categories c ON c.categoryId = tc.category_id;
 
 CREATE VIEW IF NOT EXISTS  v_exchange_rates_full AS
 SELECT
-    er.from_currency_id AS fromCurrencyId,
-    fc.currencyName     AS fromCurrencyName,
-    fc.currencySign     AS fromCurrencySign,
-    er.to_currency_id   AS toCurrencyId,
-    tc.currencyName     AS toCurrencyName,
-    tc.currencySign     AS toCurrencySign,
-    er.rate             AS rate
+    er.from_currency_id     AS fromCurrencyId,
+    fc.currencyName         AS fromCurrencyName,
+    fc.currencySign         AS fromCurrencySign,
+    fc.currencyType         AS fromCurrencyType,
+    fc.currencyIsDefault    AS fromCurrencyIsDefault,
+    fc.currencyResourceKey  AS fromCurrencyResourceKey,
+    fc.currencyIsoCode      AS fromCurrencyIsoCode,
+    er.to_currency_id       AS toCurrencyId,
+    tc.currencyName         AS toCurrencyName,
+    tc.currencySign         AS toCurrencySign,
+    tc.currencyType         AS toCurrencyType,
+    tc.currencyIsDefault    AS toCurrencyIsDefault,
+    tc.currencyResourceKey  AS toCurrencyResourceKey,
+    tc.currencyIsoCode      AS toCurrencyIsoCode,
+    er.rate                 AS rate
 FROM exchange_rates er
 JOIN v_currencies fc ON fc.currencyId = er.from_currency_id
 JOIN v_currencies tc ON tc.currencyId = er.to_currency_id;

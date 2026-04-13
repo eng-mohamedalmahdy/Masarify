@@ -6,6 +6,7 @@ import app.cash.sqldelight.coroutines.mapToList
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.CurrencyExchangeRate
+import com.lightfeather.domain.model.CurrencyType
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.model.runCatchingDomainResult
 import com.lightfeather.domain.model.runCatchingDomainResultSuspend
@@ -111,18 +112,43 @@ class CurrencyExchangeRateRepositoryImpl(
             }
         }
 
+    @Suppress("LongParameterList")
     private fun mapCurrencyExchangeRate(
         fromCurrencyId: Long,
         fromCurrencyName: String,
         fromCurrencySign: String,
+        fromCurrencyType: String,
+        fromCurrencyIsDefault: Long,
+        fromCurrencyResourceKey: String?,
+        fromCurrencyIsoCode: String?,
         toCurrencyId: Long,
         toCurrencyName: String,
         toCurrencySign: String,
+        toCurrencyType: String,
+        toCurrencyIsDefault: Long,
+        toCurrencyResourceKey: String?,
+        toCurrencyIsoCode: String?,
         rate: Double?,
     ): CurrencyExchangeRate =
         CurrencyExchangeRate(
-            from = Currency(fromCurrencyName, fromCurrencySign, fromCurrencyId.toInt()),
-            to = Currency(toCurrencyName, toCurrencySign, toCurrencyId.toInt()),
+            from = Currency(
+                name = fromCurrencyName,
+                sign = fromCurrencySign,
+                id = fromCurrencyId.toInt(),
+                type = CurrencyType.valueOf(fromCurrencyType),
+                isDefault = fromCurrencyIsDefault == 1L,
+                resourceKey = fromCurrencyResourceKey,
+                isoCode = fromCurrencyIsoCode,
+            ),
+            to = Currency(
+                name = toCurrencyName,
+                sign = toCurrencySign,
+                id = toCurrencyId.toInt(),
+                type = CurrencyType.valueOf(toCurrencyType),
+                isDefault = toCurrencyIsDefault == 1L,
+                resourceKey = toCurrencyResourceKey,
+                isoCode = toCurrencyIsoCode,
+            ),
             rate = rate ?: 1.0,
         )
 }

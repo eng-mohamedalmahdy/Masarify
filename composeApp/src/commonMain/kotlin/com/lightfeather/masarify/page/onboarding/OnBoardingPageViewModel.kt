@@ -47,9 +47,11 @@ class OnBoardingPageViewModel(
                 onSuccess = { currenciesFlow ->
                     val uiFlow = currenciesFlow.map { it.map { it.toUiCurrency() } }
                     uiFlow.collect {
-                        _state.value = _state.value.copy(
-                            appCurrencies = it,
-                            selectedCurrency = it.firstOrNull { it.symbol == "E£" })
+                        _state.value =
+                            _state.value.copy(
+                                appCurrencies = it,
+                                selectedCurrency = it.firstOrNull { it.symbol == "E£" },
+                            )
                     }
                 },
                 onFailure = {
@@ -121,7 +123,7 @@ class OnBoardingPageViewModel(
                 val stateSnapshot = _state.value
                 val validationError =
                     stateSnapshot.userNameError ?: stateSnapshot.accountNameError
-                    ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
+                        ?: stateSnapshot.currencyNameError ?: stateSnapshot.balanceError
 
                 if (validationError != null) {
                     SnackbarService.sendErrorMessage(validationError)
@@ -136,9 +138,14 @@ class OnBoardingPageViewModel(
                     val createAccountJob =
                         async(Dispatchers.IoDispatcher) {
                             val toBeCreateCurrency = stateSnapshot.selectedCurrency!!.toCurrency()
-                            val createCurrencyResult = createCurrency(toBeCreateCurrency)
+                            val currencyIdResult =
+                                if (toBeCreateCurrency.id != -1) {
+                                    Success(toBeCreateCurrency.id)
+                                } else {
+                                    createCurrency(toBeCreateCurrency)
+                                }
 
-                            createCurrencyResult.flatMapSuspend { currencyId ->
+                            currencyIdResult.flatMapSuspend { currencyId ->
                                 val toBeCreateAccount =
                                     Account(
                                         name = stateSnapshot.selectedBank?.name.orEmpty(),

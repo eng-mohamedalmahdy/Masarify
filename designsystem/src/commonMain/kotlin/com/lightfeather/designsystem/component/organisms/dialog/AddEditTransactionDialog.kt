@@ -140,9 +140,14 @@ fun AddEditTransactionDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = if (transaction == null) stringResource(MR.strings.add_transaction) else stringResource(
-                            MR.strings.edit_transaction
-                        ),
+                        text =
+                            if (transaction == null) {
+                                stringResource(MR.strings.add_transaction)
+                            } else {
+                                stringResource(
+                                    MR.strings.edit_transaction,
+                                )
+                            },
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                     )
@@ -276,11 +281,12 @@ fun AddEditTransactionDialog(
                             }
 
                             Text(
-                                text = if (attachments.size == 1) {
-                                    stringResource(MR.strings.attachments_count_singular)
-                                } else {
-                                    stringResource(MR.strings.attachments_count_plural, attachments.size)
-                                },
+                                text =
+                                    if (attachments.size == 1) {
+                                        stringResource(MR.strings.attachments_count_singular)
+                                    } else {
+                                        stringResource(MR.strings.attachments_count_plural, attachments.size)
+                                    },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.outline,
                             )
@@ -366,7 +372,8 @@ fun AddEditTransactionDialog(
                         modifier = Modifier.weight(1f),
                         enabled = isValid,
                     ) {
-                        Text(if (transaction == null) stringResource(MR.strings.add) else stringResource(MR.strings.save))
+                        val label = if (transaction == null) MR.strings.add else MR.strings.save
+                        Text(stringResource(label))
                     }
                 }
             }

@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.CurrencyExchange
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
-import com.lightfeather.designsystem.MR.strings.currency
 import com.lightfeather.designsystem.component.molecules.AppDropMenu
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.molecules.TextField
@@ -128,8 +129,10 @@ internal fun CurrenciesPageContent(
                 )
             } else {
                 ExchangeRatesSection(
+                    selectedCurrency = state.baseCurrency,
                     exchangeRates = exchangeRates,
                     isEditMode = state.isEditMode,
+                    isAutoSyncEnabled = state.isAutoSyncEnabled,
                     onToggleEditMode = { onIntent(CurrenciesPageIntent.ToggleEditMode(it)) },
                     onSaveRates = { rates -> onIntent(CurrenciesPageIntent.SaveExchangeRates(rates)) },
                     modifier = Modifier.fillMaxSize(),
@@ -207,7 +210,7 @@ private fun BaseCurrencySelector(
         )
 
         // Action buttons for selected currency
-        if (selectedCurrency != null) {
+        if (selectedCurrency != null && selectedCurrency.isDefault.not()) {
             Row(
                 modifier =
                     Modifier
@@ -249,8 +252,10 @@ private fun BaseCurrencySelector(
 
 @Composable
 private fun ExchangeRatesSection(
+    selectedCurrency: UiCurrency?,
     exchangeRates: List<UiCurrencyExchangeRate>,
     isEditMode: Boolean,
+    isAutoSyncEnabled: Boolean,
     onToggleEditMode: (Boolean) -> Unit,
     onSaveRates: (List<UiCurrencyExchangeRate>) -> Unit,
     modifier: Modifier = Modifier,
@@ -258,6 +263,30 @@ private fun ExchangeRatesSection(
     val editedRates = remember { mutableStateMapOf<String, Pair<Double, Boolean>>() }
 
     Column(modifier = modifier) {
+        // Auto-sync info banner
+        if (isAutoSyncEnabled) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = AppTheme.dimens.spacing.padding.medium)
+                        .padding(top = AppTheme.dimens.spacing.padding.small),
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text = stringResource(MR.strings.auto_sync_rates_banner),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
         // Sticky Header with Edit/Save Controls
         Row(
             modifier =
@@ -332,7 +361,7 @@ private fun ExchangeRatesSection(
                         Text(stringResource(MR.strings.save_rates))
                     }
                 }
-            } else {
+            } else if (!isAutoSyncEnabled || selectedCurrency?.isDefault == false) {
                 TextButton(onClick = { onToggleEditMode(true) }) {
                     Text(stringResource(MR.strings.edit_rates))
                 }
@@ -349,9 +378,14 @@ private fun ExchangeRatesSection(
             items(
                 items = exchangeRates.filter { it.fromCurrency.id != it.toCurrency.id },
             ) { rate ->
+                val isRateLocked =
+                    isAutoSyncEnabled &&
+                        rate.fromCurrency.isoCode != null &&
+                        rate.toCurrency.isoCode != null
                 ExchangeRateItem(
                     exchangeRate = rate,
-                    isEditMode = isEditMode,
+                    isEditMode = isEditMode && !isRateLocked,
+                    isLocked = isRateLocked,
                     editedValue = editedRates[rate.id],
                     onRateChanged = { newRate, updateInverse ->
                         editedRates[rate.id] = Pair(newRate, updateInverse)
@@ -367,6 +401,7 @@ private fun ExchangeRatesSection(
 private fun ExchangeRateItem(
     exchangeRate: UiCurrencyExchangeRate,
     isEditMode: Boolean,
+    isLocked: Boolean,
     editedValue: Pair<Double, Boolean>?,
     onRateChanged: (Double, Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -460,6 +495,15 @@ private fun ExchangeRateItem(
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.weight(1f),
                 )
+
+                if (isLocked) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(end = AppTheme.dimens.small),
+                    )
+                }
 
                 // Exchange Rate Value
                 Text(

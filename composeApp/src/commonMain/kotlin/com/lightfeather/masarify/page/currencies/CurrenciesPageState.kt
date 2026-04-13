@@ -11,6 +11,7 @@ internal data class CurrenciesPageState(
     val exchangeRates: Flow<List<UiCurrencyExchangeRate>> = emptyFlow(),
     val isEditMode: Boolean = false,
     val isLoading: Boolean = false,
+    val isAutoSyncEnabled: Boolean = true,
     val showAddEditDialog: Boolean = false,
     val editingCurrency: UiCurrency? = null,
     val showDeleteDialog: Boolean = false,

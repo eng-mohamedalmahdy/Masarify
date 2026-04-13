@@ -25,6 +25,10 @@ internal sealed interface MorePageIntent {
         val enabled: Boolean,
     ) : MorePageIntent
 
+    data class ToggleAutoSyncRates(
+        val enabled: Boolean,
+    ) : MorePageIntent
+
     data class SelectLanguage(
         val language: AppLanguage,
     ) : MorePageIntent

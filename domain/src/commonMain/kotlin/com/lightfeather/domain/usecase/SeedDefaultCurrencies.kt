@@ -42,7 +42,7 @@ class SeedDefaultCurrencies(
             val defaultCurrencies = DefaultCurrency.getAllCurrencies()
 
             for (currency in defaultCurrencies) {
-                val result = currencyRepository.createCurrency(currency)
+                val result = currencyRepository.createCurrency(currency.copy(isDefault = true))
                 if (result is DomainResult.Failure) {
                     Napier.e { "Failed to seed currency: ${currency.name}, error: $result" }
                     return@flatMapSuspend result.map { false }

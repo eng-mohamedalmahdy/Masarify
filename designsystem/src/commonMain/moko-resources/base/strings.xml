@@ -603,6 +603,11 @@
     <string name="biometric_settings_description">Protect the app with biometric authentication</string>
     <string name="biometric_enabled">Biometric lock enabled</string>
     <string name="biometric_disabled">Biometric lock disabled</string>
+    <string name="auto_sync_rates">Auto sync transaction rates</string>
+    <string name="auto_sync_rates_description">Automatically sync exchange rates on app launch</string>
+    <string name="auto_sync_rates_enabled">Auto sync enabled</string>
+    <string name="auto_sync_rates_disabled">Auto sync disabled</string>
+    <string name="auto_sync_rates_banner">Rates are auto-synced. Turn off Auto sync in Settings to edit manually.</string>
 
     <!-- Fix Balance Feature -->
     <string name="fix_balance">Fix Balance</string>

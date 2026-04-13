@@ -10,4 +10,5 @@ data class Currency(
     val type: CurrencyType = CurrencyType.TRADITIONAL,
     val isDefault: Boolean = false,
     val resourceKey: String? = null,
+    val isoCode: String? = null,
 )

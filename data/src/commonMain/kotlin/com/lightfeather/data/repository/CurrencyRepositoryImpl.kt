@@ -35,6 +35,7 @@ class CurrencyRepositoryImpl(
                             type = currency.type.name,
                             is_default = if (currency.isDefault) 1L else 0L,
                             resource_key = currency.resourceKey,
+                            iso_code = currency.isoCode,
                         )
                         currencyQueries.selectLastInsertedRowId().awaitAsOne()
                     }
@@ -55,6 +56,7 @@ class CurrencyRepositoryImpl(
                         type = currency.type.name,
                         is_default = if (currency.isDefault) 1L else 0L,
                         resource_key = currency.resourceKey,
+                        iso_code = currency.isoCode,
                         id = currency.id.toLong(),
                     )
                 }
@@ -117,5 +119,6 @@ class CurrencyRepositoryImpl(
             type = CurrencyType.valueOf(currencyType),
             isDefault = currencyIsDefault == 1L,
             resourceKey = currencyResourceKey,
+            isoCode = currencyIsoCode,
         )
 }

@@ -20,6 +20,7 @@ class MorePageViewModel(
     private val _state = MutableStateFlow(MorePageState())
     internal val state: StateFlow<MorePageState> = _state
 
+    @Suppress("CyclomaticComplexMethod")
     internal fun onIntent(intent: MorePageIntent) {
         when (intent) {
             is MorePageIntent.LoadData -> {
@@ -41,6 +42,16 @@ class MorePageViewModel(
                     _state.value = _state.value.copy(isBiometricEnabled = intent.enabled)
                     SnackbarService.sendSuccessMessage(
                         if (intent.enabled) MR.strings.biometric_enabled else MR.strings.biometric_disabled,
+                    )
+                }
+            }
+
+            is MorePageIntent.ToggleAutoSyncRates -> {
+                viewModelScope.launch {
+                    userRepository.setAutoSyncRatesEnabled(intent.enabled)
+                    _state.value = _state.value.copy(isAutoSyncRatesEnabled = intent.enabled)
+                    SnackbarService.sendSuccessMessage(
+                        if (intent.enabled) MR.strings.auto_sync_rates_enabled else MR.strings.auto_sync_rates_disabled,
                     )
                 }
             }
@@ -88,11 +99,13 @@ class MorePageViewModel(
             val currentLanguage = getLanguage()
             val darkModeEnabled = isDarkModeEnabled()
             val biometricEnabled = userRepository.isBiometricEnabled()
+            val autoSyncEnabled = userRepository.isAutoSyncRatesEnabled()
             _state.value =
                 _state.value.copy(
                     selectedLanguage = currentLanguage,
                     isDarkTheme = darkModeEnabled,
                     isBiometricEnabled = biometricEnabled,
+                    isAutoSyncRatesEnabled = autoSyncEnabled,
                     isLoading = false,
                 )
         }

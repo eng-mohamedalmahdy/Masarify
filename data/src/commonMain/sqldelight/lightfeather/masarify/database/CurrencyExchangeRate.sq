@@ -13,12 +13,20 @@ UPDATE exchange_rates SET rate  = ? WHERE exchange_rates.from_currency_id = ? AN
 
 getAllExchangeRates:
 SELECT DISTINCT
-    from_currency.id   AS fromCurrencyId,
-    from_currency.name AS fromCurrencyName,
-    from_currency.sign AS fromCurrencySign,
-    to_currency.id     AS toCurrencyId,
-    to_currency.name   AS toCurrencyName,
-    to_currency.sign   AS toCurrencySign,
+    from_currency.id           AS fromCurrencyId,
+    from_currency.name         AS fromCurrencyName,
+    from_currency.sign         AS fromCurrencySign,
+    from_currency.type         AS fromCurrencyType,
+    from_currency.is_default   AS fromCurrencyIsDefault,
+    from_currency.resource_key AS fromCurrencyResourceKey,
+    from_currency.iso_code     AS fromCurrencyIsoCode,
+    to_currency.id             AS toCurrencyId,
+    to_currency.name           AS toCurrencyName,
+    to_currency.sign           AS toCurrencySign,
+    to_currency.type           AS toCurrencyType,
+    to_currency.is_default     AS toCurrencyIsDefault,
+    to_currency.resource_key   AS toCurrencyResourceKey,
+    to_currency.iso_code       AS toCurrencyIsoCode,
     rate
 FROM exchange_rates
 JOIN currencies AS from_currency ON exchange_rates.from_currency_id = from_currency.id
@@ -28,24 +36,50 @@ deleteExchangeRateById:
 DELETE FROM exchange_rates WHERE from_currency_id = ? AND to_currency_id = ?;
 
 selectExchangeRateById:
-SELECT DISTINCT from_currency.id fromCurrencyId ,from_currency.name fromCurrencyName,from_currency.sign fromCurrencySign ,
-        to_currency.id toCurrencyId, to_currency.name toCurrencyName,to_currency.sign toCurrencySign,
-              rate
-       FROM exchange_rates,currencies from_currency,currencies to_currency
-       WHERE exchange_rates.from_currency_id = from_currency.id
-             AND exchange_rates.to_currency_id = to_currency.id
-             AND from_currency_id = ?
-             AND to_currency_id = ?;
+SELECT DISTINCT
+    from_currency.id           AS fromCurrencyId,
+    from_currency.name         AS fromCurrencyName,
+    from_currency.sign         AS fromCurrencySign,
+    from_currency.type         AS fromCurrencyType,
+    from_currency.is_default   AS fromCurrencyIsDefault,
+    from_currency.resource_key AS fromCurrencyResourceKey,
+    from_currency.iso_code     AS fromCurrencyIsoCode,
+    to_currency.id             AS toCurrencyId,
+    to_currency.name           AS toCurrencyName,
+    to_currency.sign           AS toCurrencySign,
+    to_currency.type           AS toCurrencyType,
+    to_currency.is_default     AS toCurrencyIsDefault,
+    to_currency.resource_key   AS toCurrencyResourceKey,
+    to_currency.iso_code       AS toCurrencyIsoCode,
+    rate
+FROM exchange_rates, currencies from_currency, currencies to_currency
+WHERE exchange_rates.from_currency_id = from_currency.id
+    AND exchange_rates.to_currency_id = to_currency.id
+    AND from_currency_id = ?
+    AND to_currency_id = ?;
 
 
 getExchangeRatesOfCurrency:
-SELECT DISTINCT from_currency.id fromCurrencyId ,from_currency.name fromCurrencyName,from_currency.sign fromCurrencySign ,
-        to_currency.id toCurrencyId, to_currency.name toCurrencyName,to_currency.sign toCurrencySign,
-              rate
-       FROM exchange_rates,currencies from_currency,currencies to_currency
-       WHERE exchange_rates.from_currency_id = from_currency.id
-             AND exchange_rates.to_currency_id = to_currency.id
-             AND from_currency_id = ?;
+SELECT DISTINCT
+    from_currency.id           AS fromCurrencyId,
+    from_currency.name         AS fromCurrencyName,
+    from_currency.sign         AS fromCurrencySign,
+    from_currency.type         AS fromCurrencyType,
+    from_currency.is_default   AS fromCurrencyIsDefault,
+    from_currency.resource_key AS fromCurrencyResourceKey,
+    from_currency.iso_code     AS fromCurrencyIsoCode,
+    to_currency.id             AS toCurrencyId,
+    to_currency.name           AS toCurrencyName,
+    to_currency.sign           AS toCurrencySign,
+    to_currency.type           AS toCurrencyType,
+    to_currency.is_default     AS toCurrencyIsDefault,
+    to_currency.resource_key   AS toCurrencyResourceKey,
+    to_currency.iso_code       AS toCurrencyIsoCode,
+    rate
+FROM exchange_rates, currencies from_currency, currencies to_currency
+WHERE exchange_rates.from_currency_id = from_currency.id
+    AND exchange_rates.to_currency_id = to_currency.id
+    AND from_currency_id = ?;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();

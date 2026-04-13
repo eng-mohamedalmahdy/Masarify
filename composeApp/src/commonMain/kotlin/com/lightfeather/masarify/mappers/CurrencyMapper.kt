@@ -15,6 +15,7 @@ fun Currency.toUiCurrency(): UiCurrency =
         type = type.toUiCurrencyType(),
         isDefault = isDefault,
         resourceKey = resourceKey,
+        isoCode = isoCode,
     )
 
 fun UiCurrency.toCurrency(): Currency =
@@ -25,6 +26,7 @@ fun UiCurrency.toCurrency(): Currency =
         type = type.toCurrencyType(),
         isDefault = isDefault,
         resourceKey = resourceKey,
+        isoCode = isoCode,
     )
 
 fun CurrencyType.toUiCurrencyType(): UiCurrencyType =

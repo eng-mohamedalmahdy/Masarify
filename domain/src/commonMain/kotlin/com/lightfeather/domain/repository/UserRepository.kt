@@ -48,4 +48,10 @@ interface UserRepository {
 
     /** Marks the biometric suggestion dialog as shown. */
     fun markBiometricSuggestionShown()
+
+    /** Returns true if auto-sync of exchange rates is enabled (defaults to true). */
+    fun isAutoSyncRatesEnabled(): Boolean
+
+    /** Enables or disables automatic exchange rate syncing from the remote server. */
+    fun setAutoSyncRatesEnabled(enabled: Boolean)
 }

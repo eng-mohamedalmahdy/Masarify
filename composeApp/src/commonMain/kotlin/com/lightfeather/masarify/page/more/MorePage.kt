@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -106,6 +107,9 @@ internal fun MorePageContent(
                 },
                 onBiometricToggle = {
                     onIntent(MorePageIntent.ToggleBiometric(it))
+                },
+                onAutoSyncRatesToggle = {
+                    onIntent(MorePageIntent.ToggleAutoSyncRates(it))
                 },
                 onLanguageSelected = {
                     onIntent(MorePageIntent.SelectLanguage(it))
@@ -210,6 +214,7 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
     state: MorePageState,
     onDarkThemeToggle: (Boolean) -> Unit,
     onBiometricToggle: (Boolean) -> Unit,
+    onAutoSyncRatesToggle: (Boolean) -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit,
     onCurrencyManagementClick: () -> Unit,
     onCategoryManagementClick: () -> Unit,
@@ -262,6 +267,16 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
                     checked = state.isBiometricEnabled,
                     onCheckedChange = onBiometricToggle,
                     contentDescription = stringResource(MR.strings.biometric_settings_description),
+                )
+            }
+
+            item {
+                MoreListItemWithSwitch(
+                    text = stringResource(MR.strings.auto_sync_rates),
+                    image = Icons.Default.Sync,
+                    checked = state.isAutoSyncRatesEnabled,
+                    onCheckedChange = onAutoSyncRatesToggle,
+                    contentDescription = stringResource(MR.strings.auto_sync_rates_description),
                 )
             }
 

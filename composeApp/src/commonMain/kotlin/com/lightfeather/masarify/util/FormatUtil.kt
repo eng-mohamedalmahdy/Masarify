@@ -1,7 +1,5 @@
 package com.lightfeather.masarify.util
 
-import com.lightfeather.designsystem.model.getBankStringResourceByKey
-import dev.icerock.moko.resources.compose.stringResource
 import kotlin.math.roundToLong
 
 /**
