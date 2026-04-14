@@ -545,6 +545,16 @@
     <string name="currency_intel_desc">Intel Corporation stock</string>
     <string name="currency_amd">AMD Inc.</string>
     <string name="currency_amd_desc">Advanced Micro Devices stock</string>
+    <string name="currency_berkshire">Berkshire Hathaway</string>
+    <string name="currency_berkshire_desc">Berkshire Hathaway Class B stock</string>
+    <string name="currency_jpmorgan">JPMorgan Chase</string>
+    <string name="currency_jpmorgan_desc">JPMorgan Chase &amp; Co. stock</string>
+    <string name="currency_visa">Visa Inc.</string>
+    <string name="currency_visa_desc">Visa Inc. stock</string>
+    <string name="currency_cib_egypt">CIB Egypt</string>
+    <string name="currency_cib_egypt_desc">Commercial International Bank Egypt ADR</string>
+    <string name="currency_oih">VanEck Oil Services</string>
+    <string name="currency_oih_desc">VanEck Oil Services ETF</string>
 
     <!-- ============================================ -->
     <!-- DEFAULT BANK NAMES -->

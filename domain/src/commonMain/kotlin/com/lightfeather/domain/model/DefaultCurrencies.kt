@@ -89,6 +89,11 @@ enum class DefaultCurrency(
     NETFLIX("currency_netflix", "NFLX", CurrencyType.STOCK),
     INTEL("currency_intel", "INTC", CurrencyType.STOCK),
     AMD("currency_amd", "AMD", CurrencyType.STOCK),
+    BERKSHIRE("currency_berkshire", "BRK-B", CurrencyType.STOCK),
+    JPMORGAN("currency_jpmorgan", "JPM", CurrencyType.STOCK),
+    VISA("currency_visa", "V", CurrencyType.STOCK),
+    CIB_EGYPT("currency_cib_egypt", "CIBEY", CurrencyType.STOCK),
+    OIH("currency_oih", "OIH", CurrencyType.STOCK),
     ;
 
     /**
