@@ -73,6 +73,7 @@ class OnBoardingPageViewModel(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod") // Intent handler with multiple branches — complexity is acceptable
     internal fun onIntent(intent: OnBoardingPageIntent) {
         when (intent) {
             is OnBoardingPageIntent.UpdateAccountName -> _state.value = _state.value.copy(accountName = intent.name)

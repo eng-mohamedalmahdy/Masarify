@@ -293,6 +293,14 @@
     <string name="expense">Expense</string>
 
     <!-- Transaction Form -->
+    <string name="save_transaction">Save Transaction</string>
+    <string name="post_transaction">Post Transaction</string>
+    <string name="transaction_amount_label">Transaction Amount</string>
+    <string name="deposit_to">Deposit To</string>
+    <string name="notes">Notes</string>
+    <string name="enter_notes">Write a note…</string>
+    <string name="tap_to_change">Tap to change</string>
+    <string name="select_account">Select account</string>
     <string name="transaction_name">Transaction Name</string>
     <string name="enter_transaction_name">Enter transaction name</string>
     <string name="transaction_amount">Amount</string>

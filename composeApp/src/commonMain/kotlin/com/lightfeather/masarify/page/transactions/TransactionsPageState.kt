@@ -26,8 +26,7 @@ data class TransactionsPageState(
     val currentPage: Int = 0,
     val pageSize: PageSize = PageSize.DEFAULT,
     val totalCount: Long = 0,
-    // Dialog state
-    val showAddEditDialog: Boolean = false,
+    // Add/Edit transaction pane state
     val editingTransaction: UiTransactionDetails? = null,
     val lockedFromAccount: UiBankAccount? = null,
     val initialCategory: UiCategory? = null,

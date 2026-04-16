@@ -33,8 +33,8 @@ import androidx.navigation3.runtime.NavKey
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.component.organisms.AccountsHeader
+import com.lightfeather.designsystem.component.organisms.AddEditTransactionPageContent
 import com.lightfeather.designsystem.component.organisms.TransactionDetailView
-import com.lightfeather.designsystem.component.organisms.dialog.AddEditTransactionDialog
 import com.lightfeather.designsystem.component.organisms.dialog.AdvancedFilterDialog
 import com.lightfeather.designsystem.model.PageSize
 import com.lightfeather.designsystem.model.UiAttachment
@@ -66,33 +66,30 @@ fun TransactionsPage(
         viewModel.onIntent(TransactionsPageIntent.LoadData)
     }
 
-    // Handle opening add dialog with optional type, account, and category
-    LaunchedEffect(openAddDialog, transactionType, fromAccountId, categoryId) {
-        if (openAddDialog) {
-            viewModel.onIntent(
-                TransactionsPageIntent.ShowAddDialogWithType(
-                    type = transactionType ?: UiTransactionType.EXPENSE,
-                    fromAccountId = fromAccountId,
-                    categoryId = categoryId,
-                ),
-            )
-        }
-    }
-
     TransactionsPageContent(
         state = state,
         onIntent = viewModel::onIntent,
         navigator = navigator,
+        openAddTransaction = openAddDialog,
+        initialTransactionType = transactionType,
+        fromAccountId = fromAccountId,
+        categoryId = categoryId,
+        onPickImages = viewModel::pickImagesAndReturn,
     )
 }
 
-@Suppress("LongMethod")
+@Suppress("LongMethod", "LongParameterList")
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun TransactionsPageContent(
     state: TransactionsPageState,
     onIntent: (TransactionsPageIntent) -> Unit,
     navigator: Navigator,
+    openAddTransaction: Boolean = false,
+    initialTransactionType: UiTransactionType? = null,
+    fromAccountId: String? = null,
+    categoryId: String? = null,
+    onPickImages: suspend () -> List<UiAttachment> = { emptyList() },
 ) {
     // Create scoped list-detail navigator
     val listDetailNav = navigator.forListDetail(TransactionsList)
@@ -106,6 +103,20 @@ internal fun TransactionsPageContent(
     val currencies by state.currencies.collectAsState(emptyList())
     val userAccountsCurrencies by state.userAccountsCurrencies.collectAsState(emptyList())
     val defaultCurrency by state.defaultCurrency.collectAsState(null)
+
+    // Handle deep-link: open add transaction pane with optional context
+    LaunchedEffect(openAddTransaction, initialTransactionType, fromAccountId, categoryId) {
+        if (openAddTransaction) {
+            onIntent(
+                TransactionsPageIntent.ShowAddDialogWithType(
+                    type = initialTransactionType ?: UiTransactionType.EXPENSE,
+                    fromAccountId = fromAccountId,
+                    categoryId = categoryId,
+                ),
+            )
+            listDetailNav.navigateToDetail(AddTransaction)
+        }
+    }
 
     // Key the whole Display on changing inputs that the navigation entry otherwise caches out.
     // This forces recomposition so the AccountsHeader updates and chips become responsive.
@@ -139,7 +150,7 @@ internal fun TransactionsPageContent(
                         listDetailNav.navigateToDetail(ViewTransaction(transaction.toTransaction()))
                     },
                     onAddClick = {
-                        onIntent(TransactionsPageIntent.ShowAddDialog)
+                        listDetailNav.navigateToDetail(AddTransaction)
                     },
                     topBarSupportingContent = {
                         Column {
@@ -219,7 +230,8 @@ internal fun TransactionsPageContent(
                         transaction = transaction,
                         attachments = attachments,
                         onEdit = {
-                            onIntent(TransactionsPageIntent.ShowEditDialog(transaction))
+                            onIntent(TransactionsPageIntent.PrepareEditTransaction(transaction))
+                            listDetailNav.navigateToDetail(EditTransaction(navKey.transaction))
                         },
                         onDelete = {
                             onIntent(TransactionsPageIntent.DeleteTransaction(transaction))
@@ -227,6 +239,7 @@ internal fun TransactionsPageContent(
                         },
                         onDuplicate = {
                             onIntent(TransactionsPageIntent.DuplicateTransaction(transaction))
+                            listDetailNav.navigateToDetail(AddTransaction)
                         },
                     )
                 } else {
@@ -238,9 +251,52 @@ internal fun TransactionsPageContent(
                     )
                 }
             }
-        }
 
-        // Dialogs
+            // Add transaction pane
+            entry<AddTransaction>(
+                metadata = ListDetailSceneStrategy.detailPane(),
+            ) {
+                AddEditTransactionPageContent(
+                    transaction = null,
+                    lockedFromAccount = state.lockedFromAccount,
+                    initialAccount = state.defaultAccount,
+                    initialCategory = state.initialCategory,
+                    accounts = accounts,
+                    categories = categories,
+                    initialAttachments = emptyList(),
+                    onBack = {
+                        onIntent(TransactionsPageIntent.ClearTransactionContext)
+                        listDetailNav.back()
+                    },
+                    onSave = { data -> onIntent(TransactionsPageIntent.CreateTransaction(data)) },
+                    onPickImages = onPickImages,
+                )
+            }
+
+            // Edit transaction pane
+            entry<EditTransaction>(
+                metadata = ListDetailSceneStrategy.detailPane(),
+            ) { navKey ->
+                val editTransaction =
+                    navKey.transaction?.toUiTransactionDetails()
+                        ?: state.editingTransaction
+                AddEditTransactionPageContent(
+                    transaction = editTransaction,
+                    lockedFromAccount = state.lockedFromAccount,
+                    initialAccount = state.defaultAccount,
+                    initialCategory = state.initialCategory,
+                    accounts = accounts,
+                    categories = categories,
+                    initialAttachments = state.selectedAttachments,
+                    onBack = {
+                        onIntent(TransactionsPageIntent.ClearTransactionContext)
+                        listDetailNav.back()
+                    },
+                    onSave = { data -> onIntent(TransactionsPageIntent.UpdateTransaction(data)) },
+                    onPickImages = onPickImages,
+                )
+            }
+        }
 
         // Filter Dialog
         if (state.showFilterDialog) {
@@ -255,31 +311,6 @@ internal fun TransactionsPageContent(
                 },
                 onSave = { name, filter ->
                     onIntent(TransactionsPageIntent.SaveFilter(name, filter))
-                },
-            )
-        }
-
-        // Add/Edit Transaction Dialog
-        if (state.showAddEditDialog) {
-            AddEditTransactionDialog(
-                transaction = state.editingTransaction,
-                lockedFromAccount = state.lockedFromAccount,
-                initialAccount = state.defaultAccount,
-                initialCategory = state.initialCategory,
-                accounts = accounts,
-                categories = categories,
-                attachments = state.selectedAttachments,
-                onDismiss = { onIntent(TransactionsPageIntent.HideAddEditDialog) },
-                onSave = { data ->
-                    if (state.editingTransaction != null) {
-                        onIntent(TransactionsPageIntent.UpdateTransaction(data))
-                    } else {
-                        onIntent(TransactionsPageIntent.CreateTransaction(data))
-                    }
-                },
-                onPickImages = { onIntent(TransactionsPageIntent.PickImages) },
-                onDeleteAttachment = { attachment ->
-                    onIntent(TransactionsPageIntent.DeleteAttachment(attachment))
                 },
             )
         }

@@ -141,11 +141,10 @@ class TransactionsPageViewModel(
             is TransactionsPageIntent.ChangePageSize -> changePageSize(intent.size)
             is TransactionsPageIntent.NextPage -> nextPage()
             is TransactionsPageIntent.PreviousPage -> previousPage()
-            is TransactionsPageIntent.ShowAddDialog -> showAddDialog()
             is TransactionsPageIntent.ShowAddDialogWithType ->
-                showAddDialogWithType(intent.type, intent.fromAccountId, intent.categoryId)
-            is TransactionsPageIntent.ShowEditDialog -> showEditDialog(intent.transaction)
-            is TransactionsPageIntent.HideAddEditDialog -> hideAddEditDialog()
+                prepareAddTransactionContext(intent.type, intent.fromAccountId, intent.categoryId)
+            is TransactionsPageIntent.PrepareEditTransaction -> prepareEditTransaction(intent.transaction)
+            is TransactionsPageIntent.ClearTransactionContext -> clearTransactionContext()
             is TransactionsPageIntent.CreateTransaction -> createTransaction(intent.data)
             is TransactionsPageIntent.UpdateTransaction -> updateTransaction(intent.data)
             is TransactionsPageIntent.DeleteTransaction -> deleteTransaction(intent.transaction)
@@ -281,26 +280,14 @@ class TransactionsPageViewModel(
         }
     }
 
-    private fun showAddDialog() {
-        _state.update {
-            it.copy(
-                showAddEditDialog = true,
-                editingTransaction = null,
-                lockedFromAccount = null,
-            )
-        }
-    }
-
     @Suppress("UnusedParameter") // type parameter reserved for future type-specific defaults
-    private fun showAddDialogWithType(
+    private fun prepareAddTransactionContext(
         type: UiTransactionType,
         fromAccountId: String?,
         categoryId: String? = null,
     ) {
-        // Show dialog immediately
         _state.update {
             it.copy(
-                showAddEditDialog = true,
                 editingTransaction = null,
                 lockedFromAccount = null,
                 initialCategory = null,
@@ -328,18 +315,14 @@ class TransactionsPageViewModel(
         }
     }
 
-    private fun showEditDialog(transaction: UiTransactionDetails) {
-        // Load attachments for editing
+    private fun prepareEditTransaction(transaction: UiTransactionDetails) {
         loadAttachments(transaction.id)
 
         viewModelScope.launch {
-            // Wait a bit for attachments to load
             kotlinx.coroutines.delay(100)
-
             val attachments = _state.value.transactionAttachments[transaction.id] ?: emptyList()
             _state.update {
                 it.copy(
-                    showAddEditDialog = true,
                     editingTransaction = transaction,
                     lockedFromAccount = null,
                     selectedAttachments = attachments,
@@ -348,14 +331,13 @@ class TransactionsPageViewModel(
         }
     }
 
-    private fun hideAddEditDialog() {
+    private fun clearTransactionContext() {
         _state.update {
             it.copy(
-                showAddEditDialog = false,
                 editingTransaction = null,
                 lockedFromAccount = null,
                 initialCategory = null,
-                selectedAttachments = emptyList(), // Clear attachments when closing dialog
+                selectedAttachments = emptyList(),
             )
         }
     }
@@ -375,7 +357,6 @@ class TransactionsPageViewModel(
                         SnackbarService.sendSuccessMessage(MR.strings.transaction_create_success)
                         _state.update {
                             it.copy(
-                                showAddEditDialog = false,
                                 editingTransaction = null,
                                 lockedFromAccount = null,
                             )
@@ -410,7 +391,6 @@ class TransactionsPageViewModel(
                             SnackbarService.sendSuccessMessage(MR.strings.transaction_update_success)
                             _state.update {
                                 it.copy(
-                                    showAddEditDialog = false,
                                     editingTransaction = null,
                                     lockedFromAccount = null,
                                 )
@@ -541,12 +521,51 @@ class TransactionsPageViewModel(
 
     private fun duplicateTransaction(transaction: UiTransactionDetails) {
         _state.update {
-            it.copy(
-                showAddEditDialog = true,
-                editingTransaction = transaction.copy(id = ""),
-            )
+            it.copy(editingTransaction = transaction.copy(id = ""))
         }
     }
+
+    /**
+     * Pick images using FileKit and return them — does NOT update state.
+     * Use this from composables that manage their own attachment list locally.
+     */
+    @Suppress("TooGenericExceptionCaught") // General error handling for FileKit operations
+    suspend fun pickImagesAndReturn(): List<UiAttachment> =
+        try {
+            val files =
+                FileKit.openFilePicker(
+                    type = FileKitType.Image,
+                    mode = FileKitMode.Multiple(),
+                )
+            if (files != null) {
+                val results = mutableListOf<UiAttachment>()
+                files.forEachIndexed { idx, file ->
+                    try {
+                        val bytes = file.readBytes()
+                        val compressedBytes = FileKitHelper.compressImage(bytes)
+                        if (FileKitHelper.isValidImage(compressedBytes, file.mimeType())) {
+                            results.add(
+                                UiAttachment(
+                                    id = idx.times(-1).toString(),
+                                    name = file.name,
+                                    mimeType = "image/jpeg",
+                                    fileContent = compressedBytes,
+                                ),
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Napier.e("Error processing image: ${file.name}", e)
+                    }
+                }
+                results
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            Napier.e("Error picking images", e)
+            SnackbarService.sendErrorMessage(MR.strings.unknown_error)
+            emptyList()
+        }
 
     /**
      * Pick images using FileKit and compress them

@@ -61,7 +61,6 @@ sealed interface TransactionsPageIntent {
     data object PreviousPage : TransactionsPageIntent
 
     // CRUD Operations
-    data object ShowAddDialog : TransactionsPageIntent
 
     data class ShowAddDialogWithType(
         val type: UiTransactionType,
@@ -69,11 +68,11 @@ sealed interface TransactionsPageIntent {
         val categoryId: String? = null,
     ) : TransactionsPageIntent
 
-    data class ShowEditDialog(
+    data class PrepareEditTransaction(
         val transaction: UiTransactionDetails,
     ) : TransactionsPageIntent
 
-    data object HideAddEditDialog : TransactionsPageIntent
+    data object ClearTransactionContext : TransactionsPageIntent
 
     data class CreateTransaction(
         val data: UiTransactionData,

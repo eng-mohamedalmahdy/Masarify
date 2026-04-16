@@ -18,6 +18,8 @@ import com.lightfeather.masarify.page.bankaccounts.ViewBankAccount
 import com.lightfeather.masarify.page.categories.AddEditCategory
 import com.lightfeather.masarify.page.categories.CategoriesList
 import com.lightfeather.masarify.page.dashboard.DashboardList
+import com.lightfeather.masarify.page.transactions.AddTransaction
+import com.lightfeather.masarify.page.transactions.EditTransaction
 import com.lightfeather.masarify.page.transactions.TransactionsList
 import com.lightfeather.masarify.page.transactions.ViewTransaction
 import kotlinx.serialization.modules.SerializersModule
@@ -61,6 +63,8 @@ object NavigationRegistry {
                 subclass(AddEditCategory::class, AddEditCategory.serializer())
                 subclass(TransactionsList::class, TransactionsList.serializer())
                 subclass(ViewTransaction::class, ViewTransaction.serializer())
+                subclass(AddTransaction::class, AddTransaction.serializer())
+                subclass(EditTransaction::class, EditTransaction.serializer())
                 subclass(DashboardList::class, DashboardList.serializer())
             }
         }

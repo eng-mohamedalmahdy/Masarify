@@ -131,24 +131,26 @@ class CurrencyExchangeRateRepositoryImpl(
         rate: Double?,
     ): CurrencyExchangeRate =
         CurrencyExchangeRate(
-            from = Currency(
-                name = fromCurrencyName,
-                sign = fromCurrencySign,
-                id = fromCurrencyId.toInt(),
-                type = CurrencyType.valueOf(fromCurrencyType),
-                isDefault = fromCurrencyIsDefault == 1L,
-                resourceKey = fromCurrencyResourceKey,
-                isoCode = fromCurrencyIsoCode,
-            ),
-            to = Currency(
-                name = toCurrencyName,
-                sign = toCurrencySign,
-                id = toCurrencyId.toInt(),
-                type = CurrencyType.valueOf(toCurrencyType),
-                isDefault = toCurrencyIsDefault == 1L,
-                resourceKey = toCurrencyResourceKey,
-                isoCode = toCurrencyIsoCode,
-            ),
+            from =
+                Currency(
+                    name = fromCurrencyName,
+                    sign = fromCurrencySign,
+                    id = fromCurrencyId.toInt(),
+                    type = CurrencyType.valueOf(fromCurrencyType),
+                    isDefault = fromCurrencyIsDefault == 1L,
+                    resourceKey = fromCurrencyResourceKey,
+                    isoCode = fromCurrencyIsoCode,
+                ),
+            to =
+                Currency(
+                    name = toCurrencyName,
+                    sign = toCurrencySign,
+                    id = toCurrencyId.toInt(),
+                    type = CurrencyType.valueOf(toCurrencyType),
+                    isDefault = toCurrencyIsDefault == 1L,
+                    resourceKey = toCurrencyResourceKey,
+                    isoCode = toCurrencyIsoCode,
+                ),
             rate = rate ?: 1.0,
         )
 }
