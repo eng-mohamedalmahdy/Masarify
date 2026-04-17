@@ -1,6 +1,7 @@
 package com.lightfeather.masarify.page.more
 
 import com.lightfeather.domain.model.AppLanguage
+import com.lightfeather.domain.model.ImportMode
 
 internal sealed interface MorePageIntent {
     data object LoadData : MorePageIntent
@@ -15,6 +16,8 @@ internal sealed interface MorePageIntent {
         data object SelectRateUsDetail : NavigationIntent
 
         data object SelectCategoryManagementDetail : NavigationIntent
+
+        data object SelectBackupRestoreDetail : NavigationIntent
     }
 
     data class ToggleDarkTheme(
@@ -34,4 +37,11 @@ internal sealed interface MorePageIntent {
     ) : MorePageIntent
 
     data object ClearNavigation : MorePageIntent
+
+    data object ExportData : MorePageIntent
+
+    class ImportData(
+        val bytes: ByteArray,
+        val mode: ImportMode,
+    ) : MorePageIntent
 }

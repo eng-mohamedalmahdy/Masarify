@@ -2,6 +2,7 @@ package com.lightfeather.data.di
 
 import com.lightfeather.data.repository.AccountRepositoryImpl
 import com.lightfeather.data.repository.AttachmentRepositoryImpl
+import com.lightfeather.data.repository.BackupRepositoryImpl
 import com.lightfeather.data.repository.BankNameRepositoryImpl
 import com.lightfeather.data.repository.CategoryRepositoryImpl
 import com.lightfeather.data.repository.CurrencyExchangeRateRepositoryImpl
@@ -12,6 +13,7 @@ import com.lightfeather.data.repository.TransactionsRepositoryImpl
 import com.lightfeather.data.repository.UserRepositoryImpl
 import com.lightfeather.domain.repository.AccountRepository
 import com.lightfeather.domain.repository.AttachmentRepository
+import com.lightfeather.domain.repository.BackupRepository
 import com.lightfeather.domain.repository.BankNameRepository
 import com.lightfeather.domain.repository.CategoryRepository
 import com.lightfeather.domain.repository.CurrencyExchangeRateRepository
@@ -34,4 +36,5 @@ val repositoryModule =
         single<BankNameRepository> { BankNameRepositoryImpl(get()) }
         single<FinancialSessionRepository> { FinancialSessionRepositoryImpl(get()) }
         single<RemoteExchangeRateRepository> { RemoteExchangeRateRepositoryImpl(get()) }
+        single<BackupRepository> { BackupRepositoryImpl(get(), get()) }
     }

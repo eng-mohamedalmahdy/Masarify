@@ -11,6 +11,8 @@ internal data class MorePageState(
     val availableLanguages: List<AppLanguage> = listOf(AppLanguages.English, AppLanguages.Arabic),
     val selectedDetailItem: MoreDetailItem? = null,
     val isLoading: Boolean = false,
+    val isExporting: Boolean = false,
+    val isImporting: Boolean = false,
 )
 
 internal sealed class MoreDetailItem {
@@ -23,4 +25,6 @@ internal sealed class MoreDetailItem {
     data object RateUs : MoreDetailItem()
 
     data object CategoryManagement : MoreDetailItem()
+
+    data object BackupRestore : MoreDetailItem()
 }

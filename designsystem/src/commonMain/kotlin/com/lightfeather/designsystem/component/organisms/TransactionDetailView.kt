@@ -36,6 +36,7 @@ import com.lightfeather.designsystem.component.molecules.button.SecondaryButton
 import com.lightfeather.designsystem.model.UiAttachment
 import com.lightfeather.designsystem.model.UiTransactionDetails
 import com.lightfeather.designsystem.model.UiTransactionType
+import com.lightfeather.designsystem.model.getBankLocalizedName
 import com.lightfeather.designsystem.model.getLocalizedName
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.designsystem.util.toColorInt
@@ -128,21 +129,48 @@ fun TransactionDetailView(
         // Account Information
         when (transaction.type) {
             UiTransactionType.EXPENSE, UiTransactionType.INCOME -> {
-                DetailItem(
-                    label = if (transaction.type == UiTransactionType.EXPENSE) "Source Account" else "Target Account",
-                    value = transaction.account.name,
-                    icon = {
+                val accountLabel =
+                    if (transaction.type == UiTransactionType.EXPENSE) {
+                        stringResource(MR.strings.source_account)
+                    } else {
+                        stringResource(MR.strings.target_account)
+                    }
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(AppTheme.dimens.spacing.padding.medium),
+                        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.medium),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
                         AppImage(
                             model = transaction.account.image,
                             contentDescription = transaction.account.name,
                             modifier =
                                 Modifier
-                                    .size(AppTheme.dimens.icon.size.medium)
+                                    .size(AppTheme.dimens.icon.size.large)
                                     .clip(CircleShape),
                             placeholder = Res.drawable.bank,
                         )
-                    },
-                )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall),
+                        ) {
+                            Text(
+                                text = accountLabel,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline,
+                            )
+                            Text(
+                                text = transaction.account.name.getBankLocalizedName(),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
+                    }
+                }
             }
 
             UiTransactionType.TRANSFER -> {
@@ -170,12 +198,12 @@ fun TransactionDetailView(
                             )
                             Spacer(modifier = Modifier.height(AppTheme.dimens.small))
                             Text(
-                                text = transaction.account.name,
+                                text = transaction.account.name.getBankLocalizedName(),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium,
                             )
                             Text(
-                                text = "From",
+                                text = stringResource(MR.strings.transaction_from),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.outline,
                             )
@@ -210,7 +238,7 @@ fun TransactionDetailView(
                                     fontWeight = FontWeight.Medium,
                                 )
                                 Text(
-                                    text = "To",
+                                    text = stringResource(MR.strings.transaction_to),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.outline,
                                 )
@@ -222,7 +250,7 @@ fun TransactionDetailView(
                 // Transfer Fee
                 transaction.transferFee?.let { fee ->
                     DetailItem(
-                        label = "Transfer Fee",
+                        label = stringResource(MR.strings.transfer_fee),
                         value = fee,
                     )
                 }
@@ -233,7 +261,12 @@ fun TransactionDetailView(
         FlowRow {
             transaction.categories.forEach { category ->
                 DetailItem(
-                    label = if (transaction.type == UiTransactionType.INCOME) "Income Source" else "Category",
+                    label =
+                        if (transaction.type == UiTransactionType.INCOME) {
+                            stringResource(MR.strings.income_source)
+                        } else {
+                            stringResource(MR.strings.category)
+                        },
                     value = category.getLocalizedName(),
                     icon = {
                         AppImage(
@@ -260,14 +293,14 @@ fun TransactionDetailView(
 
         // Date & Time
         DetailItem(
-            label = "Date & Time",
+            label = stringResource(MR.strings.transaction_date_time),
             value = transaction.dateTime.toDisplayableString(),
         )
 
         // Description
         if (transaction.description.isNotBlank()) {
             DetailItem(
-                label = "Description",
+                label = stringResource(MR.strings.description),
                 value = transaction.description,
             )
         }
@@ -283,12 +316,12 @@ fun TransactionDetailView(
                 ) {
                     Icon(
                         imageVector = Icons.Default.AttachFile,
-                        contentDescription = "Attachments",
+                        contentDescription = stringResource(MR.strings.attachments),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(AppTheme.dimens.icon.size.small),
                     )
                     Text(
-                        text = "Attachments (${attachments.size})",
+                        text = stringResource(MR.strings.attachments_count, attachments.size),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )

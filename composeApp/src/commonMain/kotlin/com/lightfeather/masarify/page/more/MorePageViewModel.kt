@@ -5,17 +5,25 @@ import androidx.lifecycle.viewModelScope
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.domain.repository.UserRepository
+import com.lightfeather.domain.usecase.ExportDataUseCase
 import com.lightfeather.domain.usecase.GetUserDarkMode
 import com.lightfeather.domain.usecase.GetUserLanguage
+import com.lightfeather.domain.usecase.ImportDataUseCase
+import com.lightfeather.masarify.framework.saveBackupFile
 import dev.icerock.moko.resources.desc.StringDesc
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 
 class MorePageViewModel(
     private val isDarkModeEnabled: GetUserDarkMode,
     private val getLanguage: GetUserLanguage,
     private val userRepository: UserRepository,
+    private val exportDataUseCase: ExportDataUseCase,
+    private val importDataUseCase: ImportDataUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MorePageState())
     internal val state: StateFlow<MorePageState> = _state
@@ -88,6 +96,58 @@ class MorePageViewModel(
             is MorePageIntent.NavigationIntent.SelectCategoryManagementDetail -> {
                 _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.CategoryManagement)
             }
+
+            is MorePageIntent.NavigationIntent.SelectBackupRestoreDetail -> {
+                _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.BackupRestore)
+            }
+
+            is MorePageIntent.ExportData -> {
+                handleExport()
+            }
+
+            is MorePageIntent.ImportData -> {
+                handleImport(intent)
+            }
+        }
+    }
+
+    private fun handleExport() {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isExporting = true)
+            exportDataUseCase().foldSuspend(
+                onSuccess = { bytes ->
+                    val date =
+                        Clock.System
+                            .now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                    val fileName = "masarify_${date.year}-${
+                        date.monthNumber.toString().padStart(2, '0')
+                    }-${date.dayOfMonth.toString().padStart(2, '0')}.masarify"
+                    val saved = saveBackupFile(bytes, fileName)
+                    if (saved) {
+                        SnackbarService.sendSuccessMessage(MR.strings.export_success)
+                    }
+                },
+                onFailure = {
+                    SnackbarService.sendErrorMessage(MR.strings.export_failure)
+                },
+            )
+            _state.value = _state.value.copy(isExporting = false)
+        }
+    }
+
+    private fun handleImport(intent: MorePageIntent.ImportData) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isImporting = true)
+            importDataUseCase(intent.bytes, intent.mode).fold(
+                onSuccess = {
+                    SnackbarService.sendSuccessMessage(MR.strings.import_success)
+                },
+                onFailure = {
+                    SnackbarService.sendErrorMessage(MR.strings.import_failure)
+                },
+            )
+            _state.value = _state.value.copy(isImporting = false)
         }
     }
 

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +64,7 @@ internal enum class MoreNavDestination(
     PRIVACY_POLICY("privacy_policy"),
     CONTACT_US("contact_us"),
     RATE_US("rate_us"),
+    BACKUP_RESTORE("backup_restore"),
 }
 
 @Composable
@@ -160,6 +162,15 @@ internal fun MorePageContent(
                         )
                     }
                 },
+                onBackupRestoreClick = {
+                    coroutineScope.launch {
+                        onIntent(MorePageIntent.NavigationIntent.SelectBackupRestoreDetail)
+                        navigator.navigateTo(
+                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            MoreNavDestination.BACKUP_RESTORE.id,
+                        )
+                    }
+                },
             )
         },
         detailPane = {
@@ -195,6 +206,12 @@ internal fun MorePageContent(
                     }
                 }
 
+                MoreNavDestination.BACKUP_RESTORE.id -> {
+                    key("backup_restore_detail") {
+                        BackupRestorePane(state = state, onIntent = onIntent)
+                    }
+                }
+
                 else -> {
                     EmptyState(
                         title = stringResource(MR.strings.select_option),
@@ -221,6 +238,7 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
     onPrivacyPolicyClick: () -> Unit,
     onContactUsClick: () -> Unit,
     onRateUsClick: () -> Unit,
+    onBackupRestoreClick: () -> Unit,
 ) {
     AnimatedPane {
         LazyColumn(
@@ -320,6 +338,20 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
                     image = Icons.Default.CurrencyExchange,
                     onClick = onCurrencyManagementClick,
                     contentDescription = stringResource(MR.strings.currency_management_description),
+                )
+            }
+
+            // Data Section
+            item {
+                SectionHeader(stringResource(MR.strings.data))
+            }
+
+            item {
+                MoreListItem(
+                    text = stringResource(MR.strings.backup_restore),
+                    image = Icons.Default.Storage,
+                    onClick = onBackupRestoreClick,
+                    contentDescription = stringResource(MR.strings.backup_restore_description),
                 )
             }
 

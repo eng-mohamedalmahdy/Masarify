@@ -763,7 +763,7 @@ private fun AccountDropdownCard(
                                 ) {
                                     Text(
                                         account.name.getBankLocalizedName(),
-                                        style = MaterialTheme.typography.labelMedium
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                                     Text(
                                         text = "${account.currency.symbol} ${account.balance}",

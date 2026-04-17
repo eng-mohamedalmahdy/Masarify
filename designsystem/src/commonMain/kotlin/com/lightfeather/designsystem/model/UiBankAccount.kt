@@ -1,5 +1,6 @@
 package com.lightfeather.designsystem.model
 
+import androidx.compose.runtime.Composable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,6 +14,8 @@ data class UiBankAccount(
     val image: String?,
     val isDefault: Boolean = false,
 ) {
+    val localizedName: String @Composable get() = name.getBankLocalizedName()
+
     companion object {
         val dummy =
             UiBankAccount(

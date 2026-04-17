@@ -63,7 +63,7 @@ val viewModelModule =
             )
         }
         viewModel { AddEditCategoryPageViewModel(get(), get(), get(), get(), get(), get(), it.get(), it.get()) }
-        viewModel { MorePageViewModel(get(), get(), get()) }
+        viewModel { MorePageViewModel(get(), get(), get(), get(), get()) }
         viewModel {
             CreateBankAccountPageViewModel(
                 it.get(),

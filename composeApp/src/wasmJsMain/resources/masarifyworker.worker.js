@@ -1,15 +1,16 @@
 importScripts("sqlite3.js");
 
 let db = null;
+let sqlite3 = null;
 
 async function createDatabase() {
-  const sqlite3 = await sqlite3InitModule();
+  sqlite3 = await sqlite3InitModule();
 
   // TODO: Parameterize storage location, and storage type
   db = new sqlite3.oo1.DB("file:database.db?vfs=opfs", "c");
 }
 
-function handleMessage() {
+async function handleMessage() {
   const data = this.data;
 
   switch (data && data.action) {
@@ -37,6 +38,22 @@ function handleMessage() {
         id: data.id,
         results: db.exec("ROLLBACK TRANSACTION;"),
       })
+    case "export":
+      const exportBytes = db.serialize();
+      return postMessage(
+        { id: data.id, results: { bytes: exportBytes.buffer } },
+        [exportBytes.buffer],
+      );
+    case "import_clean": {
+      db.close();
+      const opfsRoot = await navigator.storage.getDirectory();
+      const fileHandle = await opfsRoot.getFileHandle("database.db", { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(data.bytes);
+      await writable.close();
+      db = new sqlite3.oo1.DB("file:database.db?vfs=opfs", "c");
+      return postMessage({ id: data.id, results: { success: true } });
+    }
     default:
       throw new Error(`Unsupported action: ${data && data.action}`);
   }

@@ -21,4 +21,13 @@ actual class DriverFactory {
     }
 }
 
-fun jsWorker(): Worker = js("""new Worker(new URL("masarifyworker.worker.js", import.meta.url))""")
+fun jsWorker(): Worker =
+    js(
+        """
+    (function() {
+        var w = new Worker(new URL("masarifyworker.worker.js", import.meta.url));
+        globalThis.__masarifyDbWorker = w;
+        return w;
+    })()
+    """,
+    )

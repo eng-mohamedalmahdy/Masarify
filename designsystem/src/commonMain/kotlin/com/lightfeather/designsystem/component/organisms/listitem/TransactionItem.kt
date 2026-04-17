@@ -160,9 +160,9 @@ fun TransactionItem(
                             Text(
                                 text =
                                     if (transaction.isTransfer && transaction.receiverAccount != null) {
-                                        "${transaction.account.name} → ${transaction.receiverAccount.name}"
+                                        "${transaction.account.localizedName} → ${transaction.receiverAccount.name}"
                                     } else {
-                                        transaction.account.name
+                                        transaction.account.localizedName
                                     },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.outline,

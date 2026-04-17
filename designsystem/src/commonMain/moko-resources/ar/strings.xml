@@ -318,6 +318,10 @@
     <string name="remove_attachment">إزالة المرفق</string>
     <string name="attachments_count_singular">صورة واحدة</string>
     <string name="attachments_count_plural">%d صور</string>
+    <string name="transaction_from">من</string>
+    <string name="transaction_to">إلى</string>
+    <string name="transaction_date_time">التاريخ والوقت</string>
+    <string name="attachments_count">المرفقات (%d)</string>
 
     <!-- Filter Dialog -->
     <string name="advanced_filters">ترشيحات متقدمة</string>

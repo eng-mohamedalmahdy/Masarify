@@ -12,6 +12,7 @@ import com.lightfeather.domain.usecase.DeleteCategory
 import com.lightfeather.domain.usecase.DeleteCurrency
 import com.lightfeather.domain.usecase.DeleteFinancialSession
 import com.lightfeather.domain.usecase.DeleteTransaction
+import com.lightfeather.domain.usecase.ExportDataUseCase
 import com.lightfeather.domain.usecase.GetAllAccounts
 import com.lightfeather.domain.usecase.GetAllCategories
 import com.lightfeather.domain.usecase.GetAllCategoryIcons
@@ -38,6 +39,7 @@ import com.lightfeather.domain.usecase.GetUserDarkMode
 import com.lightfeather.domain.usecase.GetUserLanguage
 import com.lightfeather.domain.usecase.GetUserSavedColors
 import com.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import com.lightfeather.domain.usecase.ImportDataUseCase
 import com.lightfeather.domain.usecase.SaveUserColor
 import com.lightfeather.domain.usecase.SeedApplicationData
 import com.lightfeather.domain.usecase.SeedDefaultBankNames
@@ -166,4 +168,6 @@ val useCaseModule =
         factoryOf(::GetFinancialSessionById)
         factoryOf(::GetExpenseCategoriesByUsage)
         factoryOf(::SyncRemoteExchangeRatesUseCase)
+        factoryOf(::ExportDataUseCase)
+        factoryOf(::ImportDataUseCase)
     }

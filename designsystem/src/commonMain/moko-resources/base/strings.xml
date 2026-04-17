@@ -326,6 +326,10 @@
     <string name="remove_attachment">Remove Attachment</string>
     <string name="attachments_count_singular">1 photo</string>
     <string name="attachments_count_plural">%d photos</string>
+    <string name="transaction_from">From</string>
+    <string name="transaction_to">To</string>
+    <string name="transaction_date_time">Date &amp; Time</string>
+    <string name="attachments_count">Attachments (%d)</string>
 
     <!-- Filter Dialog -->
     <string name="advanced_filters">Advanced Filters</string>
@@ -698,5 +702,34 @@
     <string name="expense_label">EXPENSE</string>
     <string name="net_balance_label">NET BAL</string>
     <string name="select_currency">Select Currency</string>
+
+    <!-- Section labels -->
+    <string name="data">Data</string>
+
+    <!-- Backup and Restore -->
+    <string name="backup_restore">Backup &amp; Restore</string>
+    <string name="backup_restore_description">Backup and restore your financial data</string>
+    <string name="export_data">Export Data</string>
+    <string name="export_data_description">Save your data as a .masarify file</string>
+    <string name="export_button">Export</string>
+    <string name="import_data">Import Data</string>
+    <string name="import_data_description">Restore data from a .masarify file</string>
+    <string name="pick_file">Pick File</string>
+    <string name="import_mode">Import mode</string>
+    <string name="import_mode_clean">Clean</string>
+    <string name="import_mode_clean_description">Replaces all your data. Cannot be undone.</string>
+    <string name="import_mode_append">Append</string>
+    <string name="import_mode_append_description">Adds missing data. Keeps existing records.</string>
+    <string name="import_button">Import</string>
+    <string name="import_confirm_title">Confirm Import</string>
+    <string name="import_confirm_clean_message">This will permanently replace all your data. This action cannot be undone.</string>
+    <string name="import_confirm_append_message">This will add new data from the selected file to your existing data.</string>
+    <string name="export_success">Data exported successfully</string>
+    <string name="export_failure">Export failed. Please try again.</string>
+    <string name="import_success">Data imported successfully</string>
+    <string name="import_failure">Import failed. Please try again.</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="backup_not_supported_title">Not Available</string>
+    <string name="backup_not_supported_message">Backup and restore is not supported in the web version.</string>
 
 </resources>
