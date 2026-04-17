@@ -121,7 +121,7 @@ fun TransactionItem(
                         if (isExpandable) {
                             // Chevron replaces AttachFile when expandable
                             IconButton(
-                                onClick = { onToggle?.invoke() },
+                                onClick = { onToggle.invoke() },
                                 modifier = Modifier.size(AppTheme.dimens.icon.context.avatar),
                             ) {
                                 Icon(
