@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
@@ -157,7 +158,7 @@ internal fun MorePageContent(
                     coroutineScope.launch {
                         onIntent(MorePageIntent.NavigationIntent.SelectRateUsDetail)
                         navigator.navigateTo(
-                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            ListDetailPaneScaffoldRole.Detail,
                             MoreNavDestination.RATE_US.id,
                         )
                     }
@@ -166,7 +167,7 @@ internal fun MorePageContent(
                     coroutineScope.launch {
                         onIntent(MorePageIntent.NavigationIntent.SelectBackupRestoreDetail)
                         navigator.navigateTo(
-                            androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole.Detail,
+                            ListDetailPaneScaffoldRole.Detail,
                             MoreNavDestination.BACKUP_RESTORE.id,
                         )
                     }

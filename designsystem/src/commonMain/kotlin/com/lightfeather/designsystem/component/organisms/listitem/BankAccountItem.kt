@@ -115,7 +115,7 @@ fun BankAccountItem(
                     Column {
                         Row {
                             Text(
-                                text = bankAccount.name,
+                                text = bankAccount.localizedName,
                                 modifier = Modifier.weight(1f),
                                 style = MaterialTheme.typography.headlineSmall,
                                 color = MaterialTheme.colorScheme.onSurface,

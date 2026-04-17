@@ -34,6 +34,7 @@ class SharedDatabase(
         activeDriver!!.execute(null, sql, 0, null).await()
     }
 
+    @Suppress("SpreadOperator")
     fun notifyAllQueries() {
         activeDriver?.notifyListeners(
             *arrayOf(

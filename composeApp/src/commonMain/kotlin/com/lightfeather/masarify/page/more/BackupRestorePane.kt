@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Storage
-import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,12 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.lightfeather.designsystem.MR
-import com.lightfeather.designsystem.component.molecules.EmptyState
 import com.lightfeather.designsystem.theme.AppTheme
 import com.lightfeather.domain.model.ImportMode
-import com.lightfeather.masarify.PlatformsSlugs
-import com.lightfeather.masarify.asSlug
-import com.lightfeather.masarify.getPlatform
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.FileKitMode
@@ -56,17 +51,6 @@ internal fun BackupRestorePane(
     state: MorePageState,
     onIntent: (MorePageIntent) -> Unit,
 ) {
-    val isWeb = getPlatform().asSlug() == PlatformsSlugs.WEB
-
-    if (isWeb) {
-        EmptyState(
-            title = stringResource(MR.strings.backup_not_supported_title),
-            message = stringResource(MR.strings.backup_not_supported_message),
-            icon = Icons.Outlined.CloudOff,
-            modifier = Modifier.fillMaxSize(),
-        )
-        return
-    }
 
     val scope = rememberCoroutineScope()
     var selectedFile by remember { mutableStateOf<ByteArray?>(null) }
