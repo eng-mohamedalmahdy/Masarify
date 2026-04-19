@@ -193,7 +193,7 @@ internal fun BankAccountsPageContent(
                             accountIn(account)
                         }
                     TransactionsPane(
-                        title = "${account.name} - ${stringResource(MR.strings.transactions)}",
+                        title = "${account.localizedName} - ${stringResource(MR.strings.transactions)}",
                         filter = accountFilter,
                         onBackClick = { listDetailNav.back() },
                         onTransactionClick = { transaction ->
