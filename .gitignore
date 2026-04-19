@@ -18,3 +18,5 @@ shared/shared.podspec
 /gradle/wrapper/
 /node_modules/
 *.lock
+/composeApp/release
+/composeApp/debug
