@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.lightfeather.domain.model.DomainResult
 import com.lightfeather.domain.repository.AccountRepository
 import com.lightfeather.domain.repository.UserRepository
+import com.lightfeather.domain.usecase.IsAuthenticatedUseCase
 import com.lightfeather.domain.usecase.SeedApplicationData
 import com.lightfeather.masarify.navigation.Navigator
 import com.lightfeather.masarify.navigation.Route
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
+import com.lightfeather.masarify.navigation.routes.LoginRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
@@ -24,6 +26,7 @@ class SplashPageViewModel(
     private val userRepository: UserRepository,
     private val bankAccountRepository: AccountRepository,
     private val seedApplicationData: SeedApplicationData,
+    private val isAuthenticated: IsAuthenticatedUseCase,
     private val pendingRoute: Route? = null,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SplashPageState())
@@ -58,6 +61,12 @@ class SplashPageViewModel(
                     }
 
                     delay(3000)
+
+                    if (!isAuthenticated()) {
+                        navigator.navigateAndClearBackStack(LoginRoute)
+                        return@launch
+                    }
+
                     val isUserDataInitialized =
                         userRepository.getUserData().foldResult(
                             onSuccess = { it != null },

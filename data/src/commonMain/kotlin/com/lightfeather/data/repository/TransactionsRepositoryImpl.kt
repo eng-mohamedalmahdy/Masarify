@@ -10,6 +10,7 @@ import com.lightfeather.data.mapper.toDomainTransactions
 import com.lightfeather.domain.model.Category
 import com.lightfeather.domain.model.Currency
 import com.lightfeather.domain.model.DomainResult
+import com.lightfeather.domain.model.error.AppError
 import com.lightfeather.domain.model.PagedData
 import com.lightfeather.domain.model.runCatchingDomainResultSuspend
 import com.lightfeather.domain.model.transaction.Transaction
@@ -575,5 +576,32 @@ class TransactionsRepositoryImpl(
 
                 allTransactions
             }
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit> =
+        try {
+            sharedDatabase { it.transactionsQueries.updateRemoteId(remoteId = remoteId, id = localId.toLong()) }
+            DomainResult.Success(Unit)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error updating remote id"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?> =
+        try {
+            val id = sharedDatabase { it.transactionsQueries.getLocalIdByRemoteId(remoteId).awaitAsOneOrNull() }
+            DomainResult.Success(id?.toInt())
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting local id"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getUnsyncedIds(): DomainResult<List<Int>> =
+        try {
+            val ids = sharedDatabase { it.transactionsQueries.getUnsyncedTransactionIds().awaitAsList() }
+            DomainResult.Success(ids.map { it.toInt() })
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting unsynced ids"))
         }
 }

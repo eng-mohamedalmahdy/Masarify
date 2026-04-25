@@ -16,4 +16,10 @@ interface CurrencyRepository {
     fun getAllCurrencies(): DomainResult<Flow<List<Currency>>>
 
     suspend fun getUsedCurrencies(): DomainResult<Flow<List<Currency>>>
+
+    suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit>
+
+    suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?>
+
+    suspend fun getUnsyncedIds(): DomainResult<List<Int>>
 }

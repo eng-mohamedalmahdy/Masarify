@@ -2,6 +2,8 @@ package com.lightfeather.masarify.di
 
 import com.lightfeather.masarify.app.AppMainViewModel
 import com.lightfeather.masarify.navigation.Route
+import com.lightfeather.masarify.page.auth.login.LoginPageViewModel
+import com.lightfeather.masarify.page.auth.register.RegisterPageViewModel
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPageViewModel
 import com.lightfeather.masarify.page.categories.CategoriesPageViewModel
 import com.lightfeather.masarify.page.categories.addedit.AddEditCategoryPageViewModel
@@ -29,9 +31,12 @@ val viewModelModule =
                 userRepository = get(),
                 bankAccountRepository = get(),
                 seedApplicationData = get(),
+                isAuthenticated = get(),
                 pendingRoute = runCatching { params.get<Route>() }.getOrNull(),
             )
         }
+        viewModelOf(::LoginPageViewModel)
+        viewModelOf(::RegisterPageViewModel)
         viewModel {
             BankAccountsPageViewModel(
                 navigator = get(),
@@ -63,7 +68,7 @@ val viewModelModule =
             )
         }
         viewModel { AddEditCategoryPageViewModel(get(), get(), get(), get(), get(), get(), it.get(), it.get()) }
-        viewModel { MorePageViewModel(get(), get(), get(), get(), get()) }
+        viewModel { MorePageViewModel(get(), get(), get(), get(), get(), get(), get()) }
         viewModel {
             CreateBankAccountPageViewModel(
                 it.get(),

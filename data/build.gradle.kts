@@ -92,7 +92,9 @@ kotlin {
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.bundles.multiplatformSettings)
                 implementation(libs.napier)
+                implementation(libs.kotlinx.datetime)
                 implementation(libs.bundles.ktor)
+                implementation(libs.ktor.client.auth)
             }
         }
 

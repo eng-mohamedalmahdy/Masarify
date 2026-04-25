@@ -18,4 +18,10 @@ interface CategoryRepository {
     fun getAllCategoryIcons(): DomainResult<Flow<List<Any>>>
 
     fun getExpenseCategoriesByUsage(limit: Int): DomainResult<Flow<List<Category>>>
+
+    suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit>
+
+    suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?>
+
+    suspend fun getUnsyncedIds(): DomainResult<List<Int>>
 }

@@ -58,10 +58,14 @@ import com.lightfeather.masarify.navigation.routes.CategoriesRoute
 import com.lightfeather.masarify.navigation.routes.DashboardRoute
 import com.lightfeather.masarify.navigation.routes.DeleteAccountRoute
 import com.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
+import com.lightfeather.masarify.navigation.routes.LoginRoute
 import com.lightfeather.masarify.navigation.routes.MoreRoute
 import com.lightfeather.masarify.navigation.routes.OnBoardingRoute
+import com.lightfeather.masarify.navigation.routes.RegisterRoute
 import com.lightfeather.masarify.navigation.routes.SplashRoute
 import com.lightfeather.masarify.navigation.routes.TransactionsRoute
+import com.lightfeather.masarify.page.auth.login.LoginPage
+import com.lightfeather.masarify.page.auth.register.RegisterPage
 import com.lightfeather.masarify.page.bankaccounts.BankAccountsPage
 import com.lightfeather.masarify.page.categories.CategoriesPage
 import com.lightfeather.masarify.page.dashboard.DashboardPage
@@ -172,6 +176,8 @@ fun App(
                                 entryStr.contains("MoreRoute") -> MoreRoute
                                 entryStr.contains("CategoriesRoute") -> CategoriesRoute
                                 entryStr.contains("OnBoardingRoute") -> OnBoardingRoute
+                                entryStr.contains("LoginRoute") -> LoginRoute
+                                entryStr.contains("RegisterRoute") -> RegisterRoute
                                 else -> null
                             }
                         }
@@ -350,6 +356,12 @@ fun App(
                         }
                         entry<DeleteCategoryRoute> { route ->
                             DeleteCategoryPage(category = route.category)
+                        }
+                        entry<LoginRoute> {
+                            LoginPage()
+                        }
+                        entry<RegisterRoute> {
+                            RegisterPage()
                         }
                     }
                 }

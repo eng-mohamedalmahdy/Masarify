@@ -22,6 +22,10 @@ class AppPreferences(
         const val BIOMETRIC_ENABLED = "biometricEnabled"
         const val BIOMETRIC_SUGGESTION_SHOWN = "biometricSuggestionShown"
         const val AUTO_SYNC_RATES = "autoSyncRates"
+        const val ACCESS_TOKEN = "accessToken"
+        const val REFRESH_TOKEN = "refreshToken"
+        const val REMOTE_USER_ID = "remoteUserId"
+        const val LAST_SYNC_AT = "lastSyncAt"
     }
 
     var userData: UserData?
@@ -59,4 +63,26 @@ class AppPreferences(
     var isAutoSyncRatesEnabled: Boolean
         set(value) = settings.set(AUTO_SYNC_RATES, value)
         get() = settings[AUTO_SYNC_RATES] ?: true
+
+    var accessToken: String?
+        set(value) = if (value != null) settings.set(ACCESS_TOKEN, value) else settings.remove(ACCESS_TOKEN)
+        get() = settings[ACCESS_TOKEN]
+
+    var refreshToken: String?
+        set(value) = if (value != null) settings.set(REFRESH_TOKEN, value) else settings.remove(REFRESH_TOKEN)
+        get() = settings[REFRESH_TOKEN]
+
+    var remoteUserId: Long?
+        set(value) = if (value != null) settings.set(REMOTE_USER_ID, value) else settings.remove(REMOTE_USER_ID)
+        get() = settings[REMOTE_USER_ID]
+
+    var lastSyncAt: Long
+        set(value) = settings.set(LAST_SYNC_AT, value)
+        get() = settings[LAST_SYNC_AT] ?: 0L
+
+    fun clearAuthTokens() {
+        settings.remove(ACCESS_TOKEN)
+        settings.remove(REFRESH_TOKEN)
+        settings.remove(REMOTE_USER_ID)
+    }
 }

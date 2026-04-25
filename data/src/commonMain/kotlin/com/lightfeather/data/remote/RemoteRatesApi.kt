@@ -18,7 +18,7 @@ class RemoteRatesApi(
         try {
             val rates =
                 httpClient
-                    .get("$baseUrl/api/exchange-rates/remote")
+                    .get("$baseUrl/exchange-rates/remote")
                     .body<ApiResponse<List<RemoteExchangeRateDto>>>()
             DomainResult.Success(rates.data ?: emptyList())
         } catch (e: Exception) {

@@ -5,7 +5,9 @@ CREATE TABLE  IF NOT EXISTS  categories(
     color TEXT NOT NULL,
     icon TEXT NOT NULL,
     is_default INTEGER NOT NULL DEFAULT 0,
-    resource_key TEXT
+    resource_key TEXT,
+    remote_id INTEGER,
+    sync_status TEXT NOT NULL DEFAULT 'PENDING'
 );
 
 insertCategory:
@@ -35,5 +37,14 @@ WHERE categoryId = :id;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
+
+updateRemoteId:
+UPDATE categories SET remote_id = :remoteId, sync_status = 'SYNCED' WHERE id = :id;
+
+getLocalIdByRemoteId:
+SELECT id FROM categories WHERE remote_id = :remoteId LIMIT 1;
+
+getUnsyncedCategoryIds:
+SELECT id FROM categories WHERE remote_id IS NULL AND is_default = 0;
 
 

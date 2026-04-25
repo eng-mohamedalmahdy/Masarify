@@ -2,6 +2,8 @@ package com.lightfeather.data.local.database.drivers
 
 import app.cash.sqldelight.async.coroutines.await
 import app.cash.sqldelight.async.coroutines.awaitCreate
+import app.cash.sqldelight.async.coroutines.awaitMigrate
+import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import com.lightfeather.masarify.database.Database
 
@@ -15,12 +17,49 @@ class SharedDatabase(
 
     private suspend fun initDatabase() {
         if (database == null) {
-            activeDriver = driverFactory.createDriver("masarify.db")
-            database =
-                Database(activeDriver!!).also {
-                    Database.Schema.awaitCreate(activeDriver!!)
+            val driver = driverFactory.createDriver("masarify.db")
+            activeDriver = driver
+            val oldVersion = getVersion(driver)
+            val newVersion = Database.Schema.version
+            when {
+                oldVersion == 0L -> {
+                    // New database: create full schema at current version.
+                    // Note: legacy v0 databases (pre-migration-tracking) need app data cleared.
+                    Database.Schema.awaitCreate(driver)
+                    setVersion(driver, newVersion)
                 }
+                oldVersion < newVersion -> {
+                    Database.Schema.awaitMigrate(driver, oldVersion, newVersion)
+                    setVersion(driver, newVersion)
+                }
+            }
+            database = Database(driver)
         }
+    }
+
+    private suspend fun getVersion(driver: SqlDriver): Long =
+        driver.executeQuery(
+            identifier = null,
+            sql = "PRAGMA user_version",
+            mapper = { cursor ->
+                val next = cursor.next()
+                if (next is QueryResult.Value) {
+                    // Synchronous driver (Android, JVM, iOS)
+                    QueryResult.Value(cursor.getLong(0) ?: 0L)
+                } else {
+                    // Asynchronous driver (WASM)
+                    QueryResult.AsyncValue {
+                        next.await()
+                        cursor.getLong(0) ?: 0L
+                    }
+                }
+            },
+            parameters = 0,
+            binders = null,
+        ).await()
+
+    private suspend fun setVersion(driver: SqlDriver, version: Long) {
+        driver.execute(null, "PRAGMA user_version = $version", 0, null).await()
     }
 
     suspend fun reset() {
@@ -48,6 +87,7 @@ class SharedDatabase(
                 "session_account_snapshots",
                 "bank_names",
                 "attachments",
+                "sync_queue",
             ),
         )
     }

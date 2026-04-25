@@ -44,4 +44,6 @@ internal sealed interface MorePageIntent {
         val bytes: ByteArray,
         val mode: ImportMode,
     ) : MorePageIntent
+
+    data object Logout : MorePageIntent
 }

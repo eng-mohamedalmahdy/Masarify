@@ -2,6 +2,7 @@ package com.lightfeather.data.repository
 
 import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.async.coroutines.awaitAsOne
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import app.cash.sqldelight.coroutines.asFlow
 import com.lightfeather.data.local.database.drivers.SharedDatabase
 import com.lightfeather.domain.model.Currency
@@ -109,6 +110,33 @@ class CurrencyRepositoryImpl(
                     query.awaitAsList().map { it.toDomain() }
                 }
             }
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit> =
+        try {
+            database { it.currenciesQueries.updateRemoteId(remoteId = remoteId, id = localId.toLong()) }
+            DomainResult.Success(Unit)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error updating remote id"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?> =
+        try {
+            val id = database { it.currenciesQueries.getLocalIdByRemoteId(remoteId).awaitAsOneOrNull() }
+            DomainResult.Success(id?.toInt())
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting local id"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getUnsyncedIds(): DomainResult<List<Int>> =
+        try {
+            val ids = database { it.currenciesQueries.getUnsyncedCurrencyIds().awaitAsList() }
+            DomainResult.Success(ids.map { it.toInt() })
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting unsynced ids"))
         }
 
     private fun V_currencies.toDomain(): Currency =

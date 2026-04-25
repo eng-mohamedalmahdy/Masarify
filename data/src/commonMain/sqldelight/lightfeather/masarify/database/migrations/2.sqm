@@ -1,0 +1,26 @@
+ALTER TABLE bank_accounts ADD COLUMN remote_id INTEGER;
+ALTER TABLE bank_accounts ADD COLUMN sync_status TEXT NOT NULL DEFAULT 'PENDING';
+
+ALTER TABLE transactions ADD COLUMN remote_id INTEGER;
+ALTER TABLE transactions ADD COLUMN sync_status TEXT NOT NULL DEFAULT 'PENDING';
+
+ALTER TABLE categories ADD COLUMN remote_id INTEGER;
+ALTER TABLE categories ADD COLUMN sync_status TEXT NOT NULL DEFAULT 'PENDING';
+
+ALTER TABLE currencies ADD COLUMN remote_id INTEGER;
+ALTER TABLE currencies ADD COLUMN sync_status TEXT NOT NULL DEFAULT 'PENDING';
+
+ALTER TABLE financial_sessions ADD COLUMN remote_id INTEGER;
+ALTER TABLE financial_sessions ADD COLUMN sync_status TEXT NOT NULL DEFAULT 'PENDING';
+
+CREATE TABLE IF NOT EXISTS sync_queue (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    entity_type TEXT NOT NULL,
+    operation TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    local_id INTEGER,
+    remote_id INTEGER,
+    created_at INTEGER NOT NULL,
+    retry_count INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'PENDING'
+);

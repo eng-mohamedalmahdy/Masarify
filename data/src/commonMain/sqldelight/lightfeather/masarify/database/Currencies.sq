@@ -5,7 +5,9 @@ CREATE TABLE  IF NOT EXISTS  currencies(
   type TEXT NOT NULL DEFAULT 'TRADITIONAL',
   is_default INTEGER NOT NULL DEFAULT 0,
   resource_key TEXT,
-  iso_code TEXT
+  iso_code TEXT,
+  remote_id INTEGER,
+  sync_status TEXT NOT NULL DEFAULT 'PENDING'
 );
 
 insertCurrency:
@@ -42,3 +44,12 @@ WHERE currencyId = :id;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
+
+updateRemoteId:
+UPDATE currencies SET remote_id = :remoteId, sync_status = 'SYNCED' WHERE id = :id;
+
+getLocalIdByRemoteId:
+SELECT id FROM currencies WHERE remote_id = :remoteId LIMIT 1;
+
+getUnsyncedCurrencyIds:
+SELECT id FROM currencies WHERE remote_id IS NULL AND is_default = 0;

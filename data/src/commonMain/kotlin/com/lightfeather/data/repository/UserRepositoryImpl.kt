@@ -67,4 +67,10 @@ class UserRepositoryImpl(
     override fun setAutoSyncRatesEnabled(enabled: Boolean) {
         preferences.isAutoSyncRatesEnabled = enabled
     }
+
+    override fun getLastSyncAt(): Long = preferences.lastSyncAt
+
+    override fun setLastSyncAt(ts: Long) {
+        preferences.lastSyncAt = ts
+    }
 }

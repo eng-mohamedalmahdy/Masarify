@@ -54,4 +54,8 @@ interface UserRepository {
 
     /** Enables or disables automatic exchange rate syncing from the remote server. */
     fun setAutoSyncRatesEnabled(enabled: Boolean)
+
+    fun getLastSyncAt(): Long
+
+    fun setLastSyncAt(ts: Long)
 }

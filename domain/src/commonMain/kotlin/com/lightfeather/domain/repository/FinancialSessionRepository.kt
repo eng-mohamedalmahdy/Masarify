@@ -14,4 +14,10 @@ interface FinancialSessionRepository {
     suspend fun getAllSessions(): DomainResult<Flow<List<FinancialSession>>>
 
     suspend fun getSessionById(id: Int): DomainResult<FinancialSession>
+
+    suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit>
+
+    suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?>
+
+    suspend fun getUnsyncedIds(): DomainResult<List<Int>>
 }

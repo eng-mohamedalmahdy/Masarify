@@ -5,11 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.lightfeather.designsystem.MR
 import com.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import com.lightfeather.domain.repository.UserRepository
+import com.lightfeather.data.util.IoDispatcher
 import com.lightfeather.domain.usecase.ExportDataUseCase
 import com.lightfeather.domain.usecase.GetUserDarkMode
 import com.lightfeather.domain.usecase.GetUserLanguage
 import com.lightfeather.domain.usecase.ImportDataUseCase
+import com.lightfeather.domain.usecase.LogoutUseCase
 import com.lightfeather.masarify.framework.saveBackupFile
+import com.lightfeather.masarify.navigation.Navigator
+import com.lightfeather.masarify.navigation.routes.LoginRoute
+import kotlinx.coroutines.Dispatchers
 import dev.icerock.moko.resources.desc.StringDesc
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +29,8 @@ class MorePageViewModel(
     private val userRepository: UserRepository,
     private val exportDataUseCase: ExportDataUseCase,
     private val importDataUseCase: ImportDataUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val navigator: Navigator,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MorePageState())
     internal val state: StateFlow<MorePageState> = _state
@@ -107,6 +114,14 @@ class MorePageViewModel(
 
             is MorePageIntent.ImportData -> {
                 handleImport(intent)
+            }
+
+            MorePageIntent.Logout -> {
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    logoutUseCase()
+                    SnackbarService.sendSuccessMessage(MR.strings.logout_success)
+                    navigator.navigateAndClearBackStack(LoginRoute)
+                }
             }
         }
     }

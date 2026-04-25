@@ -55,6 +55,13 @@ import com.lightfeather.domain.usecase.UpdateCurrency
 import com.lightfeather.domain.usecase.UpdateCurrencyExchangeRates
 import com.lightfeather.domain.usecase.UpdateFinancialSession
 import com.lightfeather.domain.usecase.UpdateTransaction
+import com.lightfeather.domain.usecase.DrainOutboxQueueUseCase
+import com.lightfeather.domain.usecase.IsAuthenticatedUseCase
+import com.lightfeather.domain.usecase.LoginUseCase
+import com.lightfeather.domain.usecase.LogoutUseCase
+import com.lightfeather.domain.usecase.PullRemoteDeltaUseCase
+import com.lightfeather.domain.usecase.RegisterUseCase
+import com.lightfeather.domain.usecase.UploadLocalDataUseCase
 import com.lightfeather.domain.usecase.UpsertUserData
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
@@ -170,4 +177,15 @@ val useCaseModule =
         factoryOf(::SyncRemoteExchangeRatesUseCase)
         factoryOf(::ExportDataUseCase)
         factoryOf(::ImportDataUseCase)
+
+        // Auth use cases
+        factoryOf(::LoginUseCase)
+        factoryOf(::RegisterUseCase)
+        factoryOf(::LogoutUseCase)
+        factoryOf(::IsAuthenticatedUseCase)
+
+        // Sync use cases
+        factoryOf(::DrainOutboxQueueUseCase)
+        factoryOf(::PullRemoteDeltaUseCase)
+        factoryOf(::UploadLocalDataUseCase)
     }

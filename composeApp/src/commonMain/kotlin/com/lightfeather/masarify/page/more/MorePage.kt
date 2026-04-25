@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Storage
@@ -172,6 +173,7 @@ internal fun MorePageContent(
                         )
                     }
                 },
+                onLogoutClick = { onIntent(MorePageIntent.Logout) },
             )
         },
         detailPane = {
@@ -240,6 +242,7 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
     onContactUsClick: () -> Unit,
     onRateUsClick: () -> Unit,
     onBackupRestoreClick: () -> Unit,
+    onLogoutClick: () -> Unit,
 ) {
     AnimatedPane {
         LazyColumn(
@@ -385,6 +388,20 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
                     image = Icons.Default.Star,
                     onClick = onRateUsClick,
                     contentDescription = stringResource(MR.strings.rate_us_description),
+                )
+            }
+
+            // Account Section
+            item {
+                SectionHeader(stringResource(MR.strings.accounts))
+            }
+
+            item {
+                MoreListItem(
+                    text = stringResource(MR.strings.logout),
+                    image = Icons.Default.Logout,
+                    onClick = onLogoutClick,
+                    contentDescription = stringResource(MR.strings.logout),
                 )
             }
         }

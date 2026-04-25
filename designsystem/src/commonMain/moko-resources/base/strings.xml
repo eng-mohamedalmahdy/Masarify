@@ -732,4 +732,27 @@
     <string name="backup_not_supported_title">Not Available</string>
     <string name="backup_not_supported_message">Backup and restore is not supported in the web version.</string>
 
+    <!-- Auth -->
+    <string name="login_title">Welcome Back</string>
+    <string name="login_subtitle">Sign in to sync your data across devices</string>
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Start tracking your finances</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="login_button">Sign In</string>
+    <string name="register_button">Create Account</string>
+    <string name="no_account_prompt">Don\'t have an account? Register</string>
+    <string name="have_account_prompt">Already have an account? Sign In</string>
+    <string name="login_success">Signed in successfully</string>
+    <string name="login_failure">Sign in failed. Check your credentials.</string>
+    <string name="register_success">Account created successfully</string>
+    <string name="register_failure">Registration failed. Please try again.</string>
+    <string name="email_required">Email is required</string>
+    <string name="password_required">Password is required</string>
+    <string name="name_required">Name is required</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="logout">Logout</string>
+    <string name="logout_success">Logged out successfully</string>
+
 </resources>

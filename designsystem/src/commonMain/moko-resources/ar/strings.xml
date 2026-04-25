@@ -679,4 +679,27 @@
     <string name="start_over_confirm_delete">هل تريد حذف هذه النقطة المالية؟</string>
     <string name="recent_activity">النشاط الأخير</string>
 
+    <!-- Auth -->
+    <string name="login_title">مرحباً بعودتك</string>
+    <string name="login_subtitle">سجل دخولك لمزامنة بياناتك عبر الأجهزة</string>
+    <string name="register_title">إنشاء حساب</string>
+    <string name="register_subtitle">ابدأ تتبع أموالك</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="login_button">تسجيل الدخول</string>
+    <string name="register_button">إنشاء حساب</string>
+    <string name="no_account_prompt">ليس لديك حساب؟ سجل الآن</string>
+    <string name="have_account_prompt">لديك حساب بالفعل؟ سجل دخولك</string>
+    <string name="login_success">تم تسجيل الدخول بنجاح</string>
+    <string name="login_failure">فشل تسجيل الدخول. تحقق من بياناتك.</string>
+    <string name="register_success">تم إنشاء الحساب بنجاح</string>
+    <string name="register_failure">فشل التسجيل. حاول مرة أخرى.</string>
+    <string name="email_required">البريد الإلكتروني مطلوب</string>
+    <string name="password_required">كلمة المرور مطلوبة</string>
+    <string name="name_required">الاسم مطلوب</string>
+    <string name="passwords_do_not_match">كلمتا المرور غير متطابقتين</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="logout_success">تم تسجيل الخروج بنجاح</string>
+
 </resources>

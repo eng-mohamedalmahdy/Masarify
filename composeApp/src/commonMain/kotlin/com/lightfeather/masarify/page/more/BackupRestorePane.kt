@@ -51,7 +51,6 @@ internal fun BackupRestorePane(
     state: MorePageState,
     onIntent: (MorePageIntent) -> Unit,
 ) {
-
     val scope = rememberCoroutineScope()
     var selectedFile by remember { mutableStateOf<ByteArray?>(null) }
     var selectedFileName by remember { mutableStateOf<String?>(null) }

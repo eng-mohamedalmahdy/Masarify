@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS transactions (
     account_id INTEGER NOT NULL,
     type TEXT ,
     receiver_account_id INTEGER, -- Only for TRANSFER
-    fee REAL -- Only for TRANSFER
+    fee REAL, -- Only for TRANSFER
+    remote_id INTEGER,
+    sync_status TEXT NOT NULL DEFAULT 'PENDING'
 );
 
 -- Insert Queries
@@ -97,6 +99,15 @@ WHERE transactionType = :type;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
+
+updateRemoteId:
+UPDATE transactions SET remote_id = :remoteId, sync_status = 'SYNCED' WHERE id = :id;
+
+getLocalIdByRemoteId:
+SELECT id FROM transactions WHERE remote_id = :remoteId LIMIT 1;
+
+getUnsyncedTransactionIds:
+SELECT id FROM transactions WHERE remote_id IS NULL;
 
 getTotalTransactionsOfTypeOfCurrency:
 SELECT SUM(transactionAmount) AS total_amount

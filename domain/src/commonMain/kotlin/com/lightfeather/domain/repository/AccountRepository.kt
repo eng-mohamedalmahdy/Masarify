@@ -18,4 +18,10 @@ interface AccountRepository {
     suspend fun setDefaultAccount(accountId: Int): DomainResult<Boolean>
 
     fun getDefaultAccount(): DomainResult<Flow<Account?>>
+
+    suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit>
+
+    suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?>
+
+    suspend fun getUnsyncedIds(): DomainResult<List<Int>>
 }

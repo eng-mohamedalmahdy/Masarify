@@ -1,7 +1,9 @@
 CREATE TABLE IF NOT EXISTS financial_sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     timestamp INTEGER NOT NULL,
-    name TEXT
+    name TEXT,
+    remote_id INTEGER,
+    sync_status TEXT NOT NULL DEFAULT 'PENDING'
 );
 
 CREATE TABLE IF NOT EXISTS session_account_snapshots (
@@ -53,3 +55,12 @@ WHERE sas.session_id = :session_id;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
+
+updateRemoteId:
+UPDATE financial_sessions SET remote_id = :remoteId, sync_status = 'SYNCED' WHERE id = :id;
+
+getLocalIdByRemoteId:
+SELECT id FROM financial_sessions WHERE remote_id = :remoteId LIMIT 1;
+
+getUnsyncedSessionIds:
+SELECT id FROM financial_sessions WHERE remote_id IS NULL;

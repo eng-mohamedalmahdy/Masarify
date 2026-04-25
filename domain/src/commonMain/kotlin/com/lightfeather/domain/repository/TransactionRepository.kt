@@ -57,4 +57,10 @@ interface TransactionRepository {
     suspend fun <T : Transaction> getTransactionCountOfType(type: KClass<T>): DomainResult<Long>
 
     suspend fun getFilteredTransactionCount(filter: TransactionFilter): DomainResult<Long>
+
+    suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit>
+
+    suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?>
+
+    suspend fun getUnsyncedIds(): DomainResult<List<Int>>
 }
