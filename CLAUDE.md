@@ -19,8 +19,7 @@ This project lives inside the **Masarify System** monorepo. See `../CLAUDE.md` f
 ### Build and Run
 - **Web (WASM) Development**: `./gradlew :composeApp:wasmJsBrowserDevelopmentRun`
 - **Android**: `./gradlew assembleDebug` or run from Android Studio
-- **Desktop (JVM)**: `./gradlew run` or `./gradlew :composeApp:runDistributable`
-- **iOS**: Open `iosApp` in Xcode and build
+- **iOS**: Open `iosApp/iosApp.xcworkspace` in Xcode and build (run `pod install` first in `iosApp/`)
 - **Clean Build**: `./gradlew clean`
 
 ### Development Workflow
@@ -238,8 +237,7 @@ internal fun FeaturePageContent(state: State, onIntent: (Intent) -> Unit) {
 **Platform Targets:**
 - `commonMain`: Shared code across all platforms
 - `androidMain`: Android-specific implementations
-- `iosMain`: iOS-specific implementations  
-- `jvmMain`: Desktop-specific implementations
+- `iosMain`: iOS-specific implementations
 - `wasmJsMain`: Web-specific implementations
 
 ### Key Technologies
@@ -458,7 +456,7 @@ fun TransactionPageContent(
 
 ## Important Implementation Notes
 
-- **Package Structure**: Main package is `com.lightfeather.masarify`
+- **Package Structure**: Main package is `tech.lightfeather.masarify`
 - **Database**: Uses SQLDelight with auto-generated code
 - **Localization**: Supports Arabic (RTL) and English via moko-resources
 - **Navigation**: Type-safe routes defined in `navigation/Route.kt`

@@ -16,6 +16,8 @@ plugins {
     alias(libs.plugins.sqldelight) apply false
     id("dev.icerock.mobile.multiplatform-resources") version "0.25.2"
 
+    alias(libs.plugins.googleServices) apply false
+
     // Code Quality Plugins
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false

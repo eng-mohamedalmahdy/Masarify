@@ -755,4 +755,23 @@
     <string name="logout">Logout</string>
     <string name="logout_success">Logged out successfully</string>
 
+    <!-- Guest / Sign In -->
+    <string name="sign_in">Sign In</string>
+    <string name="onboarding_sign_in_prompt">Already have an account?</string>
+
+    <!-- Data Sync -->
+    <string name="auto_sync_data">Auto Sync Data</string>
+    <string name="auto_sync_data_description">Automatically sync your data to the cloud</string>
+    <string name="auto_sync_data_enabled">Auto sync data enabled</string>
+    <string name="auto_sync_data_disabled">Auto sync data disabled</string>
+    <string name="sync_now">Sync Now</string>
+    <string name="sync_now_description">Sync your data to the cloud</string>
+    <string name="sync_success">Data synced successfully</string>
+    <string name="sync_failure">Sync failed. Please try again.</string>
+    <string name="sync_failed_entries">Failed Sync Entries</string>
+    <string name="sync_retry">Retry</string>
+    <string name="sync_retry_all">Retry All</string>
+    <string name="sync_clear_all">Clear All</string>
+    <string name="sync_retry_count">Retries: %d</string>
+
 </resources>

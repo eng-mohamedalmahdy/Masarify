@@ -1,5 +1,7 @@
 [versions]
 agp = "8.11.0"
+googleServices = "4.4.4"
+firebaseBom = "34.12.0"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
@@ -128,6 +130,10 @@ uri-kmp = { module = "com.eygraber:uri-kmp", version.ref = "uriKmp" }
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance" }
 
+# Firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+
 # Compottie - Lottie animations
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 compottie-lite = { module = "io.github.alexzhirkevich:compottie-lite", version.ref = "compottie" }
@@ -193,6 +199,8 @@ androidLint = { id = "com.android.lint", version.ref = "agp" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 mokoResources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "resources" }
+
+googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 # Code Quality Plugins
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "14.0.1" }

@@ -1,9 +1,8 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
-val appPackageName = "com.lightfeather.masarify"
+val appPackageName = "tech.lightfeather.masarify"
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -12,6 +11,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.mokoResources)
+    alias(libs.plugins.googleServices)
 
     // Code Quality - ktlint only (detekt is applied globally from root)
     alias(libs.plugins.ktlint)
@@ -42,11 +42,9 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             // Fix bundle ID inference issue
-            binaryOption("bundleId", "com.lightfeather.masarify.ComposeApp")
+            binaryOption("bundleId", "tech.lightfeather.masarify.ComposeApp")
         }
     }
-
-    jvm()
 
     wasmJs {
         browser {
@@ -107,13 +105,12 @@ kotlin {
             implementation(libs.androidx.biometric)
             implementation(libs.androidx.glance.appwidget)
             implementation(libs.androidx.glance.material3)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(project.dependencies.enforcedPlatform(libs.firebase.bom))
+            implementation(libs.firebase.messaging)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-        }
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
         }
         iosMain.dependencies {
             implementation(libs.androidx.paging.common)
@@ -170,17 +167,6 @@ dependencies {
 multiplatformResources {
     resourcesPackage.set(appPackageName) // required
 }
-compose.desktop {
-    application {
-        mainClass = "com.lightfeather.masarify.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = appPackageName
-            packageVersion = "1.0.0"
-        }
-    }
-}
 tasks.named("wasmJsProcessResources") {
     dependsOn("generateMRwasmJsMain") // moko’s codegen task
 }
@@ -232,7 +218,6 @@ afterEvaluate {
         "ktlintCommonMainSourceSetCheck",
         "ktlintWasmJsMainSourceSetCheck",
         "ktlintIosMainSourceSetCheck",
-        "ktlintJvmMainSourceSetCheck",
     ).forEach { taskName ->
         tasks.findByName(taskName)?.enabled = false
     }

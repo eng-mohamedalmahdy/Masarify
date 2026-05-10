@@ -51,5 +51,11 @@ UPDATE currencies SET remote_id = :remoteId, sync_status = 'SYNCED' WHERE id = :
 getLocalIdByRemoteId:
 SELECT id FROM currencies WHERE remote_id = :remoteId LIMIT 1;
 
+getRemoteIdByLocalId:
+SELECT remote_id FROM currencies WHERE id = :id LIMIT 1;
+
 getUnsyncedCurrencyIds:
 SELECT id FROM currencies WHERE remote_id IS NULL AND is_default = 0;
+
+getLocalIdByResourceKey:
+SELECT id FROM currencies WHERE resource_key = :resourceKey LIMIT 1;

@@ -38,6 +38,14 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/expense_categories_widget_info" />
         </receiver>
+
+        <service
+            android:name=".fcm.MasarifyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

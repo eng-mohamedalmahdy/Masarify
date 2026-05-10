@@ -44,7 +44,13 @@ UPDATE categories SET remote_id = :remoteId, sync_status = 'SYNCED' WHERE id = :
 getLocalIdByRemoteId:
 SELECT id FROM categories WHERE remote_id = :remoteId LIMIT 1;
 
+getRemoteIdByLocalId:
+SELECT remote_id FROM categories WHERE id = :id LIMIT 1;
+
 getUnsyncedCategoryIds:
 SELECT id FROM categories WHERE remote_id IS NULL AND is_default = 0;
+
+getLocalIdByResourceKey:
+SELECT id FROM categories WHERE resource_key = :resourceKey LIMIT 1;
 
 

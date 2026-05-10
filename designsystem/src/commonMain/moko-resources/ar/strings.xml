@@ -702,4 +702,18 @@
     <string name="logout">تسجيل الخروج</string>
     <string name="logout_success">تم تسجيل الخروج بنجاح</string>
 
+    <!-- Guest / Sign In -->
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="onboarding_sign_in_prompt">هل لديك حساب بالفعل؟</string>
+
+    <!-- Data Sync -->
+    <string name="auto_sync_data">مزامنة البيانات تلقائياً</string>
+    <string name="auto_sync_data_description">مزامنة بياناتك تلقائياً مع السحابة</string>
+    <string name="auto_sync_data_enabled">تفعيل المزامنة التلقائية للبيانات</string>
+    <string name="auto_sync_data_disabled">إيقاف المزامنة التلقائية للبيانات</string>
+    <string name="sync_now">مزامنة الآن</string>
+    <string name="sync_now_description">مزامنة بياناتك مع السحابة</string>
+    <string name="sync_success">تمت مزامنة البيانات بنجاح</string>
+    <string name="sync_failure">فشلت المزامنة. يرجى المحاولة مرة أخرى.</string>
+
 </resources>

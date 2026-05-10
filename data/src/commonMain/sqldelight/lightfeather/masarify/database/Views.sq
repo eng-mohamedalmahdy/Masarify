@@ -106,6 +106,7 @@ JOIN currencies c ON a.currency = c.id;
 CREATE VIEW IF NOT EXISTS  v_attachments AS
 SELECT
     id          AS attachmentId,
+    remote_id   AS remoteId,
     entity_type AS entityType,
     entity_id   AS entityId,
     name        AS attachmentName,

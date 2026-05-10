@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val moduleName = "com.lightfeather.designsystem"
+val moduleName = "tech.lightfeather.designsystem"
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -67,8 +67,6 @@ kotlin {
         }
     }
 
-    jvm() // For JVM apps
-
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
@@ -109,10 +107,6 @@ kotlin {
             }
         }
 
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
-        }
     }
 }
 compose.resources {

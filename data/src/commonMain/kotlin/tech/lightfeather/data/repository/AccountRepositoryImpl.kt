@@ -1,0 +1,199 @@
+package tech.lightfeather.data.repository
+
+import app.cash.sqldelight.async.coroutines.awaitAsList
+import app.cash.sqldelight.async.coroutines.awaitAsOne
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
+import app.cash.sqldelight.coroutines.asFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import lightfeather.masarify.database.V_accounts
+import tech.lightfeather.data.local.database.drivers.SharedDatabase
+import tech.lightfeather.domain.model.Account
+import tech.lightfeather.domain.model.Currency
+import tech.lightfeather.domain.model.DomainResult
+import tech.lightfeather.domain.model.error.AppError
+import tech.lightfeather.domain.repository.AccountRepository
+
+class AccountRepositoryImpl(
+    private val database: SharedDatabase,
+) : AccountRepository {
+
+    // DomainResult pattern requires catching all exceptions for proper error handling
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun createAccount(account: Account): DomainResult<Int> =
+        try {
+            val result =
+                database {
+                    val bankAccountsQueries = it.bankAccountsQueries
+                    bankAccountsQueries.transactionWithResult {
+                        bankAccountsQueries.insertBankAccount(
+                            currency = account.currency.id.toLong(),
+                            name = account.name,
+                            description = account.description,
+                            balance = account.balance,
+                            color = account.color,
+                            logo = account.logo,
+                            isDefault = if (account.isDefault) 1L else 0L,
+                        )
+                        bankAccountsQueries.selectLastInsertedRowId().awaitAsOne()
+                    }
+                }
+            val newId = result.toInt()
+            DomainResult.Success(newId)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error creating account"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun updateAccount(account: Account): DomainResult<Boolean> =
+        try {
+            val result =
+                database {
+                    it.bankAccountsQueries.updateAccount(
+                        balance = account.balance,
+                        name = account.name,
+                        color = account.color,
+                        logo = account.logo,
+                        isDefault = if (account.isDefault) 1L else 0L,
+                        id = account.id.toLong(),
+                    )
+                }
+            DomainResult.Success(result > 0)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error updating account"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun deleteAccount(account: Account): DomainResult<Boolean> =
+        try {
+            val result = database { it.bankAccountsQueries.deleteAccount(account.id.toLong()) }
+            DomainResult.Success(result > 0)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error deleting account"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getAccountById(id: Int): DomainResult<Account> =
+        try {
+            val account =
+                database {
+                    it.bankAccountsQueries.getAccountById(id.toLong()).awaitAsOne()
+                }
+            DomainResult.Success(account.toDomain())
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting account"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override fun getAccounts(): DomainResult<Flow<List<Account>>> =
+        try {
+            val accountsFlow: Flow<List<Account>> =
+                flow {
+                    val accountsFlow =
+                        database { db ->
+                            db.bankAccountsQueries
+                                .getAllAccounts()
+                                .asFlow()
+                                .map { query -> query.awaitAsList().map { it.toDomain() } }
+                        }
+                    emitAll(accountsFlow)
+                }
+
+            DomainResult.Success(accountsFlow)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting accounts"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun setDefaultAccount(accountId: Int): DomainResult<Boolean> =
+        try {
+            database {
+                val queries = it.bankAccountsQueries
+                queries.transaction {
+                    queries.clearDefaultAccounts()
+                    queries.markAccountAsDefault(accountId.toLong())
+                }
+            }
+            DomainResult.Success(true)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error setting default account"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override fun getDefaultAccount(): DomainResult<Flow<Account?>> =
+        try {
+            val defaultAccountFlow: Flow<Account?> =
+                flow {
+                    val accountFlow =
+                        database { db ->
+                            db.bankAccountsQueries
+                                .getDefaultAccount()
+                                .asFlow()
+                                .map { query -> query.awaitAsOneOrNull()?.toDomain() }
+                        }
+                    emitAll(accountFlow)
+                }
+            DomainResult.Success(defaultAccountFlow)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting default account"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun updateRemoteId(
+        localId: Int,
+        remoteId: Long,
+    ): DomainResult<Unit> =
+        try {
+            database { it.bankAccountsQueries.updateRemoteId(remoteId = remoteId, id = localId.toLong()) }
+            DomainResult.Success(Unit)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error updating remote id"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getLocalIdByRemoteId(remoteId: Long): DomainResult<Int?> =
+        try {
+            val id = database { it.bankAccountsQueries.getLocalIdByRemoteId(remoteId).awaitAsOneOrNull() }
+            DomainResult.Success(id?.toInt())
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting local id"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getRemoteIdByLocalId(localId: Int): DomainResult<Long?> =
+        try {
+            val remoteId =
+                database { it.bankAccountsQueries.getRemoteIdByLocalId(localId.toLong()).awaitAsOneOrNull()?.remote_id }
+            DomainResult.Success(remoteId)
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting remote id"))
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun getUnsyncedIds(): DomainResult<List<Int>> =
+        try {
+            val ids = database { it.bankAccountsQueries.getUnsyncedAccountIds().awaitAsList() }
+            DomainResult.Success(ids.map { it.toInt() })
+        } catch (e: Exception) {
+            DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting unsynced ids"))
+        }
+
+    private fun V_accounts.toDomain(): Account =
+        Account(
+            id = accountId.toInt(),
+            name = accountName,
+            description = accountDescription,
+            balance = accountBalance,
+            color = accountColor,
+            logo = accountLogo.toString(),
+            isDefault = accountIsDefault == 1L,
+            currency =
+                Currency(
+                    name = currencyName,
+                    sign = currencySign,
+                    id = currencyId.toInt(),
+                ),
+        )
+}

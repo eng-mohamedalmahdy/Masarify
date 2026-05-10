@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "937375111830",
+    "project_id": "masarify",
+    "storage_bucket": "masarify.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937375111830:android:b843e84a454f0e7af900b7",
+        "android_client_info": {
+          "package_name": "tech.lightfeather.masarify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmA9Ba2WgTIEpi9L-G6kV33_Cwwp58Aw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

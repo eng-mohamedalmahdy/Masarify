@@ -20,7 +20,7 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "com.lightfeather.data"
+        namespace = "tech.lightfeather.data"
         compileSdk = 36
         minSdk = 24
 
@@ -60,8 +60,6 @@ kotlin {
             baseName = xcfName
         }
     }
-
-    jvm() // For JVM apps
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -133,13 +131,6 @@ kotlin {
             }
         }
 
-        jvmMain {
-            dependencies {
-                implementation(libs.sqldelight.sqlite)
-                implementation(libs.ktor.client.cio)
-            }
-        }
-
         wasmJsMain {
             dependencies {
                 implementation(libs.sqldelight.webworker.driver)
@@ -157,7 +148,7 @@ sqldelight {
     databases {
         linkSqlite = true
         create("Database") {
-            packageName.set("com.lightfeather.masarify.database")
+            packageName.set("tech.lightfeather.masarify.database")
             generateAsync = true
             dialect("${libs.sqldelight.sqlite.dialect.get().module}:${libs.sqldelight.sqlite.dialect.get().version}")
             module("${libs.sqldelight.sqlite.json.get().module}:${libs.sqldelight.sqlite.json.get().version}")

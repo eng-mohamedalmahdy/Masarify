@@ -60,5 +60,8 @@ UPDATE bank_accounts SET remote_id = :remoteId, sync_status = 'SYNCED' WHERE id 
 getLocalIdByRemoteId:
 SELECT id FROM bank_accounts WHERE remote_id = :remoteId LIMIT 1;
 
+getRemoteIdByLocalId:
+SELECT remote_id FROM bank_accounts WHERE id = :id LIMIT 1;
+
 getUnsyncedAccountIds:
 SELECT id FROM bank_accounts WHERE remote_id IS NULL;
