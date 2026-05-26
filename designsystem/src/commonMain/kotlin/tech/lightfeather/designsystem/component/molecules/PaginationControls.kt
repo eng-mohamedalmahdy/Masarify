@@ -34,9 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.model.PageSize
 import tech.lightfeather.designsystem.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Pagination controls for navigating through paged data

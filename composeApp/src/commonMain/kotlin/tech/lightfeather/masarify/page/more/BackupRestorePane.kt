@@ -33,9 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import tech.lightfeather.designsystem.MR
-import tech.lightfeather.designsystem.theme.AppTheme
-import tech.lightfeather.domain.model.ImportMode
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.FileKitMode
@@ -44,6 +41,9 @@ import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.launch
+import tech.lightfeather.designsystem.MR
+import tech.lightfeather.designsystem.theme.AppTheme
+import tech.lightfeather.domain.model.ImportMode
 
 @Suppress("LongMethod")
 @Composable

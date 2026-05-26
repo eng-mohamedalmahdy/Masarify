@@ -7,15 +7,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
-import tech.lightfeather.designsystem.model.UiTransactionType
-import tech.lightfeather.masarify.app.App
-import tech.lightfeather.masarify.navigation.Navigator
-import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.init
 import io.github.vinceglb.filekit.manualFileKitCoreInitialization
+import tech.lightfeather.designsystem.model.UiTransactionType
+import tech.lightfeather.masarify.app.App
+import tech.lightfeather.masarify.navigation.Navigator
+import tech.lightfeather.masarify.navigation.Route
+import tech.lightfeather.masarify.navigation.routes.ResetPasswordRoute
+import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
+import tech.lightfeather.masarify.navigation.routes.VerifyEmailRoute
 
 class MainActivity : FragmentActivity() {
     // Stored after first composition so onNewIntent can navigate
@@ -45,24 +48,37 @@ class MainActivity : FragmentActivity() {
         navigatorRef?.navigate(route)
     }
 
-    private fun parseDeepLink(intent: Intent?): TransactionsRoute? {
-        val uri =
-            intent?.data?.takeIf { it.scheme == "masarify" && it.host == "transactions" }
-                ?: return null
-
-        val transactionType =
-            when (uri.getQueryParameter("type")?.lowercase()) {
-                "income" -> UiTransactionType.INCOME
-                "transfer" -> UiTransactionType.TRANSFER
-                else -> UiTransactionType.EXPENSE
+    @Suppress("ReturnCount")
+    private fun parseDeepLink(intent: Intent?): Route? {
+        val uri = intent?.data?.takeIf { it.scheme == "masarify" } ?: return null
+        return when (uri.host) {
+            "transactions" -> {
+                val transactionType =
+                    when (uri.getQueryParameter("type")?.lowercase()) {
+                        "income" -> UiTransactionType.INCOME
+                        "transfer" -> UiTransactionType.TRANSFER
+                        else -> UiTransactionType.EXPENSE
+                    }
+                TransactionsRoute(
+                    openAddDialog = uri.getQueryParameter("openAddDialog") == "true",
+                    transactionType = transactionType,
+                    fromAccountId = uri.getQueryParameter("fromAccountId"),
+                    categoryId = uri.getQueryParameter("categoryId"),
+                )
             }
 
-        return TransactionsRoute(
-            openAddDialog = uri.getQueryParameter("openAddDialog") == "true",
-            transactionType = transactionType,
-            fromAccountId = uri.getQueryParameter("fromAccountId"),
-            categoryId = uri.getQueryParameter("categoryId"),
-        )
+            "verify-email" -> {
+                val token = uri.getQueryParameter("token") ?: return null
+                VerifyEmailRoute(token = token)
+            }
+
+            "reset-password" -> {
+                val token = uri.getQueryParameter("token") ?: return null
+                ResetPasswordRoute(token = token)
+            }
+
+            else -> null
+        }
     }
 }
 

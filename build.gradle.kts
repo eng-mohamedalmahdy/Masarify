@@ -229,3 +229,34 @@ detektReportMergeXml.configure {
 detektReportMergeSarif.configure {
     finalizedBy("detektReportSummary")
 }
+
+// ==================== Test All Platforms ====================
+
+tasks.register("testAllPlatforms") {
+    group = "verification"
+    description = "Run tests on Android (unit), iOS simulator, and WASM sequentially"
+    dependsOn(
+        ":composeApp:connectedAndroidTest",
+        ":composeApp:iosSimulatorArm64Test",
+        ":composeApp:wasmJsTest",
+    )
+    // Always generate the unified report, even when one or more platforms fail
+    finalizedBy(":composeApp:generateTestReport")
+}
+
+gradle.projectsEvaluated {
+    tasks.findByPath(":composeApp:iosSimulatorArm64Test")
+        ?.mustRunAfter(":composeApp:connectedAndroidTest")
+    tasks.findByPath(":composeApp:wasmJsBrowserTest")
+        ?.mustRunAfter(":composeApp:iosSimulatorArm64Test")
+    // wasmJsTest is the umbrella for wasmJsBrowserTest; cover both names
+    tasks.findByPath(":composeApp:wasmJsTest")
+        ?.mustRunAfter(":composeApp:iosSimulatorArm64Test")
+}
+
+tasks.register("testReport") {
+    group = "verification"
+    description = "Run all platform tests with recordings then generate unified HTML report"
+    dependsOn("testAllPlatforms")
+    finalizedBy(":composeApp:generateTestReport")
+}

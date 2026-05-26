@@ -3,29 +3,26 @@ package tech.lightfeather.domain.di
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import tech.lightfeather.domain.repository.getPlatform
 import tech.lightfeather.domain.model.transaction.Transaction
+import tech.lightfeather.domain.repository.getPlatform
 import tech.lightfeather.domain.usecase.AcquireAndUpdateFcmUseCase
 import tech.lightfeather.domain.usecase.BankNameUseCase
+import tech.lightfeather.domain.usecase.ClearLocalDataUseCase
 import tech.lightfeather.domain.usecase.CreateAccount
-import tech.lightfeather.domain.usecase.SyncEnqueueHelper
 import tech.lightfeather.domain.usecase.CreateCategory
-import tech.lightfeather.domain.usecase.DeleteAllFailedSyncUseCase
-import tech.lightfeather.domain.usecase.DeleteFailedSyncEntryUseCase
-import tech.lightfeather.domain.usecase.GetFailedSyncCountUseCase
-import tech.lightfeather.domain.usecase.GetFailedSyncEntriesUseCase
-import tech.lightfeather.domain.usecase.RetrySyncEntryUseCase
-import tech.lightfeather.domain.usecase.RetryAllFailedSyncUseCase
 import tech.lightfeather.domain.usecase.CreateCurrency
 import tech.lightfeather.domain.usecase.CreateFinancialSession
 import tech.lightfeather.domain.usecase.CreateTransaction
 import tech.lightfeather.domain.usecase.DeleteAccount
+import tech.lightfeather.domain.usecase.DeleteAllFailedSyncUseCase
 import tech.lightfeather.domain.usecase.DeleteCategory
 import tech.lightfeather.domain.usecase.DeleteCurrency
+import tech.lightfeather.domain.usecase.DeleteFailedSyncEntryUseCase
 import tech.lightfeather.domain.usecase.DeleteFinancialSession
 import tech.lightfeather.domain.usecase.DeleteTransaction
 import tech.lightfeather.domain.usecase.DrainOutboxQueueUseCase
 import tech.lightfeather.domain.usecase.ExportDataUseCase
+import tech.lightfeather.domain.usecase.ForgotPasswordUseCase
 import tech.lightfeather.domain.usecase.GetAllAccounts
 import tech.lightfeather.domain.usecase.GetAllCategories
 import tech.lightfeather.domain.usecase.GetAllCategoryIcons
@@ -38,6 +35,8 @@ import tech.lightfeather.domain.usecase.GetAllTransactionsPaged
 import tech.lightfeather.domain.usecase.GetDefaultAccount
 import tech.lightfeather.domain.usecase.GetExchangeRatesOfCurrency
 import tech.lightfeather.domain.usecase.GetExpenseCategoriesByUsage
+import tech.lightfeather.domain.usecase.GetFailedSyncCountUseCase
+import tech.lightfeather.domain.usecase.GetFailedSyncEntriesUseCase
 import tech.lightfeather.domain.usecase.GetFilteredTransactionCount
 import tech.lightfeather.domain.usecase.GetFilteredTransactions
 import tech.lightfeather.domain.usecase.GetFilteredTransactionsPaged
@@ -53,13 +52,20 @@ import tech.lightfeather.domain.usecase.GetUserLanguage
 import tech.lightfeather.domain.usecase.GetUserSavedColors
 import tech.lightfeather.domain.usecase.GetWealthWorthInCurrency
 import tech.lightfeather.domain.usecase.ImportDataUseCase
-import tech.lightfeather.domain.usecase.ClearLocalDataUseCase
 import tech.lightfeather.domain.usecase.IsAuthenticatedUseCase
+import tech.lightfeather.domain.usecase.IsEmailVerifiedUseCase
+import tech.lightfeather.domain.usecase.IsOnboardingComplete
 import tech.lightfeather.domain.usecase.LoginUseCase
+import tech.lightfeather.domain.usecase.LogoutAllDevicesUseCase
 import tech.lightfeather.domain.usecase.LogoutUseCase
+import tech.lightfeather.domain.usecase.MarkOnboardingComplete
 import tech.lightfeather.domain.usecase.PullRemoteDeltaUseCase
 import tech.lightfeather.domain.usecase.RegisterDeviceTokenUseCase
 import tech.lightfeather.domain.usecase.RegisterUseCase
+import tech.lightfeather.domain.usecase.ResendVerificationUseCase
+import tech.lightfeather.domain.usecase.ResetPasswordUseCase
+import tech.lightfeather.domain.usecase.RetryAllFailedSyncUseCase
+import tech.lightfeather.domain.usecase.RetrySyncEntryUseCase
 import tech.lightfeather.domain.usecase.SaveUserColor
 import tech.lightfeather.domain.usecase.SeedApplicationData
 import tech.lightfeather.domain.usecase.SeedDefaultBankNames
@@ -67,6 +73,7 @@ import tech.lightfeather.domain.usecase.SeedDefaultCategories
 import tech.lightfeather.domain.usecase.SeedDefaultCurrencies
 import tech.lightfeather.domain.usecase.SetDefaultAccount
 import tech.lightfeather.domain.usecase.SetLanguage
+import tech.lightfeather.domain.usecase.SyncEnqueueHelper
 import tech.lightfeather.domain.usecase.SyncRemoteExchangeRatesUseCase
 import tech.lightfeather.domain.usecase.ToggleDarkMode
 import tech.lightfeather.domain.usecase.UpdateAccount
@@ -77,6 +84,16 @@ import tech.lightfeather.domain.usecase.UpdateFinancialSession
 import tech.lightfeather.domain.usecase.UpdateTransaction
 import tech.lightfeather.domain.usecase.UploadLocalDataUseCase
 import tech.lightfeather.domain.usecase.UpsertUserData
+import tech.lightfeather.domain.usecase.DismissNotificationBanner
+import tech.lightfeather.domain.usecase.DismissNotificationTip
+import tech.lightfeather.domain.usecase.GetActiveTip
+import tech.lightfeather.domain.usecase.GetNotificationSettings
+import tech.lightfeather.domain.usecase.RecordAppOpen
+import tech.lightfeather.domain.usecase.RecordReminderFired
+import tech.lightfeather.domain.usecase.ShouldFireReminder
+import tech.lightfeather.domain.usecase.ShouldShowNotificationBanner
+import tech.lightfeather.domain.usecase.UpdateNotificationSettings
+import tech.lightfeather.domain.usecase.VerifyEmailUseCase
 
 val useCaseModule =
     module {
@@ -165,6 +182,9 @@ val useCaseModule =
 
         factory { SaveUserColor(get()) }
 
+        factoryOf(::IsOnboardingComplete)
+        factoryOf(::MarkOnboardingComplete)
+
         factory { SetLanguage(get()) }
         factory { GetUserLanguage(get()) }
 
@@ -196,7 +216,13 @@ val useCaseModule =
         factoryOf(::RegisterUseCase)
         factoryOf(::ClearLocalDataUseCase)
         factoryOf(::LogoutUseCase)
+        factoryOf(::LogoutAllDevicesUseCase)
         factoryOf(::IsAuthenticatedUseCase)
+        factoryOf(::IsEmailVerifiedUseCase)
+        factoryOf(::VerifyEmailUseCase)
+        factoryOf(::ResendVerificationUseCase)
+        factoryOf(::ForgotPasswordUseCase)
+        factoryOf(::ResetPasswordUseCase)
 
         factory { AcquireAndUpdateFcmUseCase(getPlatform(), get(), get(), get()) }
 
@@ -205,6 +231,17 @@ val useCaseModule =
         factoryOf(::PullRemoteDeltaUseCase)
         factoryOf(::UploadLocalDataUseCase)
         factoryOf(::RegisterDeviceTokenUseCase)
+
+        // Notification use cases
+        factoryOf(::GetActiveTip)
+        factoryOf(::DismissNotificationTip)
+        factoryOf(::ShouldShowNotificationBanner)
+        factoryOf(::DismissNotificationBanner)
+        factoryOf(::GetNotificationSettings)
+        factoryOf(::UpdateNotificationSettings)
+        factoryOf(::RecordAppOpen)
+        factoryOf(::RecordReminderFired)
+        factoryOf(::ShouldFireReminder)
 
         // Sync queue use cases
         factoryOf(::GetFailedSyncEntriesUseCase)

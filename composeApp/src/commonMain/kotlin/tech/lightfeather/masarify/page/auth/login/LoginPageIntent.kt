@@ -12,4 +12,6 @@ sealed interface LoginPageIntent {
     data object Submit : LoginPageIntent
 
     data object NavigateToRegister : LoginPageIntent
+
+    data object NavigateToForgotPassword : LoginPageIntent
 }

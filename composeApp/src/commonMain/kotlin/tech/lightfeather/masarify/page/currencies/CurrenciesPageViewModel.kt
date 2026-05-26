@@ -2,6 +2,13 @@ package tech.lightfeather.masarify.page.currencies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import tech.lightfeather.designsystem.model.UiCurrency
@@ -18,13 +25,6 @@ import tech.lightfeather.masarify.mappers.toCurrency
 import tech.lightfeather.masarify.mappers.toCurrencyExchangeRate
 import tech.lightfeather.masarify.mappers.toUiCurrency
 import tech.lightfeather.masarify.mappers.toUiCurrencyExchangeRate
-import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class CurrenciesPageViewModel(
     private val getAllCurrencies: GetAllCurrencies,

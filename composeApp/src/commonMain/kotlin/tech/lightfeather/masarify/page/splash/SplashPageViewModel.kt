@@ -2,13 +2,6 @@ package tech.lightfeather.masarify.page.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import tech.lightfeather.domain.model.DomainResult
-import tech.lightfeather.domain.repository.UserRepository
-import tech.lightfeather.domain.usecase.SeedApplicationData
-import tech.lightfeather.masarify.navigation.Navigator
-import tech.lightfeather.masarify.navigation.Route
-import tech.lightfeather.masarify.navigation.routes.DashboardRoute
-import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -16,13 +9,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import tech.lightfeather.data.util.IoDispatcher
+import tech.lightfeather.domain.model.DomainResult
+import tech.lightfeather.domain.repository.UserRepository
 import tech.lightfeather.domain.usecase.AcquireAndUpdateFcmUseCase
+import tech.lightfeather.domain.usecase.RecordAppOpen
+import tech.lightfeather.domain.usecase.SeedApplicationData
+import tech.lightfeather.masarify.navigation.Navigator
+import tech.lightfeather.masarify.navigation.Route
+import tech.lightfeather.masarify.navigation.routes.DashboardRoute
+import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
 
 class SplashPageViewModel(
     private val navigator: Navigator,
     private val userRepository: UserRepository,
     private val seedApplicationData: SeedApplicationData,
     private val acquireAndUpdateFcmUseCase: AcquireAndUpdateFcmUseCase,
+    private val recordAppOpen: RecordAppOpen,
     private val pendingRoute: Route? = null,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SplashPageState())
@@ -57,12 +59,14 @@ class SplashPageViewModel(
                         // Continue anyway to prevent app crash
                     }
 
+                    recordAppOpen()
                     delay(3000)
 
                     val isLoggedIn = userRepository.isLoggedIn()
-                    Napier.d("isLoggedIn: $isLoggedIn")
-                    if (isLoggedIn) {
-                        if (userRepository.getFcmToken() == null) {
+                    val isOnboardingComplete = userRepository.isOnboardingComplete()
+                    Napier.d("isLoggedIn: $isLoggedIn, isOnboardingComplete: $isOnboardingComplete")
+                    if (isLoggedIn || isOnboardingComplete) {
+                        if (isLoggedIn && userRepository.getFcmToken() == null) {
                             viewModelScope.launch(Dispatchers.IoDispatcher) {
                                 acquireAndUpdateFcmUseCase()
                             }

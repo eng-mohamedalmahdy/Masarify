@@ -12,11 +12,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
+import dev.icerock.moko.resources.compose.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.component.molecules.AppImage
 import tech.lightfeather.designsystem.model.UiBottomNavigationItem
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AppBottomNavigation(

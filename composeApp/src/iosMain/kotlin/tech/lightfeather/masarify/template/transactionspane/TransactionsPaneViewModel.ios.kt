@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.map
-import tech.lightfeather.domain.model.transaction.TransactionFilter
-import tech.lightfeather.domain.usecase.GetFilteredTransactionsPaged
-import tech.lightfeather.masarify.mappers.toUiTransaction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import tech.lightfeather.domain.model.transaction.TransactionFilter
+import tech.lightfeather.domain.usecase.GetFilteredTransactionsPaged
+import tech.lightfeather.masarify.mappers.toUiTransaction
 
 actual class TransactionsPaneViewModel(
     initialFilter: TransactionFilter,

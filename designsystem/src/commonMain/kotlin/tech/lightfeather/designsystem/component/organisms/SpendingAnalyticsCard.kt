@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.EmptyState
 import tech.lightfeather.designsystem.model.UiCategorySpending
@@ -39,7 +40,6 @@ import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.stringResource
 import tech.lightfeather.designsystem.util.toColorInt
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Spending analytics card organism component

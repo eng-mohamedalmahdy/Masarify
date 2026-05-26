@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.DialogProperties
+import dev.icerock.moko.resources.compose.stringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import tech.lightfeather.designsystem.component.molecules.button.SecondaryButton
@@ -30,7 +31,6 @@ import tech.lightfeather.designsystem.model.UiAccountSnapshot
 import tech.lightfeather.designsystem.model.UiBankAccount
 import tech.lightfeather.designsystem.model.UiFinancialSession
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.stringResource
 
 @Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)

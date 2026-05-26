@@ -7,8 +7,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import tech.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import tech.lightfeather.designsystem.theme.AppTheme
 
 @Composable
 fun DisplayLarge(

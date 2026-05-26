@@ -2,6 +2,18 @@ package tech.lightfeather.masarify.page.categories.addedit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
@@ -15,18 +27,6 @@ import tech.lightfeather.domain.usecase.GetAllCategoryIcons
 import tech.lightfeather.domain.usecase.GetUserSavedColors
 import tech.lightfeather.domain.usecase.SaveUserColor
 import tech.lightfeather.domain.usecase.UpdateCategory
-import io.github.aakira.napier.Napier
-import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.dialogs.FileKitMode
-import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.dialogs.openFilePicker
-import io.github.vinceglb.filekit.mimeType
-import io.github.vinceglb.filekit.name
-import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class AddEditCategoryPageViewModel(
     private val createCategory: CreateCategory,

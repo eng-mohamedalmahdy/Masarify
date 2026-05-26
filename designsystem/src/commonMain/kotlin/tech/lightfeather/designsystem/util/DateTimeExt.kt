@@ -3,7 +3,6 @@
 package tech.lightfeather.designsystem.util
 
 import androidx.compose.runtime.Composable
-import tech.lightfeather.designsystem.MR
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -11,6 +10,7 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import tech.lightfeather.designsystem.MR
 import kotlin.math.abs
 import kotlin.time.Clock
 import kotlin.time.Instant

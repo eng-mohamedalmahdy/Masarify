@@ -2,6 +2,10 @@ package tech.lightfeather.masarify.page.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
@@ -10,10 +14,6 @@ import tech.lightfeather.domain.usecase.RegisterUseCase
 import tech.lightfeather.domain.usecase.UploadLocalDataUseCase
 import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class RegisterPageViewModel(
     private val registerUseCase: RegisterUseCase,

@@ -1,9 +1,9 @@
 package tech.lightfeather.masarify.page.currencies
 
-import tech.lightfeather.designsystem.model.UiCurrency
-import tech.lightfeather.designsystem.model.UiCurrencyExchangeRate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import tech.lightfeather.designsystem.model.UiCurrency
+import tech.lightfeather.designsystem.model.UiCurrencyExchangeRate
 
 internal data class CurrenciesPageState(
     val allCurrencies: Flow<List<UiCurrency>> = emptyFlow(),

@@ -12,7 +12,6 @@ private const val NOTIFICATION_CHANNEL_ID = "masarify_channel"
 private const val NOTIFICATION_CHANNEL_NAME = "Masarify"
 
 class MasarifyFirebaseMessagingService : FirebaseMessagingService() {
-
     override fun onNewToken(token: String) {
         NotificationBridge.onNewFcmToken(token, "android")
     }
@@ -24,24 +23,30 @@ class MasarifyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun showNotification(title: String?, body: String?) {
+    private fun showNotification(
+        title: String?,
+        body: String?,
+    ) {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT,
-            )
+            val channel =
+                NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                )
             manager.createNotificationChannel(channel)
         }
 
-        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_popup_sync)
-            .setContentTitle(title)
-            .setContentText(body)
-            .setAutoCancel(true)
-            .build()
+        val notification =
+            NotificationCompat
+                .Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_popup_sync)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .build()
 
         manager.notify(System.currentTimeMillis().toInt(), notification)
     }

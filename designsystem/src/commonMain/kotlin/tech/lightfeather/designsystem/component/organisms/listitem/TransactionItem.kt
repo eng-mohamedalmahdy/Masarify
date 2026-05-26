@@ -35,6 +35,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import dev.icerock.moko.resources.compose.stringResource
+import masarify.designsystem.generated.resources.Res
+import masarify.designsystem.generated.resources.bank
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.atoms.ImageThumbnail
 import tech.lightfeather.designsystem.component.molecules.AppImage
@@ -45,10 +49,6 @@ import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.toColorInt
 import tech.lightfeather.designsystem.util.toDisplayableString
-import dev.icerock.moko.resources.compose.stringResource
-import masarify.designsystem.generated.resources.Res
-import masarify.designsystem.generated.resources.bank
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Suppress("LongMethod", "CyclomaticComplexMethod") // Complexity due to backward-compatible expand/collapse UI
 @Composable

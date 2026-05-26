@@ -54,6 +54,13 @@ async function handleMessage() {
       db = new sqlite3.oo1.DB("file:database.db?vfs=opfs", "c");
       return postMessage({ id: data.id, results: { success: true } });
     }
+    case "clear": {
+      db.close();
+      const opfsRoot = await navigator.storage.getDirectory();
+      try { await opfsRoot.removeEntry("database.db"); } catch (_) {}
+      db = new sqlite3.oo1.DB("file:database.db?vfs=opfs", "c");
+      return postMessage({ id: data.id, results: { success: true } });
+    }
     default:
       throw new Error(`Unsupported action: ${data && data.action}`);
   }

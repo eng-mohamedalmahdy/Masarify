@@ -6,8 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
-import tech.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import tech.lightfeather.designsystem.theme.AppTheme
 
 @Composable
 fun SummaryCard(

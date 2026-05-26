@@ -23,13 +23,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import masarify.designsystem.generated.resources.Res
+import masarify.designsystem.generated.resources.bank
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.model.UiBankAccount
 import tech.lightfeather.designsystem.model.getBankLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.toColorInt
-import masarify.designsystem.generated.resources.Res
-import masarify.designsystem.generated.resources.bank
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Dashboard account card molecule component

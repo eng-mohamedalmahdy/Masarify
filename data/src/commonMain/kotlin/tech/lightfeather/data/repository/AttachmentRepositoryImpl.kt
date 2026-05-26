@@ -38,7 +38,10 @@ class AttachmentRepositoryImpl(
             }
         }
 
-    override suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit> =
+    override suspend fun updateRemoteId(
+        localId: Int,
+        remoteId: Long,
+    ): DomainResult<Unit> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
                 it.attachmentsQueries.updateAttachmentRemoteId(remote_id = remoteId, id = localId.toLong())
@@ -48,20 +51,27 @@ class AttachmentRepositoryImpl(
     override suspend fun getUnsyncedIds(): DomainResult<List<Int>> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
-                it.attachmentsQueries.getUnsyncedAttachments().awaitAsList().map { row -> row.id.toInt() }
+                it.attachmentsQueries
+                    .getUnsyncedAttachments()
+                    .awaitAsList()
+                    .map { row -> row.id.toInt() }
             }
         }
 
     override suspend fun getByRemoteId(remoteId: Long): DomainResult<Attachment?> =
         runCatchingDomainResultSuspend {
             sharedDatabase {
-                it.attachmentsQueries.getAttachmentByRemoteId(remote_id = remoteId).awaitAsList().firstOrNull()
+                it.attachmentsQueries
+                    .getAttachmentByRemoteId(remote_id = remoteId)
+                    .awaitAsList()
+                    .firstOrNull()
                     ?.let { row ->
                         Attachment(
                             id = row.id.toInt(),
                             remoteId = row.remote_id,
-                            entityType = AttachmentEntityType.fromValue(row.entity_type)
-                                ?: AttachmentEntityType.TRANSACTION,
+                            entityType =
+                                AttachmentEntityType.fromValue(row.entity_type)
+                                    ?: AttachmentEntityType.TRANSACTION,
                             entityId = row.entity_id?.toInt(),
                             fileName = row.name.orEmpty(),
                             mimeType = row.mime_type,

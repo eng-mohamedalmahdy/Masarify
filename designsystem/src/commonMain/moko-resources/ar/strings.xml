@@ -716,4 +716,53 @@
     <string name="sync_success">تمت مزامنة البيانات بنجاح</string>
     <string name="sync_failure">فشلت المزامنة. يرجى المحاولة مرة أخرى.</string>
 
+    <!-- Dashboard Tips -->
+    <string name="tip_label">نصيحة</string>
+    <string name="tip_dismiss">فهمت</string>
+    <string name="tip_0_add_accounts_title">أضف حساباتك</string>
+    <string name="tip_0_add_accounts_body">أضف حساباتك البنكية لتتبع أموالك في مكان واحد.</string>
+    <string name="tip_1_log_expenses_title">سجّل كل مصروف</string>
+    <string name="tip_1_log_expenses_body">اضغط + لتسجيل معاملة. التسجيل المنتظم يمنحك رؤى دقيقة.</string>
+    <string name="tip_2_categories_title">نظّم بالفئات</string>
+    <string name="tip_2_categories_body">استخدم الفئات لمعرفة أين تذهب أموالك وتحديد أنماط الإنفاق.</string>
+    <string name="tip_3_analytics_title">راجع تحليلاتك</string>
+    <string name="tip_3_analytics_body">افتح قسم التحليلات لفهم اتجاهات إنفاقك وادخارك.</string>
+    <string name="tip_4_sessions_title">استخدم الجلسات المالية</string>
+    <string name="tip_4_sessions_body">ابدأ جلسة جديدة لتتبع فترة ميزانية منفصلة عن سجلك.</string>
+    <string name="tip_5_cloud_sync_title">فعّل المزامنة السحابية</string>
+    <string name="tip_5_cloud_sync_body">سجّل الدخول وفعّل المزامنة لحفظ بياناتك والوصول إليها من أي جهاز.</string>
+    <string name="tip_6_export_title">صدّر بياناتك</string>
+    <string name="tip_6_export_body">اذهب إلى المزيد ← النسخ الاحتياطي لتصدير بياناتك المالية في أي وقت.</string>
+
+    <!-- Notification Permission Banner -->
+    <string name="notification_banner_title">تفعيل التذكيرات</string>
+    <string name="notification_banner_body">احصل على تذكيرات لتسجيل مصاريفك ومتابعة أموالك.</string>
+    <string name="notification_banner_enable">تفعيل</string>
+    <string name="notification_banner_later">لاحقاً</string>
+
+    <!-- Reminder Notification Content -->
+    <string name="reminder_daily_expense_log_title">لا تنسَ تسجيل مصاريف اليوم</string>
+    <string name="reminder_daily_expense_log_body">خطوات بسيطة تُبقي أموالك منظمة. سجّل مصاريفك الآن.</string>
+    <string name="reminder_weekly_summary_title">ملخصك المالي الأسبوعي</string>
+    <string name="reminder_weekly_summary_body">افتح مصارفي لمراجعة كيف أنفقت ووفّرت هذا الأسبوع.</string>
+    <string name="reminder_idle_re_engagement_title">اشتقنا إليك!</string>
+    <string name="reminder_idle_re_engagement_body">مرّ وقت طويل. تفقّد أموالك — قد تفاجأ بالنتيجة.</string>
+    <string name="reminder_monthly_recap_title">ملخص الشهر جاهز</string>
+    <string name="reminder_monthly_recap_body">الشهر يوشك على الانتهاء. راجع ملخصك المالي الكامل في مصارفي.</string>
+
+    <!-- Notification Settings -->
+    <string name="notification_settings">إعدادات الإشعارات</string>
+    <string name="notifications_master_toggle">تفعيل التذكيرات</string>
+    <string name="notifications_daily_expense_log">تذكير المصاريف اليومي</string>
+    <string name="notifications_daily_expense_log_description">تذكير مسائي لتسجيل مصاريف اليوم</string>
+    <string name="notifications_weekly_summary">الملخص الأسبوعي</string>
+    <string name="notifications_weekly_summary_description">نظرة عامة صباح الأحد</string>
+    <string name="notifications_idle_re_engagement">تذكير عدم النشاط</string>
+    <string name="notifications_idle_re_engagement_description">تنبيه بعد 5 أيام بدون فتح التطبيق</string>
+    <string name="notifications_monthly_recap">ملخص الشهر</string>
+    <string name="notifications_monthly_recap_description">ملخص مالي نهاية الشهر</string>
+    <string name="notifications_daily_time">وقت التذكير اليومي</string>
+    <string name="notifications_grant_permission">منح إذن الإشعارات</string>
+    <string name="notifications_permission_required">الإذن مطلوب لتلقي التذكيرات</string>
+
 </resources>

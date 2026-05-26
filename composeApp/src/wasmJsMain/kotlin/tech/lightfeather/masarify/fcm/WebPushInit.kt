@@ -10,8 +10,7 @@ import org.w3c.dom.events.Event
 const val WEB_PUSH_VAPID_KEY = "REPLACE_WITH_VAPID_KEY_FROM_FIREBASE_CONSOLE"
 
 @Suppress("UnusedParameter")
-private fun jsGetDetailAsString(event: JsAny?): String? =
-    js("event && event.detail ? String(event.detail) : null")
+private fun jsGetDetailAsString(event: JsAny?): String? = js("event && event.detail ? String(event.detail) : null")
 
 @Suppress("UnusedParameter")
 private fun jsRegisterWebPush(vapidKey: String): Unit =

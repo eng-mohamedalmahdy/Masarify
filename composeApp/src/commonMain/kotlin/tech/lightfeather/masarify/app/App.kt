@@ -34,6 +34,12 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import coil3.ImageLoader
 import coil3.compose.LocalPlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
+import dev.icerock.moko.resources.desc.StringDesc
+import io.github.vinceglb.filekit.coil.addPlatformFileSupport
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.KoinContext
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.mp.KoinPlatform
 import tech.lightfeather.designsystem.component.molecules.snackbar.Snackbar
 import tech.lightfeather.designsystem.component.organisms.AppAlwaysExpandedNavigationDrawer
 import tech.lightfeather.designsystem.component.organisms.AppNavigationItemColors
@@ -43,9 +49,9 @@ import tech.lightfeather.designsystem.util.stringResource
 import tech.lightfeather.domain.model.AppLanguages
 import tech.lightfeather.domain.repository.PlatformsSlugs
 import tech.lightfeather.domain.repository.asSlug
+import tech.lightfeather.domain.repository.getPlatform
 import tech.lightfeather.masarify.auth.rememberBiometricAuthenticator
 import tech.lightfeather.masarify.di.getAppModules
-import tech.lightfeather.domain.repository.getPlatform
 import tech.lightfeather.masarify.model.AppTopLevelRoutes
 import tech.lightfeather.masarify.navigation.Display
 import tech.lightfeather.masarify.navigation.LocalNavigator
@@ -58,14 +64,20 @@ import tech.lightfeather.masarify.navigation.routes.CategoriesRoute
 import tech.lightfeather.masarify.navigation.routes.DashboardRoute
 import tech.lightfeather.masarify.navigation.routes.DeleteAccountRoute
 import tech.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
+import tech.lightfeather.masarify.navigation.routes.ForgotPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.LoginRoute
 import tech.lightfeather.masarify.navigation.routes.MoreRoute
 import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
 import tech.lightfeather.masarify.navigation.routes.RegisterRoute
+import tech.lightfeather.masarify.navigation.routes.ResetPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.SplashRoute
 import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
+import tech.lightfeather.masarify.navigation.routes.VerifyEmailRoute
+import tech.lightfeather.masarify.page.auth.forgotpassword.ForgotPasswordPage
 import tech.lightfeather.masarify.page.auth.login.LoginPage
 import tech.lightfeather.masarify.page.auth.register.RegisterPage
+import tech.lightfeather.masarify.page.auth.resetpassword.ResetPasswordPage
+import tech.lightfeather.masarify.page.auth.verifyemail.VerifyEmailPage
 import tech.lightfeather.masarify.page.bankaccounts.BankAccountsPage
 import tech.lightfeather.masarify.page.categories.CategoriesPage
 import tech.lightfeather.masarify.page.dashboard.DashboardPage
@@ -75,12 +87,6 @@ import tech.lightfeather.masarify.page.more.MorePage
 import tech.lightfeather.masarify.page.onboarding.OnBoardingPage
 import tech.lightfeather.masarify.page.splash.SplashPage
 import tech.lightfeather.masarify.page.transactions.TransactionsPage
-import dev.icerock.moko.resources.desc.StringDesc
-import io.github.vinceglb.filekit.coil.addPlatformFileSupport
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinContext
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.mp.KoinPlatform
 import kotlin.time.ExperimentalTime
 
 // Main app composable with navigation setup - length is acceptable for app composition
@@ -113,7 +119,7 @@ fun App(
 
     KoinContext(
         KoinPlatform.getKoin().apply {
-            loadModules(getAppModules(navigator))
+            loadModules(getAppModules(navigator), allowOverride = true)
         },
     ) {
         val mainViewModel = koinViewModel<AppMainViewModel>()
@@ -362,6 +368,15 @@ fun App(
                         }
                         entry<RegisterRoute> {
                             RegisterPage()
+                        }
+                        entry<VerifyEmailRoute> { route ->
+                            VerifyEmailPage(token = route.token)
+                        }
+                        entry<ForgotPasswordRoute> {
+                            ForgotPasswordPage()
+                        }
+                        entry<ResetPasswordRoute> { route ->
+                            ResetPasswordPage(token = route.token)
                         }
                     }
                 }

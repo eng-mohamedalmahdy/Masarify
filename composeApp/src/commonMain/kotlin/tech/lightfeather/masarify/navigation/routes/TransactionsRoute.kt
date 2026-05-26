@@ -1,8 +1,8 @@
 package tech.lightfeather.masarify.navigation.routes
 
+import kotlinx.serialization.Serializable
 import tech.lightfeather.designsystem.model.UiTransactionType
 import tech.lightfeather.masarify.navigation.Route
-import kotlinx.serialization.Serializable
 
 @Serializable
 data class TransactionsRoute(

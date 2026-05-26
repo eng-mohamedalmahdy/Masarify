@@ -37,7 +37,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import dev.icerock.moko.resources.compose.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppImage
 import tech.lightfeather.designsystem.component.molecules.EmptyState
@@ -52,8 +55,6 @@ import tech.lightfeather.designsystem.theme.rememberAppWindowSizeClass
 import tech.lightfeather.designsystem.util.colorToHex
 import tech.lightfeather.designsystem.util.parseColor
 import tech.lightfeather.designsystem.util.toColorInt
-import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR as DSMR
 
 @Composable
@@ -108,7 +109,7 @@ internal fun AddEditCategoryPageContent(
             onValueChange = { onIntent(AddEditCategoryPageIntent.UpdateName(it)) },
             label = stringResource(MR.strings.category_name),
             placeholder = stringResource(MR.strings.enter_category_name),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("add_edit_category_name_field"),
         )
 
         // Description Field
@@ -146,6 +147,7 @@ internal fun AddEditCategoryPageContent(
             SecondaryButton(
                 onClick = { onIntent(AddEditCategoryPageIntent.Cancel) },
                 enabled = !state.isLoading,
+                modifier = Modifier.testTag("add_edit_category_cancel_button"),
             ) {
                 Text(stringResource(DSMR.strings.cancel))
             }
@@ -155,6 +157,7 @@ internal fun AddEditCategoryPageContent(
             PrimaryButton(
                 onClick = { onIntent(AddEditCategoryPageIntent.Save) },
                 enabled = state.isValid && !state.isLoading,
+                modifier = Modifier.testTag("add_edit_category_save_button"),
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(

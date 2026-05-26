@@ -27,12 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.DialogProperties
+import dev.icerock.moko.resources.compose.stringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import tech.lightfeather.designsystem.component.molecules.button.SecondaryButton
 import tech.lightfeather.designsystem.model.UiBankAccount
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.stringResource
 import kotlin.math.abs
 
 @Suppress("LongMethod")

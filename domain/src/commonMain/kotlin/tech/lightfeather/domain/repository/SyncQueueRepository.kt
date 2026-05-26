@@ -32,5 +32,8 @@ interface SyncQueueRepository {
 
     suspend fun deleteAllFailed()
 
-    suspend fun hasActiveEntry(localId: Long, entityType: String): Boolean
+    suspend fun hasActiveEntry(
+        localId: Long,
+        entityType: String,
+    ): Boolean
 }

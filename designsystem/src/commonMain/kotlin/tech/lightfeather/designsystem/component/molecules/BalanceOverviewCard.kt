@@ -34,14 +34,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.model.UiCurrency
 import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Balance overview card molecule component
@@ -120,7 +121,8 @@ fun BalanceOverviewCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "TOTAL BALANCE",
+                            text = stringResource(MR.strings.total_balance).orEmpty(),
+                            modifier = Modifier.semantics {},
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.SemiBold,
                             color = AppTheme.colors.secondary.copy(alpha = LABEL_ALPHA),

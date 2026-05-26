@@ -61,6 +61,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
+import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.atoms.ImageThumbnail
 import tech.lightfeather.designsystem.component.molecules.AppImage
@@ -77,14 +85,6 @@ import tech.lightfeather.designsystem.model.getBankLocalizedName
 import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.parseColor
-import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Clock
 import tech.lightfeather.designsystem.component.organisms.topbar.TopAppBar as DesignTopAppBar
 

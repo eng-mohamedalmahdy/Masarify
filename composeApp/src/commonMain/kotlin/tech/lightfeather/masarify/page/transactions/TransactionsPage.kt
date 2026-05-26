@@ -28,8 +28,14 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation3.runtime.NavKey
+import dev.icerock.moko.resources.compose.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.EmptyState
 import tech.lightfeather.designsystem.component.organisms.AccountsHeader
@@ -48,9 +54,6 @@ import tech.lightfeather.masarify.navigation.LocalNavigator
 import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.PreviewNavigator
 import tech.lightfeather.masarify.template.transactionspane.TransactionsPane
-import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TransactionsPage(
@@ -153,68 +156,16 @@ internal fun TransactionsPageContent(
                         listDetailNav.navigateToDetail(AddTransaction)
                     },
                     topBarSupportingContent = {
-                        Column {
-                            // Accounts Header - Wealth Summary
-                            AccountsHeader(
-                                totalAmountInSelectedOrDefaultCurrency = state.totalAmountInSelectedOrDefaultCurrency,
-                                userAccountsCurrencies = userAccountsCurrencies,
-                                onCurrencyClick = { onIntent(TransactionsPageIntent.SelectCurrency(it)) },
-                                defaultCurrency = defaultCurrency,
-                                selectedCurrency = state.selectedCurrency,
-                                totalAccounts = accounts.size,
-                                shape = RectangleShape,
-                            )
-
-                            Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = stringResource(MR.strings.transactions_title),
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                )
-
-                                // Filter button with reactive badge
-                                // Key ensures recomposition when filter count changes
-                                key(state.filter.getActiveFilterCount()) {
-                                    IconButton(
-                                        onClick = { onIntent(TransactionsPageIntent.ShowFilterDialog) },
-                                    ) {
-                                        BadgedBox(
-                                            badge = {
-                                                // Always provide badge lambda, conditionally render content
-                                                if (state.filter.getActiveFilterCount() > 0) {
-                                                    Badge { Text("${state.filter.getActiveFilterCount()}") }
-                                                }
-                                            },
-                                        ) {
-                                            Icon(
-                                                imageVector =
-                                                    if (state.filter.getActiveFilterCount() > 0) {
-                                                        Icons.Default.FilterListOff
-                                                    } else {
-                                                        Icons.Default.FilterList
-                                                    },
-                                                contentDescription = stringResource(MR.strings.filter_transactions),
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
-
-                            Text(
-                                text = stringResource(MR.strings.transactions_subtitle),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
+                        TransactionsListTopBar(
+                            totalAmountInSelectedOrDefaultCurrency = state.totalAmountInSelectedOrDefaultCurrency,
+                            userAccountsCurrencies = userAccountsCurrencies,
+                            defaultCurrency = defaultCurrency,
+                            selectedCurrency = state.selectedCurrency,
+                            totalAccounts = accounts.size,
+                            activeFilterCount = state.filter.getActiveFilterCount(),
+                            onFilterClick = { onIntent(TransactionsPageIntent.ShowFilterDialog) },
+                            onCurrencyClick = { onIntent(TransactionsPageIntent.SelectCurrency(it)) },
+                        )
                     },
                 )
             }
@@ -332,6 +283,80 @@ private fun TransactionDetailPane(
         onDelete = onDelete,
         onDuplicate = onDuplicate,
     )
+}
+
+@Suppress("LongParameterList")
+@Composable
+internal fun TransactionsListTopBar(
+    totalAmountInSelectedOrDefaultCurrency: String,
+    userAccountsCurrencies: List<tech.lightfeather.designsystem.model.UiCurrency>,
+    defaultCurrency: tech.lightfeather.designsystem.model.UiCurrency?,
+    selectedCurrency: tech.lightfeather.designsystem.model.UiCurrency?,
+    totalAccounts: Int,
+    activeFilterCount: Int,
+    onFilterClick: () -> Unit,
+    onCurrencyClick: (tech.lightfeather.designsystem.model.UiCurrency?) -> Unit,
+) {
+    Column {
+        AccountsHeader(
+            totalAmountInSelectedOrDefaultCurrency = totalAmountInSelectedOrDefaultCurrency,
+            userAccountsCurrencies = userAccountsCurrencies,
+            onCurrencyClick = onCurrencyClick,
+            defaultCurrency = defaultCurrency,
+            selectedCurrency = selectedCurrency,
+            totalAccounts = totalAccounts,
+            shape = RectangleShape,
+        )
+
+        Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(MR.strings.transactions_title),
+                modifier = Modifier.semantics { heading() },
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+
+            key(activeFilterCount) {
+                IconButton(
+                    onClick = onFilterClick,
+                    modifier = Modifier.testTag("transactions_filter_button"),
+                ) {
+                    BadgedBox(
+                        badge = {
+                            if (activeFilterCount > 0) {
+                                Badge { Text("$activeFilterCount") }
+                            }
+                        },
+                    ) {
+                        Icon(
+                            imageVector =
+                                if (activeFilterCount > 0) {
+                                    Icons.Default.FilterListOff
+                                } else {
+                                    Icons.Default.FilterList
+                                },
+                            contentDescription = stringResource(MR.strings.filter_transactions),
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
+
+        Text(
+            text = stringResource(MR.strings.transactions_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 @Preview

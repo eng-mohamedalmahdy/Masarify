@@ -1,12 +1,12 @@
 package tech.lightfeather.masarify.page.bankaccounts
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import tech.lightfeather.designsystem.model.UiAttachment
 import tech.lightfeather.designsystem.model.UiBankAccount
 import tech.lightfeather.designsystem.model.UiCategory
 import tech.lightfeather.designsystem.model.UiCurrency
 import tech.lightfeather.designsystem.model.UiTransactionDetails
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 internal data class BankAccountsPageState(
     val bankAccounts: Flow<List<UiBankAccount>>,

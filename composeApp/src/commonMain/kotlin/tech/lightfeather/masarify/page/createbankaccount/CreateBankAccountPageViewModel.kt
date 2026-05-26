@@ -2,6 +2,13 @@ package tech.lightfeather.masarify.page.createbankaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.icerock.moko.resources.StringResource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
@@ -21,12 +28,6 @@ import tech.lightfeather.masarify.mappers.toCurrency
 import tech.lightfeather.masarify.mappers.toUiBankName
 import tech.lightfeather.masarify.mappers.toUiCurrency
 import tech.lightfeather.masarify.navigation.Navigator
-import dev.icerock.moko.resources.StringResource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 @Suppress("LongParameterList")
 class CreateBankAccountPageViewModel(
@@ -64,7 +65,7 @@ class CreateBankAccountPageViewModel(
             getAllCurrencies().foldSuspend(
                 onSuccess = { currencies ->
                     currencies.map { it.map { it.toUiCurrency() } }.collect {
-                        _state.value = _state.value.copy(availableCurrencies = it)
+                        _state.update { s -> s.copy(availableCurrencies = it) }
                     }
                 },
                 onFailure = {
@@ -76,12 +77,13 @@ class CreateBankAccountPageViewModel(
             getAllBankNames().foldSuspend(
                 onSuccess = { bankNamesFlow ->
                     bankNamesFlow.map { it.map { it.toUiBankName() } }.collect { banks ->
-                        val currentLogoMatch = banks.find { it.logoUrl == _state.value.logo }
-                        _state.value =
-                            _state.value.copy(
+                        _state.update { s ->
+                            val currentLogoMatch = banks.find { it.logoUrl == s.logo }
+                            s.copy(
                                 availableBanks = banks,
-                                selectedBank = currentLogoMatch ?: _state.value.selectedBank,
+                                selectedBank = currentLogoMatch ?: s.selectedBank,
                             )
+                        }
                     }
                 },
                 onFailure = {

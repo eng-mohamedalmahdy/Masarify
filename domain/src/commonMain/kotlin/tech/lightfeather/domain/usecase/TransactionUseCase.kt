@@ -99,37 +99,42 @@ internal suspend fun Transaction.toSyncPayload(
 ): TransactionSyncPayload? {
     val accountId = accountRepository.getRemoteIdByLocalId(account.id).getOrNull() ?: return null
     return when (this) {
-        is Transaction.Income -> TransactionSyncPayload(
-            type = "INCOME",
-            accountId = accountId,
-            name = name,
-            description = description,
-            amount = amount,
-            timestamp = timestamp,
-            categoryId = categoryRepository.getRemoteIdByLocalId(source.id).getOrNull(),
-        )
+        is Transaction.Income ->
+            TransactionSyncPayload(
+                type = "INCOME",
+                accountId = accountId,
+                name = name,
+                description = description,
+                amount = amount,
+                timestamp = timestamp,
+                categoryId = categoryRepository.getRemoteIdByLocalId(source.id).getOrNull(),
+            )
 
-        is Transaction.Expense -> TransactionSyncPayload(
-            type = "EXPENSE",
-            accountId = accountId,
-            name = name,
-            description = description,
-            amount = amount,
-            timestamp = timestamp,
-            categoryIds = categories.mapNotNull { categoryRepository.getRemoteIdByLocalId(it.id).getOrNull() }
-                .ifEmpty { null },
-        )
+        is Transaction.Expense ->
+            TransactionSyncPayload(
+                type = "EXPENSE",
+                accountId = accountId,
+                name = name,
+                description = description,
+                amount = amount,
+                timestamp = timestamp,
+                categoryIds =
+                    categories
+                        .mapNotNull { categoryRepository.getRemoteIdByLocalId(it.id).getOrNull() }
+                        .ifEmpty { null },
+            )
 
-        is Transaction.Transfer -> TransactionSyncPayload(
-            type = "TRANSFER",
-            accountId = accountId,
-            name = name,
-            description = description,
-            amount = amount,
-            timestamp = timestamp,
-            toAccountId = accountRepository.getRemoteIdByLocalId(receiverAccount.id).getOrNull(),
-            fee = fee,
-        )
+        is Transaction.Transfer ->
+            TransactionSyncPayload(
+                type = "TRANSFER",
+                accountId = accountId,
+                name = name,
+                description = description,
+                amount = amount,
+                timestamp = timestamp,
+                toAccountId = accountRepository.getRemoteIdByLocalId(receiverAccount.id).getOrNull(),
+                fee = fee,
+            )
     }
 }
 

@@ -19,17 +19,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.TextField
 import tech.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import tech.lightfeather.designsystem.component.molecules.button.TextButton
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.painterResource
-import dev.icerock.moko.resources.compose.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegisterPage(viewModel: RegisterPageViewModel = koinViewModel()) {
@@ -87,14 +88,14 @@ internal fun RegisterPageContent(
                 TextField(
                     value = state.name,
                     onValueChange = { onIntent(RegisterPageIntent.UpdateName(it)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("register_name_field"),
                     label = stringResource(MR.strings.user_name),
                 )
 
                 TextField(
                     value = state.email,
                     onValueChange = { onIntent(RegisterPageIntent.UpdateEmail(it)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("register_email_field"),
                     label = stringResource(MR.strings.email),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 )
@@ -102,7 +103,7 @@ internal fun RegisterPageContent(
                 TextField(
                     value = state.password,
                     onValueChange = { onIntent(RegisterPageIntent.UpdatePassword(it)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("register_password_field"),
                     label = stringResource(MR.strings.password),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
@@ -111,7 +112,7 @@ internal fun RegisterPageContent(
                 TextField(
                     value = state.confirmPassword,
                     onValueChange = { onIntent(RegisterPageIntent.UpdateConfirmPassword(it)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("register_confirm_password_field"),
                     label = stringResource(MR.strings.confirm_password),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
@@ -122,7 +123,7 @@ internal fun RegisterPageContent(
                 } else {
                     PrimaryButton(
                         onClick = { onIntent(RegisterPageIntent.Submit) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("register_submit_button"),
                     ) {
                         Text(text = stringResource(MR.strings.register_button))
                     }

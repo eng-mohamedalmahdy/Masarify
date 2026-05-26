@@ -2,6 +2,24 @@ package tech.lightfeather.masarify.page.bankaccounts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
@@ -23,24 +41,6 @@ import tech.lightfeather.masarify.mappers.toUiCurrency
 import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.DeleteAccountRoute
 import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
-import io.github.aakira.napier.Napier
-import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.dialogs.FileKitMode
-import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.dialogs.openFilePicker
-import io.github.vinceglb.filekit.mimeType
-import io.github.vinceglb.filekit.name
-import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class BankAccountsPageViewModel(
     private val navigator: Navigator,
@@ -84,7 +84,7 @@ class BankAccountsPageViewModel(
             _state.value = _state.value.copy(userAccountsCurrencies = currenciesFlow)
             launch(Dispatchers.IoDispatcher) {
                 currenciesFlow.collect {
-                    _state.value = _state.value.copy(defaultCurrency = flowOf(it.firstOrNull()))
+                    _state.update { s -> s.copy(defaultCurrency = flowOf(it.firstOrNull())) }
                 }
             }
         }
@@ -209,7 +209,20 @@ class BankAccountsPageViewModel(
                 }
             }
 
-            is BankAccountsPageIntent.DuplicateTransaction -> TODO()
+            is BankAccountsPageIntent.DuplicateTransaction -> {
+                loadAttachments(intent.transaction.id)
+                viewModelScope.launch {
+                    kotlinx.coroutines.delay(100) // Wait for attachments to load
+                    val attachments = _state.value.transactionAttachments[intent.transaction.id] ?: emptyList()
+                    _state.update {
+                        it.copy(
+                            showAddEditDialog = true,
+                            underProcessTransaction = intent.transaction.copy(id = ""),
+                            selectedAttachments = attachments,
+                        )
+                    }
+                }
+            }
 
             // Attachment operations
             is BankAccountsPageIntent.PickImages -> pickImages()

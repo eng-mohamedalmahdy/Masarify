@@ -1,9 +1,9 @@
 package tech.lightfeather.designsystem.model
 
 import androidx.compose.runtime.Composable
-import tech.lightfeather.designsystem.MR
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
+import tech.lightfeather.designsystem.MR
 
 /**
  * Get the localized name for a category

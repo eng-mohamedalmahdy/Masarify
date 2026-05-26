@@ -2,6 +2,33 @@ package tech.lightfeather.masarify.page.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import tech.lightfeather.designsystem.component.organisms.dialog.UiTransactionData
@@ -36,9 +63,15 @@ import tech.lightfeather.domain.usecase.GetAllTransactions
 import tech.lightfeather.domain.usecase.GetFilteredTransactions
 import tech.lightfeather.domain.usecase.GetFilteredTransactionsPaged
 import tech.lightfeather.domain.usecase.GetWealthWorthInCurrency
+import tech.lightfeather.domain.usecase.DismissNotificationBanner
+import tech.lightfeather.domain.usecase.DismissNotificationTip
+import tech.lightfeather.domain.usecase.GetActiveTip
+import tech.lightfeather.domain.usecase.GetNotificationSettings
+import tech.lightfeather.domain.usecase.ShouldShowNotificationBanner
 import tech.lightfeather.domain.usecase.UpdateFinancialSession
 import tech.lightfeather.domain.usecase.UpdateTransaction
 import tech.lightfeather.masarify.framework.FileKitHelper
+import tech.lightfeather.masarify.notification.NotificationScheduler
 import tech.lightfeather.masarify.mappers.toAccount
 import tech.lightfeather.masarify.mappers.toDomainTransaction
 import tech.lightfeather.masarify.mappers.toUiAttachment
@@ -51,31 +84,6 @@ import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.AccountsRoute
 import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
 import tech.lightfeather.masarify.util.formatAmount
-import io.github.aakira.napier.Napier
-import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.dialogs.FileKitMode
-import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.dialogs.openFilePicker
-import io.github.vinceglb.filekit.mimeType
-import io.github.vinceglb.filekit.name
-import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 
 /**
  * ViewModel for Dashboard page
@@ -114,6 +122,11 @@ internal class DashboardPageViewModel(
     private val updateFinancialSession: UpdateFinancialSession,
     private val deleteFinancialSession: DeleteFinancialSession,
     private val getAllFinancialSessions: GetAllFinancialSessions,
+    private val getActiveTip: GetActiveTip,
+    private val dismissNotificationTip: DismissNotificationTip,
+    private val shouldShowNotificationBanner: ShouldShowNotificationBanner,
+    private val dismissBanner: DismissNotificationBanner,
+    private val getNotificationSettings: GetNotificationSettings,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DashboardPageState())
     val state: StateFlow<DashboardPageState> = _state.asStateFlow()
@@ -160,6 +173,21 @@ internal class DashboardPageViewModel(
             is DashboardPageIntent.ToggleTransactionExpansion ->
                 toggleTransactionExpansion(intent.transactionId)
             is DashboardPageIntent.DeleteTransactionById -> deleteTransactionById(intent.transactionId)
+            is DashboardPageIntent.DismissTip -> {
+                dismissNotificationTip(intent.tipId)
+                viewModelScope.launch { checkDashboardNotifications() }
+            }
+            is DashboardPageIntent.DismissNotificationBanner -> {
+                dismissBanner()
+                _state.update { it.copy(showNotificationBanner = false) }
+            }
+            is DashboardPageIntent.EnableNotificationsFromBanner -> {
+                val settings = getNotificationSettings()
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    NotificationScheduler.scheduleAllReminders(settings)
+                }
+                _state.update { it.copy(showNotificationBanner = false) }
+            }
         }
     }
 
@@ -195,7 +223,16 @@ internal class DashboardPageViewModel(
 
             // Observe transaction changes and refresh automatically
             setupReactiveTransactionObserver()
+
+            // Check dashboard notification banners/tips
+            checkDashboardNotifications()
         }
+    }
+
+    private suspend fun checkDashboardNotifications() {
+        val activeTipId = getActiveTip()
+        val showBanner = shouldShowNotificationBanner()
+        _state.update { it.copy(activeTipId = activeTipId, showNotificationBanner = showBanner) }
     }
 
     private suspend fun refreshDashboardData() {
@@ -717,9 +754,19 @@ internal class DashboardPageViewModel(
         }
     }
 
-    @Suppress("UnusedParameter", "UnusedPrivateProperty")
     private fun duplicateTransaction(transaction: UiTransactionDetails) {
-        // Transaction duplication will be implemented in a future release
+        loadAttachments(transaction.id)
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(100) // Wait for attachments to load
+            val attachments = _state.value.transactionAttachments[transaction.id] ?: emptyList()
+            _state.update {
+                it.copy(
+                    showAddEditDialog = true,
+                    underProcessTransaction = transaction.copy(id = ""),
+                    selectedAttachments = attachments,
+                )
+            }
+        }
     }
 
     private fun confirmUpdateTransaction(transaction: UiTransactionData) {

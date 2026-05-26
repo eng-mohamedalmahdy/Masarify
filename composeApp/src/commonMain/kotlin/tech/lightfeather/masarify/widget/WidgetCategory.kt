@@ -1,10 +1,10 @@
 package tech.lightfeather.masarify.widget
 
 import androidx.compose.runtime.Composable
-import tech.lightfeather.designsystem.MR
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.serialization.Serializable
+import tech.lightfeather.designsystem.MR
 
 @Serializable
 data class WidgetCategory(

@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import dev.icerock.moko.resources.compose.stringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AdvancedPaginationControls
 import tech.lightfeather.designsystem.component.molecules.EmptyState
@@ -33,7 +34,6 @@ import tech.lightfeather.designsystem.component.molecules.button.FloatingActionB
 import tech.lightfeather.designsystem.component.organisms.listitem.TransactionItem
 import tech.lightfeather.designsystem.model.UiTransaction
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.stringResource
 
 /**
  * Reusable transactions list component with pagination

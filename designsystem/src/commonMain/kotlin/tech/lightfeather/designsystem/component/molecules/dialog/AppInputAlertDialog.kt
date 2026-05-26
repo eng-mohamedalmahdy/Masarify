@@ -8,9 +8,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import dev.icerock.moko.resources.compose.stringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.TextField
-import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun AppInputAlertDialog(

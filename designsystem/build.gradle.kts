@@ -106,7 +106,6 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
             }
         }
-
     }
 }
 compose.resources {

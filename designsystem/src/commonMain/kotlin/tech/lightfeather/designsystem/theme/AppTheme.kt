@@ -17,8 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import tech.lightfeather.designsystem.theme.AppTheme.shapes
-import tech.lightfeather.designsystem.theme.AppTheme.typography
 import masarify.designsystem.generated.resources.NotoSansArabic_Black
 import masarify.designsystem.generated.resources.NotoSansArabic_Bold
 import masarify.designsystem.generated.resources.NotoSansArabic_ExtraBold
@@ -39,6 +37,8 @@ import masarify.designsystem.generated.resources.NotoSans_SemiBold
 import masarify.designsystem.generated.resources.NotoSans_Thin
 import masarify.designsystem.generated.resources.Res
 import org.jetbrains.compose.resources.Font
+import tech.lightfeather.designsystem.theme.AppTheme.shapes
+import tech.lightfeather.designsystem.theme.AppTheme.typography
 
 object AppTheme {
     object colors {

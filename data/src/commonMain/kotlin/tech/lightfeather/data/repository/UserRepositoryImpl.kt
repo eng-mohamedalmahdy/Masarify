@@ -82,7 +82,16 @@ class UserRepositoryImpl(
 
     override fun isLoggedIn(): Boolean = preferences.remoteUserId != null
 
-    override fun syncFcmToken(token: String, platform: String) {
+    override fun isOnboardingComplete(): Boolean = preferences.isOnboardingComplete || preferences.userData != null
+
+    override fun markOnboardingComplete() {
+        preferences.isOnboardingComplete = true
+    }
+
+    override fun syncFcmToken(
+        token: String,
+        platform: String,
+    ) {
         preferences.fcmToken = token
         preferences.fcmPlatform = platform
     }

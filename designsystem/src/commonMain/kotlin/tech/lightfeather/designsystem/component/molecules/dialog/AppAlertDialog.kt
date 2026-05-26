@@ -3,9 +3,10 @@ package tech.lightfeather.designsystem.component.molecules.dialog
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import tech.lightfeather.designsystem.MR
+import androidx.compose.ui.platform.testTag
 import dev.icerock.moko.resources.compose.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import tech.lightfeather.designsystem.MR
 
 @Composable
 fun AppAlertDialog(
@@ -22,12 +23,18 @@ fun AppAlertDialog(
         modifier = modifier,
         text = { Text(message) },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(
+                onClick = onConfirm,
+                modifier = Modifier.testTag("alert_dialog_confirm_button"),
+            ) {
                 Text(stringResource(MR.strings.yes))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissRequest) {
+            TextButton(
+                onClick = onDismissRequest,
+                modifier = Modifier.testTag("alert_dialog_dismiss_button"),
+            ) {
                 Text(stringResource(MR.strings.cancel))
             }
         },

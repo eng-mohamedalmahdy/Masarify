@@ -67,7 +67,14 @@ interface UserRepository {
 
     fun isLoggedIn(): Boolean
 
-    fun syncFcmToken(token: String, platform: String)
+    fun isOnboardingComplete(): Boolean
+
+    fun markOnboardingComplete()
+
+    fun syncFcmToken(
+        token: String,
+        platform: String,
+    )
 
     fun getFcmToken(): String?
 

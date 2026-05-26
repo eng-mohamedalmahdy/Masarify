@@ -23,7 +23,6 @@ class CategoryRepositoryImpl(
     private val database: SharedDatabase,
     private val httpClient: HttpClient,
 ) : CategoryRepository {
-
     override suspend fun createCategory(category: Category): DomainResult<Int> =
         try {
             val result =
@@ -186,7 +185,12 @@ class CategoryRepositoryImpl(
     override suspend fun getRemoteIdByLocalId(localId: Int): DomainResult<Long?> =
         try {
             val remoteId =
-                database { it.categoriesQueries.getRemoteIdByLocalId(localId.toLong()).awaitAsOneOrNull()?.remote_id }
+                database {
+                    it.categoriesQueries
+                        .getRemoteIdByLocalId(localId.toLong())
+                        .awaitAsOneOrNull()
+                        ?.remote_id
+                }
             DomainResult.Success(remoteId)
         } catch (e: Exception) {
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting remote id"))

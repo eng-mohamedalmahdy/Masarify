@@ -9,6 +9,7 @@ private object NoOpBiometricAuthenticator : BiometricAuthenticator {
     override fun authenticate(
         title: String,
         subtitle: String,
+        cancelText: String,
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit,
     ) {

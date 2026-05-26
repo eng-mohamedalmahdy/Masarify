@@ -40,7 +40,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.navigation3.runtime.NavKey
+import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.flow.flowOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.EmptyState
 import tech.lightfeather.designsystem.component.molecules.button.FloatingActionButton
@@ -65,10 +72,6 @@ import tech.lightfeather.masarify.navigation.PreviewNavigator
 import tech.lightfeather.masarify.page.createbankaccount.CreateBankAccountPage
 import tech.lightfeather.masarify.page.transactions.ViewTransaction
 import tech.lightfeather.masarify.template.transactionspane.TransactionsPane
-import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.flow.flowOf
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun BankAccountsPage(
@@ -276,9 +279,9 @@ internal fun BankAccountsPageContent(
 }
 
 // Composable UI function with complex layout - length is acceptable for UI composition
-@Suppress("LongMethod")
+@Suppress("LongMethod", "LongParameterList")
 @Composable
-private fun AccountsListPane(
+internal fun AccountsListPane(
     accounts: List<UiBankAccount>,
     userAccountsCurrencies: List<UiCurrency>,
     totalAmountInSelectedOrDefaultCurrency: String,
@@ -412,7 +415,7 @@ private fun AccountsListPane(
                                     .padding(
                                         horizontal = AppTheme.dimens.default,
                                         vertical = AppTheme.dimens.medium,
-                                    ),
+                                    ).semantics { heading() },
                         )
                     }
 
@@ -507,7 +510,11 @@ private fun AccountsListPane(
                 onClick = onAddAccount,
                 imageVector = Icons.Default.Add,
                 contentDescription = stringResource(MR.strings.add_account),
-                modifier = Modifier.align(Alignment.BottomEnd).padding(AppTheme.dimens.default),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(AppTheme.dimens.default)
+                        .testTag("bank_accounts_add_fab"),
             )
         }
     }

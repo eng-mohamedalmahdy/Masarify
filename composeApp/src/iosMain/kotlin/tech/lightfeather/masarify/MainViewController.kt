@@ -3,16 +3,18 @@
 package tech.lightfeather.masarify
 
 import androidx.compose.ui.window.ComposeUIViewController
-import tech.lightfeather.designsystem.model.UiTransactionType
-import tech.lightfeather.masarify.app.App
-import tech.lightfeather.masarify.navigation.Navigator
-import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.context.startKoin
+import tech.lightfeather.designsystem.model.UiTransactionType
+import tech.lightfeather.masarify.app.App
+import tech.lightfeather.masarify.navigation.Navigator
+import tech.lightfeather.masarify.navigation.routes.ResetPasswordRoute
+import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
+import tech.lightfeather.masarify.navigation.routes.VerifyEmailRoute
 
 fun InitApp() =
     startKoin {
@@ -27,15 +29,15 @@ object DeeplinkBridge {
         this.navigator = navigator
     }
 
+    @Suppress("CyclomaticComplexMethod", "ReturnCount")
     fun handleDeepLink(url: String) {
-        val uri = url.split("?")
-        if (uri.isEmpty()) return
-        val path = uri[0]
-        if (!path.startsWith("masarify://transactions")) return
+        val parts = url.split("?")
+        if (parts.isEmpty()) return
+        val path = parts[0]
 
         val params =
-            if (uri.size > 1) {
-                uri[1]
+            if (parts.size > 1) {
+                parts[1]
                     .split("&")
                     .associate { param ->
                         val (key, value) = param.split("=").let { it[0] to (it.getOrNull(1) ?: "") }
@@ -45,24 +47,36 @@ object DeeplinkBridge {
                 emptyMap()
             }
 
-        val openAddDialog = params["openAddDialog"] == "true"
-        val transactionType =
-            when (params["type"]?.lowercase()) {
-                "expense" -> UiTransactionType.EXPENSE
-                "income" -> UiTransactionType.INCOME
-                "transfer" -> UiTransactionType.TRANSFER
-                else -> UiTransactionType.EXPENSE
-            }
-        val categoryId = params["categoryId"]
-        val fromAccountId = params["fromAccountId"]
-
         val route =
-            TransactionsRoute(
-                openAddDialog = openAddDialog,
-                transactionType = transactionType,
-                fromAccountId = fromAccountId,
-                categoryId = categoryId,
-            )
+            when {
+                path.startsWith("masarify://transactions") -> {
+                    val transactionType =
+                        when (params["type"]?.lowercase()) {
+                            "expense" -> UiTransactionType.EXPENSE
+                            "income" -> UiTransactionType.INCOME
+                            "transfer" -> UiTransactionType.TRANSFER
+                            else -> UiTransactionType.EXPENSE
+                        }
+                    TransactionsRoute(
+                        openAddDialog = params["openAddDialog"] == "true",
+                        transactionType = transactionType,
+                        fromAccountId = params["fromAccountId"],
+                        categoryId = params["categoryId"],
+                    )
+                }
+
+                path.startsWith("masarify://verify-email") -> {
+                    val token = params["token"] ?: return
+                    VerifyEmailRoute(token = token)
+                }
+
+                path.startsWith("masarify://reset-password") -> {
+                    val token = params["token"] ?: return
+                    ResetPasswordRoute(token = token)
+                }
+
+                else -> return
+            }
 
         scope.launch {
             navigator?.navigate(route)

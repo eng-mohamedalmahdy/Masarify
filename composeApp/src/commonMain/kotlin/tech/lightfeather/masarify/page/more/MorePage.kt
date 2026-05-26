@@ -14,27 +14,32 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.ContactMail
 import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Fingerprint
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Login
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.PrivacyTip
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -51,7 +56,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.EmptyState
 import tech.lightfeather.designsystem.component.molecules.button.SegmentedButton
@@ -64,10 +76,7 @@ import tech.lightfeather.domain.model.AppLanguages
 import tech.lightfeather.masarify.app.LocalAppMainViewModel
 import tech.lightfeather.masarify.page.categories.CategoriesPage
 import tech.lightfeather.masarify.page.currencies.CurrenciesPage
-import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
+import tech.lightfeather.masarify.page.notificationsettings.NotificationSettingsPage
 
 internal enum class MoreNavDestination(
     val id: String,
@@ -78,6 +87,7 @@ internal enum class MoreNavDestination(
     CONTACT_US("contact_us"),
     RATE_US("rate_us"),
     BACKUP_RESTORE("backup_restore"),
+    NOTIFICATION_SETTINGS("notification_settings"),
 }
 
 @Composable
@@ -108,6 +118,24 @@ internal fun MorePageContent(
             navigator.navigateBack()
             onIntent(MorePageIntent.ClearNavigation)
         }
+    }
+
+    if (state.isLogoutAllDialogVisible) {
+        AlertDialog(
+            onDismissRequest = { onIntent(MorePageIntent.DismissLogoutAllDialog) },
+            title = { Text(stringResource(MR.strings.logout_all_devices_confirm_title)) },
+            text = { Text(stringResource(MR.strings.logout_all_devices_confirm_message)) },
+            confirmButton = {
+                Button(onClick = { onIntent(MorePageIntent.LogoutAllDevices) }) {
+                    Text(stringResource(MR.strings.logout_all_devices))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onIntent(MorePageIntent.DismissLogoutAllDialog) }) {
+                    Text(stringResource(MR.strings.cancel))
+                }
+            },
+        )
     }
 
     ListDetailPaneScaffold(
@@ -208,7 +236,18 @@ internal fun MorePageContent(
                         )
                     }
                 },
+                onNotificationSettingsClick = {
+                    coroutineScope.launch {
+                        onIntent(MorePageIntent.NavigationIntent.SelectNotificationSettingsDetail)
+                        navigator.navigateTo(
+                            ListDetailPaneScaffoldRole.Detail,
+                            MoreNavDestination.NOTIFICATION_SETTINGS.id,
+                        )
+                    }
+                },
                 onLogoutClick = { onIntent(MorePageIntent.Logout) },
+                onLogoutAllClick = { onIntent(MorePageIntent.ShowLogoutAllDialog) },
+                onResendVerificationClick = { onIntent(MorePageIntent.ResendVerification) },
             )
         },
         detailPane = {
@@ -248,6 +287,9 @@ private fun MoreDetailPane(
                 BackupRestorePane(state = state, onIntent = onIntent)
             }
         }
+        MoreNavDestination.NOTIFICATION_SETTINGS.id -> {
+            key("notification_settings_detail") { NotificationSettingsPage() }
+        }
         else -> {
             EmptyState(
                 title = stringResource(MR.strings.select_option),
@@ -259,7 +301,7 @@ private fun MoreDetailPane(
     }
 }
 
-@Suppress("LongMethod") // Settings list composable — each item is a declarative list entry
+@Suppress("LongMethod", "LongParameterList") // Settings list composable — each item is a declarative list entry
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun ThreePaneScaffoldPaneScope.MoreListPane(
@@ -282,270 +324,384 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
     onContactUsClick: () -> Unit,
     onRateUsClick: () -> Unit,
     onBackupRestoreClick: () -> Unit,
+    onNotificationSettingsClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onLogoutAllClick: () -> Unit,
+    onResendVerificationClick: () -> Unit,
 ) {
     AnimatedPane {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.tiny),
-        ) {
-            // Header
-            item {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(AppTheme.dimens.spacing.padding.medium),
-                ) {
-                    Text(
-                        text = stringResource(MR.strings.more),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
-                }
-            }
+        MoreListPaneContent(
+            state = state,
+            onDarkThemeToggle = onDarkThemeToggle,
+            onBiometricToggle = onBiometricToggle,
+            onAutoSyncRatesToggle = onAutoSyncRatesToggle,
+            onAutoSyncDataToggle = onAutoSyncDataToggle,
+            onSyncNowClick = onSyncNowClick,
+            onToggleFailedExpanded = onToggleFailedExpanded,
+            onRetrySyncEntry = onRetrySyncEntry,
+            onRetryAllFailed = onRetryAllFailed,
+            onDeleteFailedEntry = onDeleteFailedEntry,
+            onDeleteAllFailed = onDeleteAllFailed,
+            onSignInClick = onSignInClick,
+            onLanguageSelected = onLanguageSelected,
+            onCurrencyManagementClick = onCurrencyManagementClick,
+            onCategoryManagementClick = onCategoryManagementClick,
+            onPrivacyPolicyClick = onPrivacyPolicyClick,
+            onContactUsClick = onContactUsClick,
+            onRateUsClick = onRateUsClick,
+            onBackupRestoreClick = onBackupRestoreClick,
+            onNotificationSettingsClick = onNotificationSettingsClick,
+            onLogoutClick = onLogoutClick,
+            onLogoutAllClick = onLogoutAllClick,
+            onResendVerificationClick = onResendVerificationClick,
+        )
+    }
+}
 
-            // Settings Section
-            item {
-                SectionHeader(stringResource(MR.strings.settings))
-            }
-
-            item {
-                MoreListItemWithSwitch(
-                    text = stringResource(MR.strings.dark_theme),
-                    image = Icons.Default.DarkMode,
-                    checked = state.isDarkTheme,
-                    onCheckedChange = onDarkThemeToggle,
-                    contentDescription = stringResource(MR.strings.dark_theme_description),
+@Suppress("LongMethod", "LongParameterList") // Settings list composable — each item is a declarative list entry
+@Composable
+internal fun MoreListPaneContent(
+    state: MorePageState,
+    onDarkThemeToggle: (Boolean) -> Unit,
+    onBiometricToggle: (Boolean) -> Unit,
+    onAutoSyncRatesToggle: (Boolean) -> Unit,
+    onAutoSyncDataToggle: (Boolean) -> Unit,
+    onSyncNowClick: () -> Unit,
+    onToggleFailedExpanded: () -> Unit,
+    onRetrySyncEntry: (Long) -> Unit,
+    onRetryAllFailed: () -> Unit,
+    onDeleteFailedEntry: (Long) -> Unit,
+    onDeleteAllFailed: () -> Unit,
+    onSignInClick: () -> Unit,
+    onLanguageSelected: (AppLanguage) -> Unit,
+    onCurrencyManagementClick: () -> Unit,
+    onCategoryManagementClick: () -> Unit,
+    onPrivacyPolicyClick: () -> Unit,
+    onContactUsClick: () -> Unit,
+    onRateUsClick: () -> Unit,
+    onBackupRestoreClick: () -> Unit,
+    onNotificationSettingsClick: () -> Unit,
+    onLogoutClick: () -> Unit,
+    onLogoutAllClick: () -> Unit,
+    onResendVerificationClick: () -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.tiny),
+    ) {
+        // Header
+        item {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(AppTheme.dimens.spacing.padding.medium),
+            ) {
+                Text(
+                    text = stringResource(MR.strings.more),
+                    modifier = Modifier.semantics { heading() },
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
+                Spacer(modifier = Modifier.height(AppTheme.dimens.spacing.padding.small))
             }
+        }
 
-            item {
-                MoreListItemWithSwitch(
-                    text = stringResource(MR.strings.biometric_settings),
-                    image = Icons.Default.Fingerprint,
-                    checked = state.isBiometricEnabled,
-                    onCheckedChange = onBiometricToggle,
-                    contentDescription = stringResource(MR.strings.biometric_settings_description),
-                )
-            }
+        // Settings Section
+        item {
+            SectionHeader(stringResource(MR.strings.settings))
+        }
 
-            item {
-                MoreListItemWithSwitch(
-                    text = stringResource(MR.strings.auto_sync_rates),
-                    image = Icons.Default.Sync,
-                    checked = state.isAutoSyncRatesEnabled,
-                    onCheckedChange = onAutoSyncRatesToggle,
-                    contentDescription = stringResource(MR.strings.auto_sync_rates_description),
-                )
-            }
+        item {
+            MoreListItemWithSwitch(
+                text = stringResource(MR.strings.dark_theme),
+                image = Icons.Default.DarkMode,
+                checked = state.isDarkTheme,
+                onCheckedChange = onDarkThemeToggle,
+                modifier = Modifier.testTag("more_dark_theme_switch"),
+                contentDescription = stringResource(MR.strings.dark_theme_description),
+            )
+        }
 
-            item {
-                MoreListItemWithSwitch(
-                    text = stringResource(MR.strings.auto_sync_data),
-                    image = Icons.Default.Sync,
-                    checked = state.isAutoSyncDataEnabled,
-                    onCheckedChange = onAutoSyncDataToggle,
-                    contentDescription = stringResource(MR.strings.auto_sync_data_description),
-                )
-            }
+        item {
+            MoreListItemWithSwitch(
+                text = stringResource(MR.strings.biometric_settings),
+                image = Icons.Default.Fingerprint,
+                checked = state.isBiometricEnabled,
+                onCheckedChange = onBiometricToggle,
+                contentDescription = stringResource(MR.strings.biometric_settings_description),
+            )
+        }
 
-            item {
-                MoreListItemWithSegmentedButton(
-                    text = "",
-                    image = Icons.Default.Language,
-                    segmentedItems =
-                        state.availableLanguages.map { language ->
-                            SegmentedButton.Item(
-                                text = language.languageName,
-                                value = language.code,
-                            )
-                        },
-                    selectedValue = state.selectedLanguage.code,
-                    onSelectionChanged = { selectedCode ->
-                        val selectedLanguage = AppLanguages.fromCode(selectedCode)
-                        onLanguageSelected(selectedLanguage)
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.notification_settings),
+                image = Icons.Default.Notifications,
+                onClick = onNotificationSettingsClick,
+                contentDescription = stringResource(MR.strings.notification_settings),
+            )
+        }
+
+        item {
+            MoreListItemWithSwitch(
+                text = stringResource(MR.strings.auto_sync_rates),
+                image = Icons.Default.Sync,
+                checked = state.isAutoSyncRatesEnabled,
+                onCheckedChange = onAutoSyncRatesToggle,
+                contentDescription = stringResource(MR.strings.auto_sync_rates_description),
+            )
+        }
+
+        item {
+            MoreListItemWithSwitch(
+                text = stringResource(MR.strings.auto_sync_data),
+                image = Icons.Default.Sync,
+                checked = state.isAutoSyncDataEnabled,
+                onCheckedChange = onAutoSyncDataToggle,
+                contentDescription = stringResource(MR.strings.auto_sync_data_description),
+            )
+        }
+
+        item {
+            MoreListItemWithSegmentedButton(
+                text = "",
+                image = Icons.Default.Language,
+                segmentedItems =
+                    state.availableLanguages.map { language ->
+                        SegmentedButton.Item(
+                            text = language.languageName,
+                            value = language.code,
+                        )
                     },
-                    contentDescription = stringResource(MR.strings.language_description),
-                )
-            }
+                selectedValue = state.selectedLanguage.code,
+                onSelectionChanged = { selectedCode ->
+                    val selectedLanguage = AppLanguages.fromCode(selectedCode)
+                    onLanguageSelected(selectedLanguage)
+                },
+                contentDescription = stringResource(MR.strings.language_description),
+            )
+        }
 
-            // Management Section
-            item {
-                SectionHeader(stringResource(MR.strings.management))
-            }
+        // Management Section
+        item {
+            SectionHeader(stringResource(MR.strings.management))
+        }
 
-            item {
-                MoreListItem(
-                    text = stringResource(MR.strings.category_management),
-                    image = Icons.Default.Category,
-                    onClick = onCategoryManagementClick,
-                    contentDescription = stringResource(MR.strings.category_management_description),
-                )
-            }
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.category_management),
+                image = Icons.Default.Category,
+                onClick = onCategoryManagementClick,
+                contentDescription = stringResource(MR.strings.category_management_description),
+            )
+        }
 
-            item {
-                MoreListItem(
-                    text = stringResource(MR.strings.currency_management),
-                    image = Icons.Default.CurrencyExchange,
-                    onClick = onCurrencyManagementClick,
-                    contentDescription = stringResource(MR.strings.currency_management_description),
-                )
-            }
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.currency_management),
+                image = Icons.Default.CurrencyExchange,
+                onClick = onCurrencyManagementClick,
+                contentDescription = stringResource(MR.strings.currency_management_description),
+            )
+        }
 
-            // Data Section
-            item {
-                SectionHeader(stringResource(MR.strings.data))
-            }
+        // Data Section
+        item {
+            SectionHeader(stringResource(MR.strings.data))
+        }
 
-            item {
-                MoreListItem(
-                    text = stringResource(MR.strings.backup_restore),
-                    image = Icons.Default.Storage,
-                    onClick = onBackupRestoreClick,
-                    contentDescription = stringResource(MR.strings.backup_restore_description),
-                )
-            }
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.backup_restore),
+                image = Icons.Default.Storage,
+                onClick = onBackupRestoreClick,
+                contentDescription = stringResource(MR.strings.backup_restore_description),
+            )
+        }
 
-            item {
-                MoreListItem(
-                    text = stringResource(MR.strings.sync_now),
-                    image = Icons.Default.Sync,
-                    onClick = if (state.isSyncing) null else onSyncNowClick,
-                    contentDescription = stringResource(MR.strings.sync_now_description),
-                    trailingContent = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.sync_now),
+                image = Icons.Default.Sync,
+                onClick = if (state.isSyncing) null else onSyncNowClick,
+                contentDescription = stringResource(MR.strings.sync_now_description),
+                trailingContent = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement =
+                            Arrangement.spacedBy(
                                 AppTheme.dimens.spacing.padding.small,
                             ),
-                        ) {
-                            if (state.failedSyncCount > 0) {
-                                Badge(
-                                    containerColor = MaterialTheme.colorScheme.error,
-                                ) {
-                                    Text(state.failedSyncCount.toString())
-                                }
-                            }
-                            if (state.isSyncing) {
-                                CircularProgressIndicator()
+                    ) {
+                        if (state.failedSyncCount > 0) {
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.error,
+                            ) {
+                                Text(state.failedSyncCount.toString())
                             }
                         }
-                    },
-                )
-            }
+                        if (state.isSyncing) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                },
+            )
+        }
 
-            if (state.failedSyncCount > 0) {
-                item {
-                    MoreListItem(
-                        text = stringResource(MR.strings.sync_failed_entries),
-                        image = Icons.Default.ErrorOutline,
-                        onClick = onToggleFailedExpanded,
-                        trailingContent = {
-                            Icon(
-                                imageVector = if (state.isFailedExpanded) {
+        if (state.failedSyncCount > 0) {
+            item {
+                MoreListItem(
+                    text = stringResource(MR.strings.sync_failed_entries),
+                    image = Icons.Default.ErrorOutline,
+                    onClick = onToggleFailedExpanded,
+                    trailingContent = {
+                        Icon(
+                            imageVector =
+                                if (state.isFailedExpanded) {
                                     Icons.Default.ExpandLess
                                 } else {
                                     Icons.Default.ExpandMore
                                 },
-                                contentDescription = null,
-                            )
-                        },
-                    )
-                }
+                            contentDescription = null,
+                        )
+                    },
+                )
+            }
 
-                if (state.isFailedExpanded) {
-                    item {
-                        Row(
-                            modifier = Modifier
+            if (state.isFailedExpanded) {
+                item {
+                    Row(
+                        modifier =
+                            Modifier
                                 .fillMaxWidth()
                                 .padding(
                                     horizontal = AppTheme.dimens.spacing.padding.medium,
                                 ),
-                            horizontalArrangement = Arrangement.spacedBy(
+                        horizontalArrangement =
+                            Arrangement.spacedBy(
                                 AppTheme.dimens.spacing.padding.small,
                             ),
-                        ) {
-                            TextButton(onClick = onRetryAllFailed) {
-                                Text(stringResource(MR.strings.sync_retry_all))
-                            }
-                            TextButton(onClick = onDeleteAllFailed) {
-                                Text(
-                                    stringResource(MR.strings.sync_clear_all),
-                                    color = MaterialTheme.colorScheme.error,
-                                )
-                            }
+                    ) {
+                        TextButton(onClick = onRetryAllFailed) {
+                            Text(stringResource(MR.strings.sync_retry_all))
+                        }
+                        TextButton(onClick = onDeleteAllFailed) {
+                            Text(
+                                stringResource(MR.strings.sync_clear_all),
+                                color = MaterialTheme.colorScheme.error,
+                            )
                         }
                     }
+                }
 
-                    items(state.failedEntries.size) { index ->
-                        val entry = state.failedEntries[index]
-                        FailedSyncEntryRow(
-                            entry = entry,
-                            onRetry = { onRetrySyncEntry(entry.id) },
-                            onDelete = { onDeleteFailedEntry(entry.id) },
+                items(state.failedEntries.size) { index ->
+                    val entry = state.failedEntries[index]
+                    FailedSyncEntryRow(
+                        entry = entry,
+                        onRetry = { onRetrySyncEntry(entry.id) },
+                        onDelete = { onDeleteFailedEntry(entry.id) },
+                    )
+                }
+            }
+        }
+
+        // Support Section
+        item {
+            SectionHeader(stringResource(MR.strings.support))
+        }
+
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.privacy_policy),
+                image = Icons.Default.PrivacyTip,
+                onClick = onPrivacyPolicyClick,
+                contentDescription = stringResource(MR.strings.privacy_policy_description),
+            )
+        }
+
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.contact_us),
+                image = Icons.Default.ContactMail,
+                onClick = onContactUsClick,
+                contentDescription = stringResource(MR.strings.contact_us_description),
+            )
+        }
+
+        item {
+            MoreListItem(
+                text = stringResource(MR.strings.rate_us),
+                image = Icons.Default.Star,
+                onClick = onRateUsClick,
+                contentDescription = stringResource(MR.strings.rate_us_description),
+            )
+        }
+
+        // Email verification banner
+        if (state.isAuthenticated && !state.isEmailVerified) {
+            item {
+                Card(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = AppTheme.dimens.spacing.padding.medium),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        ),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(AppTheme.dimens.spacing.padding.medium),
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacing.padding.small),
+                    ) {
+                        Text(
+                            text = stringResource(MR.strings.verify_email_banner_title),
+                            style = MaterialTheme.typography.titleSmall,
                         )
+                        Text(
+                            text = stringResource(MR.strings.verify_email_banner_message),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        TextButton(onClick = onResendVerificationClick) {
+                            Text(stringResource(MR.strings.verify_email_resend))
+                        }
                     }
                 }
             }
+        }
 
-            // Support Section
-            item {
-                SectionHeader(stringResource(MR.strings.support))
-            }
+        // Account Section
+        item {
+            SectionHeader(stringResource(MR.strings.accounts))
+        }
 
-            item {
-                MoreListItem(
-                    text = stringResource(MR.strings.privacy_policy),
-                    image = Icons.Default.PrivacyTip,
-                    onClick = onPrivacyPolicyClick,
-                    contentDescription = stringResource(MR.strings.privacy_policy_description),
-                )
-            }
-
+        if (state.isAuthenticated) {
             item {
                 MoreListItem(
-                    text = stringResource(MR.strings.contact_us),
-                    image = Icons.Default.ContactMail,
-                    onClick = onContactUsClick,
-                    contentDescription = stringResource(MR.strings.contact_us_description),
+                    text = stringResource(MR.strings.logout),
+                    image = Icons.Default.Logout,
+                    onClick = onLogoutClick,
+                    contentDescription = stringResource(MR.strings.logout),
                 )
             }
-
             item {
                 MoreListItem(
-                    text = stringResource(MR.strings.rate_us),
-                    image = Icons.Default.Star,
-                    onClick = onRateUsClick,
-                    contentDescription = stringResource(MR.strings.rate_us_description),
+                    text = stringResource(MR.strings.logout_all_devices),
+                    image = Icons.Default.Logout,
+                    onClick = onLogoutAllClick,
+                    contentDescription = stringResource(MR.strings.logout_all_devices),
                 )
             }
-
-            // Account Section
+        } else {
             item {
-                SectionHeader(stringResource(MR.strings.accounts))
-            }
-
-            if (state.isAuthenticated) {
-                item {
-                    MoreListItem(
-                        text = stringResource(MR.strings.logout),
-                        image = Icons.Default.Logout,
-                        onClick = onLogoutClick,
-                        contentDescription = stringResource(MR.strings.logout),
-                    )
-                }
-            } else {
-                item {
-                    MoreListItem(
-                        text = stringResource(MR.strings.sign_in),
-                        image = Icons.Default.Login,
-                        onClick = onSignInClick,
-                        contentDescription = stringResource(MR.strings.sign_in),
-                    )
-                }
+                MoreListItem(
+                    text = stringResource(MR.strings.sign_in),
+                    image = Icons.Default.Login,
+                    onClick = onSignInClick,
+                    contentDescription = stringResource(MR.strings.sign_in),
+                )
             }
         }
     }
@@ -655,12 +811,13 @@ private fun FailedSyncEntryRow(
     onDelete: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = AppTheme.dimens.spacing.padding.medium,
-                vertical = AppTheme.dimens.spacing.padding.tiny,
-            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = AppTheme.dimens.spacing.padding.medium,
+                    vertical = AppTheme.dimens.spacing.padding.tiny,
+                ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {

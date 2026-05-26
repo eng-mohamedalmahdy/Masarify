@@ -1,13 +1,13 @@
 package tech.lightfeather.masarify.mappers
 
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import tech.lightfeather.designsystem.model.UiAccountSnapshot
 import tech.lightfeather.designsystem.model.UiFinancialSession
 import tech.lightfeather.domain.model.Account
 import tech.lightfeather.domain.model.AccountSnapshot
 import tech.lightfeather.domain.model.FinancialSession
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 fun FinancialSession.toUiFinancialSession(): UiFinancialSession =
     UiFinancialSession(

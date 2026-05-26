@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import tech.lightfeather.designsystem.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import tech.lightfeather.designsystem.theme.AppTheme
 
 @Composable
 fun Switch(

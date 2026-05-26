@@ -2,13 +2,13 @@ package tech.lightfeather.masarify.page.deletebankaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import tech.lightfeather.domain.model.Account
 import tech.lightfeather.domain.usecase.DeleteAccount
 import tech.lightfeather.masarify.mappers.toUiBankAccount
 import tech.lightfeather.masarify.navigation.Navigator
-import kotlinx.coroutines.launch
 
 class DeleteBankAccountPageViewModel(
     private val navigator: Navigator,

@@ -32,12 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import dev.icerock.moko.resources.compose.stringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.model.TransactionListItem
 import tech.lightfeather.designsystem.model.UiFinancialSession
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.toDisplayableString
-import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun StartOverMarkerItem(

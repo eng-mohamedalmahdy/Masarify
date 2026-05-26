@@ -1,15 +1,15 @@
 package tech.lightfeather.masarify.page.deletebankaccount
 
 import androidx.compose.runtime.Composable
+import dev.icerock.moko.resources.compose.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.dialog.AppAlertDialog
 import tech.lightfeather.designsystem.model.UiBankAccount
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.domain.model.Account
-import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DeleteBankAccountPage(account: Account) {

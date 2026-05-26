@@ -1,11 +1,11 @@
 package tech.lightfeather.masarify.template.transactionspane
 
 import androidx.compose.runtime.Composable
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import tech.lightfeather.designsystem.model.UiTransaction
 import tech.lightfeather.designsystem.model.UiTransactionFilter
 import tech.lightfeather.masarify.mappers.toTransactionFilter
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 /**
  * Stateless transactions pane component

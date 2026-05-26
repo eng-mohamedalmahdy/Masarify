@@ -16,7 +16,22 @@ interface AuthRepository {
 
     suspend fun logout(): DomainResult<Unit>
 
+    suspend fun logoutAll(): DomainResult<Unit>
+
     suspend fun refreshTokens(): DomainResult<Unit>
 
     fun isAuthenticated(): Boolean
+
+    fun isEmailVerified(): Boolean
+
+    suspend fun verifyEmail(token: String): DomainResult<Unit>
+
+    suspend fun resendVerification(): DomainResult<Unit>
+
+    suspend fun forgotPassword(email: String): DomainResult<Unit>
+
+    suspend fun resetPassword(
+        token: String,
+        newPassword: String,
+    ): DomainResult<Unit>
 }

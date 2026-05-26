@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import dev.icerock.moko.resources.compose.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppImage
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Thumbnail image component with optional delete button

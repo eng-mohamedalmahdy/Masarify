@@ -19,17 +19,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.TextField
 import tech.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import tech.lightfeather.designsystem.component.molecules.button.TextButton
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.painterResource
-import dev.icerock.moko.resources.compose.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginPage(viewModel: LoginPageViewModel = koinViewModel()) {
@@ -87,7 +88,7 @@ internal fun LoginPageContent(
                 TextField(
                     value = state.email,
                     onValueChange = { onIntent(LoginPageIntent.UpdateEmail(it)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("login_email_field"),
                     label = stringResource(MR.strings.email),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 )
@@ -95,18 +96,28 @@ internal fun LoginPageContent(
                 TextField(
                     value = state.password,
                     onValueChange = { onIntent(LoginPageIntent.UpdatePassword(it)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("login_password_field"),
                     label = stringResource(MR.strings.password),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
                 )
+
+                TextButton(
+                    onClick = { onIntent(LoginPageIntent.NavigateToForgotPassword) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(MR.strings.forgot_password),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
 
                 if (state.isLoading) {
                     CircularProgressIndicator()
                 } else {
                     PrimaryButton(
                         onClick = { onIntent(LoginPageIntent.Submit) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("login_submit_button"),
                     ) {
                         Text(text = stringResource(MR.strings.login_button))
                     }

@@ -2,9 +2,9 @@ package tech.lightfeather.designsystem.component.organisms.topbar
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.component.molecules.button.BackButton
 import tech.lightfeather.designsystem.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun TopAppBarWithBackAndFullTitle(

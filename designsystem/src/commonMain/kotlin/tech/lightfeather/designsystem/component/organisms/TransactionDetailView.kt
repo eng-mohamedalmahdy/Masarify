@@ -30,6 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import dev.icerock.moko.resources.compose.stringResource
+import masarify.designsystem.generated.resources.Res
+import masarify.designsystem.generated.resources.bank
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppImage
 import tech.lightfeather.designsystem.component.molecules.button.SecondaryButton
@@ -41,10 +45,6 @@ import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.toColorInt
 import tech.lightfeather.designsystem.util.toDisplayableString
-import dev.icerock.moko.resources.compose.stringResource
-import masarify.designsystem.generated.resources.Res
-import masarify.designsystem.generated.resources.bank
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Detailed view of a transaction for display in the detail pane

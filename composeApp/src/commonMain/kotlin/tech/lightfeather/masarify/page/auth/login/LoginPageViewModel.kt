@@ -2,6 +2,10 @@ package tech.lightfeather.masarify.page.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
@@ -12,11 +16,8 @@ import tech.lightfeather.domain.usecase.PullRemoteDeltaUseCase
 import tech.lightfeather.domain.usecase.UploadLocalDataUseCase
 import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.DashboardRoute
+import tech.lightfeather.masarify.navigation.routes.ForgotPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.RegisterRoute
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class LoginPageViewModel(
     private val loginUseCase: LoginUseCase,
@@ -34,6 +35,7 @@ class LoginPageViewModel(
             is LoginPageIntent.UpdateEmail -> _state.value = _state.value.copy(email = intent.email)
             is LoginPageIntent.UpdatePassword -> _state.value = _state.value.copy(password = intent.password)
             LoginPageIntent.NavigateToRegister -> navigator.navigate(RegisterRoute)
+            LoginPageIntent.NavigateToForgotPassword -> navigator.navigate(ForgotPasswordRoute)
             LoginPageIntent.Submit -> submitLogin()
         }
     }

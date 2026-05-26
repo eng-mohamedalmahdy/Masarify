@@ -22,7 +22,6 @@ import tech.lightfeather.domain.repository.FinancialSessionRepository
 class FinancialSessionRepositoryImpl(
     private val database: SharedDatabase,
 ) : FinancialSessionRepository {
-
     @Suppress("TooGenericExceptionCaught")
     override suspend fun createSession(session: FinancialSession): DomainResult<Int> =
         try {

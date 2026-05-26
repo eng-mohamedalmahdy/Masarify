@@ -2,20 +2,20 @@ package tech.lightfeather.domain.usecase
 
 import kotlinx.serialization.json.Json
 import tech.lightfeather.domain.model.Account
+import tech.lightfeather.domain.model.AttachmentEntityType
 import tech.lightfeather.domain.model.Category
 import tech.lightfeather.domain.model.Currency
 import tech.lightfeather.domain.model.CurrencyType
 import tech.lightfeather.domain.model.FinancialSession
-import tech.lightfeather.domain.model.AttachmentEntityType
 import tech.lightfeather.domain.model.error.AppError
+import tech.lightfeather.domain.model.sync.AccountSyncPayload
+import tech.lightfeather.domain.model.sync.FinancialSessionSyncPayload
 import tech.lightfeather.domain.model.sync.SyncedAccount
 import tech.lightfeather.domain.model.sync.SyncedAttachment
 import tech.lightfeather.domain.model.sync.SyncedCategory
 import tech.lightfeather.domain.model.sync.SyncedCurrency
 import tech.lightfeather.domain.model.sync.SyncedFinancialSession
 import tech.lightfeather.domain.model.sync.SyncedTransaction
-import tech.lightfeather.domain.model.sync.AccountSyncPayload
-import tech.lightfeather.domain.model.sync.FinancialSessionSyncPayload
 import tech.lightfeather.domain.model.sync.TransactionSyncPayload
 import tech.lightfeather.domain.model.transaction.Transaction
 import tech.lightfeather.domain.repository.AccountRepository
@@ -187,17 +187,19 @@ class PullRemoteDeltaUseCase(
         if (existing != null) return
         val entityType = AttachmentEntityType.fromValue(synced.entityType.lowercase()) ?: return
         val fileContent = syncRepository.downloadAttachment(synced.remoteId).getOrNull() ?: return
-        val newId = attachmentRepository.createAttachment(
-            tech.lightfeather.domain.model.Attachment(
-                id = -1,
-                remoteId = synced.remoteId,
-                entityType = entityType,
-                entityId = null,
-                mimeType = synced.mimeType,
-                fileName = synced.fileName,
-                fileContent = fileContent,
-            ),
-        ).getOrNull() ?: return
+        val newId =
+            attachmentRepository
+                .createAttachment(
+                    tech.lightfeather.domain.model.Attachment(
+                        id = -1,
+                        remoteId = synced.remoteId,
+                        entityType = entityType,
+                        entityId = null,
+                        mimeType = synced.mimeType,
+                        fileName = synced.fileName,
+                        fileContent = fileContent,
+                    ),
+                ).getOrNull() ?: return
         attachmentRepository.updateRemoteId(newId, synced.remoteId)
     }
 
@@ -343,8 +345,7 @@ private suspend fun SyncedTransaction.toDomain(
                 incomeTimestamp = timestamp,
                 incomeAccount = account,
                 source = category ?: Category.Transfer,
-
-                )
+            )
         }
 
         "EXPENSE" -> {

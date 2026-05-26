@@ -2,6 +2,13 @@ package tech.lightfeather.masarify.page.more
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.icerock.moko.resources.desc.StringDesc
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
@@ -12,26 +19,22 @@ import tech.lightfeather.domain.usecase.DrainOutboxQueueUseCase
 import tech.lightfeather.domain.usecase.ExportDataUseCase
 import tech.lightfeather.domain.usecase.GetFailedSyncCountUseCase
 import tech.lightfeather.domain.usecase.GetFailedSyncEntriesUseCase
-import tech.lightfeather.domain.usecase.RetryAllFailedSyncUseCase
-import tech.lightfeather.domain.usecase.RetrySyncEntryUseCase
 import tech.lightfeather.domain.usecase.GetUserDarkMode
 import tech.lightfeather.domain.usecase.GetUserLanguage
 import tech.lightfeather.domain.usecase.ImportDataUseCase
 import tech.lightfeather.domain.usecase.IsAuthenticatedUseCase
+import tech.lightfeather.domain.usecase.IsEmailVerifiedUseCase
+import tech.lightfeather.domain.usecase.LogoutAllDevicesUseCase
 import tech.lightfeather.domain.usecase.LogoutUseCase
 import tech.lightfeather.domain.usecase.PullRemoteDeltaUseCase
+import tech.lightfeather.domain.usecase.ResendVerificationUseCase
+import tech.lightfeather.domain.usecase.RetryAllFailedSyncUseCase
+import tech.lightfeather.domain.usecase.RetrySyncEntryUseCase
 import tech.lightfeather.domain.usecase.UploadLocalDataUseCase
 import tech.lightfeather.masarify.framework.saveBackupFile
 import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.LoginRoute
 import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
-import dev.icerock.moko.resources.desc.StringDesc
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 
 @Suppress("LongParameterList") // Sync use cases + auth check required alongside existing dependencies
@@ -42,6 +45,9 @@ class MorePageViewModel(
     private val exportDataUseCase: ExportDataUseCase,
     private val importDataUseCase: ImportDataUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val logoutAllDevicesUseCase: LogoutAllDevicesUseCase,
+    private val isEmailVerifiedUseCase: IsEmailVerifiedUseCase,
+    private val resendVerificationUseCase: ResendVerificationUseCase,
     private val navigator: Navigator,
     private val isAuthenticatedUseCase: IsAuthenticatedUseCase,
     private val uploadLocalDataUseCase: UploadLocalDataUseCase,
@@ -57,7 +63,7 @@ class MorePageViewModel(
     private val _state = MutableStateFlow(MorePageState())
     internal val state: StateFlow<MorePageState> = _state
 
-    @Suppress("CyclomaticComplexMethod")
+    @Suppress("CyclomaticComplexMethod", "LongMethod")
     internal fun onIntent(intent: MorePageIntent) {
         when (intent) {
             is MorePageIntent.LoadData -> {
@@ -158,6 +164,10 @@ class MorePageViewModel(
                 _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.BackupRestore)
             }
 
+            is MorePageIntent.NavigationIntent.SelectNotificationSettingsDetail -> {
+                _state.value = _state.value.copy(selectedDetailItem = MoreDetailItem.NotificationSettings)
+            }
+
             is MorePageIntent.ExportData -> {
                 handleExport()
             }
@@ -174,15 +184,40 @@ class MorePageViewModel(
                 }
             }
 
+            MorePageIntent.ShowLogoutAllDialog -> {
+                _state.value = _state.value.copy(isLogoutAllDialogVisible = true)
+            }
+
+            MorePageIntent.DismissLogoutAllDialog -> {
+                _state.value = _state.value.copy(isLogoutAllDialogVisible = false)
+            }
+
+            MorePageIntent.LogoutAllDevices -> {
+                _state.value = _state.value.copy(isLogoutAllDialogVisible = false)
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    logoutAllDevicesUseCase()
+                    SnackbarService.sendSuccessMessage(MR.strings.logout_all_success)
+                    navigator.navigateAndClearBackStack(OnBoardingRoute)
+                }
+            }
+
+            MorePageIntent.ResendVerification -> {
+                viewModelScope.launch(Dispatchers.IoDispatcher) {
+                    resendVerificationUseCase()
+                    SnackbarService.sendSuccessMessage(MR.strings.verify_email_resend_success)
+                }
+            }
+
             MorePageIntent.ToggleFailedExpanded -> {
                 val expanding = !_state.value.isFailedExpanded
                 if (expanding) {
                     viewModelScope.launch(Dispatchers.IoDispatcher) {
                         val entries = getFailedSyncEntriesUseCase()
-                        _state.value = _state.value.copy(
-                            isFailedExpanded = true,
-                            failedEntries = entries,
-                        )
+                        _state.value =
+                            _state.value.copy(
+                                isFailedExpanded = true,
+                                failedEntries = entries,
+                            )
                     }
                 } else {
                     _state.value = _state.value.copy(isFailedExpanded = false)
@@ -273,6 +308,7 @@ class MorePageViewModel(
             val autoSyncRatesEnabled = userRepository.isAutoSyncRatesEnabled()
             val autoSyncDataEnabled = userRepository.isAutoSyncDataEnabled()
             val authenticated = isAuthenticatedUseCase()
+            val emailVerified = isEmailVerifiedUseCase()
             val failedCount = getFailedSyncCountUseCase().toInt()
             _state.value =
                 _state.value.copy(
@@ -282,6 +318,7 @@ class MorePageViewModel(
                     isAutoSyncRatesEnabled = autoSyncRatesEnabled,
                     isAutoSyncDataEnabled = autoSyncDataEnabled,
                     isAuthenticated = authenticated,
+                    isEmailVerified = emailVerified,
                     failedSyncCount = failedCount,
                     isLoading = false,
                 )
@@ -291,10 +328,11 @@ class MorePageViewModel(
     private suspend fun refreshFailedState() {
         val count = getFailedSyncCountUseCase().toInt()
         val entries = if (_state.value.isFailedExpanded) getFailedSyncEntriesUseCase() else emptyList()
-        _state.value = _state.value.copy(
-            failedSyncCount = count,
-            failedEntries = entries,
-            isFailedExpanded = if (count == 0) false else _state.value.isFailedExpanded,
-        )
+        _state.value =
+            _state.value.copy(
+                failedSyncCount = count,
+                failedEntries = entries,
+                isFailedExpanded = if (count == 0) false else _state.value.isFailedExpanded,
+            )
     }
 }

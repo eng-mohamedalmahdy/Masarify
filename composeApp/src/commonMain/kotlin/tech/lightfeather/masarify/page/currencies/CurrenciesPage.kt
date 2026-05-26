@@ -36,7 +36,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import dev.icerock.moko.resources.compose.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppDropMenu
 import tech.lightfeather.designsystem.component.molecules.EmptyState
@@ -47,8 +50,6 @@ import tech.lightfeather.designsystem.model.UiCurrency
 import tech.lightfeather.designsystem.model.UiCurrencyExchangeRate
 import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CurrenciesPage(viewModel: CurrenciesPageViewModel = koinViewModel()) {
@@ -118,7 +119,7 @@ internal fun CurrenciesPageContent(
                     title = stringResource(MR.strings.no_currencies_title),
                     message = stringResource(MR.strings.no_currencies_message),
                     icon = Icons.Outlined.CurrencyExchange,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().testTag("currencies_empty_state"),
                 )
             } else if (state.baseCurrency == null) {
                 EmptyState(
@@ -148,7 +149,8 @@ internal fun CurrenciesPageContent(
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(AppTheme.dimens.default),
+                    .padding(AppTheme.dimens.default)
+                    .testTag("currencies_add_fab"),
         )
     }
 

@@ -96,6 +96,13 @@
     <string name="app_slogan">Track smart, spend wiser.</string>
     <string name="my_string">My default localization string</string>
 
+    <!-- Balance Card -->
+    <string name="total_balance">Total Balance</string>
+
+    <!-- FAB Actions -->
+    <string name="fab_menu">Menu</string>
+    <string name="fab_add_transaction">Add Transaction</string>
+
     <!-- Onboarding -->
     <string name="onboarding_title">Welcome To Masarify</string>
     <string name="user_name">User Name</string>
@@ -754,6 +761,32 @@
     <string name="passwords_do_not_match">Passwords do not match</string>
     <string name="logout">Logout</string>
     <string name="logout_success">Logged out successfully</string>
+    <string name="logout_all_devices">Logout from All Devices</string>
+    <string name="logout_all_devices_confirm_title">Logout from All Devices?</string>
+    <string name="logout_all_devices_confirm_message">This will end all active sessions on all devices.</string>
+    <string name="logout_all_success">Logged out from all devices</string>
+    <string name="verify_email_banner_title">Email not verified</string>
+    <string name="verify_email_banner_message">Verify your email to secure your account.</string>
+    <string name="verify_email_resend">Resend Verification Email</string>
+    <string name="verify_email_resend_success">Verification email sent</string>
+    <string name="verify_email_title">Verify Email</string>
+    <string name="verify_email_success">Email verified successfully!</string>
+    <string name="verify_email_failure">Verification failed. The link may have expired.</string>
+    <string name="go_to_dashboard">Go to Dashboard</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="forgot_password_title">Reset Password</string>
+    <string name="forgot_password_subtitle">Enter your email and we\'ll send you a reset link.</string>
+    <string name="forgot_password_button">Send Reset Link</string>
+    <string name="forgot_password_success">Check your email for the reset link.</string>
+    <string name="forgot_password_failure">Failed to send reset email. Please try again.</string>
+    <string name="reset_password_title">Set New Password</string>
+    <string name="reset_password_subtitle">Enter your new password below.</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="reset_password_button">Reset Password</string>
+    <string name="reset_password_success">Password reset successfully. Please sign in.</string>
+    <string name="reset_password_failure">Reset failed. The link may have expired.</string>
+    <string name="back_to_login">Back to Sign In</string>
 
     <!-- Guest / Sign In -->
     <string name="sign_in">Sign In</string>
@@ -773,5 +806,54 @@
     <string name="sync_retry_all">Retry All</string>
     <string name="sync_clear_all">Clear All</string>
     <string name="sync_retry_count">Retries: %d</string>
+
+    <!-- Dashboard Tips -->
+    <string name="tip_label">Tip</string>
+    <string name="tip_dismiss">Got it</string>
+    <string name="tip_0_add_accounts_title">Set Up Your Accounts</string>
+    <string name="tip_0_add_accounts_body">Add your bank accounts to start tracking your finances in one place.</string>
+    <string name="tip_1_log_expenses_title">Log Every Expense</string>
+    <string name="tip_1_log_expenses_body">Tap + to record a transaction. Consistent logging gives you accurate insights.</string>
+    <string name="tip_2_categories_title">Organize with Categories</string>
+    <string name="tip_2_categories_body">Use categories to see where your money goes and spot spending patterns.</string>
+    <string name="tip_3_analytics_title">Check Your Analytics</string>
+    <string name="tip_3_analytics_body">Visit the analytics section to understand your spending vs. saving trends.</string>
+    <string name="tip_4_sessions_title">Use Financial Sessions</string>
+    <string name="tip_4_sessions_body">Start a new session to track a budget period separately from your history.</string>
+    <string name="tip_5_cloud_sync_title">Enable Cloud Sync</string>
+    <string name="tip_5_cloud_sync_body">Sign in and enable sync to keep your data safe and accessible across devices.</string>
+    <string name="tip_6_export_title">Export Your Data</string>
+    <string name="tip_6_export_body">Go to More &amp;rarr; Backup to export your financial data at any time.</string>
+
+    <!-- Notification Permission Banner -->
+    <string name="notification_banner_title">Enable Reminders</string>
+    <string name="notification_banner_body">Get reminders to log expenses and stay on top of your finances.</string>
+    <string name="notification_banner_enable">Enable</string>
+    <string name="notification_banner_later">Later</string>
+
+    <!-- Reminder Notification Content -->
+    <string name="reminder_daily_expense_log_title">Don\'t forget to log today\'s expenses</string>
+    <string name="reminder_daily_expense_log_body">A few taps keep your finances on track. Log your expenses now.</string>
+    <string name="reminder_weekly_summary_title">Your Weekly Financial Summary</string>
+    <string name="reminder_weekly_summary_body">Open Masarify to review how you spent and saved this week.</string>
+    <string name="reminder_idle_re_engagement_title">We miss you!</string>
+    <string name="reminder_idle_re_engagement_body">It\'s been a while. Check in on your finances — you might be surprised.</string>
+    <string name="reminder_monthly_recap_title">Monthly Recap Ready</string>
+    <string name="reminder_monthly_recap_body">The month is almost over. See your full financial summary in Masarify.</string>
+
+    <!-- Notification Settings -->
+    <string name="notification_settings">Notification Settings</string>
+    <string name="notifications_master_toggle">Enable Reminders</string>
+    <string name="notifications_daily_expense_log">Daily Expense Reminder</string>
+    <string name="notifications_daily_expense_log_description">Evening reminder to log today\'s expenses</string>
+    <string name="notifications_weekly_summary">Weekly Summary</string>
+    <string name="notifications_weekly_summary_description">Sunday morning overview of the week</string>
+    <string name="notifications_idle_re_engagement">Inactivity Reminder</string>
+    <string name="notifications_idle_re_engagement_description">Nudge after 5 days without opening the app</string>
+    <string name="notifications_monthly_recap">Monthly Recap</string>
+    <string name="notifications_monthly_recap_description">End-of-month financial summary</string>
+    <string name="notifications_daily_time">Daily Reminder Time</string>
+    <string name="notifications_grant_permission">Grant Notification Permission</string>
+    <string name="notifications_permission_required">Permission required to receive reminders</string>
 
 </resources>

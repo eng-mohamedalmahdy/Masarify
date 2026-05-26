@@ -1,5 +1,7 @@
 package tech.lightfeather.masarify.page.dashboard
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import tech.lightfeather.designsystem.model.TransactionListItem
 import tech.lightfeather.designsystem.model.UiAttachment
 import tech.lightfeather.designsystem.model.UiBankAccount
@@ -10,8 +12,6 @@ import tech.lightfeather.designsystem.model.UiQuickStats
 import tech.lightfeather.designsystem.model.UiSpendingAnalytics
 import tech.lightfeather.designsystem.model.UiTransaction
 import tech.lightfeather.designsystem.model.UiTransactionDetails
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * Dashboard page state containing all data for the main dashboard screen
@@ -84,6 +84,9 @@ internal data class DashboardPageState(
     val fixBalanceAccount: UiBankAccount? = null,
     // Biometric suggestion
     val showBiometricSuggestion: Boolean = false,
+    // Engagement: tips + notification banner
+    val activeTipId: Int? = null,
+    val showNotificationBanner: Boolean = false,
 ) {
     companion object {
         val dummy =

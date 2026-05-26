@@ -15,6 +15,7 @@ import tech.lightfeather.data.repository.RemoteExchangeRateRepositoryImpl
 import tech.lightfeather.data.repository.SyncQueueRepositoryImpl
 import tech.lightfeather.data.repository.SyncRepositoryImpl
 import tech.lightfeather.data.repository.TransactionsRepositoryImpl
+import tech.lightfeather.data.repository.NotificationRepositoryImpl
 import tech.lightfeather.data.repository.UserRepositoryImpl
 import tech.lightfeather.domain.repository.AccountRepository
 import tech.lightfeather.domain.repository.AttachmentRepository
@@ -30,6 +31,7 @@ import tech.lightfeather.domain.repository.RemoteExchangeRateRepository
 import tech.lightfeather.domain.repository.SyncQueueRepository
 import tech.lightfeather.domain.repository.SyncRepository
 import tech.lightfeather.domain.repository.TransactionRepository
+import tech.lightfeather.domain.repository.NotificationRepository
 import tech.lightfeather.domain.repository.UserRepository
 
 val repositoryModule =
@@ -49,4 +51,5 @@ val repositoryModule =
         single<BackupRepository> { BackupRepositoryImpl(get(), get()) }
         single<SyncRepository> { SyncRepositoryImpl(get()) }
         single<DeviceTokenRepository> { DeviceTokenRepositoryImpl(get()) }
+        single<NotificationRepository> { NotificationRepositoryImpl(get()) }
     }

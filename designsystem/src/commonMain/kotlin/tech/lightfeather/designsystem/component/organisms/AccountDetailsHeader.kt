@@ -15,6 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import dev.icerock.moko.resources.compose.stringResource
+import masarify.designsystem.generated.resources.Res
+import masarify.designsystem.generated.resources.bank
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppImage
 import tech.lightfeather.designsystem.component.molecules.SummaryCard
@@ -22,10 +26,6 @@ import tech.lightfeather.designsystem.model.UiBankAccount
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.theme.rememberAppWindowSizeClass
 import tech.lightfeather.designsystem.util.toColorInt
-import dev.icerock.moko.resources.compose.stringResource
-import masarify.designsystem.generated.resources.Res
-import masarify.designsystem.generated.resources.bank
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AccountDetailsHeader(

@@ -18,9 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import tech.lightfeather.designsystem.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * EmptyState molecule component for displaying empty state messages

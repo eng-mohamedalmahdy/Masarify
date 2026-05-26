@@ -19,7 +19,6 @@ import tech.lightfeather.domain.repository.AccountRepository
 class AccountRepositoryImpl(
     private val database: SharedDatabase,
 ) : AccountRepository {
-
     // DomainResult pattern requires catching all exceptions for proper error handling
     @Suppress("TooGenericExceptionCaught")
     override suspend fun createAccount(account: Account): DomainResult<Int> =
@@ -165,7 +164,12 @@ class AccountRepositoryImpl(
     override suspend fun getRemoteIdByLocalId(localId: Int): DomainResult<Long?> =
         try {
             val remoteId =
-                database { it.bankAccountsQueries.getRemoteIdByLocalId(localId.toLong()).awaitAsOneOrNull()?.remote_id }
+                database {
+                    it.bankAccountsQueries
+                        .getRemoteIdByLocalId(localId.toLong())
+                        .awaitAsOneOrNull()
+                        ?.remote_id
+                }
             DomainResult.Success(remoteId)
         } catch (e: Exception) {
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting remote id"))

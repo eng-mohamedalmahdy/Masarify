@@ -1,10 +1,10 @@
 package tech.lightfeather.masarify.mappers
 
 import androidx.compose.runtime.Composable
-import tech.lightfeather.designsystem.MR
-import tech.lightfeather.designsystem.model.UiCategory
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
+import tech.lightfeather.designsystem.MR
+import tech.lightfeather.designsystem.model.UiCategory
 
 /**
  * Get the localized name for a category

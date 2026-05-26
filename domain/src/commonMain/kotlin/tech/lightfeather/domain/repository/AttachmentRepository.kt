@@ -18,7 +18,10 @@ interface AttachmentRepository {
      */
     suspend fun createAttachment(attachment: Attachment): DomainResult<Int>
 
-    suspend fun updateRemoteId(localId: Int, remoteId: Long): DomainResult<Unit>
+    suspend fun updateRemoteId(
+        localId: Int,
+        remoteId: Long,
+    ): DomainResult<Unit>
 
     suspend fun getUnsyncedIds(): DomainResult<List<Int>>
 

@@ -32,14 +32,14 @@ sealed class Transaction(
         val incomeAttachments: List<Attachment> = emptyList(),
         val source: Category,
     ) : Transaction(
-        incomeId,
-        incomeName,
-        incomeDescription,
-        incomeAmount,
-        incomeTimestamp,
-        incomeAccount,
-        incomeAttachments
-    ) {
+            incomeId,
+            incomeName,
+            incomeDescription,
+            incomeAmount,
+            incomeTimestamp,
+            incomeAccount,
+            incomeAttachments,
+        ) {
         override val accountNewBalance: Double get() = account.balance + amount
         override val accountOldBalance: Double get() = account.balance - amount
 
@@ -58,9 +58,14 @@ sealed class Transaction(
         val categories: List<Category>,
         val expenseAttachments: List<Attachment> = emptyList(),
     ) : Transaction(
-        expenseId, expenseName, expenseDescription, expenseAmount,
-        expenseTimestamp, expenseAccount, expenseAttachments,
-    ) {
+            expenseId,
+            expenseName,
+            expenseDescription,
+            expenseAmount,
+            expenseTimestamp,
+            expenseAccount,
+            expenseAttachments,
+        ) {
         override val accountNewBalance: Double get() = account.balance - amount
         override val accountOldBalance: Double get() = account.balance + amount
 
@@ -80,9 +85,14 @@ sealed class Transaction(
         val fee: Double,
         val transferAttachments: List<Attachment> = emptyList(),
     ) : Transaction(
-        transferId, transferName, transferDescription, transferAmount,
-        transferTimestamp, transferAccount, transferAttachments,
-    ) {
+            transferId,
+            transferName,
+            transferDescription,
+            transferAmount,
+            transferTimestamp,
+            transferAccount,
+            transferAttachments,
+        ) {
         override val accountNewBalance: Double get() = account.balance - amount - fee
         override val accountOldBalance: Double get() = account.balance + amount + fee
 

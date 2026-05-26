@@ -1,8 +1,8 @@
 package tech.lightfeather.masarify.navigation.routes
 
+import kotlinx.serialization.Serializable
 import tech.lightfeather.domain.model.Account
 import tech.lightfeather.masarify.navigation.Route
-import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeleteAccountRoute(

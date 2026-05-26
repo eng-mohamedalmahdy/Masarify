@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.ui.graphics.vector.ImageVector
+import dev.icerock.moko.resources.StringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.model.UiBottomNavigationItem
 import tech.lightfeather.masarify.navigation.Route
@@ -13,7 +14,6 @@ import tech.lightfeather.masarify.navigation.routes.AccountsRoute
 import tech.lightfeather.masarify.navigation.routes.DashboardRoute
 import tech.lightfeather.masarify.navigation.routes.MoreRoute
 import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
-import dev.icerock.moko.resources.StringResource
 
 sealed class AppTopLevelRoutes(
     val route: Route,

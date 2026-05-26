@@ -39,6 +39,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import masarify.designsystem.generated.resources.Res
+import masarify.designsystem.generated.resources.bank
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppImage
 import tech.lightfeather.designsystem.model.UiBankAccount
@@ -46,9 +49,6 @@ import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.theme.rememberAppWindowSizeClass
 import tech.lightfeather.designsystem.util.stringResource
 import tech.lightfeather.designsystem.util.toColorInt
-import masarify.designsystem.generated.resources.Res
-import masarify.designsystem.generated.resources.bank
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BankAccountItem(

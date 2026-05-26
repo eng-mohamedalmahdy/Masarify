@@ -23,7 +23,6 @@ import tech.lightfeather.domain.repository.CurrencyRepository
 class CurrencyRepositoryImpl(
     private val database: SharedDatabase,
 ) : CurrencyRepository {
-
     override suspend fun createCurrency(currency: Currency): DomainResult<Int> =
         try {
             val result =
@@ -138,7 +137,12 @@ class CurrencyRepositoryImpl(
     override suspend fun getRemoteIdByLocalId(localId: Int): DomainResult<Long?> =
         try {
             val remoteId =
-                database { it.currenciesQueries.getRemoteIdByLocalId(localId.toLong()).awaitAsOneOrNull()?.remote_id }
+                database {
+                    it.currenciesQueries
+                        .getRemoteIdByLocalId(localId.toLong())
+                        .awaitAsOneOrNull()
+                        ?.remote_id
+                }
             DomainResult.Success(remoteId)
         } catch (e: Exception) {
             DomainResult.Failure(AppError.InternalError(e.message ?: "Error getting remote id"))

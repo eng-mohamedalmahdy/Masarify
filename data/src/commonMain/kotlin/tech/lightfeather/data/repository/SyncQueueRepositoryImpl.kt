@@ -139,7 +139,10 @@ class SyncQueueRepositoryImpl(
         }
     }
 
-    override suspend fun hasActiveEntry(localId: Long, entityType: String): Boolean =
+    override suspend fun hasActiveEntry(
+        localId: Long,
+        entityType: String,
+    ): Boolean =
         try {
             database {
                 it.syncQueueQueries.hasActiveEntry(localId = localId, entityType = entityType).awaitAsOne() > 0

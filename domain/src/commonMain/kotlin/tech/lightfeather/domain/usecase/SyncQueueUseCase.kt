@@ -6,22 +6,19 @@ import tech.lightfeather.domain.repository.SyncQueueRepository
 class GetFailedSyncEntriesUseCase(
     private val syncQueueRepository: SyncQueueRepository,
 ) {
-    suspend operator fun invoke(): List<SyncQueueEntry> =
-        syncQueueRepository.getFailedEntries()
+    suspend operator fun invoke(): List<SyncQueueEntry> = syncQueueRepository.getFailedEntries()
 }
 
 class GetFailedSyncCountUseCase(
     private val syncQueueRepository: SyncQueueRepository,
 ) {
-    suspend operator fun invoke(): Long =
-        syncQueueRepository.getFailedCount()
+    suspend operator fun invoke(): Long = syncQueueRepository.getFailedCount()
 }
 
 class RetrySyncEntryUseCase(
     private val syncQueueRepository: SyncQueueRepository,
 ) {
-    suspend operator fun invoke(id: Long) =
-        syncQueueRepository.resetToRetry(id)
+    suspend operator fun invoke(id: Long) = syncQueueRepository.resetToRetry(id)
 }
 
 class RetryAllFailedSyncUseCase(
@@ -40,13 +37,11 @@ class RetryAllFailedSyncUseCase(
 class DeleteFailedSyncEntryUseCase(
     private val syncQueueRepository: SyncQueueRepository,
 ) {
-    suspend operator fun invoke(id: Long) =
-        syncQueueRepository.deleteById(id)
+    suspend operator fun invoke(id: Long) = syncQueueRepository.deleteById(id)
 }
 
 class DeleteAllFailedSyncUseCase(
     private val syncQueueRepository: SyncQueueRepository,
 ) {
-    suspend operator fun invoke() =
-        syncQueueRepository.deleteAllFailed()
+    suspend operator fun invoke() = syncQueueRepository.deleteAllFailed()
 }

@@ -10,11 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.component.atoms.ImageThumbnail
 import tech.lightfeather.designsystem.component.molecules.ImageZoomDialog
 import tech.lightfeather.designsystem.model.UiAttachment
 import tech.lightfeather.designsystem.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Grid of attachment thumbnails with zoom capability

@@ -1,7 +1,7 @@
 package tech.lightfeather.designsystem.model
 
-import tech.lightfeather.designsystem.util.now
 import kotlinx.datetime.LocalDateTime
+import tech.lightfeather.designsystem.util.now
 
 data class UiTransactionDetails(
     val id: String,

@@ -4,6 +4,12 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Masarify uses your photo library to attach receipts and documents to transactions.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Masarify uses the camera to capture receipts for your transactions.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Masarify uses Face ID to protect your financial data.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

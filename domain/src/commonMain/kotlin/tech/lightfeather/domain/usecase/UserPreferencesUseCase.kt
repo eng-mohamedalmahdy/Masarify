@@ -39,3 +39,15 @@ class SaveUserColor(
 ) {
     operator fun invoke(color: String) = repository.saveColor(color)
 }
+
+class IsOnboardingComplete(
+    private val repository: UserRepository,
+) {
+    operator fun invoke() = repository.isOnboardingComplete()
+}
+
+class MarkOnboardingComplete(
+    private val repository: UserRepository,
+) {
+    operator fun invoke() = repository.markOnboardingComplete()
+}

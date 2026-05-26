@@ -20,6 +20,8 @@ internal data class MorePageState(
     val failedSyncCount: Int = 0,
     val failedEntries: List<SyncQueueEntry> = emptyList(),
     val isFailedExpanded: Boolean = false,
+    val isLogoutAllDialogVisible: Boolean = false,
+    val isEmailVerified: Boolean = true,
 )
 
 internal sealed class MoreDetailItem {
@@ -34,4 +36,6 @@ internal sealed class MoreDetailItem {
     data object CategoryManagement : MoreDetailItem()
 
     data object BackupRestore : MoreDetailItem()
+
+    data object NotificationSettings : MoreDetailItem()
 }

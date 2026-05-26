@@ -20,6 +20,7 @@ private class AndroidBiometricAuthenticator(
     override fun authenticate(
         title: String,
         subtitle: String,
+        cancelText: String,
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit,
     ) {
@@ -48,7 +49,7 @@ private class AndroidBiometricAuthenticator(
                 .Builder()
                 .setTitle(title)
                 .setSubtitle(subtitle)
-                .setNegativeButtonText("Cancel")
+                .setNegativeButtonText(cancelText)
                 .build()
 
         prompt.authenticate(promptInfo)

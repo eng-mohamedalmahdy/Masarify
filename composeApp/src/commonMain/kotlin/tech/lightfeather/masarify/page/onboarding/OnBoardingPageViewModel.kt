@@ -2,6 +2,14 @@ package tech.lightfeather.masarify.page.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.lightfeather.data.util.IoDispatcher
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
@@ -13,6 +21,7 @@ import tech.lightfeather.domain.usecase.BankNameUseCase
 import tech.lightfeather.domain.usecase.CreateAccount
 import tech.lightfeather.domain.usecase.CreateCurrency
 import tech.lightfeather.domain.usecase.GetAllCurrencies
+import tech.lightfeather.domain.usecase.MarkOnboardingComplete
 import tech.lightfeather.domain.usecase.SetDefaultAccount
 import tech.lightfeather.domain.usecase.UpsertUserData
 import tech.lightfeather.masarify.mappers.toCurrency
@@ -21,14 +30,8 @@ import tech.lightfeather.masarify.mappers.toUiCurrency
 import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.DashboardRoute
 import tech.lightfeather.masarify.navigation.routes.LoginRoute
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
+@Suppress("LongParameterList") // ViewModel DI constructor — params are injected, not caller-facing
 class OnBoardingPageViewModel(
     private val createCurrency: CreateCurrency,
     private val createAccount: CreateAccount,
@@ -38,6 +41,7 @@ class OnBoardingPageViewModel(
     private val getAllBankNames: BankNameUseCase.GetAllBankNames,
     private val createBankName: BankNameUseCase.CreateBankName,
     private val setDefaultAccount: SetDefaultAccount,
+    private val markOnboardingComplete: MarkOnboardingComplete,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OnBoardingPageState())
     internal val state: StateFlow<OnBoardingPageState> = _state
@@ -48,11 +52,12 @@ class OnBoardingPageViewModel(
                 onSuccess = { currenciesFlow ->
                     val uiFlow = currenciesFlow.map { it.map { it.toUiCurrency() } }
                     uiFlow.collect {
-                        _state.value =
-                            _state.value.copy(
+                        _state.update { state ->
+                            state.copy(
                                 appCurrencies = it,
-                                selectedCurrency = it.firstOrNull { it.symbol == "E£" },
+                                selectedCurrency = it.firstOrNull { c -> c.symbol == "E£" },
                             )
+                        }
                     }
                 },
                 onFailure = {
@@ -64,7 +69,7 @@ class OnBoardingPageViewModel(
             getAllBankNames().foldSuspend(
                 onSuccess = { bankNamesFlow ->
                     bankNamesFlow.map { it.map { it.toUiBankName() } }.collect { banks ->
-                        _state.value = _state.value.copy(availableBanks = banks, selectedBank = banks.firstOrNull())
+                        _state.update { it.copy(availableBanks = banks, selectedBank = banks.firstOrNull()) }
                     }
                 },
                 onFailure = {
@@ -173,6 +178,7 @@ class OnBoardingPageViewModel(
                         }.foldSuspend(
                             onSuccess = { accountId ->
                                 setDefaultAccount(accountId as Int)
+                                markOnboardingComplete()
                                 navigator.navigateAndClearBackStack(DashboardRoute)
                                 SnackbarService.sendSuccessMessage(MR.strings.app_slogan)
                             },

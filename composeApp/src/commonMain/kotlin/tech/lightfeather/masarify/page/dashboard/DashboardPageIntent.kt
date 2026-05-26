@@ -241,4 +241,8 @@ internal sealed interface DashboardPageIntent {
     data class DeleteTransactionById(
         val transactionId: String,
     ) : DashboardPageIntent
+
+    data class DismissTip(val tipId: Int) : DashboardPageIntent
+    data object DismissNotificationBanner : DashboardPageIntent
+    data object EnableNotificationsFromBanner : DashboardPageIntent
 }

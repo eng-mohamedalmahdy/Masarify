@@ -18,6 +18,8 @@ internal sealed interface MorePageIntent {
         data object SelectCategoryManagementDetail : NavigationIntent
 
         data object SelectBackupRestoreDetail : NavigationIntent
+
+        data object SelectNotificationSettingsDetail : NavigationIntent
     }
 
     data class ToggleDarkTheme(
@@ -53,15 +55,27 @@ internal sealed interface MorePageIntent {
 
     data object Logout : MorePageIntent
 
+    data object ShowLogoutAllDialog : MorePageIntent
+
+    data object DismissLogoutAllDialog : MorePageIntent
+
+    data object LogoutAllDevices : MorePageIntent
+
+    data object ResendVerification : MorePageIntent
+
     data object NavigateToSignIn : MorePageIntent
 
     data object ToggleFailedExpanded : MorePageIntent
 
-    data class RetrySyncEntry(val id: Long) : MorePageIntent
+    data class RetrySyncEntry(
+        val id: Long,
+    ) : MorePageIntent
 
     data object RetryAllFailed : MorePageIntent
 
-    data class DeleteFailedEntry(val id: Long) : MorePageIntent
+    data class DeleteFailedEntry(
+        val id: Long,
+    ) : MorePageIntent
 
     data object DeleteAllFailed : MorePageIntent
 }

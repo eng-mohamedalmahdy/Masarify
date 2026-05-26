@@ -55,18 +55,23 @@ class SyncEnqueueHelper(
     }
 
     @OptIn(ExperimentalEncodingApi::class)
-    suspend fun enqueueAttachmentCreate(localId: Int, attachment: Attachment, entityRemoteId: Long) {
+    suspend fun enqueueAttachmentCreate(
+        localId: Int,
+        attachment: Attachment,
+        entityRemoteId: Long,
+    ) {
         if (!userRepository.isLoggedIn()) return
         val base64Data = Base64.encode(attachment.fileContent)
-        val payload = AttachmentSyncPayload(
-            entityType = attachment.entityType.name.uppercase(),
-            entityRemoteId = entityRemoteId,
-            mimeType = attachment.mimeType,
-            fileName = attachment.fileName,
-            sizeBytes = attachment.fileContent.size.toLong(),
-            data = base64Data,
-            createdAt = Clock.System.now().toEpochMilliseconds(),
-        )
+        val payload =
+            AttachmentSyncPayload(
+                entityType = attachment.entityType.name.uppercase(),
+                entityRemoteId = entityRemoteId,
+                mimeType = attachment.mimeType,
+                fileName = attachment.fileName,
+                sizeBytes = attachment.fileContent.size.toLong(),
+                data = base64Data,
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+            )
         syncQueueRepository.insertEntry(
             entityType = "ATTACHMENT",
             operation = "CREATE",

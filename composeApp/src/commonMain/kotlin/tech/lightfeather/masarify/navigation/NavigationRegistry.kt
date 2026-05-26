@@ -2,15 +2,21 @@ package tech.lightfeather.masarify.navigation
 
 import androidx.navigation3.runtime.NavKey
 import androidx.savedstate.serialization.SavedStateConfiguration
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import tech.lightfeather.masarify.navigation.routes.AccountsRoute
 import tech.lightfeather.masarify.navigation.routes.CategoriesRoute
 import tech.lightfeather.masarify.navigation.routes.DashboardRoute
 import tech.lightfeather.masarify.navigation.routes.DeleteAccountRoute
 import tech.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
+import tech.lightfeather.masarify.navigation.routes.ForgotPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.MoreRoute
 import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
+import tech.lightfeather.masarify.navigation.routes.ResetPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.SplashRoute
 import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
+import tech.lightfeather.masarify.navigation.routes.VerifyEmailRoute
 import tech.lightfeather.masarify.page.bankaccounts.AddBankAccount
 import tech.lightfeather.masarify.page.bankaccounts.BankAccountsList
 import tech.lightfeather.masarify.page.bankaccounts.UpdateBankAccount
@@ -22,9 +28,6 @@ import tech.lightfeather.masarify.page.transactions.AddTransaction
 import tech.lightfeather.masarify.page.transactions.EditTransaction
 import tech.lightfeather.masarify.page.transactions.TransactionsList
 import tech.lightfeather.masarify.page.transactions.ViewTransaction
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 
 /**
  * Centralized navigation registry for all NavKey types in the application.
@@ -51,6 +54,9 @@ object NavigationRegistry {
                 subclass(CategoriesRoute::class, CategoriesRoute.serializer())
                 subclass(DeleteAccountRoute::class, DeleteAccountRoute.serializer())
                 subclass(DeleteCategoryRoute::class, DeleteCategoryRoute.serializer())
+                subclass(VerifyEmailRoute::class, VerifyEmailRoute.serializer())
+                subclass(ForgotPasswordRoute::class, ForgotPasswordRoute.serializer())
+                subclass(ResetPasswordRoute::class, ResetPasswordRoute.serializer())
 
                 // BankAccounts list-detail routes
                 subclass(BankAccountsList::class, BankAccountsList.serializer())

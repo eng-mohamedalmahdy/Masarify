@@ -14,11 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import dev.icerock.moko.resources.compose.stringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.TextField
 import tech.lightfeather.designsystem.model.UiCurrency
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 internal fun AddEditCurrencyDialog(
@@ -33,6 +34,7 @@ internal fun AddEditCurrencyDialog(
     val isEdit = currency != null
 
     AlertDialog(
+        modifier = modifier.testTag("add_edit_currency_dialog"),
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -83,6 +85,5 @@ internal fun AddEditCurrencyDialog(
                 )
             }
         },
-        modifier = modifier,
     )
 }

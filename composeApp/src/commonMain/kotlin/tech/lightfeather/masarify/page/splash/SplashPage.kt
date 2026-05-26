@@ -11,9 +11,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import tech.lightfeather.designsystem.MR
-import tech.lightfeather.designsystem.theme.AppTheme
-import tech.lightfeather.masarify.navigation.Route
 import dev.icerock.moko.resources.compose.readTextAsState
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
@@ -22,6 +19,9 @@ import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import tech.lightfeather.designsystem.MR
+import tech.lightfeather.designsystem.theme.AppTheme
+import tech.lightfeather.masarify.navigation.Route
 
 @Composable
 fun SplashPage(

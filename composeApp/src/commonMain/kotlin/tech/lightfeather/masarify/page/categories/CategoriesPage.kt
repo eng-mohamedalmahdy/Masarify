@@ -23,8 +23,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation3.runtime.NavKey
+import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.flow.flowOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.EmptyState
 import tech.lightfeather.designsystem.component.molecules.button.FloatingActionButton
@@ -37,11 +43,6 @@ import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.PreviewNavigator
 import tech.lightfeather.masarify.page.categories.addedit.AddEditCategoryPage
 import tech.lightfeather.masarify.page.categories.addedit.AddEditCategoryPageViewModel
-import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.flow.flowOf
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun CategoriesPage(
@@ -135,7 +136,7 @@ internal fun CategoriesPageContent(
 }
 
 @Composable
-private fun CategoriesListPane(
+internal fun CategoriesListPane(
     categories: List<UiCategory>,
     selectedCategory: UiCategory?,
     onAddCategory: () -> Unit,
@@ -198,7 +199,11 @@ private fun CategoriesListPane(
             onClick = onAddCategory,
             imageVector = Icons.Default.Add,
             contentDescription = stringResource(MR.strings.add_category),
-            modifier = Modifier.align(Alignment.BottomEnd).padding(AppTheme.dimens.default),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(AppTheme.dimens.default)
+                    .testTag("categories_add_fab"),
         )
     }
 }

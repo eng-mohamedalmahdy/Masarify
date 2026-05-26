@@ -36,10 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationEventHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import dev.icerock.moko.resources.compose.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppDropMenu
 import tech.lightfeather.designsystem.component.molecules.TextField
@@ -52,9 +56,6 @@ import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.designsystem.util.colorToHex
 import tech.lightfeather.designsystem.util.parseColor
-import dev.icerock.moko.resources.compose.stringResource
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun CreateBankAccountPage(
@@ -108,7 +109,7 @@ internal fun CreateBankAccountPageContent(
             onValueChange = { onIntent(CreateBankAccountPageIntent.UpdateName(it)) },
             label = stringResource(MR.strings.account_name),
             placeholder = stringResource(MR.strings.enter_account_name),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("create_account_name_field"),
         )
 
         // Bank Selection Dropdown
@@ -326,7 +327,7 @@ internal fun CreateBankAccountPageContent(
                 onBack()
             },
             enabled = !state.isLoading && state.name.isNotBlank() && state.currency != null,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("create_account_submit_button"),
         ) {
             Text(
                 text =

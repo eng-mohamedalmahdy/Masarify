@@ -2,12 +2,12 @@ package tech.lightfeather.masarify.page.deletecategory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import tech.lightfeather.domain.model.Category
 import tech.lightfeather.domain.usecase.DeleteCategory
 import tech.lightfeather.masarify.navigation.Navigator
-import kotlinx.coroutines.launch
 
 class DeleteCategoryPageViewModel(
     private val navigator: Navigator,

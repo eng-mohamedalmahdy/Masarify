@@ -2,16 +2,16 @@ package tech.lightfeather.masarify.page.categories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import tech.lightfeather.domain.usecase.GetAllCategories
-import tech.lightfeather.masarify.mappers.toCategory
-import tech.lightfeather.masarify.mappers.toUiCategory
-import tech.lightfeather.masarify.navigation.Navigator
-import tech.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import tech.lightfeather.domain.usecase.GetAllCategories
+import tech.lightfeather.masarify.mappers.toCategory
+import tech.lightfeather.masarify.mappers.toUiCategory
+import tech.lightfeather.masarify.navigation.Navigator
+import tech.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
 
 class CategoriesPageViewModel(
     private val navigator: Navigator,

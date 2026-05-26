@@ -19,13 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import tech.lightfeather.designsystem.component.atoms.Switch
 import tech.lightfeather.designsystem.component.molecules.AppDropMenu
 import tech.lightfeather.designsystem.component.molecules.AppImage
 import tech.lightfeather.designsystem.component.molecules.button.AppSegmentedButton
 import tech.lightfeather.designsystem.component.molecules.button.SegmentedButton
 import tech.lightfeather.designsystem.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MoreListItem(

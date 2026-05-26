@@ -19,11 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import dev.icerock.moko.resources.compose.stringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.masarify.auth.BiometricAuthenticator
-import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 internal fun BiometricLockScreen(
@@ -31,10 +31,12 @@ internal fun BiometricLockScreen(
     onAuthenticated: () -> Unit,
 ) {
     // Trigger biometric prompt automatically on composition
+    val cancelText = stringResource(MR.strings.cancel)
     LaunchedEffect(Unit) {
         authenticator.authenticate(
             title = "Masarify",
             subtitle = "Authenticate to access your finances",
+            cancelText = cancelText,
             onSuccess = onAuthenticated,
             onFailure = { /* User can retry via button */ },
         )
@@ -85,6 +87,7 @@ internal fun BiometricLockScreen(
                     authenticator.authenticate(
                         title = "Masarify",
                         subtitle = "Authenticate to access your finances",
+                        cancelText = cancelText,
                         onSuccess = onAuthenticated,
                         onFailure = { /* Stay on lock screen */ },
                     )

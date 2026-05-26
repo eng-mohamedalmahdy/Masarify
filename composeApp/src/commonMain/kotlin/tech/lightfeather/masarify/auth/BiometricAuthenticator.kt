@@ -21,6 +21,7 @@ interface BiometricAuthenticator {
     fun authenticate(
         title: String,
         subtitle: String,
+        cancelText: String,
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit,
     )

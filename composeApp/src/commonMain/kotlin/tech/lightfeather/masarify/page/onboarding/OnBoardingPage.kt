@@ -23,8 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.AppDropMenu
 import tech.lightfeather.designsystem.component.molecules.TextField
@@ -33,10 +40,6 @@ import tech.lightfeather.designsystem.component.molecules.button.TextButton
 import tech.lightfeather.designsystem.model.UiCurrency
 import tech.lightfeather.designsystem.model.getLocalizedName
 import tech.lightfeather.designsystem.theme.AppTheme
-import dev.icerock.moko.resources.compose.painterResource
-import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OnBoardingPage(viewModel: OnBoardingPageViewModel = koinViewModel()) {
@@ -86,6 +89,7 @@ internal fun OnBoardingPageContent(
                 ) {
                     Text(
                         text = stringResource(MR.strings.onboarding_title),
+                        modifier = Modifier.semantics { heading() },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                     )
@@ -98,7 +102,7 @@ internal fun OnBoardingPageContent(
                 TextField(
                     value = state.userName,
                     onValueChange = { onIntent(OnBoardingPageIntent.UpdateUserName(it)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("onboarding_user_name_field"),
                     label = stringResource(MR.strings.user_name),
                 )
 //                TextField(
@@ -226,7 +230,8 @@ internal fun OnBoardingPageContent(
                     modifier =
                         Modifier
                             .padding(AppTheme.dimens.default)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .testTag("onboarding_submit_button"),
                 ) {
                     Text(text = stringResource(MR.strings.submit))
                 }

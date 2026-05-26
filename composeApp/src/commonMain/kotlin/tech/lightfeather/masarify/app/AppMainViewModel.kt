@@ -2,6 +2,16 @@ package tech.lightfeather.masarify.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import tech.lightfeather.domain.model.AppLanguage
 import tech.lightfeather.domain.model.AppLanguages
 import tech.lightfeather.domain.repository.UserRepository
@@ -13,16 +23,6 @@ import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.DashboardRoute
 import tech.lightfeather.masarify.widget.WidgetCategory
 import tech.lightfeather.masarify.widget.WidgetDataSyncService
-import io.github.aakira.napier.Napier
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class AppMainViewModel(
     private val navigator: Navigator,

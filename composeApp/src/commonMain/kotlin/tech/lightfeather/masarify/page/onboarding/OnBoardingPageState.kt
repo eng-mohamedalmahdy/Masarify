@@ -1,9 +1,9 @@
 package tech.lightfeather.masarify.page.onboarding
 
+import dev.icerock.moko.resources.StringResource
 import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.model.UiBankName
 import tech.lightfeather.designsystem.model.UiCurrency
-import dev.icerock.moko.resources.StringResource
 
 internal data class OnBoardingPageState(
     val userName: String = "",
