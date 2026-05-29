@@ -15,6 +15,9 @@ import tech.lightfeather.domain.model.CurrencyExchangeRate
 import tech.lightfeather.domain.model.DomainResult
 import tech.lightfeather.domain.model.FinancialSession
 import tech.lightfeather.domain.model.PagedData
+import tech.lightfeather.domain.model.SubscriptionPlan
+import tech.lightfeather.domain.model.SubscriptionStatus
+import tech.lightfeather.domain.model.SubscriptionStatusType
 import tech.lightfeather.domain.model.UserData
 import tech.lightfeather.domain.model.error.AppError
 import tech.lightfeather.domain.model.sync.SyncPullResponse
@@ -33,6 +36,8 @@ import tech.lightfeather.domain.repository.DeviceTokenRepository
 import tech.lightfeather.domain.repository.FCMHelper
 import tech.lightfeather.domain.repository.FinancialSessionRepository
 import tech.lightfeather.domain.repository.Platform
+import tech.lightfeather.domain.repository.RevenueCatSdk
+import tech.lightfeather.domain.repository.SubscriptionRepository
 import tech.lightfeather.domain.repository.SyncQueueRepository
 import tech.lightfeather.domain.repository.SyncRepository
 import tech.lightfeather.domain.repository.TransactionRepository
@@ -572,4 +577,72 @@ internal class FakeCurrencyExchangeRateRepository : CurrencyExchangeRateReposito
 
     override fun getAllCurrenciesExchangeRates(): DomainResult<Flow<List<CurrencyExchangeRate>>> =
         DomainResult.Success(flowOf(emptyList()))
+}
+
+// ---------------------------------------------------------------------------
+// Subscription
+// ---------------------------------------------------------------------------
+
+internal class FakeSubscriptionRepository(
+    private val isProActive: Boolean = false,
+    private val shouldFail: Boolean = false,
+) : SubscriptionRepository {
+    var linkCallCount = 0
+
+    override fun getStatus(): Flow<DomainResult<SubscriptionStatus>> =
+        flowOf(
+            if (shouldFail) {
+                DomainResult.Failure(AppError.InternalError("fail"))
+            } else {
+                DomainResult.Success(
+                    if (isProActive) {
+                        SubscriptionStatus(
+                            plan = SubscriptionPlan.PRO,
+                            status = SubscriptionStatusType.ACTIVE,
+                            expiresAt = null,
+                        )
+                    } else {
+                        SubscriptionStatus.FREE_DEFAULT
+                    },
+                )
+            },
+        )
+
+    override suspend fun linkRevenueCatCustomer(rcCustomerId: String): DomainResult<Unit> {
+        linkCallCount++
+        return if (shouldFail) {
+            DomainResult.Failure(AppError.InternalError("fail"))
+        } else {
+            DomainResult.Success(Unit)
+        }
+    }
+
+    override suspend fun getCachedStatusAge(): Long = 0L
+}
+
+internal class FakeRevenueCatSdk(
+    private val shouldSucceed: Boolean = true,
+    val shouldCancel: Boolean = false,
+) : RevenueCatSdk {
+    override suspend fun purchasePro(): DomainResult<String> =
+        when {
+            shouldCancel -> DomainResult.Failure(AppError.InternalError("cancelled"))
+            shouldSucceed -> DomainResult.Success("rc_customer_123")
+            else -> DomainResult.Failure(AppError.InternalError("purchase_failed"))
+        }
+
+    override suspend fun restorePurchases(): DomainResult<String> =
+        if (shouldSucceed) {
+            DomainResult.Success("rc_customer_123")
+        } else {
+            DomainResult.Failure(AppError.InternalError("restore_failed"))
+        }
+
+    override suspend fun getCustomerInfo(): DomainResult<SubscriptionStatus> =
+        DomainResult.Success(SubscriptionStatus.FREE_DEFAULT)
+
+    override fun initialize(
+        apiKey: String,
+        userId: String?,
+    ) {}
 }

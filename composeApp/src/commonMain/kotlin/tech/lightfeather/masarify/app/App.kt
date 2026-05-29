@@ -68,6 +68,7 @@ import tech.lightfeather.masarify.navigation.routes.ForgotPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.LoginRoute
 import tech.lightfeather.masarify.navigation.routes.MoreRoute
 import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
+import tech.lightfeather.masarify.navigation.routes.PaywallRoute
 import tech.lightfeather.masarify.navigation.routes.RegisterRoute
 import tech.lightfeather.masarify.navigation.routes.ResetPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.SplashRoute
@@ -85,6 +86,7 @@ import tech.lightfeather.masarify.page.deletebankaccount.DeleteBankAccountPage
 import tech.lightfeather.masarify.page.deletecategory.DeleteCategoryPage
 import tech.lightfeather.masarify.page.more.MorePage
 import tech.lightfeather.masarify.page.onboarding.OnBoardingPage
+import tech.lightfeather.masarify.page.paywall.PaywallPage
 import tech.lightfeather.masarify.page.splash.SplashPage
 import tech.lightfeather.masarify.page.transactions.TransactionsPage
 import kotlin.time.ExperimentalTime
@@ -377,6 +379,9 @@ fun App(
                         }
                         entry<ResetPasswordRoute> { route ->
                             ResetPasswordPage(token = route.token)
+                        }
+                        entry<PaywallRoute> {
+                            PaywallPage()
                         }
                     }
                 }

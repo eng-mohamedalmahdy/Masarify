@@ -52,10 +52,12 @@ class SyncApi(
             }
         } catch (e: ClientRequestException) {
             Napier.e("Sync enqueue failed", e, tag = "SyncApi")
-            if (e.response.status == HttpStatusCode.Conflict) {
-                DomainResult.Failure(AppError.ConflictError("Version conflict: server has newer data"))
-            } else {
-                DomainResult.Failure(AppError.InternalError(e.message))
+            when (e.response.status) {
+                HttpStatusCode.Conflict ->
+                    DomainResult.Failure(AppError.ConflictError("Version conflict: server has newer data"))
+                HttpStatusCode(402, "Payment Required") ->
+                    DomainResult.Failure(AppError.UpgradeRequired("Pro subscription required"))
+                else -> DomainResult.Failure(AppError.InternalError(e.message))
             }
         } catch (e: Exception) {
             Napier.e("Sync enqueue failed", e, tag = "SyncApi")
@@ -73,6 +75,13 @@ class SyncApi(
             } else {
                 DomainResult.Failure(AppError.InternalError(response.message ?: "Pull delta failed"))
             }
+        } catch (e: ClientRequestException) {
+            Napier.e("Sync pull failed", e, tag = "SyncApi")
+            if (e.response.status == HttpStatusCode(402, "Payment Required")) {
+                DomainResult.Failure(AppError.UpgradeRequired("Pro subscription required"))
+            } else {
+                DomainResult.Failure(AppError.InternalError(e.message))
+            }
         } catch (e: Exception) {
             Napier.e("Sync pull failed", e, tag = "SyncApi")
             DomainResult.Failure(AppError.InternalError(e.message ?: "Pull delta failed"))
@@ -82,6 +91,13 @@ class SyncApi(
         try {
             val bytes = httpClient.get("$baseUrl/attachments/$remoteId/download").body<ByteArray>()
             DomainResult.Success(bytes)
+        } catch (e: ClientRequestException) {
+            Napier.e("Attachment download failed", e, tag = "SyncApi")
+            if (e.response.status == HttpStatusCode(402, "Payment Required")) {
+                DomainResult.Failure(AppError.UpgradeRequired("Pro subscription required"))
+            } else {
+                DomainResult.Failure(AppError.InternalError(e.message))
+            }
         } catch (e: Exception) {
             Napier.e("Attachment download failed", e, tag = "SyncApi")
             DomainResult.Failure(AppError.InternalError(e.message ?: "Download failed"))

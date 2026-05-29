@@ -6,6 +6,7 @@ import dev.icerock.moko.resources.desc.StringDesc
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -24,17 +25,20 @@ import tech.lightfeather.domain.usecase.GetUserLanguage
 import tech.lightfeather.domain.usecase.ImportDataUseCase
 import tech.lightfeather.domain.usecase.IsAuthenticatedUseCase
 import tech.lightfeather.domain.usecase.IsEmailVerifiedUseCase
+import tech.lightfeather.domain.usecase.IsProActiveUseCase
 import tech.lightfeather.domain.usecase.LogoutAllDevicesUseCase
 import tech.lightfeather.domain.usecase.LogoutUseCase
 import tech.lightfeather.domain.usecase.PullRemoteDeltaUseCase
 import tech.lightfeather.domain.usecase.ResendVerificationUseCase
 import tech.lightfeather.domain.usecase.RetryAllFailedSyncUseCase
 import tech.lightfeather.domain.usecase.RetrySyncEntryUseCase
+import tech.lightfeather.domain.usecase.UpgradeRequiredException
 import tech.lightfeather.domain.usecase.UploadLocalDataUseCase
 import tech.lightfeather.masarify.framework.saveBackupFile
 import tech.lightfeather.masarify.navigation.Navigator
 import tech.lightfeather.masarify.navigation.routes.LoginRoute
 import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
+import tech.lightfeather.masarify.navigation.routes.PaywallRoute
 import kotlin.time.Clock
 
 @Suppress("LongParameterList") // Sync use cases + auth check required alongside existing dependencies
@@ -59,6 +63,7 @@ class MorePageViewModel(
     private val retryAllFailedSyncUseCase: RetryAllFailedSyncUseCase,
     private val deleteFailedSyncEntryUseCase: DeleteFailedSyncEntryUseCase,
     private val deleteAllFailedSyncUseCase: DeleteAllFailedSyncUseCase,
+    private val isProActiveUseCase: IsProActiveUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MorePageState())
     internal val state: StateFlow<MorePageState> = _state
@@ -117,8 +122,12 @@ class MorePageViewModel(
                         drainOutboxQueueUseCase()
                         pullRemoteDeltaUseCase()
                         SnackbarService.sendSuccessMessage(MR.strings.sync_success)
-                    }.onFailure {
-                        SnackbarService.sendErrorMessage(MR.strings.sync_failure)
+                    }.onFailure { error ->
+                        if (error is UpgradeRequiredException) {
+                            navigator.navigate(PaywallRoute)
+                        } else {
+                            SnackbarService.sendErrorMessage(MR.strings.sync_failure)
+                        }
                     }
                     refreshFailedState()
                     _state.value = _state.value.copy(isSyncing = false)
@@ -254,6 +263,8 @@ class MorePageViewModel(
                     refreshFailedState()
                 }
             }
+
+            MorePageIntent.NavigateToPaywall -> navigator.navigate(PaywallRoute)
         }
     }
 
@@ -310,6 +321,7 @@ class MorePageViewModel(
             val authenticated = isAuthenticatedUseCase()
             val emailVerified = isEmailVerifiedUseCase()
             val failedCount = getFailedSyncCountUseCase().toInt()
+
             _state.value =
                 _state.value.copy(
                     selectedLanguage = currentLanguage,
@@ -322,6 +334,9 @@ class MorePageViewModel(
                     failedSyncCount = failedCount,
                     isLoading = false,
                 )
+            isProActiveUseCase().collect {
+                _state.value = _state.value.copy(isProActive = it)
+            }
         }
     }
 

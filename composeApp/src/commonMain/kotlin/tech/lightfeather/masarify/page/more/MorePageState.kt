@@ -2,10 +2,13 @@ package tech.lightfeather.masarify.page.more
 
 import tech.lightfeather.domain.model.AppLanguage
 import tech.lightfeather.domain.model.AppLanguages
+import tech.lightfeather.domain.model.SubscriptionPlan
 import tech.lightfeather.domain.model.sync.SyncQueueEntry
 
 internal data class MorePageState(
     val isDarkTheme: Boolean = false,
+    val isProActive: Boolean = false,
+    val currentPlan: SubscriptionPlan = SubscriptionPlan.FREE,
     val isBiometricEnabled: Boolean = false,
     val isAutoSyncRatesEnabled: Boolean = true,
     val isAutoSyncDataEnabled: Boolean = true,

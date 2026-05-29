@@ -2,11 +2,6 @@ package tech.lightfeather.masarify.page.dashboard
 
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import tech.lightfeather.domain.usecase.DismissNotificationBanner
-import tech.lightfeather.domain.usecase.DismissNotificationTip
-import tech.lightfeather.domain.usecase.GetActiveTip
-import tech.lightfeather.domain.usecase.GetNotificationSettings
-import tech.lightfeather.domain.usecase.ShouldShowNotificationBanner
 
 /**
  * Koin module for Dashboard page dependencies

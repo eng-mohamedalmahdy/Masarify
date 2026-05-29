@@ -19,12 +19,17 @@ import tech.lightfeather.domain.usecase.ShouldFireReminder
 private const val REMINDER_CHANNEL_ID = "masarify_reminders"
 private const val NOTIFICATION_BASE_ID = 2000
 
-class ReminderCheckWorker : AndroidWorker, KoinComponent {
+class ReminderCheckWorker :
+    AndroidWorker,
+    KoinComponent {
     private val shouldFireReminder: ShouldFireReminder by inject()
     private val recordReminderFired: RecordReminderFired by inject()
     private val context: Context by inject()
 
-    override suspend fun doWork(input: String?, env: WorkerEnvironment): WorkerResult {
+    override suspend fun doWork(
+        input: String?,
+        env: WorkerEnvironment,
+    ): WorkerResult {
         ensureNotificationChannel()
         ReminderType.entries.forEachIndexed { index, type ->
             if (shouldFireReminder(type)) {
@@ -37,35 +42,42 @@ class ReminderCheckWorker : AndroidWorker, KoinComponent {
 
     private fun ensureNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val channel = NotificationChannel(
-            REMINDER_CHANNEL_ID,
-            context.getString(MR.strings.notification_settings.resourceId),
-            NotificationManager.IMPORTANCE_DEFAULT,
-        )
+        val channel =
+            NotificationChannel(
+                REMINDER_CHANNEL_ID,
+                context.getString(MR.strings.notification_settings.resourceId),
+                NotificationManager.IMPORTANCE_DEFAULT,
+            )
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(channel)
     }
 
-    private fun postNotification(type: ReminderType, notificationId: Int) {
-        val titleRes = when (type) {
-            ReminderType.DAILY_EXPENSE_LOG -> MR.strings.reminder_daily_expense_log_title
-            ReminderType.WEEKLY_SUMMARY -> MR.strings.reminder_weekly_summary_title
-            ReminderType.IDLE_RE_ENGAGEMENT -> MR.strings.reminder_idle_re_engagement_title
-            ReminderType.MONTHLY_RECAP -> MR.strings.reminder_monthly_recap_title
-        }
-        val bodyRes = when (type) {
-            ReminderType.DAILY_EXPENSE_LOG -> MR.strings.reminder_daily_expense_log_body
-            ReminderType.WEEKLY_SUMMARY -> MR.strings.reminder_weekly_summary_body
-            ReminderType.IDLE_RE_ENGAGEMENT -> MR.strings.reminder_idle_re_engagement_body
-            ReminderType.MONTHLY_RECAP -> MR.strings.reminder_monthly_recap_body
-        }
-        val notification = NotificationCompat
-            .Builder(context, REMINDER_CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_popup_sync)
-            .setContentTitle(context.getString(titleRes.resourceId))
-            .setContentText(context.getString(bodyRes.resourceId))
-            .setAutoCancel(true)
-            .build()
+    private fun postNotification(
+        type: ReminderType,
+        notificationId: Int,
+    ) {
+        val titleRes =
+            when (type) {
+                ReminderType.DAILY_EXPENSE_LOG -> MR.strings.reminder_daily_expense_log_title
+                ReminderType.WEEKLY_SUMMARY -> MR.strings.reminder_weekly_summary_title
+                ReminderType.IDLE_RE_ENGAGEMENT -> MR.strings.reminder_idle_re_engagement_title
+                ReminderType.MONTHLY_RECAP -> MR.strings.reminder_monthly_recap_title
+            }
+        val bodyRes =
+            when (type) {
+                ReminderType.DAILY_EXPENSE_LOG -> MR.strings.reminder_daily_expense_log_body
+                ReminderType.WEEKLY_SUMMARY -> MR.strings.reminder_weekly_summary_body
+                ReminderType.IDLE_RE_ENGAGEMENT -> MR.strings.reminder_idle_re_engagement_body
+                ReminderType.MONTHLY_RECAP -> MR.strings.reminder_monthly_recap_body
+            }
+        val notification =
+            NotificationCompat
+                .Builder(context, REMINDER_CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_popup_sync)
+                .setContentTitle(context.getString(titleRes.resourceId))
+                .setContentText(context.getString(bodyRes.resourceId))
+                .setAutoCancel(true)
+                .build()
         NotificationManagerCompat.from(context).notify(notificationId, notification)
     }
 }

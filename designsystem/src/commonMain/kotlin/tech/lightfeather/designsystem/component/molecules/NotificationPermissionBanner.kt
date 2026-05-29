@@ -30,14 +30,16 @@ fun NotificationPermissionBanner(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(AppTheme.dimens.default),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(AppTheme.dimens.default),
             horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.compact),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -64,13 +66,14 @@ fun NotificationPermissionBanner(
             }
         }
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = AppTheme.dimens.default,
-                    end = AppTheme.dimens.default,
-                    bottom = AppTheme.dimens.default,
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = AppTheme.dimens.default,
+                        end = AppTheme.dimens.default,
+                        bottom = AppTheme.dimens.default,
+                    ),
             horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.compact),
         ) {
             SecondaryButton(

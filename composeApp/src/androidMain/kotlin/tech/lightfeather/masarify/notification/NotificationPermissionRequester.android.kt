@@ -19,7 +19,6 @@ private class AndroidNotificationPermissionRequester(
     private val launcher: ActivityResultLauncher<String>,
     private val pendingCallback: MutableState<((Boolean) -> Unit)?>,
 ) : NotificationPermissionRequester {
-
     override fun requestPermission(onResult: (Boolean) -> Unit) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             onResult(true)
@@ -42,12 +41,13 @@ private class AndroidNotificationPermissionRequester(
 actual fun rememberNotificationPermissionRequester(): NotificationPermissionRequester {
     val context = LocalContext.current
     val pendingCallback = remember { mutableStateOf<((Boolean) -> Unit)?>(null) }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-    ) { granted ->
-        pendingCallback.value?.invoke(granted)
-        pendingCallback.value = null
-    }
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            pendingCallback.value?.invoke(granted)
+            pendingCallback.value = null
+        }
     return remember(context, launcher) {
         AndroidNotificationPermissionRequester(context, launcher, pendingCallback)
     }

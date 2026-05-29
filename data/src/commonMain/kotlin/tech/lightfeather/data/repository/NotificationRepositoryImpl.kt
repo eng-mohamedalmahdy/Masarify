@@ -7,7 +7,6 @@ import tech.lightfeather.domain.repository.NotificationRepository
 class NotificationRepositoryImpl(
     private val prefs: AppPreferences,
 ) : NotificationRepository {
-
     override var lastAppOpenEpochDay: Long = prefs.lastAppOpenEpochDay.toLong()
 
     override fun getAppOpenCount(): Int = prefs.appOpenCount
@@ -40,14 +39,18 @@ class NotificationRepositoryImpl(
         prefs.isRemindersEnabled = enabled
     }
 
-    override fun isReminderEnabled(type: ReminderType): Boolean = when (type) {
-        ReminderType.DAILY_EXPENSE_LOG -> prefs.isDailyExpenseLogReminderEnabled
-        ReminderType.WEEKLY_SUMMARY -> prefs.isWeeklySummaryReminderEnabled
-        ReminderType.IDLE_RE_ENGAGEMENT -> prefs.isIdleReEngagementReminderEnabled
-        ReminderType.MONTHLY_RECAP -> prefs.isMonthlyRecapReminderEnabled
-    }
+    override fun isReminderEnabled(type: ReminderType): Boolean =
+        when (type) {
+            ReminderType.DAILY_EXPENSE_LOG -> prefs.isDailyExpenseLogReminderEnabled
+            ReminderType.WEEKLY_SUMMARY -> prefs.isWeeklySummaryReminderEnabled
+            ReminderType.IDLE_RE_ENGAGEMENT -> prefs.isIdleReEngagementReminderEnabled
+            ReminderType.MONTHLY_RECAP -> prefs.isMonthlyRecapReminderEnabled
+        }
 
-    override fun setReminderEnabled(type: ReminderType, enabled: Boolean) {
+    override fun setReminderEnabled(
+        type: ReminderType,
+        enabled: Boolean,
+    ) {
         when (type) {
             ReminderType.DAILY_EXPENSE_LOG -> prefs.isDailyExpenseLogReminderEnabled = enabled
             ReminderType.WEEKLY_SUMMARY -> prefs.isWeeklySummaryReminderEnabled = enabled
@@ -62,14 +65,18 @@ class NotificationRepositoryImpl(
         prefs.dailyReminderMinutes = minutes
     }
 
-    override fun getLastReminderFiredAt(type: ReminderType): Long = when (type) {
-        ReminderType.DAILY_EXPENSE_LOG -> prefs.lastReminderDailyTs
-        ReminderType.WEEKLY_SUMMARY -> prefs.lastReminderWeeklyTs
-        ReminderType.IDLE_RE_ENGAGEMENT -> prefs.lastReminderIdleTs
-        ReminderType.MONTHLY_RECAP -> prefs.lastReminderMonthlyTs
-    }
+    override fun getLastReminderFiredAt(type: ReminderType): Long =
+        when (type) {
+            ReminderType.DAILY_EXPENSE_LOG -> prefs.lastReminderDailyTs
+            ReminderType.WEEKLY_SUMMARY -> prefs.lastReminderWeeklyTs
+            ReminderType.IDLE_RE_ENGAGEMENT -> prefs.lastReminderIdleTs
+            ReminderType.MONTHLY_RECAP -> prefs.lastReminderMonthlyTs
+        }
 
-    override fun setLastReminderFiredAt(type: ReminderType, ts: Long) {
+    override fun setLastReminderFiredAt(
+        type: ReminderType,
+        ts: Long,
+    ) {
         when (type) {
             ReminderType.DAILY_EXPENSE_LOG -> prefs.lastReminderDailyTs = ts
             ReminderType.WEEKLY_SUMMARY -> prefs.lastReminderWeeklyTs = ts

@@ -11,6 +11,7 @@ import tech.lightfeather.designsystem.MR
 import tech.lightfeather.designsystem.component.molecules.snackbar.SnackbarService
 import tech.lightfeather.domain.usecase.AcquireAndUpdateFcmUseCase
 import tech.lightfeather.domain.usecase.DrainOutboxQueueUseCase
+import tech.lightfeather.domain.usecase.GetSubscriptionStatusUseCase
 import tech.lightfeather.domain.usecase.LoginUseCase
 import tech.lightfeather.domain.usecase.PullRemoteDeltaUseCase
 import tech.lightfeather.domain.usecase.UploadLocalDataUseCase
@@ -26,6 +27,7 @@ class LoginPageViewModel(
     private val drainOutboxQueueUseCase: DrainOutboxQueueUseCase,
     private val uploadLocalDataUseCase: UploadLocalDataUseCase,
     private val acquireAndUpdateFcmUseCase: AcquireAndUpdateFcmUseCase,
+    private val getSubscriptionStatusUseCase: GetSubscriptionStatusUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginPageState())
     internal val state: StateFlow<LoginPageState> = _state
@@ -56,6 +58,7 @@ class LoginPageViewModel(
                 onSuccess = {
                     SnackbarService.sendSuccessMessage(MR.strings.login_success)
                     acquireAndUpdateFcmUseCase()
+                    getSubscriptionStatusUseCase() // pre-warm subscription cache
                     pullRemoteDeltaUseCase()
                     uploadLocalDataUseCase()
                     drainOutboxQueueUseCase()

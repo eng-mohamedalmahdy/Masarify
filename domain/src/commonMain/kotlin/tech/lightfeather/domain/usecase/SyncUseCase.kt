@@ -39,12 +39,17 @@ class DrainOutboxQueueUseCase(
             syncRepository.enqueueRemote(entry).foldSuspend(
                 onSuccess = { syncQueueRepository.markSent(entry.id, null) },
                 onFailure = { error ->
-                    if (error is AppError.ConflictError) {
-                        syncQueueRepository.markFailed(entry.id)
-                    } else {
-                        syncQueueRepository.incrementRetry(entry.id)
-                        if (entry.retryCount + 1 >= MAX_RETRIES) {
+                    when (error) {
+                        is AppError.UpgradeRequired -> {
                             syncQueueRepository.markFailed(entry.id)
+                            throw UpgradeRequiredException()
+                        }
+                        is AppError.ConflictError -> syncQueueRepository.markFailed(entry.id)
+                        else -> {
+                            syncQueueRepository.incrementRetry(entry.id)
+                            if (entry.retryCount + 1 >= MAX_RETRIES) {
+                                syncQueueRepository.markFailed(entry.id)
+                            }
                         }
                     }
                 },
@@ -80,7 +85,11 @@ class PullRemoteDeltaUseCase(
                 response.attachments.forEach { applyAttachment(it) }
                 userRepository.setLastSyncAt(Clock.System.now().toEpochMilliseconds())
             },
-            onFailure = {},
+            onFailure = { error ->
+                if (error is AppError.UpgradeRequired) {
+                    throw UpgradeRequiredException()
+                }
+            },
         )
     }
 

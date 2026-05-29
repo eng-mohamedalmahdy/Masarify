@@ -12,6 +12,7 @@ import tech.lightfeather.domain.usecase.GetUserLanguage
 import tech.lightfeather.domain.usecase.ImportDataUseCase
 import tech.lightfeather.domain.usecase.IsAuthenticatedUseCase
 import tech.lightfeather.domain.usecase.IsEmailVerifiedUseCase
+import tech.lightfeather.domain.usecase.IsProActiveUseCase
 import tech.lightfeather.domain.usecase.LogoutAllDevicesUseCase
 import tech.lightfeather.domain.usecase.LogoutUseCase
 import tech.lightfeather.domain.usecase.PullRemoteDeltaUseCase
@@ -75,5 +76,6 @@ internal fun buildMoreViewModel(navigator: Navigator = CapturingNavigator()): Mo
         retryAllFailedSyncUseCase = RetryAllFailedSyncUseCase(syncQueueRepo, drainOutbox),
         deleteFailedSyncEntryUseCase = DeleteFailedSyncEntryUseCase(syncQueueRepo),
         deleteAllFailedSyncUseCase = DeleteAllFailedSyncUseCase(syncQueueRepo),
+        isProActiveUseCase = IsProActiveUseCase(FakeSubscriptionRepository()),
     )
 }

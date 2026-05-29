@@ -27,14 +27,16 @@ fun DashboardTipCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(AppTheme.dimens.default),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(AppTheme.dimens.default),
             verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.small),
         ) {
             Row(
@@ -73,13 +75,14 @@ fun DashboardTipCard(
     }
 }
 
-private fun tipStrings(tipId: Int): Pair<StringResource, StringResource>? = when (tipId) {
-    0 -> MR.strings.tip_0_add_accounts_title to MR.strings.tip_0_add_accounts_body
-    1 -> MR.strings.tip_1_log_expenses_title to MR.strings.tip_1_log_expenses_body
-    2 -> MR.strings.tip_2_categories_title to MR.strings.tip_2_categories_body
-    3 -> MR.strings.tip_3_analytics_title to MR.strings.tip_3_analytics_body
-    4 -> MR.strings.tip_4_sessions_title to MR.strings.tip_4_sessions_body
-    5 -> MR.strings.tip_5_cloud_sync_title to MR.strings.tip_5_cloud_sync_body
-    6 -> MR.strings.tip_6_export_title to MR.strings.tip_6_export_body
-    else -> null
-}
+private fun tipStrings(tipId: Int): Pair<StringResource, StringResource>? =
+    when (tipId) {
+        0 -> MR.strings.tip_0_add_accounts_title to MR.strings.tip_0_add_accounts_body
+        1 -> MR.strings.tip_1_log_expenses_title to MR.strings.tip_1_log_expenses_body
+        2 -> MR.strings.tip_2_categories_title to MR.strings.tip_2_categories_body
+        3 -> MR.strings.tip_3_analytics_title to MR.strings.tip_3_analytics_body
+        4 -> MR.strings.tip_4_sessions_title to MR.strings.tip_4_sessions_body
+        5 -> MR.strings.tip_5_cloud_sync_title to MR.strings.tip_5_cloud_sync_body
+        6 -> MR.strings.tip_6_export_title to MR.strings.tip_6_export_body
+        else -> null
+    }

@@ -48,8 +48,11 @@ ktor = "3.3.0"
 compottie = "2.0.0"
 glance = "1.1.1"
 kmpworkmanager = "2.5.1"
+purchases-kmp = "3.0.3"
 
 [libraries]
+purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "purchases-kmp" }
+purchases-result = { module = "com.revenuecat.purchases:purchases-kmp-result", version.ref = "purchases-kmp" }
 filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "fileKitVersion" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "fileKitVersion" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "fileKitVersion" }

@@ -15,4 +15,9 @@ sealed interface AppError {
     data class ConflictError(
         override val message: String,
     ) : AppError
+
+    @Serializable
+    data class UpgradeRequired(
+        override val message: String,
+    ) : AppError
 }

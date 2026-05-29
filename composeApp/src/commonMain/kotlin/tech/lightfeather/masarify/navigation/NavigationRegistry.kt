@@ -13,6 +13,7 @@ import tech.lightfeather.masarify.navigation.routes.DeleteCategoryRoute
 import tech.lightfeather.masarify.navigation.routes.ForgotPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.MoreRoute
 import tech.lightfeather.masarify.navigation.routes.OnBoardingRoute
+import tech.lightfeather.masarify.navigation.routes.PaywallRoute
 import tech.lightfeather.masarify.navigation.routes.ResetPasswordRoute
 import tech.lightfeather.masarify.navigation.routes.SplashRoute
 import tech.lightfeather.masarify.navigation.routes.TransactionsRoute
@@ -57,6 +58,7 @@ object NavigationRegistry {
                 subclass(VerifyEmailRoute::class, VerifyEmailRoute.serializer())
                 subclass(ForgotPasswordRoute::class, ForgotPasswordRoute.serializer())
                 subclass(ResetPasswordRoute::class, ResetPasswordRoute.serializer())
+                subclass(PaywallRoute::class, PaywallRoute.serializer())
 
                 // BankAccounts list-detail routes
                 subclass(BankAccountsList::class, BankAccountsList.serializer())

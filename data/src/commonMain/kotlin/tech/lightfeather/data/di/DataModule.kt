@@ -14,6 +14,7 @@ import tech.lightfeather.data.local.database.drivers.SharedDatabase
 import tech.lightfeather.data.remote.AuthApi
 import tech.lightfeather.data.remote.DeviceApi
 import tech.lightfeather.data.remote.RemoteRatesApi
+import tech.lightfeather.data.remote.SubscriptionApi
 import tech.lightfeather.data.remote.SyncApi
 
 /** Base URL for the Masarify backend. Update this to match your server address. */
@@ -60,4 +61,5 @@ val dataModule =
         single<AuthApi> { AuthApi(get(), MASARIFY_BACKEND_BASE_URL) }
         single<SyncApi> { SyncApi(get(), MASARIFY_BACKEND_BASE_URL) }
         single<DeviceApi> { DeviceApi(get(), MASARIFY_BACKEND_BASE_URL) }
+        single<SubscriptionApi> { SubscriptionApi(get(), MASARIFY_BACKEND_BASE_URL) }
     }

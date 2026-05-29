@@ -21,6 +21,7 @@ import tech.lightfeather.masarify.page.deletecategory.DeleteCategoryPageViewMode
 import tech.lightfeather.masarify.page.more.MorePageViewModel
 import tech.lightfeather.masarify.page.notificationsettings.NotificationSettingsPageViewModel
 import tech.lightfeather.masarify.page.onboarding.OnBoardingPageViewModel
+import tech.lightfeather.masarify.page.paywall.PaywallPageViewModel
 import tech.lightfeather.masarify.page.splash.SplashPageViewModel
 import tech.lightfeather.masarify.page.transactions.TransactionsPageViewModel
 
@@ -77,6 +78,7 @@ val viewModelModule =
         viewModel { AddEditCategoryPageViewModel(get(), get(), get(), get(), get(), get(), it.get(), it.get()) }
         viewModelOf(::MorePageViewModel)
         viewModelOf(::NotificationSettingsPageViewModel)
+        viewModelOf(::PaywallPageViewModel)
         viewModel {
             CreateBankAccountPageViewModel(
                 it.get(),

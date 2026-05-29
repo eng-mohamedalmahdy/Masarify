@@ -108,6 +108,8 @@ kotlin {
                 implementation(libs.sqldelight.paging3.extensions)
                 implementation(libs.koin.android)
                 implementation(libs.ktor.client.cio)
+                implementation(libs.kmpworkmanager.core)
+                implementation(libs.purchases.core)
             }
         }
 
@@ -121,6 +123,7 @@ kotlin {
 
         iosMain {
             dependencies {
+                implementation(libs.purchases.core)
                 implementation(libs.ktor.client.darwin)
             }
         }
@@ -128,6 +131,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.native)
                 implementation(libs.sqldelight.paging3.extensions)
+                implementation(libs.kmpworkmanager.core)
             }
         }
 

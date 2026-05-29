@@ -54,7 +54,10 @@ internal class NotificationSettingsPageViewModel(
         }
     }
 
-    private fun toggleType(type: ReminderType, enabled: Boolean) {
+    private fun toggleType(
+        type: ReminderType,
+        enabled: Boolean,
+    ) {
         persistAndSchedule(applyTypeToggle(_state.value.settings, type, enabled))
     }
 
@@ -70,11 +73,14 @@ internal class NotificationSettingsPageViewModel(
         _state.value = _state.value.copy(settings = updated)
     }
 
-    private fun applyTypeToggle(settings: NotificationSettings, type: ReminderType, enabled: Boolean) =
-        when (type) {
-            ReminderType.DAILY_EXPENSE_LOG -> settings.copy(isDailyExpenseLogEnabled = enabled)
-            ReminderType.WEEKLY_SUMMARY -> settings.copy(isWeeklySummaryEnabled = enabled)
-            ReminderType.IDLE_RE_ENGAGEMENT -> settings.copy(isIdleReEngagementEnabled = enabled)
-            ReminderType.MONTHLY_RECAP -> settings.copy(isMonthlyRecapEnabled = enabled)
-        }
+    private fun applyTypeToggle(
+        settings: NotificationSettings,
+        type: ReminderType,
+        enabled: Boolean,
+    ) = when (type) {
+        ReminderType.DAILY_EXPENSE_LOG -> settings.copy(isDailyExpenseLogEnabled = enabled)
+        ReminderType.WEEKLY_SUMMARY -> settings.copy(isWeeklySummaryEnabled = enabled)
+        ReminderType.IDLE_RE_ENGAGEMENT -> settings.copy(isIdleReEngagementEnabled = enabled)
+        ReminderType.MONTHLY_RECAP -> settings.copy(isMonthlyRecapEnabled = enabled)
+    }
 }

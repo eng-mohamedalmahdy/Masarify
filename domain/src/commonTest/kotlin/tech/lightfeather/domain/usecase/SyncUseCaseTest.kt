@@ -12,6 +12,7 @@ import tech.lightfeather.domain.fake.FakeTransactionRepository
 import tech.lightfeather.domain.fake.FakeUserRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -71,6 +72,39 @@ class SyncUseCaseTest {
             pullUseCase()
 
             assertNotNull(userRepo.lastSyncAtSet)
+        }
+
+    @Test
+    fun drainUpgradeRequiredThrowsUpgradeRequiredException() =
+        runTest {
+            val queueRepo = FakeSyncQueueRepository()
+            queueRepo.addPending()
+            val syncRepo = FakeSyncRepository(shouldUpgradeRequired = true)
+
+            assertFailsWith<UpgradeRequiredException> {
+                DrainOutboxQueueUseCase(queueRepo, syncRepo)()
+            }
+        }
+
+    @Test
+    fun pullUpgradeRequiredThrowsUpgradeRequiredException() =
+        runTest {
+            val userRepo = FakeUserRepository()
+            val pullUseCase =
+                PullRemoteDeltaUseCase(
+                    syncRepository = FakeSyncRepository(shouldUpgradeRequired = true),
+                    accountRepository = FakeAccountRepository(),
+                    transactionRepository = FakeTransactionRepository(),
+                    categoryRepository = FakeCategoryRepository(),
+                    currencyRepository = FakeCurrencyRepository(),
+                    financialSessionRepository = FakeFinancialSessionRepository(),
+                    attachmentRepository = FakeAttachmentRepository(),
+                    userRepository = userRepo,
+                )
+
+            assertFailsWith<UpgradeRequiredException> {
+                pullUseCase()
+            }
         }
 
     @Test

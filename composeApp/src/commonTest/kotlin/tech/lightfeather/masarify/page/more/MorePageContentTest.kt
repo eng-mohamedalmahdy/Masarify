@@ -35,9 +35,11 @@ class MorePageContentTest {
                         onContactUsClick = {},
                         onRateUsClick = {},
                         onBackupRestoreClick = {},
+                        onNotificationSettingsClick = {},
                         onLogoutClick = {},
                         onLogoutAllClick = {},
                         onResendVerificationClick = {},
+                        onUpgradeClick = {},
                     )
                 }
             }

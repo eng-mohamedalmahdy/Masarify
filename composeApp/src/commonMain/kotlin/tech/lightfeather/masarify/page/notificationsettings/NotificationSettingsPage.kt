@@ -42,9 +42,7 @@ import tech.lightfeather.masarify.notification.rememberNotificationPermissionReq
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun NotificationSettingsPage(
-    viewModel: NotificationSettingsPageViewModel = koinViewModel(),
-) {
+internal fun NotificationSettingsPage(viewModel: NotificationSettingsPageViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
     val permissionRequester = rememberNotificationPermissionRequester()
     var showTimePicker by remember { mutableStateOf(false) }
@@ -97,9 +95,10 @@ private fun NotificationSettingsContent(
     ) {
         item {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(AppTheme.dimens.spacing.padding.medium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(AppTheme.dimens.spacing.padding.medium),
             ) {
                 Text(
                     text = stringResource(MR.strings.notification_settings),
@@ -204,11 +203,12 @@ private fun NotificationTimePickerDialog(
     onConfirm: (Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val timePickerState = rememberTimePickerState(
-        initialHour = initialMinutes / 60,
-        initialMinute = initialMinutes % 60,
-        is24Hour = true,
-    )
+    val timePickerState =
+        rememberTimePickerState(
+            initialHour = initialMinutes / 60,
+            initialMinute = initialMinutes % 60,
+            is24Hour = true,
+        )
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(MR.strings.notifications_daily_time)) },

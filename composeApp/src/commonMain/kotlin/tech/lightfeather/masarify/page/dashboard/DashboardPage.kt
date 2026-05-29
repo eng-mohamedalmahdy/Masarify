@@ -58,9 +58,8 @@ import tech.lightfeather.designsystem.component.molecules.BalanceOverviewCard
 import tech.lightfeather.designsystem.component.molecules.DashboardAccountCard
 import tech.lightfeather.designsystem.component.molecules.DashboardTipCard
 import tech.lightfeather.designsystem.component.molecules.EmptyState
-import tech.lightfeather.designsystem.component.molecules.NotificationPermissionBanner
-import tech.lightfeather.masarify.notification.rememberNotificationPermissionRequester
 import tech.lightfeather.designsystem.component.molecules.MonthSelector
+import tech.lightfeather.designsystem.component.molecules.NotificationPermissionBanner
 import tech.lightfeather.designsystem.component.molecules.button.PrimaryButton
 import tech.lightfeather.designsystem.component.organisms.SpendingAnalyticsCard
 import tech.lightfeather.designsystem.component.organisms.TransactionDetailView
@@ -79,6 +78,7 @@ import tech.lightfeather.masarify.mappers.toUiTransactionDetails
 import tech.lightfeather.masarify.navigation.Display
 import tech.lightfeather.masarify.navigation.LocalNavigator
 import tech.lightfeather.masarify.navigation.Navigator
+import tech.lightfeather.masarify.notification.rememberNotificationPermissionRequester
 import tech.lightfeather.masarify.template.transactionspane.TransactionsPane
 
 /**

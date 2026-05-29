@@ -841,6 +841,27 @@
     <string name="reminder_monthly_recap_title">Monthly Recap Ready</string>
     <string name="reminder_monthly_recap_body">The month is almost over. See your full financial summary in Masarify.</string>
 
+    <!-- Subscription / Pro Plan -->
+    <string name="subscription_section_title">Subscription</string>
+    <string name="subscription_pro_title">Masarify Pro</string>
+    <string name="subscription_pro_subtitle">Unlock cloud sync and backup across all your devices</string>
+    <string name="subscription_subscribe_cta">Subscribe to Pro</string>
+    <string name="subscription_restore_purchases">Restore Purchases</string>
+    <string name="subscription_restore_success">Purchases restored successfully</string>
+    <string name="subscription_restore_failure">Failed to restore purchases. Please try again.</string>
+    <string name="subscription_purchase_failure">Purchase failed. Please try again.</string>
+    <string name="subscription_upgrade">Upgrade</string>
+    <string name="subscription_upgrade_to_pro">Upgrade to Pro</string>
+    <string name="subscription_manage">Manage Subscription</string>
+    <string name="subscription_free_banner_title">Upgrade to Pro</string>
+    <string name="subscription_free_banner_message">Enable cloud sync and backup to keep your data safe across devices</string>
+    <string name="subscription_web_title">Subscribe on Mobile</string>
+    <string name="subscription_web_message">Pro subscriptions are available on the Android or iOS app. Open Masarify on your phone to subscribe.</string>
+    <string name="pro_feature_locked_title">Pro Feature</string>
+    <string name="pro_feature_locked_message">This feature requires a Pro subscription</string>
+    <string name="feature_cloud_sync">Cloud sync across devices</string>
+    <string name="feature_backup_restore">Cloud backup and restore</string>
+
     <!-- Notification Settings -->
     <string name="notification_settings">Notification Settings</string>
     <string name="notifications_master_toggle">Enable Reminders</string>

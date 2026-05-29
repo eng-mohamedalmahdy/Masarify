@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS subscription_cache (
+    id INTEGER PRIMARY KEY DEFAULT 1,
+    plan TEXT NOT NULL DEFAULT 'FREE',
+    status TEXT NOT NULL DEFAULT 'NONE',
+    expires_at INTEGER,
+    cached_at INTEGER NOT NULL
+);
+
+upsert:
+INSERT OR REPLACE INTO subscription_cache(id, plan, status, expires_at, cached_at)
+VALUES (1, :plan, :status, :expires_at, :cached_at);
+
+get:
+SELECT * FROM subscription_cache WHERE id = 1;

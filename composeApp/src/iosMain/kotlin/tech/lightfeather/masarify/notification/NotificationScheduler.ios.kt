@@ -10,7 +10,6 @@ private const val REMINDER_WORKER_ID = "masarify_reminder_check"
 private const val INTERVAL_THIRTY_MIN_MS = 30L * 60 * 1_000
 
 actual object NotificationScheduler : KoinComponent {
-
     actual suspend fun scheduleAllReminders(settings: NotificationSettings) {
         if (!settings.isRemindersEnabled) {
             cancelAllReminders()

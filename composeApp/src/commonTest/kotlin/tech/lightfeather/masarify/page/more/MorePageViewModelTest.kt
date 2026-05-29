@@ -7,6 +7,8 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import tech.lightfeather.masarify.navigation.routes.PaywallRoute
+import tech.lightfeather.masarify.test.CapturingNavigator
 import tech.lightfeather.masarify.test.buildMoreViewModel
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -79,5 +81,16 @@ class MorePageViewModelTest {
             vm.onIntent(MorePageIntent.ClearNavigation)
 
             assertNull(vm.state.value.selectedDetailItem)
+        }
+
+    @Test
+    fun navigateToPaywallNavigatesToPaywallRoute() =
+        runTest {
+            val navigator = CapturingNavigator()
+            val vm = buildMoreViewModel(navigator = navigator)
+
+            vm.onIntent(MorePageIntent.NavigateToPaywall)
+
+            assertTrue(navigator.navigatedRoutes.any { it is PaywallRoute })
         }
 }

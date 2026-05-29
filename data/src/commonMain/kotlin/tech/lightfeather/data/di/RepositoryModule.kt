@@ -11,11 +11,12 @@ import tech.lightfeather.data.repository.CurrencyExchangeRateRepositoryImpl
 import tech.lightfeather.data.repository.CurrencyRepositoryImpl
 import tech.lightfeather.data.repository.DeviceTokenRepositoryImpl
 import tech.lightfeather.data.repository.FinancialSessionRepositoryImpl
+import tech.lightfeather.data.repository.NotificationRepositoryImpl
 import tech.lightfeather.data.repository.RemoteExchangeRateRepositoryImpl
+import tech.lightfeather.data.repository.SubscriptionRepositoryImpl
 import tech.lightfeather.data.repository.SyncQueueRepositoryImpl
 import tech.lightfeather.data.repository.SyncRepositoryImpl
 import tech.lightfeather.data.repository.TransactionsRepositoryImpl
-import tech.lightfeather.data.repository.NotificationRepositoryImpl
 import tech.lightfeather.data.repository.UserRepositoryImpl
 import tech.lightfeather.domain.repository.AccountRepository
 import tech.lightfeather.domain.repository.AttachmentRepository
@@ -27,11 +28,12 @@ import tech.lightfeather.domain.repository.CurrencyExchangeRateRepository
 import tech.lightfeather.domain.repository.CurrencyRepository
 import tech.lightfeather.domain.repository.DeviceTokenRepository
 import tech.lightfeather.domain.repository.FinancialSessionRepository
+import tech.lightfeather.domain.repository.NotificationRepository
 import tech.lightfeather.domain.repository.RemoteExchangeRateRepository
+import tech.lightfeather.domain.repository.SubscriptionRepository
 import tech.lightfeather.domain.repository.SyncQueueRepository
 import tech.lightfeather.domain.repository.SyncRepository
 import tech.lightfeather.domain.repository.TransactionRepository
-import tech.lightfeather.domain.repository.NotificationRepository
 import tech.lightfeather.domain.repository.UserRepository
 
 val repositoryModule =
@@ -52,4 +54,5 @@ val repositoryModule =
         single<SyncRepository> { SyncRepositoryImpl(get()) }
         single<DeviceTokenRepository> { DeviceTokenRepositoryImpl(get()) }
         single<NotificationRepository> { NotificationRepositoryImpl(get()) }
+        single<SubscriptionRepository> { SubscriptionRepositoryImpl(get(), get()) }
     }

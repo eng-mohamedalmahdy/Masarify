@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS subscription_cache (
+    id INTEGER PRIMARY KEY DEFAULT 1,
+    plan TEXT NOT NULL DEFAULT 'FREE',
+    status TEXT NOT NULL DEFAULT 'NONE',
+    expires_at INTEGER,
+    cached_at INTEGER NOT NULL
+);

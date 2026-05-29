@@ -20,14 +20,15 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
@@ -74,6 +75,7 @@ import tech.lightfeather.designsystem.theme.AppTheme
 import tech.lightfeather.domain.model.AppLanguage
 import tech.lightfeather.domain.model.AppLanguages
 import tech.lightfeather.masarify.app.LocalAppMainViewModel
+import tech.lightfeather.masarify.component.SubscriptionStatusBanner
 import tech.lightfeather.masarify.page.categories.CategoriesPage
 import tech.lightfeather.masarify.page.currencies.CurrenciesPage
 import tech.lightfeather.masarify.page.notificationsettings.NotificationSettingsPage
@@ -248,6 +250,7 @@ internal fun MorePageContent(
                 onLogoutClick = { onIntent(MorePageIntent.Logout) },
                 onLogoutAllClick = { onIntent(MorePageIntent.ShowLogoutAllDialog) },
                 onResendVerificationClick = { onIntent(MorePageIntent.ResendVerification) },
+                onUpgradeClick = { onIntent(MorePageIntent.NavigateToPaywall) },
             )
         },
         detailPane = {
@@ -328,6 +331,7 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
     onLogoutClick: () -> Unit,
     onLogoutAllClick: () -> Unit,
     onResendVerificationClick: () -> Unit,
+    onUpgradeClick: () -> Unit,
 ) {
     AnimatedPane {
         MoreListPaneContent(
@@ -354,6 +358,7 @@ private fun ThreePaneScaffoldPaneScope.MoreListPane(
             onLogoutClick = onLogoutClick,
             onLogoutAllClick = onLogoutAllClick,
             onResendVerificationClick = onResendVerificationClick,
+            onUpgradeClick = onUpgradeClick,
         )
     }
 }
@@ -384,6 +389,7 @@ internal fun MoreListPaneContent(
     onLogoutClick: () -> Unit,
     onLogoutAllClick: () -> Unit,
     onResendVerificationClick: () -> Unit,
+    onUpgradeClick: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -481,6 +487,25 @@ internal fun MoreListPaneContent(
                 },
                 contentDescription = stringResource(MR.strings.language_description),
             )
+        }
+
+        // Subscription Section
+        if (!state.isProActive) {
+            item {
+                SubscriptionStatusBanner(onUpgradeClick = onUpgradeClick)
+            }
+        } else {
+            item {
+                SectionHeader(stringResource(MR.strings.subscription_section_title))
+            }
+            item {
+                MoreListItem(
+                    text = stringResource(MR.strings.subscription_manage),
+                    image = Icons.Default.WorkspacePremium,
+                    onClick = onUpgradeClick,
+                    contentDescription = stringResource(MR.strings.subscription_manage),
+                )
+            }
         }
 
         // Management Section

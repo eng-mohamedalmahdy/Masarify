@@ -12,7 +12,8 @@ private class IosNotificationPermissionRequester : NotificationPermissionRequest
     private var cachedGranted = false
 
     init {
-        UNUserNotificationCenter.currentNotificationCenter()
+        UNUserNotificationCenter
+            .currentNotificationCenter()
             .getNotificationSettingsWithCompletionHandler { settings ->
                 cachedGranted = settings?.authorizationStatus == UNAuthorizationStatusAuthorized
             }
@@ -20,7 +21,8 @@ private class IosNotificationPermissionRequester : NotificationPermissionRequest
 
     override fun requestPermission(onResult: (Boolean) -> Unit) {
         val options = UNAuthorizationOptionAlert or UNAuthorizationOptionBadge or UNAuthorizationOptionSound
-        UNUserNotificationCenter.currentNotificationCenter()
+        UNUserNotificationCenter
+            .currentNotificationCenter()
             .requestAuthorizationWithOptions(options) { granted, _ ->
                 cachedGranted = granted
                 onResult(granted)

@@ -78,4 +78,6 @@ internal sealed interface MorePageIntent {
     ) : MorePageIntent
 
     data object DeleteAllFailed : MorePageIntent
+
+    data object NavigateToPaywall : MorePageIntent
 }

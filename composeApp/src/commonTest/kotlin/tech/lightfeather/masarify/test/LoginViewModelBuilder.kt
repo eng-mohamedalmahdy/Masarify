@@ -2,6 +2,7 @@ package tech.lightfeather.masarify.test
 
 import tech.lightfeather.domain.usecase.AcquireAndUpdateFcmUseCase
 import tech.lightfeather.domain.usecase.DrainOutboxQueueUseCase
+import tech.lightfeather.domain.usecase.GetSubscriptionStatusUseCase
 import tech.lightfeather.domain.usecase.LoginUseCase
 import tech.lightfeather.domain.usecase.PullRemoteDeltaUseCase
 import tech.lightfeather.domain.usecase.RegisterDeviceTokenUseCase
@@ -58,5 +59,6 @@ internal fun buildLoginViewModel(
                 userRepository = userRepo,
                 registerDeviceTokenUseCase = RegisterDeviceTokenUseCase(FakeDeviceTokenRepository()),
             ),
+        getSubscriptionStatusUseCase = GetSubscriptionStatusUseCase(FakeSubscriptionRepository()),
     )
 }

@@ -15,6 +15,9 @@ import tech.lightfeather.domain.model.CurrencyExchangeRate
 import tech.lightfeather.domain.model.DomainResult
 import tech.lightfeather.domain.model.FinancialSession
 import tech.lightfeather.domain.model.PagedData
+import tech.lightfeather.domain.model.SubscriptionPlan
+import tech.lightfeather.domain.model.SubscriptionStatus
+import tech.lightfeather.domain.model.SubscriptionStatusType
 import tech.lightfeather.domain.model.UserData
 import tech.lightfeather.domain.model.error.AppError
 import tech.lightfeather.domain.model.sync.SyncPullResponse
@@ -30,6 +33,8 @@ import tech.lightfeather.domain.repository.CategoryRepository
 import tech.lightfeather.domain.repository.CurrencyExchangeRateRepository
 import tech.lightfeather.domain.repository.CurrencyRepository
 import tech.lightfeather.domain.repository.FinancialSessionRepository
+import tech.lightfeather.domain.repository.RevenueCatSdk
+import tech.lightfeather.domain.repository.SubscriptionRepository
 import tech.lightfeather.domain.repository.SyncQueueRepository
 import tech.lightfeather.domain.repository.SyncRepository
 import tech.lightfeather.domain.repository.TransactionRepository
@@ -440,29 +445,34 @@ class FakeUserRepository : UserRepository {
 
 class FakeSyncRepository(
     var shouldConflict: Boolean = false,
+    var shouldUpgradeRequired: Boolean = false,
 ) : SyncRepository {
     var enqueuedCount = 0
 
     override suspend fun enqueueRemote(entry: SyncQueueEntry): DomainResult<Unit> {
         enqueuedCount++
-        return if (shouldConflict) {
-            DomainResult.Failure(AppError.ConflictError("conflict"))
-        } else {
-            DomainResult.Success(Unit)
+        return when {
+            shouldConflict -> DomainResult.Failure(AppError.ConflictError("conflict"))
+            shouldUpgradeRequired -> DomainResult.Failure(AppError.UpgradeRequired("upgrade required"))
+            else -> DomainResult.Success(Unit)
         }
     }
 
     override suspend fun pullDelta(since: Long): DomainResult<SyncPullResponse> =
-        DomainResult.Success(
-            SyncPullResponse(
-                accounts = emptyList(),
-                transactions = emptyList(),
-                categories = emptyList(),
-                currencies = emptyList(),
-                financialSessions = emptyList(),
-                attachments = emptyList(),
-            ),
-        )
+        if (shouldUpgradeRequired) {
+            DomainResult.Failure(AppError.UpgradeRequired("upgrade required"))
+        } else {
+            DomainResult.Success(
+                SyncPullResponse(
+                    accounts = emptyList(),
+                    transactions = emptyList(),
+                    categories = emptyList(),
+                    currencies = emptyList(),
+                    financialSessions = emptyList(),
+                    attachments = emptyList(),
+                ),
+            )
+        }
 
     override suspend fun downloadAttachment(remoteId: Long): DomainResult<ByteArray> =
         DomainResult.Failure(AppError.InternalError("not supported"))
@@ -734,4 +744,78 @@ class FakeBankNameRepository(
 
     override fun getAllBankNames(): DomainResult<Flow<List<BankName>>> =
         DomainResult.Success(flowOf(store.values.toList()))
+}
+
+// ---------------------------------------------------------------------------
+// Subscription
+// ---------------------------------------------------------------------------
+
+class FakeSubscriptionRepository(
+    private val isProActive: Boolean = false,
+    private val shouldFail: Boolean = false,
+) : SubscriptionRepository {
+    var linkCallCount = 0
+
+    override fun getStatus(): Flow<DomainResult<SubscriptionStatus>> =
+        flowOf(
+            if (shouldFail) {
+                DomainResult.Failure(AppError.InternalError("fail"))
+            } else {
+                DomainResult.Success(
+                    if (isProActive) {
+                        SubscriptionStatus(
+                            plan = SubscriptionPlan.PRO,
+                            status = SubscriptionStatusType.ACTIVE,
+                            expiresAt = null,
+                        )
+                    } else {
+                        SubscriptionStatus.FREE_DEFAULT
+                    },
+                )
+            },
+        )
+
+    override suspend fun linkRevenueCatCustomer(rcCustomerId: String): DomainResult<Unit> {
+        linkCallCount++
+        return if (shouldFail) {
+            DomainResult.Failure(AppError.InternalError("fail"))
+        } else {
+            DomainResult.Success(Unit)
+        }
+    }
+
+    override suspend fun getCachedStatusAge(): Long = 0L
+}
+
+class FakeRevenueCatSdk(
+    private val shouldSucceed: Boolean = true,
+    private val shouldCancel: Boolean = false,
+) : RevenueCatSdk {
+    var initializeCallCount = 0
+    var lastInitializedUserId: String? = null
+
+    override suspend fun purchasePro(): DomainResult<String> =
+        when {
+            shouldCancel -> DomainResult.Failure(AppError.InternalError("cancelled"))
+            shouldSucceed -> DomainResult.Success("rc_customer_123")
+            else -> DomainResult.Failure(AppError.InternalError("purchase_failed"))
+        }
+
+    override suspend fun restorePurchases(): DomainResult<String> =
+        if (shouldSucceed) {
+            DomainResult.Success("rc_customer_123")
+        } else {
+            DomainResult.Failure(AppError.InternalError("restore_failed"))
+        }
+
+    override suspend fun getCustomerInfo(): DomainResult<SubscriptionStatus> =
+        DomainResult.Success(SubscriptionStatus.FREE_DEFAULT)
+
+    override fun initialize(
+        apiKey: String,
+        userId: String?,
+    ) {
+        initializeCallCount++
+        lastInitializedUserId = userId
+    }
 }
